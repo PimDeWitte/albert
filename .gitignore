@@ -33,7 +33,6 @@ venv.bak/
 .python-version
 
 # PyTorch & ML specific
-runs/
 runs/**/*.npy
 *.npy
 *.npz

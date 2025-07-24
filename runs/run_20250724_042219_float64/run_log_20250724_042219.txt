@@ -1,0 +1,397 @@
+Running: Kerr (a=0.00)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-1000_dt-0.0000_dtype-float64_63cc7df8ff44.pt
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_50__r0-44300.76_steps-1000_dt-0.0000_dtype-float64_4ce8cfe8cddf.pt
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_50__r0-44300.76_steps-100_dt-0.0000_dtype-float64_b75e8473d789.pt
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Kerr-Newman (a=0.00, q_e=0.00): {'a': 0.0, 'q_e': 0.0}
+
+--- Validating: Kerr-Newman (a=0.00, q_e=0.00) ---
+  Running validation trajectory for Kerr-Newman (a=0.00, q_e=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_050b1bd1d4bd.pt
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8754 arcsec
+  Error: 0.8758 arcsec (50.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 0.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+  Error computing PPN parameters: cannot access local variable 'obs_gamma' where it is not associated with a value
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: PASSED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 2
+  Passed: 1
+  Failed: 1
+============================================================
+
+Theories that failed validation:
+  ✗ Kerr (a=0.50)
+    → Moved to: runs/run_20250724_042219_float64/fail/Kerr_a_0_50
+
+Theories that passed validation:
+  ✓ Kerr-Newman (a=0.00, q_e=0.00)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Kerr-Newman (a=0.00, q_e=0.00) ---
+
+--- Evaluating: Kerr-Newman (a=0.00, q_e=0.00) ---
+
+--- Evaluating: Kerr-Newman (a=0.00, q_e=0.00) ---
+  Results will be saved to: runs/run_20250724_042219_float64/Kerr-Newman_a_0_00_q_e_0_00
+  Running pre-flight checks for Kerr-Newman (a=0.00, q_e=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_050b1bd1d4bd.pt
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8754 arcsec
+  Error: 0.8758 arcsec (50.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 0.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+  Error computing PPN parameters: cannot access local variable 'obs_gamma' where it is not associated with a value
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Kerr-Newman (a=0.00, q_e=0.00). Continuing with evaluation.
+  Running trajectory simulation for Kerr-Newman (a=0.00, q_e=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-1000_dt-0.0000_dtype-float64_266660176c38.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-1000_dt-0.0000_dtype-float64_96fb0f7e29c6.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-1000_dt-0.0000_dtype-float64_658d34ab7a22.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-1000_dt-0.0000_dtype-float64_245c8d408378.pt
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8754 arcsec
+  Error: 0.8758 arcsec (50.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 0.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+  Error computing PPN parameters: cannot access local variable 'obs_gamma' where it is not associated with a value
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8754 arcsec
+  Error: 0.8758 arcsec (50.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 0.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+  Error computing PPN parameters: cannot access local variable 'obs_gamma' where it is not associated with a value
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8754 arcsec
+  Error: 0.8758 arcsec (50.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 0.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+  Error computing PPN parameters: cannot access local variable 'obs_gamma' where it is not associated with a value
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8754 arcsec
+  Error: 0.8758 arcsec (50.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 0.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+  Error computing PPN parameters: cannot access local variable 'obs_gamma' where it is not associated with a value
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Generating trajectory comparison plot...
+  Trajectory has 1001 points, using step interval 20 for markers
+  Trajectory range: r=[29.992, 30.000], phi=[0.000, 0.061]
+    Processing 2 baselines for checkpoints...
+      Baseline: Kerr (a=0.00)
+        Adding checkpoints for Kerr (a=0.00)
+        Checkpoint percentages: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+          Checkpoint at 10%: idx=100, z=1.052
+          Checkpoint at 20%: idx=200, z=2.104
+          Checkpoint at 30%: idx=300, z=3.156
+          Checkpoint at 40%: idx=400, z=4.209
+          Checkpoint at 50%: idx=500, z=5.261
+          Checkpoint at 60%: idx=600, z=6.313
+          Checkpoint at 70%: idx=700, z=7.365
+          Checkpoint at 80%: idx=800, z=8.417
+          Checkpoint at 90%: idx=900, z=9.469
+          Checkpoint at 100%: idx=1000, z=10.522
+      Baseline: Kerr-Newman (a=0.00, q_e=0.50)
+        Adding checkpoints for Kerr-Newman (a=0.00, q_e=0.50)
+        Checkpoint percentages: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95]
+          Checkpoint at 5%: idx=50, z=0.526
+          Checkpoint at 15%: idx=150, z=1.578
+          Checkpoint at 25%: idx=250, z=2.631
+          Checkpoint at 35%: idx=350, z=3.683
+          Checkpoint at 45%: idx=450, z=4.735
+          Checkpoint at 55%: idx=550, z=5.788
+          Checkpoint at 65%: idx=650, z=6.840
+          Checkpoint at 75%: idx=750, z=7.892
+          Checkpoint at 85%: idx=850, z=8.945
+          Checkpoint at 95%: idx=950, z=9.997
+  Plot saved to runs/run_20250724_042219_float64/Kerr-Newman_a_0_00_q_e_0_00/viz/trajectory_comparison.png
+  Generating multi-particle grid visualization...
+    Generating particle-specific baselines...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-1001_dt-0.0010_dtype-float64_1278dee02519.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-1001_dt-0.0010_dtype-float64_06dd5d46dbf0.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-1001_dt-0.0010_dtype-float64_57a30b239b91.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-1001_dt-0.0010_dtype-float64_9083ed1a9f02.pt

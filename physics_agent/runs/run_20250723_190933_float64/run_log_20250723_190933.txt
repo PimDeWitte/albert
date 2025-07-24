@@ -1,0 +1,230 @@
+Running: Kerr (a=0.00)
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+
+--- Phase 1: Validating All Theories ---
+============================================================
+  Using preferred values for Quantum Corrected (α=+0.00): {'alpha': 1e-05}
+
+--- Validating: Quantum Corrected (α=+0.00) ---
+  Running validation trajectory for Quantum Corrected (α=+0.00)...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+Loading cached trajectory from: /Users/p/dev/gravity_compression/physics_agent/cache/trajectories/1.0.0/Quantum_Corrected_____0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_5f269fe94630.pt
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Running validator: Lagrangian Validator
+  Theory category: quantum
+  Using quantum validators for quantum theory
+  Adding classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Running validator: AtomInterferometryValidator
+
+Calculating atom interferometry redshift for Quantum Corrected (α=+0.00)...
+  Test height: 1.0 m
+  Expected precision: 7.0e+00%
+
+Results:
+  Observed: 1.093e-16 ± 7.600e-18 Hz/Hz/m
+  Predicted: 1.093e-16 Hz/Hz/m
+  Error: 4.847e-20 Hz/Hz/m (4.43e-02%)
+  Status: PASSED
+
+Debug info:
+  de Broglie wavelength: 4.780e-11 m
+  Running validator: GravitationalDecoherenceValidator
+
+Calculating gravitational decoherence for Quantum Corrected (α=+0.00)...
+  Test mass: 999652 amu
+  Superposition separation: 100 nm
+  Correlation time: 1.0 ms
+
+Results:
+  Observed: 1.20e-17 ± 3.00e-18 Hz
+  Predicted: 3.41e+30 Hz
+  Error: 3.41e+30 Hz (28403996944618378088290064662578499765836147851264.0%)
+  Status: FAILED
+
+Contributions:
+  Diosi-Penrose rate: 1.74e+03 Hz
+  Environmental rate: 3.41e+30 Hz
+  Total rate: 3.41e+30 Hz
+  Running validator: QuantumClockValidator
+
+Calculating quantum clock redshift for Quantum Corrected (α=+0.00)...
+  Height difference: 33 cm
+  Clock frequency: 1.121 PHz
+  Expected precision: 10^-17
+
+Results:
+  Observed: 3.61e-17 ± 1.60e-18
+  Predicted: 3.61e-17
+  Error: 4.70e-20 (0.1%)
+  Status: PASSED
+
+Quantum corrections:
+  Running validator: Quantum Lagrangian Grounding Validator
+
+Quantum Lagrangian Grounding Validator for Quantum Corrected (α=+0.00)
+============================================================
+
+COW Experiment:
+  Observed: 2.700e+00 ± 2.100e-01
+  Predicted: 2.700e+00
+  Deviation: 0.0σ
+
+ATOM Experiment:
+  Observed: 1.090e-16 ± 7.600e-18
+  Predicted: 1.090e-16
+  Deviation: 0.0σ
+
+CLOCK Experiment:
+  Observed: 3.610e-17 ± 1.600e-18
+  Predicted: 3.598e-17
+  Deviation: 0.1σ
+
+GR Limit Check:
+  Expected (GR): 2.700
+  Theory at κ→0: 2.700
+  χ²: 0.00
+
+============================================================
+Total χ² = 0.01
+Reduced χ² = 0.00
+Result: PASS
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: cannot access local variable 'predicted_precession' where it is not associated with a value
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 0.8752 arcsec
+  Error: 0.8760 arcsec (50.02%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: -0.000235
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Running validator: Hawking Radiation Validator
+
+Calculating Hawking temperature for Quantum Corrected (α=+0.00)...
+  Black hole mass: 1.989e+30 kg (solar mass)
+  Warning: Quantum theory lacks Hawking temperature implementation
+  Running validator: Cosmology Validator
+
+Calculating cosmological distances for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no dark energy parameter implementation
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 1
+  Failed: 0
+============================================================
+
+Theories that passed validation:
+  ✓ Quantum Corrected (α=+0.00)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Quantum Corrected (α=+0.00) ---
+
+--- Evaluating: Quantum Corrected (α=+0.00) ---
+
+--- Evaluating: Quantum Corrected (α=+0.00) ---
+  Results will be saved to: runs/run_20250723_190933_float64/Quantum_Corrected_α_+0_00
+  Running pre-flight checks for Quantum Corrected (α=+0.00)...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+Loading cached trajectory from: /Users/p/dev/gravity_compression/physics_agent/cache/trajectories/1.0.0/Quantum_Corrected_____0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_5f269fe94630.pt
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Running validator: Lagrangian Validator
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Warning: Failed to use quantum trajectory calculator: UnifiedTrajectoryCalculator.compute_classical_trajectory() got an unexpected keyword argument 'quantum_interval'
+  Running trajectory simulation for Quantum Corrected (α=+0.00)...
+  Testing all 4 standard particles for comprehensive visualization
+    Running trajectory for electron...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Warning: Failed to use quantum trajectory calculator: UnifiedTrajectoryCalculator.compute_classical_trajectory() got an unexpected keyword argument 'particle_name'
