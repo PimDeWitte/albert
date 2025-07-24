@@ -40,15 +40,24 @@ class LLMApi:
         else:
             raise ValueError(f"Unsupported provider: {provider}")
         
-        # Load prompt template
+        # Load prompt template - try simple one first for faster responses
+        simple_template_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), 
+            'self_discovery', 'simple_prompt_template.txt'
+        )
         template_path = os.path.join(
             os.path.dirname(os.path.dirname(__file__)), 
             'self_discovery', 'prompt_template.txt'
         )
         
         try:
-            with open(template_path, 'r') as f:
-                self.prompt_template = f.read()
+            # Try simple template first
+            if os.path.exists(simple_template_path):
+                with open(simple_template_path, 'r') as f:
+                    self.prompt_template = f.read()
+            else:
+                with open(template_path, 'r') as f:
+                    self.prompt_template = f.read()
         except FileNotFoundError:
             # Fallback template
             self.prompt_template = """Generate a novel gravitational theory as a Python class inheriting from GravitationalTheory.
@@ -65,6 +74,24 @@ Your generated theory must:
 Initial idea: {initial_prompt}
     
 Return ONLY the Python code, no explanations."""
+    
+    def _fix_common_errors(self, code: str) -> str:
+        """Fix common errors in generated code"""
+        if not code:
+            return code
+            
+        # Fix incorrect imports
+        code = code.replace('from gravitational_theory import', 'from physics_agent.base_theory import')
+        code = code.replace('import gravitational_theory', 'import physics_agent.base_theory')
+        
+        # Ensure proper torch import
+        if 'torch' in code and 'import torch' not in code:
+            code = 'import torch\n' + code
+            
+        # Fix incorrect method signatures
+        code = code.replace('get_metric(self, r, theta', 'get_metric(self, r')
+        
+        return code
     
     def generate_theory_variation(self, base_theory_code: str, modification_prompt: str, baseline_theories: list[str]) -> Optional[str]:
         """Generate a variation of a theory based on user input"""
@@ -91,7 +118,8 @@ The theory will be benchmarked against:
 
 Return ONLY the Python code, no explanations."""
         
-        return self._call_api(full_prompt)
+        result = self._call_api(full_prompt)
+        return self._fix_common_errors(result) if result else None
     
     def generate_new_theory(self, initial_prompt: str, baseline_theories: list[str]) -> Optional[str]:
         """Generate a completely new theory based on initial prompt"""
@@ -102,7 +130,8 @@ Return ONLY the Python code, no explanations."""
             initial_prompt=initial_prompt if initial_prompt else 'Explore modifications to the Reissner-Nordström or Dilaton metric.'
         )
         
-        return self._call_api(prompt)
+        result = self._call_api(prompt)
+        return self._fix_common_errors(result) if result else None
     
     def _call_api(self, prompt: str) -> Optional[str]:
         """Make the actual API call to the provider"""
@@ -139,7 +168,7 @@ Return ONLY the Python code, no explanations."""
                     f"{self.base_url}/chat/completions",
                     headers=headers,
                     json=data,
-                    timeout=60
+                    timeout=300  # Increased timeout to 5 minutes
                 )
                 response.raise_for_status()
                 
