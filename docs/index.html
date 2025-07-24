@@ -812,6 +812,48 @@ gauge_lagrangian = -sp.Rational(1, 4) * F_munu * F^munu<br/>
 interaction_lagrangian = -e * psi_bar * gamma_mu * psi * A_mu
                                     </code>
                                 </div>
+                                
+                                <!-- Real Implementation Example -->
+                                <div class="mt-6">
+                                    <h5 class="text-xl font-bold text-success mb-4">Real Implementation: Einstein's Asymmetric Theory</h5>
+                                    <pre class="text-xs font-mono overflow-x-auto bg-code-bg rounded-lg p-4 border border-code-border">
+<span class="text-accent">from</span> physics_agent.theories.einstein_asymmetric <span class="text-accent">import</span> EinsteinAsymmetric
+
+<span class="text-accent">class</span> <span class="text-warning">EinsteinAsymmetric</span>(<span class="text-warning">GravitationalTheory</span>):
+    <span class="text-muted">"""Einstein's final attempt: asymmetric metric to unify gravity + EM"""</span>
+    
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, alpha: float = 0.0):
+        <span class="text-muted"># Asymmetric metric components</span>
+        g_mn = get_symbol('g_μν')     <span class="text-muted"># Symmetric part (gravity)</span>
+        f_mn = get_symbol('f_μν')     <span class="text-muted"># Antisymmetric part (EM)</span>
+        
+        <span class="text-muted"># Standard Model fermions</span>
+        psi = get_symbol('ψ')
+        psi_bar = get_symbol('ψ̄')
+        gamma_mu = get_symbol('γ^μ')
+        
+        <span class="text-muted"># EM emerges from metric asymmetry!</span>
+        F_mn = alpha * (f_mn - get_symbol('f_νμ'))
+        
+        <span class="text-muted"># Full Lagrangian with SM coupling</span>
+        gravity_lagrangian = get_symbol('R') + alpha**2 * f_mn * get_symbol('f^μν')
+        matter_lagrangian = sp.I * psi_bar * gamma_mu * D_mu * psi - m * psi_bar * psi
+        gauge_lagrangian = -sp.Rational(1,4) * F_mn * get_symbol('F^μν')
+        interaction_lagrangian = -q * psi_bar * gamma_mu * psi * A_mu * (1 + alpha * f_mn * g_mn)
+    
+    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, M_param, C_param, G_param):
+        <span class="text-muted"># Key innovation: off-diagonal g_tp term</span>
+        g_tp = self.alpha * rs / r * torch.sqrt(r)  <span class="text-muted"># Couples time-space!</span>
+        <span class="text-accent">return</span> g_tt, g_rr, g_pp, g_tp
+
+<span class="text-muted"># Test against all 21 validators including QED precision</span>
+theory = <span class="text-warning">EinsteinAsymmetric</span>(alpha=1e-3)
+results = theory.validate()
+<span class="text-accent">assert</span> results['qed_precision']['g2_error'] < 1e-10  <span class="text-success">✓</span>
+<span class="text-accent">assert</span> results['quantum_clock']['error'] < 1e-17   <span class="text-success">✓</span>
+                                    </pre>
+                                </div>
+                                
                                 <p class="text-sm text-muted mb-4">
                                     This allows unified theories to be tested against QED precision measurements
                                     with 13 significant figures of accuracy.
@@ -860,47 +902,6 @@ interaction_lagrangian = -e * psi_bar * gamma_mu * psi * A_mu
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Code Example: Einstein Asymmetric -->
-                        <div class="bg-code-bg rounded-2xl shadow-lg p-8 border border-code-border max-w-5xl mx-auto">
-                            <h5 class="text-xl font-bold text-success mb-4">Real Implementation: Einstein's Asymmetric Theory</h5>
-                            <pre class="text-xs font-mono overflow-x-auto">
-<span class="text-accent">from</span> physics_agent.theories.einstein_asymmetric <span class="text-accent">import</span> EinsteinAsymmetric
-
-<span class="text-accent">class</span> <span class="text-warning">EinsteinAsymmetric</span>(<span class="text-warning">GravitationalTheory</span>):
-    <span class="text-muted">"""Einstein's final attempt: asymmetric metric to unify gravity + EM"""</span>
-    
-    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, alpha: float = 0.0):
-        <span class="text-muted"># Asymmetric metric components</span>
-        g_mn = get_symbol('g_μν')     <span class="text-muted"># Symmetric part (gravity)</span>
-        f_mn = get_symbol('f_μν')     <span class="text-muted"># Antisymmetric part (EM)</span>
-        
-        <span class="text-muted"># Standard Model fermions</span>
-        psi = get_symbol('ψ')
-        psi_bar = get_symbol('ψ̄')
-        gamma_mu = get_symbol('γ^μ')
-        
-        <span class="text-muted"># EM emerges from metric asymmetry!</span>
-        F_mn = alpha * (f_mn - get_symbol('f_νμ'))
-        
-        <span class="text-muted"># Full Lagrangian with SM coupling</span>
-        gravity_lagrangian = get_symbol('R') + alpha**2 * f_mn * get_symbol('f^μν')
-        matter_lagrangian = sp.I * psi_bar * gamma_mu * D_mu * psi - m * psi_bar * psi
-        gauge_lagrangian = -sp.Rational(1,4) * F_mn * get_symbol('F^μν')
-        interaction_lagrangian = -q * psi_bar * gamma_mu * psi * A_mu * (1 + alpha * f_mn * g_mn)
-    
-    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, M_param, C_param, G_param):
-        <span class="text-muted"># Key innovation: off-diagonal g_tp term</span>
-        g_tp = self.alpha * rs / r * torch.sqrt(r)  <span class="text-muted"># Couples time-space!</span>
-        <span class="text-accent">return</span> g_tt, g_rr, g_pp, g_tp
-
-<span class="text-muted"># Test against all 21 validators including QED precision</span>
-theory = <span class="text-warning">EinsteinAsymmetric</span>(alpha=1e-3)
-results = theory.validate()
-<span class="text-accent">assert</span> results['qed_precision']['g2_error'] < 1e-10  <span class="text-success">✓</span>
-<span class="text-accent">assert</span> results['quantum_clock']['error'] < 1e-17   <span class="text-success">✓</span>
-                            </pre>
                         </div>
                     </div>
                     
@@ -1443,17 +1444,6 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                             </div>
                         </div>
                         
-                        <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="https://github.com/pimdewitte/albert" target="_blank" class="group inline-flex items-center space-x-3 bg-accent hover:bg-accent/90 text-paper px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                                </svg>
-                                <span>Start Contributing</span>
-                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1522,7 +1512,7 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                                         </div>
                                     </div>
                                     <div class="text-center mt-4">
-                                        <a href="documentation.html?tab=benchmark" class="text-accent hover:text-accent/80 text-sm font-sans">View full leaderboard →</a>
+                                        <a href="documentation.html?tab=leaderboard" class="text-accent hover:text-accent/80 text-sm font-sans">View full leaderboard →</a>
                                     </div>
                                 </div>
                             </div>
