@@ -340,32 +340,6 @@ class LeaderboardHTMLGenerator:
         # Summary section
         html_parts.extend(self._generate_summary_section(theory_results))
         
-        # Add Scoring Methodology section
-        html_parts.extend([
-            '        <div class="summary">',
-            '            <h2>Scoring Methodology</h2>',
-            '            <p>The Quantum Score ranks only quantum and UGM (Unified Gravity Model) theories. Classical theories are excluded from the leaderboard.</p>',
-            '            <p>The score is calculated as a weighted sum of component scores, adjusted by multipliers:</p>',
-            '            <table>',
-            '                <thead>',
-            '                    <tr>',
-            '                        <th>Component</th>',
-            '                        <th>Weight</th>',
-            '                        <th>Brief Description</th>',
-            '                    </tr>',
-            '                </thead>',
-            '                <tbody>',
-            '                    <tr><td>Constraints</td><td>0.20</td><td>Theoretical consistency checks</td></tr>',
-            '                    <tr><td>Observational</td><td>0.25</td><td>Matches to quantum experiments</td></tr>',
-            '                    <tr><td>Predictions</td><td>0.30</td><td>Novel predictions beating SOTA</td></tr>',
-            '                    <tr><td>Trajectory</td><td>0.05</td><td>Particle trajectory matching</td></tr>',
-            '                    <tr><td>Unification</td><td>0.20</td><td>Unification potential</td></tr>',
-            '                </tbody>',
-            '            </table>',
-            '            <p>Bonuses/Penalties applied as multipliers. Final score capped at 1.0.</p>',
-            '        </div>',
-        ])
-        
         # Leaderboard table
         html_parts.extend([
             '        <div class="leaderboard">',
@@ -517,6 +491,32 @@ class LeaderboardHTMLGenerator:
         
         # Add run log section
         html_parts.extend(self._generate_run_log_section(run_dir))
+        
+        # Add Scoring Methodology section at the bottom
+        html_parts.extend([
+            '        <div class="summary" style="margin-top: 30px;">',
+            '            <h2>Scoring Methodology</h2>',
+            '            <p>The Quantum Score ranks only quantum and UGM (Unified Gravity Model) theories. Classical theories are excluded from the leaderboard.</p>',
+            '            <p>The score is calculated as a weighted sum of component scores, adjusted by multipliers:</p>',
+            '            <table>',
+            '                <thead>',
+            '                    <tr>',
+            '                        <th>Component</th>',
+            '                        <th>Weight</th>',
+            '                        <th>Brief Description</th>',
+            '                    </tr>',
+            '                </thead>',
+            '                <tbody>',
+            '                    <tr><td>Constraints</td><td>0.20</td><td>Theoretical consistency checks</td></tr>',
+            '                    <tr><td>Observational</td><td>0.25</td><td>Matches to quantum experiments</td></tr>',
+            '                    <tr><td>Predictions</td><td>0.30</td><td>Novel predictions beating SOTA</td></tr>',
+            '                    <tr><td>Trajectory</td><td>0.05</td><td>Particle trajectory matching</td></tr>',
+            '                    <tr><td>Unification</td><td>0.20</td><td>Unification potential</td></tr>',
+            '                </tbody>',
+            '            </table>',
+            '            <p>Bonuses/Penalties applied as multipliers. Final score capped at 1.0.</p>',
+            '        </div>',
+        ])
         
         html_parts.extend([
             '    </div>',

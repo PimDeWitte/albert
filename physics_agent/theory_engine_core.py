@@ -1129,7 +1129,7 @@ class TheoryEngine:
                 print(f"  ⚠️ Observational validations failed - skipping prediction validations")
                 return {"validations": validation_results}
         
-        if "prediction" in categories and constraints_passed and observations_passed:
+        if "prediction" in categories:
             # Import prediction validators
             # <reason>chain: Only import validators that have been tested in solver_tests</reason>
             from physics_agent.validations import (
