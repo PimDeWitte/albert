@@ -63,11 +63,17 @@ class AlbertSetup:
         print(f"Your private key is stored at: {self.key_file}")
         
         if setup_type == 'researcher':
-            print("\nTo start discovering, run:")
-            print("  python physics_agent/self_discovery/self_discovery.py --self-monitor")
+            print("\nTo get started:")
+            print("  ./albert run              # Run all theories")
+            print("  ./albert run --help       # See all options")
+            print("  ./albert discover         # Start AI theory discovery")
+            print("  ./albert discover --self-monitor  # With continuous monitoring")
         else:
             print("\nTo benchmark your model, run:")
-            print(f"  albert benchmark --model \"{config['model_name']}\"")
+            print(f"  ./albert benchmark --model \"{config['model_name']}\"")
+        
+        print("\nFor all available commands:")
+        print("  ./albert --help")
         
         print("\nHappy discovering! 🚀")
     

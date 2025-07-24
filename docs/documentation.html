@@ -150,9 +150,9 @@
     <div class="header">
         <h1>Albert Documentation</h1>
         <div class="tabs">
-            <button class="tab active">Overview</button>
+            <button class="tab active">Validators</button>
+            <button class="tab">System Diagram</button>
             <button class="tab">Solvers</button>
-            <button class="tab">Validators</button>
             <button class="tab">Datasets</button>
             <button class="tab">Self-Discovery</button>
             <button class="tab">Scoring</button>
@@ -170,12 +170,20 @@
     </div>
     
     <div class="content">
-        <div id="overview-container" class="iframe-container active">
+        <div id="validators-container" class="iframe-container active">
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Loading Overview...</p>
+                <p>Loading Validators...</p>
             </div>
-            <iframe src="flowchart.html" onload="hideLoading('overview')"></iframe>
+            <iframe src="validators.html" onload="hideLoading('validators')"></iframe>
+        </div>
+        
+        <div id="system-diagram-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading System Diagram...</p>
+            </div>
+            <iframe data-src="flowchart.html" onload="hideLoading('system-diagram')"></iframe>
         </div>
         
         <div id="solvers-container" class="iframe-container">
@@ -184,14 +192,6 @@
                 <p>Loading Solvers...</p>
             </div>
             <iframe data-src="paper.html" onload="hideLoading('solvers')"></iframe>
-        </div>
-        
-        <div id="validators-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Validators...</p>
-            </div>
-            <iframe data-src="validators.html" onload="hideLoading('validators')"></iframe>
         </div>
         
         <div id="datasets-container" class="iframe-container">
@@ -266,7 +266,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab');
             tabButtons.forEach((button, index) => {
-                const tabNames = ['overview', 'solvers', 'validators', 'datasets', 'discovery', 'scoring', 'cache'];
+                const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache'];
                 button.addEventListener('click', function() {
                     switchTab(tabNames[index]);
                 });
@@ -275,15 +275,15 @@
             // Check URL parameters on load
             const urlParams = new URLSearchParams(window.location.search);
             const tabParam = urlParams.get('tab');
-            const validTabs = ['overview', 'solvers', 'validators', 'datasets', 'discovery', 'scoring', 'cache'];
+            const validTabs = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache'];
             
             if (tabParam && validTabs.includes(tabParam)) {
                 switchTab(tabParam, false); // Don't update URL on initial load
             } else {
-                // Default to overview if no valid tab specified
+                // Default to validators if no valid tab specified
                 const url = new URL(window.location);
-                url.searchParams.set('tab', 'overview');
-                history.replaceState({ tab: 'overview' }, '', url);
+                url.searchParams.set('tab', 'validators');
+                history.replaceState({ tab: 'validators' }, '', url);
             }
         });
         
@@ -303,7 +303,7 @@
         });
         
         function getTabIndex(tabName) {
-            const tabNames = ['overview', 'solvers', 'validators', 'datasets', 'discovery', 'scoring', 'cache'];
+            const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache'];
             return tabNames.indexOf(tabName);
         }
     </script>

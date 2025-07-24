@@ -2,6 +2,10 @@
 """
 CLI Module - Handles all command-line argument parsing and processing
 <reason>chain: Separating CLI logic improves modularity and testability</reason>
+
+This module provides the argument parser for the theory engine core.
+It can be used directly via `python -m physics_agent.theory_engine_core`
+or through the unified `albert run` command.
 """
 import argparse
 import sys

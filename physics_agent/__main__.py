@@ -54,27 +54,32 @@ For more information on each command, use: albert <command> --help
         }
         
         # Handle different action types
-        if action.__class__.__name__ == 'StoreAction':
+        if action.__class__.__name__ == 'StoreAction' or action.__class__.__name__ == '_StoreAction':
             kwargs['action'] = 'store'
             if action.type is not None:
                 kwargs['type'] = action.type
-        elif action.__class__.__name__ == 'StoreTrueAction':
+            # Add other attributes for store actions
+            if hasattr(action, 'nargs') and action.nargs is not None:
+                kwargs['nargs'] = action.nargs
+            if hasattr(action, 'choices') and action.choices is not None:
+                kwargs['choices'] = action.choices
+            if hasattr(action, 'metavar') and action.metavar is not None:
+                kwargs['metavar'] = action.metavar
+        elif action.__class__.__name__ in ['StoreTrueAction', '_StoreTrueAction']:
             kwargs['action'] = 'store_true'
-        elif action.__class__.__name__ == 'StoreFalseAction':
+            # store_true doesn't accept nargs, type, etc.
+        elif action.__class__.__name__ in ['StoreFalseAction', '_StoreFalseAction']:
             kwargs['action'] = 'store_false'
+            # store_false doesn't accept nargs, type, etc.
         else:
-            # For other action types, just use the class
-            kwargs['action'] = action.__class__
-            
-        # Add other attributes if they exist
-        if hasattr(action, 'nargs') and action.nargs is not None:
-            kwargs['nargs'] = action.nargs
-        if hasattr(action, 'choices') and action.choices is not None:
-            kwargs['choices'] = action.choices
-        if hasattr(action, 'const') and action.const is not None:
-            kwargs['const'] = action.const
-        if hasattr(action, 'metavar') and action.metavar is not None:
-            kwargs['metavar'] = action.metavar
+            # For other action types, just use store with appropriate settings
+            kwargs['action'] = 'store'
+            if hasattr(action, 'type') and action.type is not None:
+                kwargs['type'] = action.type
+            if hasattr(action, 'nargs') and action.nargs is not None:
+                kwargs['nargs'] = action.nargs
+            if hasattr(action, 'choices') and action.choices is not None:
+                kwargs['choices'] = action.choices
             
         run_parser.add_argument(*action.option_strings, **kwargs)
     
@@ -114,15 +119,33 @@ For more information on each command, use: albert <command> --help
     # Parse arguments
     args = parser.parse_args()
     
+    # If no command provided, show help
+    if args.command is None:
+        parser.print_help()
+        sys.exit(0)
+    
     # Handle commands
     if args.command == 'run':
         # Run the theory engine
         from physics_agent.theory_engine_core import main as run_theories
+        from physics_agent.cli import get_cli_parser
+        
         # Convert namespace to list for theory_engine_core
+        # Get the default values from the parser
+        cli_parser = get_cli_parser()
+        defaults = {}
+        for action in cli_parser._actions:
+            if action.dest != 'help':
+                defaults[action.dest] = action.default
+        
         sys.argv = ['albert-run']  # Set program name
-        # Add all the arguments back
+        # Add all the arguments back, but only if they were explicitly set
         for key, value in vars(args).items():
             if key != 'command' and value is not None:
+                # Skip if it's a default value (not explicitly set by user)
+                if key in defaults and value == defaults[key]:
+                    continue
+                    
                 if isinstance(value, bool):
                     if value:
                         sys.argv.append(f'--{key.replace("_", "-")}')

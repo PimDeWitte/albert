@@ -71,5 +71,8 @@ echo -e "${YELLOW}python -m physics_agent.ui.server${NC}"
 echo
 echo "Then open: ${YELLOW}http://localhost:8000${NC}"
 echo
-echo "To run the CLI for theory validation, use:"
-echo -e "${YELLOW}python -m physics_agent.cli [theory_name]${NC}" 
+echo "To run Albert and validate theories, use:"
+echo -e "${YELLOW}./albert run${NC}"
+echo
+echo "For more options:"
+echo -e "${YELLOW}./albert --help${NC}" 

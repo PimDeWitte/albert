@@ -20,26 +20,101 @@
 # One-line installation
 curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash
 
-# Clone and run the replication
+# Clone and setup
 git clone https://github.com/pimdewitte/albert.git
 cd albert
-./setup_unified.sh && python physics_agent/theory_engine_core.py --steps 1000
+./setup_unified.sh
 
-# Test your own theory - just add to theories/
-albert --theory-filter "MyTheory"
+# Run all theories (standard run)
+./albert run
 
-# Let Albert discover new theories automatically
-albert discover --initial "unified field theory"
+# Run with specific options
+./albert run --steps 1000
+./albert run --theory-filter "ugm"
+./albert run --gpu-f32
+./albert run --enable-sweeps
+
+# Configure Albert (API keys, etc.)
+./albert setup
+
+# Discover new theories automatically
+./albert discover --initial "unified field theory"
 
 # Discover variations of an existing theory
-albert discover --from theories/einstein_unified/theory.py
+./albert discover --from theories/einstein_unified/theory.py
+
+# Optional: Make albert available globally
+sudo ln -s $(pwd)/albert /usr/local/bin/albert
+# Now you can use 'albert' from anywhere
+```
+
+---
+
+## 🎯 Command Line Interface
+
+Albert provides a unified CLI with multiple subcommands:
+
+### `albert run` - Run Theory Simulations
+```bash
+# Run all theories with default settings
+./albert run
+
+# Run specific theories
+./albert run --theory-filter "kerr"           # Run Kerr theory
+./albert run --category ugm                   # Run all UGM theories
+./albert run --candidates                     # Include candidate theories
+
+# Performance options
+./albert run --gpu-f32                        # GPU with float32
+./albert run --cpu-f64                        # CPU with float64
+./albert run --steps 10000                    # Custom step count
+./albert run --no-cache                       # Force recomputation
+
+# Parameter sweeps
+./albert run --enable-sweeps                  # Enable parameter sweeps
+./albert run --sweep-only gamma               # Sweep only gamma parameter
+./albert run --sweep-workers 8                # Set parallel workers
+
+# Advanced options
+./albert run --close-orbit                    # Use 6RS orbit (stronger fields)
+./albert run --early-stop                     # Enable convergence detection
+./albert run --experimental                   # Enable quantum kicks
+./albert run --verbose                        # Detailed logging
+```
+
+### `albert discover` - AI Theory Discovery
+```bash
+# Start discovery with default settings
+./albert discover
+
+# Discovery with initial prompt
+./albert discover --initial "unified field theory with torsion"
+
+# Improve existing theory
+./albert discover --from theories/einstein_unified/theory.py
+
+# Continuous monitoring mode
+./albert discover --self-monitor
+```
+
+### `albert setup` - Configuration
+```bash
+# Interactive setup wizard
+./albert setup
+```
+
+### Other Commands
+```bash
+./albert benchmark --model "GPT-4"            # Benchmark AI models
+./albert submit c_20240723_140530_a7b9c2d1    # Submit candidate theory
+./albert --help                               # Show all commands
 ```
 
 ---
 
 ## 📊 Complete Validator Reference
 
-Albert uses 21 comprehensive validators to test gravitational theories against experimental data. Here's a summary of all tests:
+Albert uses 21 comprehensive validators to test gravitational theories against experimental data:
 
 ### Constraint Validators (Must Pass)
 | Test Name | Description | Reference Data | Precision |
@@ -72,33 +147,151 @@ Albert uses 21 comprehensive validators to test gravitational theories against e
 
 ---
 
-## 🎯 Einstein's Unfinished Quest
+## 🧬 Self-Discovery System
 
-From 1925 until his death in 1955, Einstein dedicated himself to finding a unified field theory that would combine gravity with electromagnetism. He published over 40 papers exploring teleparallel gravity, Kaluza-Klein theory, and asymmetric metric tensors.
+Albert uses AI to generate and test new gravitational theories automatically:
 
-### Einstein's Final Approach (1955)
+### How It Works
+1. **AI Generation**: LLM generates novel theory code based on prompts
+2. **Validation**: Theories tested against all 21 validators
+3. **Ranking**: Top performers promoted to candidate status
+4. **Storage**: Candidates saved with full results and metadata
+5. **Review**: Community can review and submit via pull requests
 
-```mermaid
-graph TD
-    A[Asymmetric Metric] -->|g_μν = symmetric + antisymmetric| B[Symmetric Part]
-    A --> C[Antisymmetric Part]
-    B -->|Gravity| D[Spacetime Curvature]
-    C -->|Electromagnetism| E[6 Components = F_μν]
-    D --> F[General Relativity]
-    E --> G[Maxwell's Equations]
-    F --> H[Unified Field Theory]
-    G --> H
-    H -->|Einstein's Goal| I[All Forces from Geometry]
+### Discovery Modes
+```bash
+# Basic discovery
+./albert discover
+
+# Guided discovery with physics hints
+./albert discover --initial "incorporate holographic principle"
+
+# Theory improvement
+./albert discover --from theories/quantum_corrected/theory.py
+
+# Continuous discovery with monitoring
+./albert discover --self-monitor
 ```
-
-His final calculations showed he was working on a system where:
-- **Asymmetric metric**: g_μν ≠ g_νμ
-- **Modified connection**: Includes torsion (spacetime twists)
-- **Electromagnetic field**: Emerges from geometry
 
 ---
 
-## 🔬 System Architecture
+## ⚡ Performance Features
+
+### PyTorch Tensor Caching
+- **First run**: Full computation (minutes)
+- **Cached runs**: Near-instant (milliseconds)
+- **Speedup**: Up to 29,000x for large trajectories
+- **Storage**: ~30MB per trajectory
+
+### Parallel Computing
+- Parameter sweeps run in parallel
+- Auto-detects optimal worker count
+- GPU support for float32 operations
+- MPS support for Apple Silicon
+
+### Optimization Settings
+```bash
+# Maximum performance
+./albert run --gpu-f32 --enable-sweeps --sweep-workers 16
+
+# Maximum precision
+./albert run --cpu-f64 --steps 1000000
+
+# Quick testing
+./albert run --steps 100 --theory-filter "test"
+```
+
+---
+
+## 🚀 Creating Your Own Theory
+
+1. **Create theory file**: `theories/my_theory/theory.py`
+2. **Define your metric**:
+```python
+from physics_agent.base_theory import GravitationalTheory, Tensor
+import torch
+
+class MyTheory(GravitationalTheory):
+    def __init__(self):
+        super().__init__(
+            name="My Theory",
+            description="Novel gravitational theory",
+            category="quantum"  # or "classical", "ugm"
+        )
+    
+    def get_metric(self, r, M, C, G):
+        # Define your g_μν components
+        g_tt = -(1 - 2*G*M/(C**2 * r))
+        g_rr = 1/(1 - 2*G*M/(C**2 * r))
+        # ... define all components
+        return Tensor("metric", [...])
+```
+
+3. **Run validation**:
+```bash
+./albert run --theory-filter "My Theory"
+```
+
+---
+
+## 🌍 The Vision: Open World Model
+
+Albert is building toward a unified physics engine where:
+- Every physical law is implemented and validated
+- All experimental data is digitized and accessible
+- Theories can be tested against all known physics
+- Synthetic data generation for games and training
+
+Future extensions will include:
+- Fluid dynamics solvers
+- Quantum field theory
+- Condensed matter physics
+- Statistical mechanics
+- Plasma physics
+
+---
+
+## 👥 Contributing
+
+### For Physicists
+- Add new validators for your field
+- Implement experimental datasets
+- Verify theoretical predictions
+- Contribute new baseline theories
+
+### For Engineers
+- Optimize solvers with torch.compile
+- Implement GPU kernels
+- Add visualization tools
+- Improve caching system
+
+### For Everyone
+- Test new theories
+- Report bugs
+- Improve documentation
+- Join discussions on Discord
+
+---
+
+## 📚 Documentation
+
+- [Technical Paper](docs/paper.html) - Geodesic solver development
+- [Validators](docs/validators.html) - All 21 tests explained
+- [Self Discovery](docs/self_discovery.html) - AI theory generation
+- [API Reference](https://albert.so/documentation.html) - Full documentation
+
+---
+
+## 🙏 Acknowledgments
+
+This project continues Einstein's quest for unification. Special thanks to:
+- Partanen & Tulkki (2025) for the UGM framework
+- The open-source physics community
+- Everyone who believes in open science
+
+---
+
+## 📊 Architecture Diagrams
 
 ### Theory Engine Core Execution Flow
 
@@ -182,11 +375,7 @@ graph TD
     P --> A
 ```
 
----
-
-## 🧬 Self-Discovery System
-
-Albert uses AI to generate and test new gravitational theories automatically:
+### Self-Discovery Flow
 
 ```mermaid
 graph TD
@@ -198,24 +387,6 @@ graph TD
     
     D --> G[theory.py<br/>README.md<br/>trajectory.pt<br/>losses.json]
 ```
-
-### Usage Examples
-
-```bash
-# Default discovery mode
-python physics_agent/self_discovery/self_discovery.py --self-discover
-
-# Improve existing theory
-python self_discovery.py --self-discover --theory theories/quantum_corrected \
-    --initial-prompt "Add holographic corrections inspired by AdS/CFT"
-
-# Test all candidates
-python -m physics_agent.theory_engine_core --candidates
-```
-
----
-
-## 🚀 Under the Hood
 
 ### Standard Model Support
 
@@ -231,9 +402,7 @@ graph LR
     H --> I[Unified Theory]
 ```
 
-### Unified Gauge Model (UGM) Support
-
-Based on Partanen & Tulkki (2025) - "Gravity from four U(1) symmetries":
+### Unified Gauge Model (UGM) Architecture
 
 ```mermaid
 graph TD
@@ -284,13 +453,7 @@ classDiagram
     GravitationalTheory --> UGMGeodesicRK4Solver
 ```
 
----
-
-## ⚡ Performance Optimizations
-
-### PyTorch Tensor Caching
-
-Our caching system achieves mathematically proven speedups:
+### Performance Optimization
 
 ```mermaid
 graph LR
@@ -302,19 +465,7 @@ graph LR
     H[1M steps] -->|29,323x speedup| I[4m 12s → 8.6ms]
 ```
 
-### Optimization Roadmap
-
-```mermaid
-graph TD
-    A[Current: PyTorch RK4] --> B[torch.compile<br/>10-100x on GPU]
-    B --> C[Physics-Informed NNs<br/>Conservation as constraints]
-    C --> D[Distributed Computing<br/>Parameter sweep parallelization]
-    D --> E[One Physics Engine<br/>Every law, every test]
-```
-
----
-
-## 🌍 The Vision: Open World Model
+### Future Physics Engine Vision
 
 ```mermaid
 graph TD
@@ -331,76 +482,6 @@ graph TD
     
     G --> H[universe.simulate<br/>→ games or training!]
 ```
-
-### Future Physics Classes
-
-```python
-class PhysicsTheory:
-    def lagrangian(self, state): ...
-    def equations_of_motion(self): ...
-    def validate(self): → runs all applicable tests
-
-class FluidDynamics(PhysicsTheory):
-    # Navier-Stokes, turbulence, validated against experiments
-    
-class QuantumField(PhysicsTheory):
-    # QED, QCD, validated against accelerator data
-    
-class GravitationalTheory(PhysicsTheory):
-    # Einstein, quantum gravity candidates, 21 tests
-
-# One day: the entire universe, in code, verified by data
-universe = WorldModel()
-universe.add(StandardModel())
-universe.add(GeneralRelativity())
-universe.add(Thermodynamics())
-universe.simulate()  # → could be a game, or synthetic training!
-```
-
----
-
-## 👥 Contributing
-
-### For Physicists
-- ✓ Add your field's validators
-- ✓ Implement new test cases
-- ✓ Verify theoretical predictions
-- ✓ Contribute experimental data
-
-### For Engineers
-- ✓ Optimize solvers with torch.compile
-- ✓ Implement PINNs architecture
-- ✓ Add GPU kernels
-- ✓ Build visualization tools
-
-### For Everyone
-```bash
-# Submit a candidate theory
-python submit_candidate.py c_20240723_140530_a7b9c2d1
-
-# Join the discussion
-# Discord: https://discord.gg/albertphysics
-# GitHub: https://github.com/pimdewitte/albert
-```
-
----
-
-## 📚 Documentation
-
-- [Technical Paper](docs/paper.html) - Geodesic solver development
-- [Flowchart](docs/flowchart.html) - Execution flow diagram
-- [Validators](docs/validators.html) - All 21 tests explained
-- [Self Discovery](docs/self_discovery.html) - AI theory generation
-- [API Reference](https://albert.so/documentation.html) - Full documentation
-
----
-
-## 🙏 Acknowledgments
-
-This project continues Einstein's quest for unification. Special thanks to:
-- Partanen & Tulkki (2025) for the UGM framework
-- The open-source physics community
-- Everyone who believes in open science
 
 ---
 

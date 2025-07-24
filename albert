@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Albert command line interface"""
+import sys
+import os
+
+# Add the albert directory to Python path
+albert_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, albert_dir)
+
+from physics_agent.__main__ import main
+
+if __name__ == '__main__':
+    main() 

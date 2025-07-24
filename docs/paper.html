@@ -11,7 +11,7 @@
         table, th, td { border: 1px solid #ddd; padding: 8px; }
         table th { background-color: #f2f2f2; text-align: left; }
         pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
-        .mermaid { text-align: center; }
+        .mermaid { text-align: center; margin: 2rem 0; }
         .code-reference { 
             color: #0066cc; 
             text-decoration: none; 
@@ -51,6 +51,20 @@
             color: #666;
             font-size: 0.9em;
         }
+        .flowchart-container {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .flowchart-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
     </style>
     <!-- Mermaid library for flowchart rendering -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -73,6 +87,61 @@
 <body>
 
 <h1>Summary of Geodesic Solver Development for Unified Gravitational Theories</h1>
+
+<div class="flowchart-container">
+    <div class="flowchart-title">🚀 How the ALBERT Physics Engine Works</div>
+    <div class="mermaid">
+    flowchart TD
+        Start["🎯 THEORY SPECIFICATION<br/>Define metric g_μν(r,θ,φ)<br/>+ theory parameters"]
+        
+        Start --> Validate["🧪 VALIDATION SUITE<br/>21 Tests Available:<br/>Classical + Quantum + Cosmology"]
+        
+        Validate --> Engine["⚙️ THEORY ENGINE<br/>TheoryEngine.run_trajectory()<br/>Auto-detects symmetries"]
+        
+        Engine --> SolverChoice{"🔍 SOLVER SELECTION<br/>Based on spacetime properties"}
+        
+        SolverChoice -->|"Static/Spherical"| Solver4D["📐 4D SOLVER<br/>Fast symmetric solver<br/>Uses conserved E, Lz"]
+        
+        SolverChoice -->|"Rotating/General"| Solver6D["📊 6D SOLVER<br/>General metric solver<br/>No symmetry assumptions"]
+        
+        SolverChoice -->|"Charged particles"| SolverCharged["⚡ CHARGED SOLVER<br/>Includes Lorentz force<br/>EM interactions"]
+        
+        SolverChoice -->|"Quantum effects"| SolverQuantum["🌌 QUANTUM SOLVER<br/>Path integrals + corrections<br/>Unification features"]
+        
+        Solver4D --> Integrate["🔄 INTEGRATION<br/>RK4 numerical integration<br/>PyTorch GPU acceleration"]
+        Solver6D --> Integrate
+        SolverCharged --> Integrate
+        SolverQuantum --> Integrate
+        
+        Integrate --> RunTests["✅ RUN ALL TESTS<br/>Mercury • Pulsars • Light<br/>Quantum • Cosmology • GWs"]
+        
+        RunTests --> Results{"📊 COMPARE TO DATA<br/>Match observations?"}
+        
+        Results -->|"Yes ✅"| Predictions["✨ NOVEL PREDICTIONS<br/>CMB modifications<br/>Quantum gravity effects<br/>New phenomena"]
+        
+        Results -->|"No ❌"| Reject["❌ THEORY REJECTED<br/>Document failures<br/>Learn for next iteration"]
+        
+        Predictions --> Score["🏆 SCORING<br/>χ²/dof • AIC • BIC<br/>Statistical comparison"]
+        
+        Score --> Leaderboard["📈 LEADERBOARD<br/>Rank all theories<br/>Track best performers"]
+        
+        Reject --> Feedback["🔄 AI FEEDBACK<br/>Refine theory space<br/>Improve next generation"]
+        
+        Feedback --> ALBERT["🤖 ALBERT AI<br/>500+ instances<br/>Generating new theories"]
+        
+        ALBERT --> Start
+        Leaderboard --> ALBERT
+        
+        style Start fill:#90EE90,stroke:#006400,stroke-width:3px
+        style Validate fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
+        style RunTests fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
+        style SolverChoice fill:#87CEEB,stroke:#4682B4,stroke-width:2px
+        style Results fill:#87CEEB,stroke:#4682B4,stroke-width:2px
+        style Predictions fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
+        style Score fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
+        style ALBERT fill:#DDA0DD,stroke:#8B008B,stroke-width:3px
+    </div>
+</div>
 
 <p>This summary outlines the development of a PyTorch-based geodesic integrator system designed to simulate particle and light trajectories in various gravitational spacetimes, with extensions for testing unified theories. The tool was built to facilitate novel predictions required for unification, such as modified dispersion relations and quantum corrections to cosmological observables. It emphasizes modularity, empirical validation, and safeguards against overfitting or circularity in simulations.</p>
 
@@ -179,70 +248,7 @@
 </ol>
 <p>This method ensures external grounding; share code/outputs for peer review. Commands assume file named <code>geodesic_integrator.py</code>; adjust as needed.</p>
 
-<h2>Flowchart of Implementation and Handling</h2>
 
-<div class="mermaid">
-flowchart TD
-    A["🎯 THEORY SPECIFICATION<br/>Define g<sub>μν</sub>(r,θ,φ) + parameters<br/>Inherit from GravitationalTheory"] 
-    
-    A --> B["🧪 VALIDATION SUITE<br/>21 Tests Ready<br/>Classical + Quantum<br/>Experimental Data"]
-    
-    B --> C["⚙️ THEORY ENGINE<br/>TheoryEngine.run_trajectory()<br/>Auto-detect symmetries<br/>Cache management"]
-    
-    C --> D{"🔍 SOLVER SELECTION<br/>Based on theory properties"}
-    
-    D -->|"Symmetric"| E["4D Solver<br/>GeodesicRK4Solver<br/>Conserved: E, L<sub>z</sub>"]
-    D -->|"General"| F["6D Solver<br/>GeneralGeodesicRK4Solver<br/>Full phase space"]
-    D -->|"Charged"| G["Charged Extension<br/>ChargedGeodesicRK4Solver<br/>Lorentz force"]
-    D -->|"Quantum"| H["Quantum Path Integral<br/>UGMGeodesicRK4Solver<br/>WKB approximation"]
-    
-    E --> I["📐 INTEGRATION<br/>RK4 with adaptive step<br/>PyTorch auto-diff<br/>GPU acceleration"]
-    F --> I
-    G --> I  
-    H --> I
-    
-    I --> J["✅ TEST EXECUTION<br/>20+ Validators Run<br/>Mercury • Light • Pulsars<br/>COW • Atoms • Clocks"]
-    
-    J --> K{"📊 RESULTS ANALYSIS<br/>Compare to observations"}
-    
-    K -->|"Pass"| L["✨ NOVEL PREDICTIONS<br/>CMB suppression<br/>GW spectrum<br/>Quantum signatures"]
-    
-    K -->|"Fail"| M["❌ THEORY REJECTED<br/>Document failures<br/>ALBERT learns"]
-    
-    L --> N["🏆 SCORING<br/>χ²/dof • AIC • BIC<br/>Bayes factors<br/>Model comparison"]
-    
-    N --> O["📈 LEADERBOARD<br/>Rank theories<br/>Track progress<br/>Publish results"]
-    
-    M --> P["🔄 FEEDBACK<br/>Inform next generation<br/>Refine search space"]
-    
-    P --> A
-    
-    %% Test Details Box
-    Q["🧪 KEY TESTS<br/><br/>CLASSICAL:<br/>• Mercury: 42.98\"/century<br/>• Light: 1.75 arcsec<br/>• Shapiro: 200 μs<br/>• Pulsars: 0.18 μs rms<br/><br/>QUANTUM:<br/>• COW: 2.7 rad phase<br/>• Atoms: 10⁻¹⁶ Hz/m<br/>• Clocks: 10⁻¹⁷ at 33cm<br/>• Decoherence bounds<br/><br/>COSMOLOGY:<br/>• CMB power spectrum<br/>• GW background<br/>• Primordial modes"]
-    
-    J -.->|"Details"| Q
-    
-    %% ALBERT Integration
-    R["🤖 ALBERT<br/>AI Theory Generator<br/>500+ instances<br/>24/7 discovery"]
-    
-    R --> A
-    O --> R
-    
-    %% Style definitions
-    classDef startEnd fill:#90EE90,stroke:#006400,stroke-width:3px
-    classDef test fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
-    classDef decision fill:#87CEEB,stroke:#4682B4,stroke-width:2px
-    classDef process fill:#F0E68C,stroke:#DAA520,stroke-width:2px
-    classDef critical fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
-    classDef albert fill:#DDA0DD,stroke:#8B008B,stroke-width:3px
-    
-    class A startEnd
-    class B,J,Q test
-    class D,K decision
-    class C,E,F,G,H,I,L,M,N,O,P process
-    class L,N critical
-    class R albert
-</div>
 
 <h2>🧪 Comprehensive Validation Pipeline</h2>
 
