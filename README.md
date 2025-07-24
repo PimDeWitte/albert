@@ -80,7 +80,7 @@ From 1925 until his death in 1955, Einstein dedicated himself to finding a unifi
 
 ```mermaid
 graph TD
-    A[Asymmetric Metric] -->|g_μν = g_(μν) + g_[μν]| B[Symmetric Part]
+    A[Asymmetric Metric] -->|g_μν = symmetric + antisymmetric| B[Symmetric Part]
     A --> C[Antisymmetric Part]
     B -->|Gravity| D[Spacetime Curvature]
     C -->|Electromagnetism| E[6 Components = F_μν]
@@ -237,10 +237,10 @@ Based on Partanen & Tulkki (2025) - "Gravity from four U(1) symmetries":
 
 ```mermaid
 graph TD
-    A[Four U(1) Gauge Fields] --> B[H^0_μ: Time U(1)]
-    A --> C[H^1_μ: Radial U(1)]
-    A --> D[H^2_μ: Theta U(1)]
-    A --> E[H^3_μ: Phi U(1)]
+    A[Four U1 Gauge Fields] --> B[H^0_μ: Time U1]
+    A --> C[H^1_μ: Radial U1]
+    A --> D[H^2_μ: Theta U1]
+    A --> E[H^3_μ: Phi U1]
     
     B --> F[Tetrad: e^a_μ = δ^a_μ + g H^a_μ]
     C --> F
@@ -391,7 +391,7 @@ python submit_candidate.py c_20240723_140530_a7b9c2d1
 - [Flowchart](docs/flowchart.html) - Execution flow diagram
 - [Validators](docs/validators.html) - All 21 tests explained
 - [Self Discovery](docs/self_discovery.html) - AI theory generation
-- [API Reference](docs/documentation.html) - Full documentation
+- [API Reference](https://albert.so/documentation.html) - Full documentation
 
 ---
 

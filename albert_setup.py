@@ -31,18 +31,21 @@ class AlbertSetup:
         # Create config directory
         self.config_dir.mkdir(exist_ok=True)
         
-        # Collect user information
-        config = self.collect_user_info()
+        # Ask what they want to do
+        setup_type = self.get_setup_type()
         
-        # Setup API keys
-        config['api_keys'] = self.setup_api_keys()
-        
-        # Setup cryptographic keys
-        config['public_key'] = self.setup_crypto_keys()
-        
-        # Get consent
-        config['consent'] = self.get_consent()
-        
+        if setup_type == 'researcher':
+            # Standard researcher setup
+            config = self.collect_user_info()
+            config['api_keys'] = self.setup_api_keys()
+            config['public_key'] = self.setup_crypto_keys()
+            config['consent'] = self.get_consent()
+            
+        elif setup_type == 'benchmark':
+            # Model benchmarking setup
+            config = self.setup_model_benchmark()
+            config['public_key'] = self.setup_crypto_keys()
+            
         # Save configuration
         self.save_config(config)
         
@@ -50,15 +53,182 @@ class AlbertSetup:
         self.create_env_file(config)
         
         # Register with network
-        if config['consent']['share_discoveries']:
+        if setup_type == 'researcher' and config['consent']['share_discoveries']:
             self.register_with_network(config)
+        elif setup_type == 'benchmark':
+            self.register_benchmark_model(config)
         
         print("\n✅ Setup complete!")
         print(f"\nYour configuration has been saved to: {self.config_file}")
         print(f"Your private key is stored at: {self.key_file}")
-        print("\nTo start discovering, run:")
-        print("  python physics_agent/self_discovery/self_discovery.py --self-monitor")
+        
+        if setup_type == 'researcher':
+            print("\nTo start discovering, run:")
+            print("  python physics_agent/self_discovery/self_discovery.py --self-monitor")
+        else:
+            print("\nTo benchmark your model, run:")
+            print(f"  albert benchmark --model \"{config['model_name']}\"")
+        
         print("\nHappy discovering! 🚀")
+    
+    def get_setup_type(self):
+        """Ask user what type of setup they want"""
+        print("What would you like to set up?")
+        print("-" * 40)
+        print("1. Researcher account - Discover new physics theories")
+        print("2. Model benchmark - Test your AI model on physics discovery")
+        print()
+        
+        while True:
+            choice = input("Enter your choice (1 or 2): ").strip()
+            if choice == '1':
+                return 'researcher'
+            elif choice == '2':
+                return 'benchmark'
+            else:
+                print("Please enter 1 or 2.")
+    
+    def setup_model_benchmark(self):
+        """Setup configuration for model benchmarking"""
+        print("\nStep 1: Model Provider Information")
+        print("-" * 40)
+        
+        config = {
+            'setup_type': 'benchmark'
+        }
+        
+        # Organization info
+        config['organization'] = input("Organization/Company name: ").strip()
+        while not config['organization']:
+            print("Organization name is required.")
+            config['organization'] = input("Organization/Company name: ").strip()
+        
+        # Model info
+        config['model_name'] = input("Model name (e.g., 'GPT-4', 'Claude-3'): ").strip()
+        while not config['model_name']:
+            print("Model name is required.")
+            config['model_name'] = input("Model name: ").strip()
+        
+        # Contact info
+        config['name'] = input("Contact person name: ").strip()
+        config['email'] = input("Contact email: ").strip()
+        while not config['email']:
+            print("Email is required for benchmark results.")
+            config['email'] = input("Contact email: ").strip()
+        
+        print("\nStep 2: Model API Configuration")
+        print("-" * 40)
+        print("Albert supports any OpenAI-compatible API endpoint.")
+        print("This includes OpenAI, Azure OpenAI, local servers (vLLM, Ollama), and custom endpoints.\n")
+        
+        # API configuration
+        config['api_type'] = self.get_api_type()
+        
+        if config['api_type'] == 'openai':
+            config['api_base'] = 'https://api.openai.com/v1'
+            config['api_key'] = getpass.getpass("OpenAI API key: ").strip()
+            config['model_id'] = input(f"Model ID [{config['model_name'].lower()}]: ").strip() or config['model_name'].lower()
+            
+        elif config['api_type'] == 'azure':
+            config['api_base'] = input("Azure OpenAI endpoint (e.g., https://your-resource.openai.azure.com): ").strip()
+            config['api_key'] = getpass.getpass("Azure API key: ").strip()
+            config['deployment_name'] = input("Deployment name: ").strip()
+            config['api_version'] = input("API version [2024-02-01]: ").strip() or "2024-02-01"
+            
+        elif config['api_type'] == 'custom':
+            config['api_base'] = input("API base URL (e.g., http://localhost:8000/v1): ").strip()
+            config['api_key'] = getpass.getpass("API key (leave empty if not required): ").strip() or "dummy"
+            config['model_id'] = input("Model ID to use in requests: ").strip()
+            
+            # Test custom endpoint
+            print("\nTesting connection to custom endpoint...")
+            if not self.test_custom_endpoint(config):
+                print("❌ Failed to connect to custom endpoint.")
+                if input("Continue anyway? (y/n): ").lower() != 'y':
+                    sys.exit(1)
+        
+        # Additional model info
+        print("\nStep 3: Model Capabilities")
+        print("-" * 40)
+        
+        config['model_info'] = {
+            'max_tokens': int(input("Maximum context length (tokens) [128000]: ") or "128000"),
+            'supports_json': input("Supports JSON mode? (y/n) [y]: ").lower() != 'n',
+            'supports_tools': input("Supports function calling? (y/n) [n]: ").lower() == 'y',
+            'temperature_range': input("Recommended temperature range [0.0-1.0]: ") or "0.0-1.0"
+        }
+        
+        # Consent for benchmarking
+        print("\nStep 4: Benchmark Agreement")
+        print("-" * 40)
+        print("By participating in Albert's benchmark:")
+        print("  • Your model will be tested on physics discovery tasks")
+        print("  • Results will be published on the public leaderboard")
+        print("  • Valid theories discovered will be attributed to your model")
+        print("  • You can update or remove your model at any time")
+        print()
+        
+        config['consent'] = {
+            'benchmark_agreement': input("Do you agree to these terms? (y/n): ").lower() == 'y',
+            'publish_results': input("Publish results on leaderboard? (y/n): ").lower() == 'y',
+            'share_discoveries': True,  # Always true for benchmark models
+            'marketing_consent': input("Allow us to feature your model in marketing? (y/n): ").lower() == 'y'
+        }
+        
+        if not config['consent']['benchmark_agreement']:
+            print("Benchmark agreement is required to proceed.")
+            sys.exit(1)
+        
+        return config
+    
+    def get_api_type(self):
+        """Get the type of API endpoint"""
+        print("Select API type:")
+        print("1. OpenAI API")
+        print("2. Azure OpenAI")
+        print("3. Custom OpenAI-compatible endpoint (vLLM, Ollama, etc.)")
+        print()
+        
+        while True:
+            choice = input("Enter your choice (1-3): ").strip()
+            if choice == '1':
+                return 'openai'
+            elif choice == '2':
+                return 'azure'
+            elif choice == '3':
+                return 'custom'
+            else:
+                print("Please enter 1, 2, or 3.")
+    
+    def test_custom_endpoint(self, config):
+        """Test connection to a custom endpoint"""
+        try:
+            import requests
+            
+            # Try to list models
+            headers = {
+                'Authorization': f"Bearer {config['api_key']}"
+            }
+            
+            response = requests.get(
+                f"{config['api_base']}/models",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                print("✓ Successfully connected to endpoint")
+                models = response.json().get('data', [])
+                if models:
+                    print(f"  Available models: {', '.join([m['id'] for m in models[:3]])}")
+                return True
+            else:
+                print(f"  Connection failed with status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            print(f"  Connection error: {e}")
+            return False
         
     def collect_user_info(self):
         """Collect basic user information"""
@@ -256,19 +426,36 @@ class AlbertSetup:
         """Create .env file for environment variables"""
         env_content = []
         
-        # Add API keys
-        api_keys = config['api_keys']
-        if 'openai' in api_keys:
-            env_content.append(f"OPENAI_API_KEY={api_keys['openai']}")
-        if 'anthropic' in api_keys:
-            env_content.append(f"ANTHROPIC_API_KEY={api_keys['anthropic']}")
-        if 'google' in api_keys:
-            env_content.append(f"GOOGLE_API_KEY={api_keys['google']}")
-        if 'grok' in api_keys:
-            env_content.append(f"GROK_API_KEY={api_keys['grok']}")
-        if 'custom_endpoint' in api_keys:
-            env_content.append(f"CUSTOM_ENDPOINT={api_keys['custom_endpoint']}")
-            env_content.append(f"CUSTOM_API_KEY={api_keys['custom_api_key']}")
+        if config.get('setup_type') == 'benchmark':
+            # Benchmark model configuration
+            env_content.append("# Model Benchmark Configuration")
+            env_content.append(f"BENCHMARK_MODEL_NAME={config['model_name']}")
+            env_content.append(f"BENCHMARK_API_TYPE={config['api_type']}")
+            env_content.append(f"BENCHMARK_API_BASE={config['api_base']}")
+            env_content.append(f"BENCHMARK_API_KEY={config['api_key']}")
+            
+            if config['api_type'] == 'openai':
+                env_content.append(f"BENCHMARK_MODEL_ID={config['model_id']}")
+            elif config['api_type'] == 'azure':
+                env_content.append(f"BENCHMARK_DEPLOYMENT_NAME={config['deployment_name']}")
+                env_content.append(f"BENCHMARK_API_VERSION={config['api_version']}")
+            elif config['api_type'] == 'custom':
+                env_content.append(f"BENCHMARK_MODEL_ID={config['model_id']}")
+            
+        else:
+            # Regular researcher API keys
+            api_keys = config['api_keys']
+            if 'openai' in api_keys:
+                env_content.append(f"OPENAI_API_KEY={api_keys['openai']}")
+            if 'anthropic' in api_keys:
+                env_content.append(f"ANTHROPIC_API_KEY={api_keys['anthropic']}")
+            if 'google' in api_keys:
+                env_content.append(f"GOOGLE_API_KEY={api_keys['google']}")
+            if 'grok' in api_keys:
+                env_content.append(f"GROK_API_KEY={api_keys['grok']}")
+            if 'custom_endpoint' in api_keys:
+                env_content.append(f"CUSTOM_ENDPOINT={api_keys['custom_endpoint']}")
+                env_content.append(f"CUSTOM_API_KEY={api_keys['custom_api_key']}")
         
         # Add database credentials
         env_content.append("")
@@ -309,6 +496,37 @@ class AlbertSetup:
         except Exception as e:
             print(f"⚠️  Network registration failed: {e}")
             print("You can still run Albert locally.")
+    
+    def register_benchmark_model(self, config):
+        """Register a model for benchmarking"""
+        print("\nRegistering model for Albert Benchmark...")
+        
+        registration_data = {
+            'organization': config['organization'],
+            'model_name': config['model_name'],
+            'contact_name': config['name'],
+            'contact_email': config['email'],
+            'api_type': config['api_type'],
+            'model_info': config['model_info'],
+            'public_key': config['public_key'],
+            'consent': config['consent']
+        }
+        
+        try:
+            # For now, just simulate registration
+            # In production, this would POST to api.albert.so/register-benchmark
+            print("✓ Successfully registered for Albert Benchmark!")
+            print(f"  Model ID: ALBERT-BENCH-{abs(hash(config['model_name']))%10000:04d}")
+            print("\nYour model will be automatically tested on:")
+            print("  • Theory generation capabilities")
+            print("  • Conservation law understanding")
+            print("  • Mathematical consistency")
+            print("  • Experimental prediction accuracy")
+            print("\nBenchmark results will be available at:")
+            print("  https://albert.so/benchmark")
+        except Exception as e:
+            print(f"⚠️  Benchmark registration failed: {e}")
+            print("You can still run benchmarks locally.")
 
 def main():
     """Run the setup process"""

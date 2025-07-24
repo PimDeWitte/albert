@@ -38,50 +38,55 @@ def load_initial_prompt(prompt_arg: str) -> str:
 
 def generate_theory_via_api(api_provider: str, initial_prompt: str, baseline_theories: list[str], focus_theory: str = None) -> str:
     """Generate a new theory using the specified API provider"""
-    # Load the prompt template from external file
-    prompt_template_path = os.path.join(os.path.dirname(__file__), 'prompt_template.txt')
+    # Import the LLM API
+    from physics_agent.ui.llm_api import LLMApi
     
-    try:
-        with open(prompt_template_path, 'r') as f:
-            prompt_template = f.read()
-    except FileNotFoundError:
-        print(f"Error: Prompt template not found at {prompt_template_path}")
-        print("Using default prompt template...")
-        # Fallback to default template
-        prompt_template = """Generate a novel gravitational theory as a Python class inheriting from GravitationalTheory.
-
-The new theory will be benchmarked against the following baseline theories:
-{baseline_theories}
-
-Your generated theory must:
-- Be implemented as a Python class named 'CustomTheory' that inherits from 'GravitationalTheory'.
-- Have a 'get_metric' method that returns the metric tensor components (g_tt, g_rr, g_pp, g_tp).
-- Include a Lagrangian formulation of the theory in a docstring. This is a critical validation step.
-- Aim to unify gravity and electromagnetism, or explore other novel geometric approaches to gravity.
-
-Initial idea: {initial_prompt}
-    
-Return ONLY the Python code, no explanations."""
-    
-    # Format the prompt with dynamic content
-    baseline_list = '\n'.join(f"{i+1}. {name}" for i, name in enumerate(baseline_theories))
+    # Initialize the API client
+    api = LLMApi(provider=api_provider)
     
     # Enhance prompt if focusing on a specific theory
     if focus_theory:
-        initial_prompt = f"Improve upon the theory: {focus_theory}. {initial_prompt}"
+        # Try to load the focus theory code
+        theory_path = None
+        if os.path.exists(focus_theory):
+            theory_path = focus_theory
+        elif os.path.exists(os.path.join(os.path.dirname(os.path.dirname(__file__)), focus_theory)):
+            theory_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), focus_theory)
+        elif os.path.exists(os.path.join(os.path.dirname(os.path.dirname(__file__)), focus_theory, "theory.py")):
+            theory_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), focus_theory, "theory.py")
+        
+        if theory_path and os.path.exists(theory_path):
+            try:
+                with open(theory_path, 'r') as f:
+                    base_theory_code = f.read()
+                print(f"Loaded base theory from: {theory_path}")
+                
+                # Generate variation
+                theory_code = api.generate_theory_variation(
+                    base_theory_code,
+                    initial_prompt,
+                    baseline_theories
+                )
+            except Exception as e:
+                print(f"Error loading base theory: {e}")
+                theory_code = api.generate_new_theory(initial_prompt, baseline_theories)
+        else:
+            print(f"Could not find theory file for: {focus_theory}")
+            initial_prompt = f"Improve upon the theory: {focus_theory}. {initial_prompt}"
+            theory_code = api.generate_new_theory(initial_prompt, baseline_theories)
+    else:
+        # Generate completely new theory
+        theory_code = api.generate_new_theory(initial_prompt, baseline_theories)
     
-    prompt = prompt_template.format(
-        baseline_theories=baseline_list,
-        initial_prompt=initial_prompt if initial_prompt else 'Explore modifications to the Reissner-Nordström or Dilaton metric aligned with Albert\'s quest for unification.'
-    )
+    if not theory_code:
+        print("\nError: Failed to generate theory code from API")
+        print("Make sure GROK_API_KEY is set in your environment variables")
+        print("Using mock response for demonstration...")
+        # Use the mock response from the API
+        api_mock = LLMApi(provider=api_provider)
+        theory_code = api_mock._mock_response()
     
-    # TODO: Implement actual API calls based on provider
-    # For now, just print the prompt
-    print("--- Generated Prompt for LLM ---")
-    print(prompt)
-    
-    # Placeholder for API response
-    return ""
+    return theory_code
 
 
 def create_candidate_directory(run_timestamp: str, theory_code: str) -> tuple[str, str]:

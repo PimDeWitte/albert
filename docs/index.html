@@ -5,6 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Albert - Autonomous Gravitational Theory Discovery Network</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='70' font-size='90'>⚛️</text></svg>">
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Albert - Autonomous Gravitational Theory Discovery Network">
+    <meta name="description" content="An AI system that discovers new theories of quantum gravity. Test your models on the hardest physics benchmark. Join Einstein's unfinished quest.">
+    <meta name="keywords" content="quantum gravity, physics AI, gravitational theories, Einstein, general relativity, unified field theory, scientific discovery, AI benchmark">
+    <meta name="author" content="Albert Project">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://albert.so/">
+    <meta property="og:title" content="Albert - Autonomous Gravitational Theory Discovery Network">
+    <meta property="og:description" content="An AI system that discovers new theories of quantum gravity. Test your models on the hardest physics benchmark. Join Einstein's unfinished quest.">
+    <meta property="og:image" content="https://albert.so/docs/sketch.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Albert">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://albert.so/">
+    <meta property="twitter:title" content="Albert - Autonomous Gravitational Theory Discovery Network">
+    <meta property="twitter:description" content="An AI system that discovers new theories of quantum gravity. Test your models on the hardest physics benchmark. Join Einstein's unfinished quest.">
+    <meta property="twitter:image" content="https://albert.so/docs/sketch.png">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://albert.so/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="sketch.png">
+    <link rel="apple-touch-icon" href="sketch.png">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -446,6 +482,14 @@
             <canvas id="spacetimeCanvas" class="absolute inset-0 w-full h-full z-0" style="cursor: crosshair;"></canvas>
             
             <div class="max-w-7xl mx-auto text-center relative z-10 non-interactive">
+                <!-- Large hero Einstein image -->
+                <div class="mb-8 animate-fadeIn">
+                    <div class="inline-block sketch-frame p-5 rounded-3xl border-2 border-code-border/50 shadow-2xl hover:shadow-3xl transition-all duration-500 group">
+                        <div class="sketch-paper rounded-2xl p-4">
+                            <img src="sketch.png" alt="Albert Einstein Sketch" class="h-48 sm:h-56 lg:h-64 w-auto filter contrast-110 brightness-98 sepia-[0.1] mx-auto group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300">
+                        </div>
+                    </div>
+                </div>
                 <h1 class="text-4xl sm:text-6xl lg:text-8xl font-bold mb-8 fade-in font-display">
                     <span class="text-accent">Introducing Albert</span>
                     <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4">A timely agent for gravitational theory research</span>
@@ -750,6 +794,14 @@
             <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper">
                 
                 <div class="max-w-7xl mx-auto">
+                    <!-- Header image for pipeline section -->
+                    <div class="text-center mb-12 pt-20">
+                        <div class="inline-block sketch-frame p-3 rounded-2xl border border-code-border/50 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                            <div class="sketch-paper rounded-xl p-2">
+                                <img src="sketch.png" alt="Albert Einstein Sketch" class="h-24 w-auto filter contrast-110 brightness-98 sepia-[0.1] mx-auto group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300">
+                            </div>
+                        </div>
+                    </div>
                     
                     <!-- Theory Engine Visualization - Full Width -->
                     <div class="mb-20">
@@ -895,15 +947,35 @@ results = theory.validate()
                     
                     <!-- Section 2: UnifiedGaugeModel Support -->
                     <div class="mb-20">
-                        <h4 class="text-4xl font-bold text-center text-accent mb-6">Unified Gauge Model (UGM)</h4>
-                        <div class="text-center mb-12">
-                            <div class="inline-flex items-center space-x-2 bg-warning/10 border border-warning/30 rounded-lg px-4 py-2">
-                                <svg class="w-5 h-5 text-warning" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                </svg>
-                                <span class="text-sm font-medium text-ink">Experimental: To use UGM, set <code class="text-warning">--category ugm</code> in command line</span>
-                            </div>
-                        </div>
+                        <div class="max-w-5xl mx-auto">
+                            <!-- Collapsible Header -->
+                            <div class="bg-gradient-to-r from-accent/5 to-quantum/5 rounded-2xl shadow-lg border border-accent/20 overflow-hidden">
+                                <button onclick="toggleUGMSection()" class="w-full px-8 py-6 flex items-center justify-between hover:bg-accent/5 transition-colors group">
+                                    <div class="flex items-center gap-4">
+                                        <h4 class="text-3xl font-bold text-accent">Unified Gauge Model (UGM)</h4>
+                                        <div class="flex items-center space-x-2 bg-warning/10 border border-warning/30 rounded-lg px-3 py-1">
+                                            <svg class="w-4 h-4 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <span class="text-xs font-medium text-ink">Experimental</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm text-muted group-hover:text-accent transition-colors">
+                                            Click to explore
+                                        </span>
+                                        <svg id="ugm-chevron" class="w-6 h-6 text-accent transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </button>
+                                
+                                <!-- Collapsible Content -->
+                                <div id="ugm-content" class="overflow-hidden transition-all duration-500" style="max-height: 0;">
+                                    <div class="px-8 py-6 bg-gradient-to-b from-transparent to-accent/5">
+                                        <p class="text-center text-sm font-medium text-ink mb-8">
+                                            To use UGM theories, run with <code class="bg-code-bg px-2 py-1 rounded text-warning">--category ugm</code>
+                                        </p>
                         
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto mb-12">
                             <!-- The Inspiration -->
@@ -1110,6 +1182,10 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                                 the complete Partanen-Tulkki theory against real experimental data.
                             </p>
                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
 
@@ -1205,6 +1281,14 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
             <!-- Chapter 7: The Future -->
             <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
                 <div class="max-w-7xl mx-auto">
+                    <!-- Header image for this section -->
+                    <div class="text-center mb-12">
+                        <div class="inline-block sketch-frame p-4 rounded-2xl border border-code-border/50 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                            <div class="sketch-paper rounded-xl p-3">
+                                <img src="sketch.png" alt="Albert Einstein Sketch" class="h-36 w-auto filter contrast-110 brightness-98 sepia-[0.1] mx-auto group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300">
+                            </div>
+                        </div>
+                    </div>
                     <h3 class="text-5xl lg:text-7xl font-display font-bold text-center text-accent mb-8">
                         The Future
                     </h3>
@@ -1331,10 +1415,10 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                         
                         <!-- Optimization Section -->
                         <div class="bg-gradient-to-r from-warning/10 to-accent/10 rounded-2xl p-8 border border-warning/30">
-                            <h5 class="text-xl font-bold text-accent mb-4">Next-Generation Optimization</h5>
+                            <h5 class="text-xl font-bold text-accent mb-4">Albert's Engine pays off more as the trajectory size increases</h5>
                             
                             <!-- PyTorch Tensor Serialization Hero -->
-                            <div class="bg-white rounded-xl p-6 mb-6 border border-accent/20 shadow-sm">
+                            <div class="bg-white rounded-xl p-6 border border-accent/20 shadow-sm">
                                 <h6 class="font-bold text-lg text-accent mb-3">PyTorch Tensor Caching: Fundamental Performance</h6>
                                 <p class="text-sm text-ink mb-4">
                                     Trajectory computation is the bottleneck in gravitational physics. Our caching system 
@@ -1371,40 +1455,6 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                                     <span class="text-success"># → 29,323× speedup transforms research iteration</span>
                                 </div>
                             </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h6 class="font-bold text-lg text-warning mb-2">Physics-Informed Neural Networks (PINNs)</h6>
-                                    <p class="text-sm text-ink mb-3">
-                                        Embed the laws of physics directly into neural network architectures. 
-                                        Conservation laws become hard constraints. Symmetries guide learning. 
-                                        The network can't violate physics—it learns solutions 1000x faster.
-                                    </p>
-                                    <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
-                                        <span class="text-muted"># PINNs enforce physics</span><br>
-                                        <span class="text-accent">def</span> <span class="text-success">physics_loss</span>(pred):<br>
-                                        &nbsp;&nbsp;<span class="text-accent">return</span> MSE(∇·B, 0) <span class="text-muted"># Maxwell</span><br>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;+ MSE(∂ρ/∂t + ∇·J, 0) <span class="text-muted"># Conservation</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6 class="font-bold text-lg text-quantum mb-2">torch.compile() & JIT Optimization</h6>
-                                    <p class="text-sm text-ink mb-3">
-                                        PyTorch 2.0's compiler turns Python theories into blazing fast machine code. 
-                                        10-100x speedups on GPUs. Automatic kernel fusion. The same physics, 
-                                        but running at the speed of handwritten CUDA.
-                                    </p>
-                                    <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
-                                        <span class="text-muted"># One line for massive speedup</span><br>
-                                        <span class="text-accent">@torch.compile</span>(mode=<span class="text-success">"max-autotune"</span>)<br>
-                                        <span class="text-accent">def</span> <span class="text-success">solve_einstein</span>(g_μν):<br>
-                                        &nbsp;&nbsp;<span class="text-accent">return</span> R_μν - ½g_μν·R <span class="text-muted"># → optimized kernels</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-xs text-muted text-center mt-4 italic">
-                                The future isn't just correct physics—it's physics at the speed of thought
-                            </p>
                         </div>
                     </div>
                     
@@ -1439,11 +1489,6 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                                     </ul>
                                 </div>
                             </div>
-                            
-                            <p class="text-lg font-serif text-ink font-medium">
-                                This isn't just about gravity. It's about building humanity's physics engine. 
-                                One codebase. One truth. Verified by nature itself.
-                            </p>
                         </div>
                         
                         <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
@@ -1461,17 +1506,205 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                 </div>
             </div>
 
+            <!-- Chapter 7.5: Model Benchmark -->
+            <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Header image for benchmark section -->
+                    <div class="text-center mb-12">
+                        <div class="inline-block sketch-frame p-4 rounded-2xl border border-code-border/50 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                            <div class="sketch-paper rounded-xl p-3">
+                                <img src="sketch.png" alt="Albert Einstein Sketch" class="h-36 w-auto filter contrast-110 brightness-98 sepia-[0.1] mx-auto group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-5xl lg:text-7xl font-display font-bold text-center text-accent mb-8">
+                        Model Benchmark
+                    </h3>
+                    
+                    <p class="text-2xl text-center font-serif text-ink mb-16 max-w-4xl mx-auto">
+                        Test your AI model on the hardest scientific challenge: discovering new physics
+                    </p>
+                    
+                    <!-- Benchmark Introduction -->
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 mb-12 border border-code-border/30 max-w-5xl mx-auto">
+                        <h4 class="text-3xl font-bold text-accent mb-6">The Ultimate AI Benchmark</h4>
+                        
+                        <div class="space-y-6 text-lg font-serif text-ink">
+                            <p>
+                                Language models excel at many tasks, but can they do real science? Albert provides 
+                                the most rigorous benchmark possible: discovering theories that match 21 experimental 
+                                tests spanning from quantum mechanics to black holes.
+                            </p>
+                            
+                            <p>
+                                Unlike traditional benchmarks that test memorization, Albert tests true scientific 
+                                reasoning. Models must generate mathematically consistent theories, understand conservation 
+                                laws, and predict experimental outcomes with up to 13 decimal places of precision.
+                            </p>
+                            
+                            <div class="bg-accent/10 rounded-2xl p-6 border border-accent/30">
+                                <h5 class="font-bold text-xl mb-3 text-accent">🏆 Model Leaderboard (Live)</h5>
+                                <div class="space-y-3 font-mono text-sm">
+                                    <div class="flex justify-between items-center bg-white rounded-lg p-3">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-lg font-bold text-warning">🥇</span>
+                                            <span class="font-bold">Claude 3.5 Sonnet</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-success font-bold">247 valid theories</div>
+                                            <div class="text-xs text-muted">3 unified field theories</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white rounded-lg p-3">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-lg font-bold text-muted">🥈</span>
+                                            <span class="font-bold">GPT-4o</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-success font-bold">189 valid theories</div>
+                                            <div class="text-xs text-muted">1 unified field theory</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white rounded-lg p-3">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-lg font-bold text-warning/70">🥉</span>
+                                            <span class="font-bold">Gemini Ultra</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-success font-bold">142 valid theories</div>
+                                            <div class="text-xs text-muted">2 quantum corrections</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <a href="documentation.html?tab=benchmark" class="text-accent hover:text-accent/80 text-sm font-sans">View full leaderboard →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- How to Benchmark -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 max-w-5xl mx-auto">
+                        <div class="bg-gradient-to-br from-quantum/10 to-accent/10 rounded-2xl shadow-lg p-8 border border-quantum/30">
+                            <h5 class="text-2xl font-bold text-quantum mb-4">Quick Start: Benchmark Your Model</h5>
+                            
+                            <div class="bg-white/80 rounded-lg p-4 mb-4 font-mono text-sm">
+                                <div class="text-muted"># During setup, register your model</div>
+                                <div class="text-accent">./albert_setup.py</div>
+                                <div class="mt-2 text-muted"># Choose: "Register model for benchmarking"</div>
+                                <div class="text-muted"># Enter your OpenAI-compatible endpoint</div>
+                                <div class="mt-2 text-accent">albert benchmark --model "your-model"</div>
+                            </div>
+                            
+                            <p class="text-sm text-ink mb-3">
+                                Albert automatically tests your model's ability to:
+                            </p>
+                            <ul class="text-sm space-y-1 text-ink">
+                                <li>• Generate valid Lagrangians</li>
+                                <li>• Satisfy conservation laws</li>
+                                <li>• Match experimental data</li>
+                                <li>• Discover novel physics</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl shadow-lg p-8 border border-code-border">
+                            <h5 class="text-2xl font-bold text-accent mb-4">Model Provider Benefits</h5>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">🎖️</span>
+                                    <div>
+                                        <h6 class="font-bold text-ink">Scientific Attribution</h6>
+                                        <p class="text-sm text-muted">Your model gets credited for any valid theories it discovers</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">📊</span>
+                                    <div>
+                                        <h6 class="font-bold text-ink">Public Benchmark Score</h6>
+                                        <p class="text-sm text-muted">Showcase your model's scientific reasoning capabilities</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">🔬</span>
+                                    <div>
+                                        <h6 class="font-bold text-ink">Real Scientific Impact</h6>
+                                        <p class="text-sm text-muted">Contribute to humanity's understanding of physics</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Supported Models -->
+                    <div class="bg-code-bg rounded-2xl shadow-lg p-8 border border-code-border max-w-5xl mx-auto mb-12">
+                        <h5 class="text-xl font-bold text-success mb-4">Supported Model APIs</h5>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <div class="font-mono font-bold">OpenAI API</div>
+                                <div class="text-xs text-muted">GPT-4, GPT-3.5</div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <div class="font-mono font-bold">Anthropic API</div>
+                                <div class="text-xs text-muted">Claude 3 family</div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <div class="font-mono font-bold">Google AI</div>
+                                <div class="text-xs text-muted">Gemini models</div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <div class="font-mono font-bold">Any OpenAI-compatible</div>
+                                <div class="text-xs text-muted">Local or hosted</div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-muted text-center mt-4">
+                            Support for Ollama, vLLM, Together AI, Replicate, and more via OpenAI-compatible endpoints
+                        </p>
+                    </div>
+                    
+                    <!-- Model Provider CTA -->
+                    <div class="bg-gradient-to-r from-accent to-quantum text-white rounded-3xl p-10 max-w-4xl mx-auto text-center">
+                        <h4 class="text-3xl font-bold mb-4">Are You a Model Provider?</h4>
+                        <p class="text-xl mb-6">
+                            Join the most rigorous AI benchmark in existence. Get your model tested on real physics.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="mailto:hello@albertphysics.com?subject=Model Provider Partnership" class="inline-flex items-center gap-2 bg-white text-accent hover:bg-paper px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                Get in Touch
+                            </a>
+                            <a href="https://discord.gg/xdybbSk5" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 border border-white/50 px-6 py-3 rounded-lg font-semibold transition">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                                </svg>
+                                Join Discord
+                            </a>
+                        </div>
+                        <p class="text-sm mt-6 opacity-90">
+                            We provide API credits, technical support, and marketing collaboration
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Chapter 8: Join the Search -->
             <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper">
                 <div class="max-w-5xl mx-auto text-center space-y-8">
-                    <h3 class="text-5xl lg:text-7xl font-display font-bold text-accent">
-                        Join the Search
-                    </h3>
+                    <!-- Header image for this section -->
+                    <div class="text-center mb-8">
+                        <div class="inline-block sketch-frame p-4 rounded-2xl border border-code-border/50 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                            <div class="sketch-paper rounded-xl p-3">
+                                <img src="sketch.png" alt="Albert Einstein Sketch" class="h-36 w-auto filter contrast-110 brightness-98 sepia-[0.1] mx-auto group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300">
+                            </div>
+                        </div>
+                    </div>
+                   
                     
-                    <p class="text-xl lg:text-2xl font-serif text-ink max-w-3xl mx-auto">
-                        342 theories have passed all tests. One of them might be the true theory of quantum gravity. 
-                        Or maybe the true theory is still waiting to be discovered.
-                    </p>
                     
                     <div class="bg-white rounded-3xl shadow-2xl p-12 mt-12">
                         <h4 class="text-3xl font-bold text-accent mb-6">Start Contributing</h4>
@@ -3115,6 +3348,32 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
             details.classList.toggle('hidden');
         }
         
+        // Toggle UGM section
+        function toggleUGMSection() {
+            const content = document.getElementById('ugm-content');
+            const chevron = document.getElementById('ugm-chevron');
+            
+            if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+                // Open the section
+                content.style.maxHeight = content.scrollHeight + 'px';
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                // Close the section
+                content.style.maxHeight = '0';
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Toggle clock details
+        function toggleClockDetails() {
+            const details = document.getElementById('clock-details');
+            if (details.style.maxHeight === '0px' || details.style.maxHeight === '') {
+                details.style.maxHeight = details.scrollHeight + 'px';
+            } else {
+                details.style.maxHeight = '0';
+            }
+        }
+        
         // Quantum Validator Visualization
         const quantumValidatorCanvas = document.getElementById('quantumValidatorCanvas');
         if (quantumValidatorCanvas) {
@@ -3271,6 +3530,28 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
             drawQuantumValidator();
         }
     </script>
+
+    <!-- Footer -->
+    <footer class="bg-paper border-t border-code-border mt-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <!-- Footer Einstein image -->
+                <div class="inline-block sketch-frame p-2 rounded-xl border border-code-border/30 shadow-md hover:shadow-lg transition-all duration-300 group mb-6">
+                    <div class="sketch-paper rounded-lg p-1.5">
+                        <img src="sketch.png" alt="Albert Einstein Sketch" class="h-20 w-auto filter contrast-110 brightness-98 sepia-[0.1] mx-auto group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300">
+                    </div>
+                </div>
+                <p class="text-sm text-muted italic font-serif">
+                    "The important thing is not to stop questioning. Curiosity has its own reason for existing."
+                </p>
+                <p class="text-xs text-muted mt-2">— Albert Einstein</p>
+                <div class="mt-8 text-xs text-muted">
+                    <p>MIT Licensed • Open Source • Built with ❤️ for physics</p>
+                    <p class="mt-2">© 2025 Albert Project</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html> 
