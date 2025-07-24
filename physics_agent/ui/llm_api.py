@@ -18,7 +18,7 @@ class LLMApi:
         if provider == "grok":
             self.api_key = os.getenv("GROK_API_KEY", "")
             self.base_url = "https://api.x.ai/v1"
-            self.model = "grok-3"
+            self.model = "grok-4"
         elif provider == "openai":
             # Experimental support
             self.api_key = os.getenv("OPENAI_API_KEY", "")
@@ -29,7 +29,7 @@ class LLMApi:
             # Experimental support
             self.api_key = os.getenv("ANTHROPIC_API_KEY", "")
             self.base_url = "https://api.anthropic.com/v1"
-            self.model = "claude-3-opus-20240229"
+            self.model = "claude-4-opus"
             print("Warning: Anthropic support is experimental. xAI/Grok is the primary supported provider.")
         elif provider == "gemini":
             # Experimental support

@@ -449,17 +449,23 @@ def main():
                                 os.makedirs(theory_dir, exist_ok=True)
                                 
                                 # Run trajectory computation
-                                hist, losses = engine.run_theory(
-                                    generated_theory,
-                                    N_STEPS,
-                                    DTau,
-                                    r0,
-                                    "",
-                                    output_dir=theory_dir,
-                                    disable_cache=True
+                                hist, _, _ = engine.run_trajectory(
+                                    generated_theory, 
+                                    r0.item() * engine.length_scale,
+                                    N_STEPS, 
+                                    DTau.item() * engine.time_scale,
+                                    quantum_interval=0, 
+                                    quantum_beta=0.0
                                 )
                                 
-                                if hist is not None:
+                                if hist is not None and hist.shape[0] > 1:
+                                    # Calculate losses against baselines
+                                    losses = {}
+                                    for baseline_name, baseline_hist in baseline_results.items():
+                                        loss = engine.loss_calculator.compute_trajectory_loss(hist, baseline_hist, 'trajectory_mse')
+                                        loss_val = loss if isinstance(loss, float) else loss.item()
+                                        losses[baseline_name] = loss_val
+                                        
                                     # Check results
                                     avg_loss = sum(losses.values()) / len(losses)
                                     print(f"\n✨ Theory average loss: {avg_loss:.3e}")
