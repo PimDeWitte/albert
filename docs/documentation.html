@@ -157,6 +157,7 @@
             <button class="tab">Self-Discovery</button>
             <button class="tab">Scoring</button>
             <button class="tab">Cache</button>
+            <button class="tab">Leaderboard</button>
         </div>
     </div>
     
@@ -224,6 +225,14 @@
             </div>
             <iframe data-src="cache.html" onload="hideLoading('cache')"></iframe>
         </div>
+        
+        <div id="leaderboard-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Leaderboard...</p>
+            </div>
+            <iframe data-src="latest_leaderboard.html" onload="hideLoading('leaderboard')"></iframe>
+        </div>
     </div>
     
     <script>
@@ -266,7 +275,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab');
             tabButtons.forEach((button, index) => {
-                const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache'];
+                const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
                 button.addEventListener('click', function() {
                     switchTab(tabNames[index]);
                 });
@@ -275,7 +284,7 @@
             // Check URL parameters on load
             const urlParams = new URLSearchParams(window.location.search);
             const tabParam = urlParams.get('tab');
-            const validTabs = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache'];
+            const validTabs = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
             
             if (tabParam && validTabs.includes(tabParam)) {
                 switchTab(tabParam, false); // Don't update URL on initial load
@@ -303,7 +312,7 @@
         });
         
         function getTabIndex(tabName) {
-            const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache'];
+            const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
             return tabNames.indexOf(tabName);
         }
     </script>

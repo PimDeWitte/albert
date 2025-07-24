@@ -21,6 +21,17 @@ class AlbertSetup:
         self.public_key_file = self.config_dir / 'public_key.pem'
         self.env_file = Path('.env')
         
+    def get_yes_no(self, prompt):
+        """Get a validated yes/no response from the user"""
+        while True:
+            response = input(f"{prompt} (y/n): ").strip().lower()
+            if response in ['y', 'yes']:
+                return True
+            elif response in ['n', 'no']:
+                return False
+            else:
+                print("Please enter 'y' for yes or 'n' for no.")
+        
     def run(self):
         """Main setup flow"""
         print("=" * 60)
@@ -150,7 +161,7 @@ class AlbertSetup:
             print("\nTesting connection to custom endpoint...")
             if not self.test_custom_endpoint(config):
                 print("❌ Failed to connect to custom endpoint.")
-                if input("Continue anyway? (y/n): ").lower() != 'y':
+                if not self.get_yes_no("Continue anyway?"):
                     sys.exit(1)
         
         # Additional model info
@@ -159,8 +170,8 @@ class AlbertSetup:
         
         config['model_info'] = {
             'max_tokens': int(input("Maximum context length (tokens) [128000]: ") or "128000"),
-            'supports_json': input("Supports JSON mode? (y/n) [y]: ").lower() != 'n',
-            'supports_tools': input("Supports function calling? (y/n) [n]: ").lower() == 'y',
+            'supports_json': not self.get_yes_no("Supports JSON mode?"),  # Note: inverting for compatibility
+            'supports_tools': self.get_yes_no("Supports function calling?"),
             'temperature_range': input("Recommended temperature range [0.0-1.0]: ") or "0.0-1.0"
         }
         
@@ -249,15 +260,6 @@ class AlbertSetup:
             print("Name is required for attribution.")
             config['name'] = input("Your name: ").strip()
         
-        # Email (optional)
-        config['email'] = input("Email (optional, for important updates only): ").strip()
-        
-        # Organization (optional)
-        config['organization'] = input("Organization (optional): ").strip()
-        
-        # Location (optional)
-        config['location'] = input("Location (optional, e.g., 'Boston, MA'): ").strip()
-        
         print(f"\nHello, {config['name']}! Let's configure your Albert instance.\n")
         
         return config
@@ -272,23 +274,23 @@ class AlbertSetup:
         api_keys = {}
         
         # OpenAI
-        if input("Do you have an OpenAI API key? (y/n): ").lower() == 'y':
+        if self.get_yes_no("Do you have an OpenAI API key?"):
             api_keys['openai'] = getpass.getpass("OpenAI API key: ").strip()
         
         # Anthropic
-        if input("Do you have an Anthropic API key? (y/n): ").lower() == 'y':
+        if self.get_yes_no("Do you have an Anthropic API key?"):
             api_keys['anthropic'] = getpass.getpass("Anthropic API key: ").strip()
         
         # Google
-        if input("Do you have a Google AI API key? (y/n): ").lower() == 'y':
+        if self.get_yes_no("Do you have a Google AI API key?"):
             api_keys['google'] = getpass.getpass("Google AI API key: ").strip()
         
         # Grok
-        if input("Do you have a Grok API key? (y/n): ").lower() == 'y':
+        if self.get_yes_no("Do you have a Grok API key?"):
             api_keys['grok'] = getpass.getpass("Grok API key: ").strip()
         
         # Custom endpoint
-        if input("Do you want to use a custom OpenAI-compatible endpoint? (y/n): ").lower() == 'y':
+        if self.get_yes_no("Do you want to use a custom OpenAI-compatible endpoint?"):
             api_keys['custom_endpoint'] = input("Custom endpoint URL: ").strip()
             api_keys['custom_api_key'] = getpass.getpass("Custom endpoint API key: ").strip()
         
