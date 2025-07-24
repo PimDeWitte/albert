@@ -63,11 +63,15 @@ python albert_setup.py
 
 ## Configuration
 
-Albert needs at least one LLM API key to generate theories. Supported providers:
-- OpenAI (GPT-4 recommended)
+Albert uses AI to generate new theories of gravity. Supported API providers:
+
+### Primary Support
+- **xAI/Grok** (recommended) - Get your API key from: https://x.ai/api
+
+### Experimental Support
+- OpenAI (GPT-4)
 - Anthropic (Claude)
 - Google AI (Gemini)
-- Grok
 - Custom OpenAI-compatible endpoints
 
 Run `albert setup` to configure your API keys and preferences.

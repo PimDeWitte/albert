@@ -477,3 +477,24 @@ graph TD
   <i>"I want to know God's thoughts. The rest are details."</i><br>
   — Albert Einstein
 </div> 
+
+## Prerequisites
+
+- **Python**: 3.9+
+- **GPU**: NVIDIA (CUDA), Apple Silicon (MPS), or CPU fallback
+- **API Key**: xAI/Grok (recommended) or experimental support for other providers
+
+## Configuration
+
+Albert uses AI to generate new theories. Get your API key:
+
+### Primary Provider (Recommended)
+- **xAI/Grok**: https://x.ai/api
+
+### Experimental Providers
+- OpenAI, Anthropic, Google Gemini (limited support)
+
+Run the setup wizard:
+```bash
+python albert_setup.py
+``` 

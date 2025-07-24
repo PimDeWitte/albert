@@ -29,7 +29,8 @@ def extend_cli(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     p = parser.add_argument_group('Self-Discovery Options')
     p.add_argument("--self-discover", action="store_true", help="Enable self-discovery loop for generating new theories via API.")
     p.add_argument("--initial-prompt", type=str, default="", help="Initial prompt or seed query for theory generation. Can be a file path or direct text.")
-    p.add_argument("--api-provider", type=str, default="grok", choices=["grok", "gemini", "openai", "anthropic"], help="API provider for theory generation.")
+    p.add_argument("--api-provider", type=str, default="grok", choices=["grok", "gemini", "openai", "anthropic"], 
+                   help="API provider for theory generation. xAI/Grok is the primary supported provider. Others are experimental.")
     p.add_argument("--theory", type=str, default=None, help="Focus on improving a specific theory (e.g., 'theories/QuantumGravity' or 'candidates/LinearSignalLoss')")
     return parser
 

@@ -19,10 +19,23 @@ A simple web interface for exploring, modifying, and evaluating gravitational th
 pip install -r physics_agent/ui/requirements.txt
 ```
 
-2. Set your Grok API key (optional, will use mock responses without it):
+2. Set your API key:
+
+### Primary Provider (Recommended)
 ```bash
-export GROK_API_KEY="your-api-key-here"
+export GROK_API_KEY="your-xai-grok-api-key"
 ```
+Get your xAI/Grok API key from: https://x.ai/api
+
+### Experimental Providers
+Other providers are experimental and may not work correctly:
+```bash
+export OPENAI_API_KEY="your-openai-key"        # Experimental
+export ANTHROPIC_API_KEY="your-anthropic-key"  # Experimental 
+export GOOGLE_API_KEY="your-google-key"        # Experimental
+```
+
+Without an API key, the system will use mock responses for testing.
 
 3. (Optional) Configure Albert Network for global theory sharing:
 ```bash

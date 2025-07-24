@@ -1,5 +1,8 @@
 """
 LLM API interface for generating new gravitational theories
+
+Primary support: xAI/Grok
+Experimental support: OpenAI, Anthropic, Google Gemini
 """
 import os
 import requests
@@ -10,8 +13,32 @@ class LLMApi:
     
     def __init__(self, provider: str = "grok"):
         self.provider = provider
-        self.api_key = os.getenv("GROK_API_KEY", "")
-        self.base_url = "https://api.x.ai/v1"
+        
+        # API configuration based on provider
+        if provider == "grok":
+            self.api_key = os.getenv("GROK_API_KEY", "")
+            self.base_url = "https://api.x.ai/v1"
+            self.model = "grok-beta"
+        elif provider == "openai":
+            # Experimental support
+            self.api_key = os.getenv("OPENAI_API_KEY", "")
+            self.base_url = "https://api.openai.com/v1"
+            self.model = "gpt-4"
+            print("Warning: OpenAI support is experimental. xAI/Grok is the primary supported provider.")
+        elif provider == "anthropic":
+            # Experimental support
+            self.api_key = os.getenv("ANTHROPIC_API_KEY", "")
+            self.base_url = "https://api.anthropic.com/v1"
+            self.model = "claude-3-opus-20240229"
+            print("Warning: Anthropic support is experimental. xAI/Grok is the primary supported provider.")
+        elif provider == "gemini":
+            # Experimental support
+            self.api_key = os.getenv("GOOGLE_API_KEY", "")
+            self.base_url = "https://generativelanguage.googleapis.com/v1beta"
+            self.model = "gemini-pro"
+            print("Warning: Google Gemini support is experimental. xAI/Grok is the primary supported provider.")
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
         
         # Load prompt template
         template_path = os.path.join(
@@ -78,47 +105,58 @@ Return ONLY the Python code, no explanations."""
         return self._call_api(prompt)
     
     def _call_api(self, prompt: str) -> Optional[str]:
-        """Make the actual API call to Grok"""
+        """Make the actual API call to the provider"""
         
         if not self.api_key:
-            print("Warning: GROK_API_KEY not set. Using mock response.")
+            print(f"Warning: {self.provider.upper()}_API_KEY not set. Using mock response.")
             return self._mock_response()
         
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}"
-        }
-        
-        data = {
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are an expert theoretical physicist specializing in gravitational theories and general relativity."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            "model": "grok-beta",
-            "stream": False,
-            "temperature": 0.7
-        }
-        
-        try:
-            response = requests.post(
-                f"{self.base_url}/chat/completions",
-                headers=headers,
-                json=data,
-                timeout=60
-            )
-            response.raise_for_status()
+        # Different API formats for different providers
+        if self.provider == "grok":
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}"
+            }
             
-            result = response.json()
-            return result['choices'][0]['message']['content']
+            data = {
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are an expert theoretical physicist specializing in gravitational theories and general relativity."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                "model": self.model,
+                "stream": False,
+                "temperature": 0.7
+            }
             
-        except Exception as e:
-            print(f"API call failed: {e}")
+            try:
+                response = requests.post(
+                    f"{self.base_url}/chat/completions",
+                    headers=headers,
+                    json=data,
+                    timeout=60
+                )
+                response.raise_for_status()
+                
+                result = response.json()
+                return result['choices'][0]['message']['content']
+                
+            except Exception as e:
+                print(f"API call failed: {e}")
+                return None
+                
+        elif self.provider in ["openai", "anthropic", "gemini"]:
+            # Experimental providers - not fully implemented
+            print(f"Note: {self.provider} support is experimental. Full implementation pending.")
+            print("Using mock response for now.")
+            return self._mock_response()
+        else:
+            print(f"Unsupported provider: {self.provider}")
             return None
     
     def _mock_response(self) -> str:

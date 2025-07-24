@@ -268,45 +268,56 @@ class AlbertSetup:
         """Setup LLM API keys"""
         print("Step 2: API Configuration")
         print("-" * 40)
-        print("Albert needs at least one LLM API to generate theories.")
-        print("Supported providers: OpenAI, Anthropic, Google, Grok, or custom endpoint\n")
+        print("Albert uses AI to generate new theories of gravity.")
+        print("\nPrimary support: xAI/Grok (recommended)")
+        print("Experimental support: OpenAI, Anthropic, Google Gemini\n")
         
         api_keys = {}
         
-        # OpenAI
-        if self.get_yes_no("Do you have an OpenAI API key?"):
-            api_keys['openai'] = getpass.getpass("OpenAI API key: ").strip()
-        
-        # Anthropic
-        if self.get_yes_no("Do you have an Anthropic API key?"):
-            api_keys['anthropic'] = getpass.getpass("Anthropic API key: ").strip()
-        
-        # Google
-        if self.get_yes_no("Do you have a Google AI API key?"):
-            api_keys['google'] = getpass.getpass("Google AI API key: ").strip()
-        
-        # Grok
-        if self.get_yes_no("Do you have a Grok API key?"):
+        # Grok (Primary)
+        if self.get_yes_no("Do you have an xAI/Grok API key? (recommended)"):
             api_keys['grok'] = getpass.getpass("Grok API key: ").strip()
         
-        # Custom endpoint
-        if self.get_yes_no("Do you want to use a custom OpenAI-compatible endpoint?"):
+        # OpenAI (Experimental)
+        if self.get_yes_no("Do you have an OpenAI API key? (experimental)"):
+            api_keys['openai'] = getpass.getpass("OpenAI API key: ").strip()
+            print("Note: OpenAI support is experimental. xAI/Grok is recommended.")
+        
+        # Anthropic (Experimental)
+        if self.get_yes_no("Do you have an Anthropic API key? (experimental)"):
+            api_keys['anthropic'] = getpass.getpass("Anthropic API key: ").strip()
+            print("Note: Anthropic support is experimental. xAI/Grok is recommended.")
+        
+        # Google (Experimental)
+        if self.get_yes_no("Do you have a Google AI API key? (experimental)"):
+            api_keys['google'] = getpass.getpass("Google AI API key: ").strip()
+            print("Note: Google Gemini support is experimental. xAI/Grok is recommended.")
+        
+        # Custom endpoint (Experimental)
+        if self.get_yes_no("Do you want to use a custom OpenAI-compatible endpoint? (experimental)"):
             api_keys['custom_endpoint'] = input("Custom endpoint URL: ").strip()
             api_keys['custom_api_key'] = getpass.getpass("Custom endpoint API key: ").strip()
+            print("Note: Custom endpoints are experimental. xAI/Grok is recommended.")
         
         if not api_keys:
             print("\n❌ At least one API key is required.")
-            print("Please obtain an API key from one of the supported providers.")
+            print("We recommend getting an xAI/Grok API key from: https://x.ai/api")
             sys.exit(1)
         
         # Set default provider
         providers = list(api_keys.keys())
-        if len(providers) == 1:
+        if 'grok' in providers:
+            api_keys['default_provider'] = 'grok'
+            print("\n✓ Using xAI/Grok as the default provider (recommended)")
+        elif len(providers) == 1:
             api_keys['default_provider'] = providers[0]
+            print(f"\n⚠️  Using {providers[0]} as default (experimental - xAI/Grok recommended)")
         else:
             print(f"\nAvailable providers: {', '.join(providers)}")
             default = input(f"Default provider [{providers[0]}]: ").strip() or providers[0]
             api_keys['default_provider'] = default
+            if default != 'grok':
+                print(f"⚠️  Using {default} (experimental - xAI/Grok recommended)")
         
         print(f"\n✓ API configuration complete. Default provider: {api_keys['default_provider']}")
         
