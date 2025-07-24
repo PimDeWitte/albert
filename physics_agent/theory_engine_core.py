@@ -1672,6 +1672,25 @@ def validate_theory_only(
     """
     print(f"\n--- Validating: {model.name} ---")
     
+    # <reason>chain: Check if UGM theory should be skipped based on category filter</reason>
+    # Get categories filter from args
+    categories_filter = None
+    if hasattr(args, 'category') and args.category:
+        categories_filter = [args.category]
+    
+    # Check if theory should be skipped
+    if hasattr(model, 'should_skip_based_on_category'):
+        if model.should_skip_based_on_category(categories_filter):
+            # Return validation results indicating skip
+            return {
+                'status': 'skipped',
+                'reason': 'UGM category not included in filter',
+                'theory_name': model.name,
+                'category': getattr(model, 'category', 'unknown'),
+                'constraints_passed': False,
+                'validation_results': []
+            }
+    
     # Create theory-specific subdirectory
     sanitized_name = model.name.replace(" ", "_").replace("(", "").replace(")", "").replace("=", "_").replace(",", "").replace(".", "_")
     theory_dir = os.path.join(main_run_dir, sanitized_name)
@@ -1902,6 +1921,33 @@ def process_and_evaluate_theory(
 ):
     """Process and evaluate a single theory with all visualizations and validations."""
     print(f"\n--- Evaluating: {model.name} ---")
+    
+    # <reason>chain: Check if UGM theory should be skipped based on category filter</reason>
+    # Get categories filter from args
+    categories_filter = None
+    if hasattr(args, 'category') and args.category:
+        categories_filter = [args.category]
+    
+    # Check if theory should be skipped
+    if hasattr(model, 'should_skip_based_on_category'):
+        if model.should_skip_based_on_category(categories_filter):
+            # Create a minimal result indicating skip
+            validation_results = {
+                'status': 'skipped',
+                'reason': 'UGM category not included in filter',
+                'theory_name': model.name,
+                'category': getattr(model, 'category', 'unknown')
+            }
+            
+            # Save the skip status
+            sanitized_name = model.name.replace(" ", "_").replace("(", "").replace(")", "").replace("=", "_").replace(",", "").replace(".", "_")
+            theory_dir = os.path.join(main_run_dir, sanitized_name)
+            os.makedirs(theory_dir, exist_ok=True)
+            
+            with open(os.path.join(theory_dir, 'validation_results.json'), 'w') as f:
+                json.dump(validation_results, f, indent=4)
+                
+            return validation_results
     
     # Create theory-specific subdirectory
     sanitized_name = model.name.replace(" ", "_").replace("(", "").replace(")", "").replace("=", "_").replace(",", "").replace(".", "_")
@@ -3825,7 +3871,11 @@ def main():
             )
             
             validation_results[instance.name] = validation_result
-            if validation_result['passed']:
+            
+            # Handle skipped theories separately
+            if validation_result.get('status') == 'skipped':
+                print(f"  → Skipped: {instance.name} ({validation_result.get('reason', 'Unknown reason')})")
+            elif validation_result['passed']:
                 theories_that_passed.append((instance, validation_result['theory_dir']))
             else:
                 theories_that_failed.append((instance, validation_result['theory_dir']))

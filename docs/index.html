@@ -637,7 +637,7 @@
                         <svg class="w-5 h-5 text-ink" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 0c-6.626 0-12 5.373-12 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                         </svg>
-                        <span class="text-sm font-mono text-ink">★ NEW</span>
+                        <span class="text-sm font-mono text-ink">★ 5 (new)</span>
                         <!-- Tooltip -->
                         <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-ink text-paper text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                             Star on GitHub
@@ -797,16 +797,16 @@
                 </div>
                 
                 <div class="flex items-center justify-center gap-6 mt-8">
-                    <button onclick="openSetupModal()" class="bg-accent hover:bg-muted text-paper text-lg px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-sm interactive w-64 h-14 flex items-center justify-center inline-block">
-                        Get Started
-                    </button>
-                    <div class="bg-paper border border-muted/30 text-ink rounded-lg px-6 py-3 shadow-sm flex items-center justify-center gap-3 hover:shadow-md transition-shadow w-64 h-14">
+                    <a href="documentation.html?tab=leaderboard" class="bg-accent hover:bg-muted text-paper text-lg px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-sm interactive w-64 h-14 flex items-center justify-center inline-block">
+                        Leaderboard
+                    </a>
+                    <button onclick="openSetupModal()" class="bg-paper border border-muted/30 text-ink rounded-lg px-6 py-3 shadow-sm flex items-center justify-center gap-3 hover:shadow-md transition-shadow w-64 h-14 cursor-pointer hover:border-accent/50">
                         <span class="inline-block w-2 h-2 rounded-full bg-success animate-pulse flex-shrink-0"></span>
                         <div class="flex items-center gap-2">
                             <div class="text-lg font-serif font-bold" id="albert-counter">501</div>
                             <div class="text-sm text-muted font-medium font-semibold">Currently Researching</div>
                         </div>
-                    </div>
+                    </button>
                 </div>
                 
                 
@@ -980,8 +980,8 @@
                     </h3>
                     
                     <p class="text-2xl text-center font-serif text-ink mb-16 max-w-4xl mx-auto">
-                        Each visualization shows particle trajectories near black holes under different gravitational theories. 
-                        Click any image to explore the full analysis.
+                        Each visualization compares particle trajectories between quantum gravity theories and general relativity near black holes. 
+                        Click any image to view the full leaderboard.
                     </p>
                     
                     <!-- Scrollable Gallery -->
@@ -999,28 +999,12 @@
                         <!-- Scrollable container -->
                         <div class="overflow-x-auto pb-6 scrollbar-thin scrollbar-thumb-accent/20 scrollbar-track-transparent">
                             <div class="flex gap-6 w-max">
-                                                            <!-- Schwarzschild (Baseline) -->
-                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Schwarzschild/viz/all_particles_unified.png" target="_blank" class="group block flex-shrink-0">
+                                <!-- Einstein Asymmetric -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Schwarzschild/viz/all_particles_unified.png" 
-                                                 alt="Schwarzschild particle trajectories" 
-                                                 class="w-80 h-64 object-cover">
-                                            <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        </div>
-                                        <div class="p-4">
-                                            <h5 class="font-bold text-accent mb-1">Schwarzschild (Baseline)</h5>
-                                            <p class="text-sm text-muted">Einstein's 1916 solution • Pure gravity</p>
-                                        </div>
-                                    </div>
-                                </a>
-                                
-                                                            <!-- Einstein Asymmetric -->
-                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Einstein_Asymmetric_α_0_0e+00/viz/all_particles_unified.png" target="_blank" class="group block flex-shrink-0">
-                                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
-                                        <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Einstein_Asymmetric_α_0_0e+00/viz/all_particles_unified.png" 
-                                                 alt="Einstein Asymmetric theory trajectories" 
+                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Einstein_Asymmetric_α_0_0e+00/viz/trajectory_comparison.png" 
+                                                 alt="Einstein Asymmetric theory trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </div>
@@ -1031,66 +1015,82 @@
                                     </div>
                                 </a>
                                 
-                                                            <!-- Quantum Corrected -->
-                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Quantum_Corrected_α_+0_00/viz/all_particles_unified.png" target="_blank" class="group block flex-shrink-0">
+                                <!-- Post-Quantum Gravity -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Quantum_Corrected_α_+0_00/viz/all_particles_unified.png" 
-                                                 alt="Quantum Corrected theory trajectories" 
+                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Post-Quantum_Gravity_γ_1_00e-02/viz/trajectory_comparison.png" 
+                                                 alt="Post-Quantum Gravity trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </div>
                                         <div class="p-4">
-                                            <h5 class="font-bold text-quantum mb-1">Quantum Corrections</h5>
-                                            <p class="text-sm text-muted">Loop quantum gravity effects • Planck scale</p>
+                                            <h5 class="font-bold text-quantum mb-1">Post-Quantum Gravity</h5>
+                                            <p class="text-sm text-muted">Beyond quantum corrections • Novel approach</p>
                                         </div>
                                     </div>
                                 </a>
                                 
-                                                            <!-- String Theory -->
-                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/String_Theory_α'_1_0e-66/viz/all_particles_unified.png" target="_blank" class="group block flex-shrink-0">
+                                <!-- Regularised Core QG -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/String_Theory_α'_1_0e-66/viz/all_particles_unified.png" 
-                                                 alt="String Theory trajectories" 
+                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison.png" 
+                                                 alt="Regularised Core QG trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </div>
                                         <div class="p-4">
-                                            <h5 class="font-bold text-warning mb-1">String Theory</h5>
-                                            <p class="text-sm text-muted">11D vibrations • α' corrections</p>
+                                            <h5 class="font-bold text-warning mb-1">Regularised Core QG</h5>
+                                            <p class="text-sm text-muted">Singularity removal • Quantum corrections</p>
                                         </div>
                                     </div>
                                 </a>
                                 
-                                                            <!-- UGM -->
-                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/viz/all_particles_unified.png" target="_blank" class="group block flex-shrink-0">
+                                <!-- Phase Transition QG -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/viz/all_particles_unified.png" 
-                                                 alt="Unified Gauge Model trajectories" 
+                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison.png" 
+                                                 alt="Phase Transition QG trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </div>
                                         <div class="p-4">
-                                            <h5 class="font-bold text-success mb-1">Unified Gauge Model</h5>
-                                            <p class="text-sm text-muted">4 U(1) fields • Partanen-Tulkki 2025</p>
+                                            <h5 class="font-bold text-success mb-1">Phase Transition QG</h5>
+                                            <p class="text-sm text-muted">Critical phenomena • Spacetime phase transitions</p>
                                         </div>
                                     </div>
                                 </a>
                                 
-                                                            <!-- Entropic Gravity -->
-                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Entropic‑Λσβ/viz/all_particles_unified.png" target="_blank" class="group block flex-shrink-0">
+                                <!-- Weyl-EM Quantum -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_042153_float64/Entropic‑Λσβ/viz/all_particles_unified.png" 
-                                                 alt="Entropic Gravity trajectories" 
+                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Weyl-EM_Quantum_ω_0_00/viz/trajectory_comparison.png" 
+                                                 alt="Weyl-EM Quantum trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </div>
                                         <div class="p-4">
-                                            <h5 class="font-bold text-extreme mb-1">Entropic Gravity</h5>
-                                            <p class="text-sm text-muted">Information theory • Emergent spacetime</p>
+                                            <h5 class="font-bold text-extreme mb-1">Weyl-EM Quantum</h5>
+                                            <p class="text-sm text-muted">Conformal symmetry • EM unification</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                
+                                <!-- Newtonian Limit -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
+                                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
+                                        <div class="relative">
+                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Newtonian_Limit/viz/trajectory_comparison.png" 
+                                                 alt="Newtonian Limit trajectory comparison" 
+                                                 class="w-80 h-64 object-cover">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        </div>
+                                        <div class="p-4">
+                                            <h5 class="font-bold text-accent mb-1">Newtonian Limit</h5>
+                                            <p class="text-sm text-muted">Classical baseline • Low velocity approximation</p>
                                         </div>
                                     </div>
                                 </a>
@@ -1117,7 +1117,7 @@
                                 
                                 <p class="text-lg text-ink leading-relaxed">
                                     A potential area of exploration: using reinforcement learning to steer code generated quantum formulas 
-                                    into baseline checkpoints. By treating gravitational theories as learnable policies, 
+                                    into baseline checkpoints and measuring loss, increasing checkpoint distance and size as you go. By treating gravitational theories as learnable policies, 
                                     we could discover paths between quantum mechanics and general relativity.
                                 </p>
                                 <div class="bg-paper rounded-xl p-6 border border-code-border">

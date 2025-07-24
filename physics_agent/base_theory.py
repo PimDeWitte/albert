@@ -304,6 +304,36 @@ class GravitationalTheory:
             Tuple of (g_tt, g_rr, g_pp, g_tp) metric components
         """
 
+    def should_skip_based_on_category(self, categories_filter: list[str] | None = None) -> bool:
+        """
+        Check if this theory should be skipped based on category filtering.
+        
+        <reason>chain: UGM is 8-dimensional and computationally expensive, only run when explicitly requested</reason>
+        
+        Args:
+            categories_filter: List of categories to run. If None, runs all categories.
+            
+        Returns:
+            True if theory should be skipped, False otherwise
+        """
+        # If no filter specified, run all theories
+        if categories_filter is None:
+            return False
+            
+        # Check if this theory's category is UGM
+        if hasattr(self, 'category') and self.category == 'ugm':
+            # UGM requires explicit opt-in due to computational cost
+            if 'ugm' not in categories_filter:
+                print(f"  ⚠️  WARNING: Skipping {self.name} - UGM theories are 8-dimensional and computationally expensive.")
+                print(f"      To run UGM theories, use --category ugm or include 'ugm' in categories list.")
+                return True
+                
+        # For non-UGM theories, check if their category is in the filter
+        if hasattr(self, 'category') and self.category not in categories_filter:
+            return True
+            
+        return False
+
     def get_cache_tag(self, N_STEPS: int, precision_tag: str, r0_tag: int) -> str:
         """Generate a unique cache tag for this theory configuration."""
         # Default implementation
