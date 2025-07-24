@@ -7,6 +7,10 @@ from __future__ import annotations
 import importlib
 import sys
 import os
+
+# Add the parent directory to Python path to find physics_agent module
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import argparse
 import json
 import torch
