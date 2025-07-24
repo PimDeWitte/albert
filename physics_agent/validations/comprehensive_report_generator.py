@@ -67,7 +67,7 @@ class ComprehensiveReportGenerator:
                 'web_reference': '[1919 Eclipse - light bending](https://en.wikipedia.org/wiki/Eddington_experiment)',
                 'validator_file': 'physics_agent/validations/light_deflection_validator.py'
             },
-            'PPN Parameters Validator': {
+            'PPN Parameter Validator': {  # <reason>chain: Match actual validator name</reason>
                 'description': 'Computes Parameterized Post-Newtonian parameters (γ, β, etc.) and compares to Solar System constraints.',
                 'purpose': 'Comprehensive weak-field test framework. Tests all deviations from GR systematically.',
                 'reference_links': '[Will (2018) PPN review](https://link.springer.com/article/10.12942/lrr-2014-4)',
@@ -87,7 +87,7 @@ class ComprehensiveReportGenerator:
                 'web_reference': '[Black hole shadow](https://en.wikipedia.org/wiki/Black_hole#Photon_sphere)',
                 'validator_file': 'physics_agent/validations/photon_sphere_validator.py'
             },
-            'GW Waveform Validator': {
+            'Gravitational Wave Validator': {  # <reason>chain: Match actual validator name</reason>
                 'description': 'Generates gravitational wave inspiral waveforms and cross-correlates with GR templates.',
                 'purpose': 'Tests dynamic strong-field gravity. Validates theory against LIGO/Virgo observations.',
                 'reference_links': '[Abbott et al. (2016) GW150914](https://doi.org/10.1103/PhysRevLett.116.061102)',
@@ -366,9 +366,9 @@ class ComprehensiveReportGenerator:
             # Classical observational validators (tested)
             'Mercury Precession Validator': ('MercuryPrecessionValidator', 'observational'),
             'Light Deflection Validator': ('LightDeflectionValidator', 'observational'),
-            'PPN Parameters Validator': ('PpnValidator', 'observational'),
-            'Photon Sphere Validator': ('PhotonSphereValidator', 'observational'),
-            'GW Waveform Validator': ('GwValidator', 'observational'),
+            'PPN Parameter Validator': ('PPN Parameter Validator', 'observational'),  # <reason>chain: Fixed to match actual validator name</reason>
+            'Photon Sphere Validator': ('Photon Sphere Validator', 'observational'),
+            'Gravitational Wave Validator': ('Gravitational Wave Validator', 'observational'),  # <reason>chain: Fixed to match actual validator name</reason>
             # 'Hawking Radiation Validator': removed - not tested
             # 'Cosmology Validator': removed - not tested
             # 'PsrJ0740Validator': removed - test exists but not in main suite
@@ -471,9 +471,9 @@ class ComprehensiveReportGenerator:
             # For cases where validator name doesn't go through the mapping
             # e.g., PpnValidator, PhotonSphereValidator, GwValidator
             class_names = {
-                'PPN Parameters Validator': 'PpnValidator',
+                'PPN Parameter Validator': 'PpnValidator',  # <reason>chain: Fixed to match actual validator name</reason>
                 'Photon Sphere Validator': 'PhotonSphereValidator',
-                'GW Waveform Validator': 'GwValidator',
+                'Gravitational Wave Validator': 'GwValidator',  # <reason>chain: Fixed to match actual validator name</reason>
                 'CMB Power Spectrum Prediction Validator': 'CMBPowerSpectrumValidator',
                 'Primordial GWs Validator': 'PrimordialGWsValidator'
             }

@@ -388,7 +388,8 @@ def main():
         print(f"Results saved to: {run_dir}")
         
         # Continue discovery loop if API key is available
-        if api is not None and os.environ.get(f'{args.api_provider.upper()}_API_KEY'):
+        api_key = os.environ.get(f'{args.api_provider.upper()}_API_KEY')
+        if api_key:
             print("\n--- Starting Continuous Discovery Loop ---")
             print("Press Ctrl+C to exit at any time.")
             
@@ -408,7 +409,8 @@ def main():
                     theory_code = generate_theory_via_api(
                         args.api_provider, 
                         new_prompt, 
-                        baseline_theories
+                        baseline_names,
+                        args.theory
                     )
                     
                     if theory_code:
