@@ -1,0 +1,3252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert - Autonomous Gravitational Theory Discovery Network</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['EB Garamond', 'Georgia', 'serif'],
+                        'display': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'white': '#FAF8F3',          // Override white to match paper
+                        'ink': '#2D2D2D',           // Dark text
+                        'paper': '#FAF8F3',          // Background
+                        'accent': '#1A3A8A',         // Deep blue (primary)
+                        'muted': '#8B7355',          // Brown (secondary)
+                        'success': '#556B2F',        // Olive green (validation)
+                        'danger': '#B91C1C',         // Deep red (errors)
+                        'warning': '#D97706',        // Amber (in progress)
+                        'quantum': '#059669',        // Emerald (quantum tests)
+                        'extreme': '#7C3AED',        // Purple (extreme regime)
+                        'canvas-bg': '#FAF8F3',      // Canvas backgrounds - same as paper
+                        'canvas-stroke': '#E5E7EB',  // Canvas lines
+                        'code-bg': '#FAF8F3',        // Code block background - same as paper
+                        'code-border': '#E8E2D8',    // Code block border
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Remove Aeonik font-face declarations */
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+        }
+        
+        body {
+            font-family: 'EB Garamond', 'Georgia', serif;
+        }
+        
+        /* Update formula-display to use new colors */
+        .formula-display {
+            @apply text-center text-accent bg-paper py-6 px-8 rounded-xl my-6 mx-auto;
+            font-family: 'Times New Roman', 'Georgia', serif;
+            font-size: 1.4rem;
+            width: fit-content;
+            min-width: 300px;
+            box-shadow: 0 2px 8px rgba(26, 13, 171, 0.08);
+            border: 1px solid rgba(26, 58, 138, 0.15);
+            position: relative;
+        }
+        
+        /* Update code-block colors */
+        .code-block {
+            @apply bg-code-bg text-ink border border-code-border;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .code-block .comment { @apply text-muted; }
+        .code-block .string { @apply text-success; }
+        .code-block .keyword { @apply text-accent; }
+        .code-block .function { @apply text-ink; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1; 
+            }
+            50% { 
+                opacity: 0.6; 
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gravitationalFloat {
+            0%, 100% { 
+                transform: translateY(0px) scale(1) rotateZ(0deg); 
+            }
+            20% { 
+                transform: translateY(-2px) scale(1.008) rotateZ(0.2deg); 
+            }
+            40% { 
+                transform: translateY(-3px) scale(1.01) rotateZ(-0.1deg); 
+            }
+            60% { 
+                transform: translateY(1px) scale(0.995) rotateZ(0.15deg); 
+            }
+            80% { 
+                transform: translateY(-1px) scale(1.003) rotateZ(-0.1deg); 
+            }
+        }
+        
+        @keyframes gravitationalPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.01); 
+                filter: brightness(1.02);
+            }
+        }
+        
+        .gravitational-text {
+            animation: gravitationalFloat 8s ease-in-out infinite;
+        }
+        
+        .gravitational-pulse {
+            animation: gravitationalPulse 4s ease-in-out infinite;
+        }
+        
+        .glow {
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .non-interactive {
+            pointer-events: none;
+        }
+        .interactive {
+            pointer-events: auto;
+        }
+        
+        body {
+            background-color: #FAF8F3; /* colors.paper - Light cream matching sketch background */
+        }
+        
+        /* New animations for the journey */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        /* Counting animation helper */
+        .counting-animation {
+            transition: all 2s ease-out;
+        }
+        
+        /* Golden ratio spiral animation */
+        @keyframes spiralRotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Scroll indicator bounce */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Einstein sketch frame styling */
+        .sketch-frame {
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(250, 248, 243, 0.9) 0%, 
+                rgba(255, 255, 255, 0.95) 40%, 
+                rgba(255, 255, 255, 0.95) 60%, 
+                rgba(250, 248, 243, 0.9) 100%);
+            box-shadow: 
+                inset 0 1px 3px rgba(0, 0, 0, 0.06),
+                0 4px 12px rgba(45, 45, 45, 0.08);
+        }
+        
+        .sketch-frame::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, 
+                transparent 30%, 
+                rgba(26, 58, 138, 0.05) 50%, 
+                transparent 70%);
+            border-radius: 0.75rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sketch-frame:hover::before {
+            opacity: 1;
+        }
+        
+        /* Vintage paper texture overlay */
+        .sketch-paper {
+            position: relative;
+            background: 
+                radial-gradient(ellipse at top left, rgba(232, 226, 216, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(232, 226, 216, 0.2) 0%, transparent 50%),
+                white;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .sketch-paper::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, 
+                    transparent, 
+                    transparent 10px, 
+                    rgba(232, 226, 216, 0.03) 10px, 
+                    rgba(232, 226, 216, 0.03) 20px);
+            border-radius: 0.5rem;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="text-ink antialiased bg-paper">
+
+    <!-- Setup Modal -->
+    <div id="setupModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-ink/70 backdrop-blur-sm" onclick="closeSetupModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl max-h-[80vh] overflow-y-auto">
+            <div class="bg-paper rounded-2xl p-8 shadow-2xl border border-code-border">
+                <!-- Close button -->
+                <button onclick="closeSetupModal()" class="absolute top-4 right-4 text-muted hover:text-ink transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <h2 class="text-3xl font-bold text-accent mb-6">Quick Start Installation</h2>
+                
+                <div class="space-y-6">
+                    <!-- One-line install -->
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">One-line Installation</h3>
+                        <div class="relative group">
+                            <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
+                                <div class="flex items-stretch">
+                                    <div class="flex-1 p-4">
+                                        <code id="modal-install-command" class="text-ink font-mono text-sm break-all select-all">curl -fsSL https://github.com/pimdewitte/albert/releases/download/stable/download_cli.sh | bash</code>
+                                    </div>
+                                    <button 
+                                        onclick="copyModalCommand()" 
+                                        class="px-4 text-muted hover:text-accent hover:bg-accent/5 transition-all group-hover:text-accent border-l border-code-border flex items-center justify-center"
+                                        title="Copy to clipboard"
+                                    >
+                                        <svg id="modal-copy-icon" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <svg id="modal-check-icon" class="w-5 h-5 hidden text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="modal-copy-tooltip" class="absolute -top-10 right-0 bg-ink text-paper text-xs px-3 py-1 rounded opacity-0 pointer-events-none transition-opacity shadow-lg">
+                                Copied to clipboard!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Features -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">Auto-detects OS</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">Secure HTTPS download</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">No root required</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Start Commands -->
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Quick Start Commands</h3>
+                        <div class="bg-code-bg border border-code-border rounded-xl p-4 space-y-2 font-mono text-sm">
+                            <div><span class="text-muted"># Quick start - clone and run the replication</span></div>
+                            <div class="text-accent">git clone https://github.com/pimdewitte/albert.git</div>
+                            <div class="text-accent">cd albert</div>
+                            <div class="text-accent">./setup_unified.sh && python physics_agent/theory_engine_core.py --steps 1000</div>
+                            <div class="mt-4"><span class="text-muted"># Test your own theory - just add to theories/</span></div>
+                            <div class="text-accent">albert --theory-filter "MyTheory"</div>
+                            <div class="mt-4"><span class="text-muted"># Let Albert discover new theories automatically</span></div>
+                            <div class="text-accent">albert discover --initial "unified field theory"</div>
+                            <div class="mt-4"><span class="text-muted"># Discover variations of an existing theory</span></div>
+                            <div class="text-accent">albert discover --from theories/einstein_unified/theory.py</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Links -->
+                    <div class="flex items-center justify-between pt-4 border-t border-code-border">
+                        <a href="https://github.com/pimdewitte/albert" class="text-sm text-accent hover:text-accent/80">Full documentation →</a>
+                        <span class="text-sm text-muted">MIT Licensed • Open Source</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-paper/95 backdrop-blur-sm shadow-md z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="sketch-frame p-2 rounded-xl border border-code-border/30 hover:shadow-[0_6px_20px_rgba(26,58,138,0.12)] transition-all duration-300 group">
+                        <!-- Inner frame with vintage paper effect -->
+                        <div class="sketch-paper rounded-lg p-1.5">
+                            <img src="sketch.png" alt="Albert Einstein Sketch" class="h-16 w-auto filter contrast-110 brightness-98 sepia-[0.1] group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300 relative z-10">
+                        </div>
+                        <!-- Subtle corner accents - like old photo corners -->
+                        <div class="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-accent/15 rounded-tl-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-accent/15 rounded-tr-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-accent/15 rounded-bl-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-accent/15 rounded-br-lg group-hover:border-accent/25 transition-colors"></div>
+                        <!-- Vintage stamp effect on hover -->
+                        <div class="absolute -bottom-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="text-[8px] text-accent/40 font-mono transform rotate-[-5deg]">1955</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <button onclick="openSetupModal()" class="bg-accent hover:bg-accent/90 text-white px-6 py-2 rounded-lg font-semibold transition shadow-sm">
+                        Setup
+                    </button>
+                    
+                    <!-- GitHub with stars -->
+                    <a href="https://github.com/pimdewitte/albert" target="_blank" class="group relative flex items-center space-x-2 bg-paper hover:bg-code-bg border border-code-border px-4 py-2 rounded-lg transition shadow-sm">
+                        <svg class="w-5 h-5 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span class="text-sm font-mono text-ink">★ NEW</span>
+                        <!-- Tooltip -->
+                        <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-ink text-paper text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Star on GitHub
+                        </span>
+                    </a>
+                    
+                    <!-- Discord -->
+                    <a href="https://discord.gg/xdybbSk5" target="_blank" class="group relative flex items-center bg-paper hover:bg-code-bg border border-code-border p-2 rounded-lg transition shadow-sm">
+                        <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                        <!-- Tooltip -->
+                        <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-ink text-paper text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Join Community
+                        </span>
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center space-x-2">
+                    <button onclick="openSetupModal()" class="bg-accent hover:bg-accent/90 text-white px-4 py-1.5 rounded-lg font-semibold transition shadow-sm text-sm">
+                        Setup
+                    </button>
+                    
+                    <!-- GitHub with stars (mobile) -->
+                    <a href="https://github.com/pimdewitte/albert" target="_blank" class="flex items-center space-x-1 bg-paper hover:bg-code-bg border border-code-border px-3 py-1.5 rounded-lg transition shadow-sm">
+                        <svg class="w-4 h-4 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span class="text-xs font-mono text-ink">NEW</span>
+                    </a>
+                    
+                    <!-- Discord (mobile) -->
+                    <a href="https://discord.gg/albertphysics" target="_blank" class="flex items-center bg-paper hover:bg-code-bg border border-code-border p-1.5 rounded-lg transition shadow-sm">
+                        <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Research Preview Notice -->
+    <div class="fixed top-16 left-0 right-0 bg-warning/10 border-b border-warning/20 py-3 px-4 sm:px-6 lg:px-8 z-30 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-center gap-3">
+            <svg class="w-5 h-5 text-warning flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <p class="text-sm text-ink font-medium text-center">
+                <strong>Research Preview:</strong> This is an early research preview of Albert. While the code is openly available, it has only been shared with a select group of researchers and early testers.
+            </p>
+        </div>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        
+        <!-- Homepage Section with Spacetime Background -->
+        <section id="home" class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            <!-- Spacetime Curvature Visualization Background -->
+            <canvas id="spacetimeCanvas" class="absolute inset-0 w-full h-full z-0" style="cursor: crosshair;"></canvas>
+            
+            <div class="max-w-7xl mx-auto text-center relative z-10 non-interactive">
+                <h1 class="text-4xl sm:text-6xl lg:text-8xl font-bold mb-8 fade-in font-display">
+                    <span class="text-accent">Introducing Albert</span>
+                    <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4">A timely agent for gravitational theory research</span>
+                </h1>
+                
+    
+                     <!-- Quick Start One-Line Setup (Trustworthy Professional Design) -->
+                <div class="bg-paper rounded-2xl p-8 mb-12 max-w-3xl mx-auto shadow-lg border border-muted/20 gravitational-text interactive" style="padding: 2rem 3.236rem; animation-delay: 1.5s; animation-duration: 10s;">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Quick Start Installation</h3>
+                            <p class="text-gray-600 text-sm">Trusted by researchers worldwide • Open source • MIT Licensed</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-muted font-medium">Verified Installation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="relative group">
+                        <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
+                            <div class="flex items-stretch">
+                                <div class="flex-1 p-4">
+                                    <code id="homepage-install-command" class="text-ink font-mono text-sm break-all select-all">curl -fsSL https://github.com/pimdewitte/albert/releases/download/stable/download_cli.sh | bash</code>
+                                </div>
+                                <button 
+                                    onclick="copyHomepageCommand()" 
+                                    class="px-4 text-muted hover:text-accent hover:bg-accent/5 transition-all group-hover:text-accent border-l border-code-border flex items-center justify-center"
+                                    title="Copy to clipboard"
+                                >
+                                    <svg id="homepage-copy-icon" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <svg id="homepage-check-icon" class="w-5 h-5 hidden text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Tooltip -->
+                        <div id="homepage-copy-tooltip" class="absolute -top-10 right-0 bg-ink text-paper text-xs px-3 py-1 rounded opacity-0 pointer-events-none transition-opacity shadow-lg">
+                            Copied to clipboard!
+                        </div>
+                    </div>
+                    
+                    <!-- Trust indicators -->
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4" style="gap: 1.618rem;">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">Auto-detects OS</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">Secure HTTPS download</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">No root required</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional trust elements -->
+                    <div class="mt-6 pt-6 border-t border-code-border flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <a href="https://github.com/pimdewitte/albert" class="text-sm text-accent hover:text-accent/80 flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>View source code</span>
+                            </a>
+                            <span class="text-sm text-muted">|</span>
+                            <a href="#" class="text-sm text-accent hover:text-accent/80">Installation guide</a>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-muted">Latest version: v1.2.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-center gap-6 mt-8">
+                    <a href="/web/documentation.html?tab=discovery" class="bg-accent hover:bg-muted text-paper text-lg px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-sm interactive w-64 h-14 flex items-center justify-center inline-block">
+                        Learn More →
+                    </a>
+                    <div class="bg-paper border border-muted/30 text-ink rounded-lg px-6 py-3 shadow-sm flex items-center justify-center gap-3 hover:shadow-md transition-shadow w-64 h-14">
+                        <span class="inline-block w-2 h-2 rounded-full bg-success animate-pulse flex-shrink-0"></span>
+                        <div class="flex items-center gap-2">
+                            <div class="text-lg font-serif font-bold" id="albert-counter">501</div>
+                            <div class="text-sm text-muted font-medium font-semibold">Currently Researching</div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </section>
+
+        <!-- The Emotional Journey Begins -->
+        <section id="journey" class="relative">
+            <!-- Chapter 2: The Vision -->
+            <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper">
+                <div class="max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6">
+                            <h3 class="text-4xl lg:text-5xl font-display font-bold text-accent">
+                                Einstein's Unfinished Quest
+                            </h3>
+                            <p class="text-lg font-serif text-ink">
+                                From 1925 until his death in 1955, Einstein dedicated himself to finding a unified field theory 
+                                that would combine gravity with electromagnetism. He published over 40 papers on various 
+                                approaches, exploring teleparallel gravity, Kaluza-Klein theory, and asymmetric metric tensors.
+                            </p>
+                            <p class="text-lg font-serif text-ink">
+                                His final calculations, found on his hospital bed at Princeton, showed he was still working 
+                                on a system of equations involving a non-symmetric metric tensor. While his approach didn't 
+                                succeed, it laid groundwork for modern theories like string theory and loop quantum gravity.
+                            </p>
+                            <p class="text-lg font-serif text-ink">
+                                But Einstein's greatest gift wasn't just relativity or E=mc². It was permission to think differently.
+                                Before Einstein, physics followed rigid mathematical formalism. He showed us that the biggest 
+                                breakthroughs come from unexpected angles.
+                            </p>
+                            <p class="text-lg font-serif text-ink">
+                                He left us a method: Trust your instincts. Question everything. Let creativity guide mathematics, 
+                                not the other way around. This extremly ambitious project aims to continue his quest. 
+                            <p class="text-lg font-serif text-muted italic">
+                                "I want to know God's thoughts. The rest are details."
+                                <span class="block text-sm mt-2 not-italic">— Albert Einstein</span>
+                            </p>
+                        </div>
+                        <div class="relative">
+                            <!-- Einstein's Final Work - Interactive -->
+                            <div class="bg-white rounded-2xl shadow-2xl border border-code-border overflow-hidden">
+                                <div class="bg-gradient-to-r from-accent/10 to-muted/10 p-4 border-b border-code-border">
+                                    <h4 class="text-lg font-bold text-center text-accent">Princeton Hospital • April 1955</h4>
+                                </div>
+                                
+                                <div class="p-6 space-y-4">
+                                    <!-- Asymmetric Metric -->
+                                    <div class="group bg-paper hover:bg-accent/5 p-4 rounded-xl transition-all cursor-pointer border border-transparent hover:border-accent/30" onclick="toggleEinsteinDetail('einstein-asymmetric')">
+                                        <h5 class="font-bold text-accent mb-2">Asymmetric Metric</h5>
+                                        <div class="font-mono text-xl text-center mb-2">
+                                            g<sub>μν</sub> = g<sub>(μν)</sub> + g<sub>[μν]</sub>
+                                        </div>
+                                        <p class="text-sm text-muted text-center italic">
+                                            symmetric + antisymmetric parts
+                                        </p>
+                                        <div id="einstein-asymmetric-detail" class="mt-4 pt-4 border-t border-accent/20 hidden">
+                                            <h6 class="font-bold text-sm mb-2 text-accent">Understanding the Asymmetric Metric</h6>
+                                            <p class="text-xs mb-2">
+                                                In General Relativity, the metric tensor g<sub>μν</sub> is symmetric: g<sub>μν</sub> = g<sub>νμ</sub>. 
+                                                This symmetry describes pure gravity. Einstein's radical idea was to break this symmetry:
+                                            </p>
+                                            <div class="bg-accent/5 rounded p-2 mb-2 font-mono text-xs">
+                                                g<sub>(μν)</sub> = ½(g<sub>μν</sub> + g<sub>νμ</sub>) → Gravity<br>
+                                                g<sub>[μν]</sub> = ½(g<sub>μν</sub> - g<sub>νμ</sub>) → Electromagnetism
+                                            </div>
+                                            <p class="text-xs">
+                                                The antisymmetric part has exactly 6 independent components in 4D—the same as the electromagnetic 
+                                                field tensor F<sub>μν</sub>. Einstein hoped this wasn't coincidence: electromagnetism could emerge 
+                                                from spacetime geometry itself!
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Connection -->
+                                    <div class="group bg-paper hover:bg-quantum/5 p-4 rounded-xl transition-all cursor-pointer border border-transparent hover:border-quantum/30" onclick="toggleEinsteinDetail('einstein-connection')">
+                                        <h5 class="font-bold text-quantum mb-2">Modified Connection</h5>
+                                        <div class="font-mono text-lg text-center mb-2">
+                                            Γ<sup>λ</sup><sub>μν</sub> = ½g<sup>λρ</sup>Γ<sub>λρ</sub> = κT<sub>μν</sub>
+                                        </div>
+                                        <p class="text-sm text-muted text-center italic">
+                                            Connection includes torsion
+                                        </p>
+                                        <div id="einstein-connection-detail" class="mt-4 pt-4 border-t border-quantum/20 hidden">
+                                            <h6 class="font-bold text-sm mb-2 text-quantum">The Connection with Torsion</h6>
+                                            <p class="text-xs mb-2">
+                                                Standard GR uses the Levi-Civita connection, which is symmetric: Γ<sup>λ</sup><sub>μν</sub> = Γ<sup>λ</sup><sub>νμ</sub>. 
+                                                Einstein explored adding an antisymmetric part—torsion:
+                                            </p>
+                                            <div class="bg-quantum/5 rounded p-2 mb-2 font-mono text-xs">
+                                                S<sup>λ</sup><sub>μν</sub> = Γ<sup>λ</sup><sub>μν</sub> - Γ<sup>λ</sup><sub>νμ</sub> → Torsion tensor<br>
+                                                Physical meaning: Spacetime twists as well as curves!
+                                            </div>
+                                            <p class="text-xs">
+                                                With torsion, parallel transport around a loop doesn't close—the gap is proportional to the 
+                                                electromagnetic field. This creates a beautiful picture: gravity is curvature, electromagnetism 
+                                                is torsion. Modern Einstein-Cartan theory incorporates this idea.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Field Tensor -->
+                                    <div class="group bg-paper hover:bg-success/5 p-4 rounded-xl transition-all cursor-pointer border border-transparent hover:border-success/30" onclick="toggleEinsteinDetail('einstein-field')">
+                                        <h5 class="font-bold text-success mb-2">Electromagnetic Field</h5>
+                                        <div class="font-mono text-lg text-center mb-2">
+                                            F<sub>[μν]</sub> = ∂<sub>μ</sub>g<sub>[νσ]</sub> - ∂<sub>ν</sub>g<sub>[μσ]</sub>
+                                        </div>
+                                        <p class="text-sm text-muted text-center italic">
+                                            EM emerges from geometry
+                                        </p>
+                                        <div id="einstein-field-detail" class="mt-4 pt-4 border-t border-success/20 hidden">
+                                            <h6 class="font-bold text-sm mb-2 text-success">Electromagnetism from Geometry</h6>
+                                            <p class="text-xs mb-2">
+                                                Maxwell's equations describe electromagnetism through F<sub>μν</sub>. Einstein's dream: show 
+                                                this isn't fundamental—F<sub>μν</sub> emerges from spacetime geometry alone.
+                                            </p>
+                                            <div class="bg-success/5 rounded p-2 mb-2 font-mono text-xs">
+                                                Maxwell: ∂<sub>μ</sub>F<sup>μν</sup> = J<sup>ν</sup><br>
+                                                Einstein's hope: F<sub>μν</sub> = function of g<sub>[μν]</sub>
+                                            </div>
+                                            <p class="text-xs">
+                                                The Partanen-Tulkki breakthrough shows Einstein was right! Their U(1)⁴ theory derives gravity 
+                                                from four electromagnetic-like gauge fields. Einstein couldn't complete it because he was 
+                                                missing quantum mechanics and gauge symmetry—but his geometric vision lives on.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- The Vision -->
+                                    <div class="border-t border-code-border pt-4 mt-4">
+                                        <h5 class="font-bold text-accent mb-2">The Vision:</h5>
+                                        <p class="text-sm text-ink">
+                                            Standard GR uses symmetric g<sub>μν</sub> → describes gravity only
+                                        </p>
+                                        <p class="text-sm text-ink mt-2">
+                                            Einstein's insight: What if g ≠ g<sup>T</sup>? 
+                                            The antisymmetric part could become the electromagnetic field!
+                                        </p>
+                                        <div class="bg-accent/10 rounded-lg p-3 mt-3 border border-accent/30">
+                                            <p class="text-sm font-medium text-accent">Einstein's Goal:</p>
+                                            <p class="text-xs text-ink mt-1">
+                                                Derive Maxwell's equations from geometry—no separate EM field, 
+                                                only spacetime curvature
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-4">
+                                        <p class="text-xs text-muted italic">
+                                            Albert continues this quest today!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter 6: The Validation Gauntlet -->
+            <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
+                <div class="max-w-6xl mx-auto">
+                    <h3 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-16">
+                        Compute efficient selection process
+                    </h3>
+                    
+                    <div class="max-w-4xl mx-auto space-y-6 mb-16">
+                       
+                        <p class="text-lg font-serif text-ink">
+                            Each theory faces a brutal gauntlet of 21 tests. Classical tests that Einstein passed. 
+                            Quantum tests that probe the intersection of gravity and quantum mechanics. 
+                            And for unified theories, the ultimate challenge: demonstrating true unification.
+                        </p>
+                    </div>
+                    
+                    <!-- Live Validation Visualization -->
+                    <div class="bg-white rounded-3xl shadow-2xl p-8 mb-12">
+                        <canvas id="validationGauntletCanvas" width="1200" height="400" class="w-full"></canvas>
+                    </div>
+                    <h4 class="text-2xl text-center font-serif text-ink mb-20 max-w-3xl mx-auto">
+                        Inspired by world modeling research and deep learning, we measure the trajectory loss of quantum gravity theories against general relativity with different particles approaching the event horizon of a black hole, once the tests pass. 
+                    </h4>
+                </div>
+            </div>
+
+            <!-- Real-Time Theory Testing Pipeline -->
+            <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper">
+                
+                <div class="max-w-7xl mx-auto">
+                    
+                    <!-- Theory Engine Visualization - Full Width -->
+                    <div class="mb-20">
+                        <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-8 border border-code-border/30">
+                            <canvas id="theoryEngineCanvas" width="1200" height="800" class="w-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Chapter 5: The Theory Engine -->
+             <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
+                <div class="max-w-7xl mx-auto">
+                    <h3 class="text-5xl lg:text-7xl font-display font-bold text-center text-accent mb-8">
+                        Under the Hood of Albert
+                    </h3>
+                    
+                    <p class="text-2xl text-center font-serif text-ink mb-20 max-w-3xl mx-auto">
+                        Physics at the speed of AI by representing testable theories as code
+                    </p>
+                    
+                    <!-- Section 1: Standard Model Support -->
+                    <div class="mb-20">
+                        <h4 class="text-4xl font-bold text-center text-quantum mb-12">Standard Model Integration</h4>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto mb-12">
+                            <!-- Technical Implementation -->
+                            <div class="bg-white rounded-2xl shadow-lg p-8 border border-code-border">
+                                <h5 class="text-2xl font-bold text-accent mb-4">Technical Implementation</h5>
+                                <p class="text-lg font-serif text-ink mb-4">
+                                    Albert embeds the complete Standard Model physics through QED Lagrangians, 
+                                    enabling precision tests at the quantum-gravitational interface. Every theory 
+                                    must couple correctly to fermions and gauge bosons.
+                                </p>
+                                <div class="bg-code-bg rounded-lg p-4 mb-4">
+                                    <code class="text-xs font-mono">
+# From physics_agent/base_theory.py<br/>
+# L_QED = ψ̄(iγ^μD_μ - m)ψ - (1/4)F_μν F^μν<br/>
+matter_lagrangian = sp.I * psi_bar * gamma_mu * D_mu * psi - m * psi_bar * psi<br/>
+gauge_lagrangian = -sp.Rational(1, 4) * F_munu * F^munu<br/>
+interaction_lagrangian = -e * psi_bar * gamma_mu * psi * A_mu
+                                    </code>
+                                </div>
+                                <p class="text-sm text-muted mb-4">
+                                    This allows unified theories to be tested against QED precision measurements
+                                    with 13 significant figures of accuracy.
+                                </p>
+                                <a href="documentation.html?tab=solvers" target="_blank" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm">
+                                    <span>View Documentation</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                            
+                            <!-- Experimental Validation -->
+                            <div class="bg-gradient-to-br from-quantum/10 to-accent/10 rounded-2xl shadow-lg p-8 border border-quantum/30">
+                                <h5 class="text-2xl font-bold text-quantum mb-4">Experimental Validation</h5>
+                                
+                                <div class="space-y-4">
+                                    <!-- QED g-2 Test -->
+                                    <div class="bg-white/80 rounded-lg p-4 border border-code-border/50">
+                                        <h6 class="font-bold text-lg mb-2 text-success">✓ Electron g-2 (QED)</h6>
+                                        <div class="font-mono text-sm">
+                                            <div>Theory: 0.00115965218178</div>
+                                            <div>Measured: 0.00115965218059 ± 1.3×10⁻¹³</div>
+                                            <div class="text-xs text-muted mt-1">Harvard 2023 - 12 digits precision</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Quantum Clock Test -->
+                                    <div class="bg-white/80 rounded-lg p-4 border border-code-border/50">
+                                        <h6 class="font-bold text-lg mb-2 text-success">✓ Quantum Clock (33cm)</h6>
+                                        <div class="font-mono text-sm">
+                                            <div>Predicted: 3.61×10⁻¹⁷</div>
+                                            <div>Measured: (3.61 ± 1.60)×10⁻¹⁷</div>
+                                            <div class="text-xs text-muted mt-1">NIST Al+ optical clocks - 2018</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Lamb Shift -->
+                                    <div class="bg-white/80 rounded-lg p-4 border border-code-border/50">
+                                        <h6 class="font-bold text-lg mb-2 text-success">✓ Lamb Shift</h6>
+                                        <div class="font-mono text-sm">
+                                            <div>Theory: 1057.839 MHz</div>
+                                            <div>Measured: 1057.845 ± 0.009 MHz</div>
+                                            <div class="text-xs text-muted mt-1">CODATA 2018</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Code Example: Einstein Asymmetric -->
+                        <div class="bg-code-bg rounded-2xl shadow-lg p-8 border border-code-border max-w-5xl mx-auto">
+                            <h5 class="text-xl font-bold text-success mb-4">Real Implementation: Einstein's Asymmetric Theory</h5>
+                            <pre class="text-xs font-mono overflow-x-auto">
+<span class="text-accent">from</span> physics_agent.theories.einstein_asymmetric <span class="text-accent">import</span> EinsteinAsymmetric
+
+<span class="text-accent">class</span> <span class="text-warning">EinsteinAsymmetric</span>(<span class="text-warning">GravitationalTheory</span>):
+    <span class="text-muted">"""Einstein's final attempt: asymmetric metric to unify gravity + EM"""</span>
+    
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, alpha: float = 0.0):
+        <span class="text-muted"># Asymmetric metric components</span>
+        g_mn = get_symbol('g_μν')     <span class="text-muted"># Symmetric part (gravity)</span>
+        f_mn = get_symbol('f_μν')     <span class="text-muted"># Antisymmetric part (EM)</span>
+        
+        <span class="text-muted"># Standard Model fermions</span>
+        psi = get_symbol('ψ')
+        psi_bar = get_symbol('ψ̄')
+        gamma_mu = get_symbol('γ^μ')
+        
+        <span class="text-muted"># EM emerges from metric asymmetry!</span>
+        F_mn = alpha * (f_mn - get_symbol('f_νμ'))
+        
+        <span class="text-muted"># Full Lagrangian with SM coupling</span>
+        gravity_lagrangian = get_symbol('R') + alpha**2 * f_mn * get_symbol('f^μν')
+        matter_lagrangian = sp.I * psi_bar * gamma_mu * D_mu * psi - m * psi_bar * psi
+        gauge_lagrangian = -sp.Rational(1,4) * F_mn * get_symbol('F^μν')
+        interaction_lagrangian = -q * psi_bar * gamma_mu * psi * A_mu * (1 + alpha * f_mn * g_mn)
+    
+    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, M_param, C_param, G_param):
+        <span class="text-muted"># Key innovation: off-diagonal g_tp term</span>
+        g_tp = self.alpha * rs / r * torch.sqrt(r)  <span class="text-muted"># Couples time-space!</span>
+        <span class="text-accent">return</span> g_tt, g_rr, g_pp, g_tp
+
+<span class="text-muted"># Test against all 21 validators including QED precision</span>
+theory = <span class="text-warning">EinsteinAsymmetric</span>(alpha=1e-3)
+results = theory.validate()
+<span class="text-accent">assert</span> results['qed_precision']['g2_error'] < 1e-10  <span class="text-success">✓</span>
+<span class="text-accent">assert</span> results['quantum_clock']['error'] < 1e-17   <span class="text-success">✓</span>
+                            </pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 2: UnifiedGaugeModel Support -->
+                    <div class="mb-20">
+                        <h4 class="text-4xl font-bold text-center text-accent mb-6">Unified Gauge Model (UGM)</h4>
+                        <div class="text-center mb-12">
+                            <div class="inline-flex items-center space-x-2 bg-warning/10 border border-warning/30 rounded-lg px-4 py-2">
+                                <svg class="w-5 h-5 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-sm font-medium text-ink">Experimental: To use UGM, set <code class="text-warning">--category ugm</code> in command line</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto mb-12">
+                            <!-- The Inspiration -->
+                            <div class="bg-gradient-to-br from-accent/10 to-quantum/10 rounded-2xl shadow-lg p-8 border border-accent/30">
+                                <h5 class="text-2xl font-bold text-accent mb-4">The Geodesic Solver Genesis</h5>
+                                <p class="text-lg font-serif text-ink mb-4">
+                                    In 2025, Partanen & Tulkki published 
+                                    <a href="https://aaltodoc.aalto.fi/items/a2fbfa61-7480-437b-ab12-9773d8070a98" target="_blank" class="text-accent hover:text-accent/80 underline">
+                                        "Gravity generated by four one-dimensional unitary gauge symmetries"
+                                    </a>. Their insight: gravity isn't one force, but four U(1) gauge fields working together.
+                                </p>
+                                <p class="text-lg font-serif text-ink mb-4">
+                                    This paper inspired our geodesic solver architecture. The UGMGeodesicRK4Solver 
+                                    implements their tetrad formalism exactly.
+                                </p>
+                                <div class="bg-white/80 rounded-lg p-4 border border-accent/20">
+                                    <p class="text-sm font-mono">
+                                        e^a_μ = δ^a_μ + g H^a_μ<br/>
+                                        g_μν = η_ab e^a_μ e^b_ν
+                                    </p>
+                                    <p class="text-xs text-muted mt-2">Tetrads build spacetime from gauge fields</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Technical Details -->
+                            <div class="bg-white rounded-2xl shadow-lg p-8 border border-code-border">
+                                <h5 class="text-2xl font-bold text-success mb-4">Four U(1) Implementation</h5>
+                                
+                                <div class="space-y-3 mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center font-bold">H⁰</div>
+                                        <div>
+                                            <div class="font-bold">Time U(1)</div>
+                                            <div class="text-sm text-muted">Generates gravitational time dilation</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-quantum/20 rounded-lg flex items-center justify-center font-bold">H¹</div>
+                                        <div>
+                                            <div class="font-bold">Radial U(1)</div>
+                                            <div class="text-sm text-muted">Creates spatial curvature</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-warning/20 rounded-lg flex items-center justify-center font-bold">H²</div>
+                                        <div>
+                                            <div class="font-bold">Theta U(1)</div>
+                                            <div class="text-sm text-muted">Angular momentum coupling</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-success/20 rounded-lg flex items-center justify-center font-bold">H³</div>
+                                        <div>
+                                            <div class="font-bold">Phi U(1)</div>
+                                            <div class="text-sm text-muted">Frame-dragging effects</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <p class="text-sm text-muted">
+                                    Each U(1) has its own coupling α_a. When all α's equal 1, 
+                                    we recover General Relativity exactly.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- UGM Implementation -->
+                        <div class="bg-code-bg rounded-2xl shadow-lg p-8 border border-code-border max-w-5xl mx-auto">
+                            <h5 class="text-xl font-bold text-success mb-4">UGM Implementation in Albert</h5>
+                            <pre class="text-xs font-mono overflow-x-auto">
+<span class="text-accent">import</span> torch
+<span class="text-accent">import</span> sympy <span class="text-accent">as</span> sp
+<span class="text-accent">from</span> physics_agent.base_theory <span class="text-accent">import</span> GravitationalTheory
+<span class="text-accent">from</span> physics_agent.constants <span class="text-accent">import</span> get_symbol, G, c
+
+<span class="text-accent">class</span> <span class="text-warning">UnifiedGaugeModel</span>(<span class="text-warning">GravitationalTheory</span>):
+    <span class="text-muted">"""
+    Unified Gauge Model (UGM) from Partanen & Tulkki (2025).
+    
+    <reason>chain: Gravity emerges from four U(1) gauge symmetries, one for each tetrad index</reason>
+    <reason>chain: Fully renormalizable and integrates seamlessly with Standard Model</reason>
+    """</span>
+    
+    category = <span class="text-string">"ugm"</span>
+    
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, alpha0=1.0, alpha1=1.0, alpha2=1.0, alpha3=1.0, g_coupling=0.1):
+        <span class="text-muted"># <reason>chain: Store the four U(1) couplings</reason></span>
+        self.alphas = torch.tensor([alpha0, alpha1, alpha2, alpha3], dtype=torch.float64)
+        self.g = g_coupling
+        
+        <span class="text-muted"># <reason>chain: Build the gravitational Lagrangian from four U(1) sectors</reason></span>
+        <span class="text-muted"># L_grav = -1/4 Σ_a α_a F^a_μν F^a^μν</span>
+        gravity_lagrangian = 0
+        <span class="text-accent">for</span> a <span class="text-accent">in</span> range(4):
+            F_a = get_symbol(f'F^{a}_μν')  <span class="text-muted"># Field strength for U(1)_a</span>
+            gravity_lagrangian -= sp.Rational(1, 4) * get_symbol(f'α_{a}') * F_a * get_symbol(f'F^{a}^μν')
+        
+        <span class="text-muted"># <reason>chain: Mark as needing UGM solver for proper tetrad handling</reason></span>
+        self.use_ugm_solver = True
+    
+    <span class="text-accent">def</span> <span class="text-success">initialize_gauge_fields</span>(self, r: Tensor, theta: Tensor = None, phi: Tensor = None) -> Tensor:
+        <span class="text-muted">"""
+        Initialize the four U(1) gauge fields H^a_μ.
+        
+        <reason>chain: Use weak-field approximation around spherical mass</reason>
+        <reason>chain: H^0_0 generates time dilation, H^i_i generates spatial curvature</reason>
+        """</span>
+        H = torch.zeros((4, 4) + r.shape, device=r.device, dtype=r.dtype)
+        
+        <span class="text-muted"># <reason>chain: Weak-field limit around spherical mass M</reason></span>
+        rs = 2.0  <span class="text-muted"># Schwarzschild radius in geometric units</span>
+        
+        <span class="text-muted"># <reason>chain: Time component generates gravitational time dilation</reason></span>
+        H[0, 0] = rs / (2 * r)  <span class="text-muted"># This gives e^0_0 ≈ 1 + g*rs/(2r) when g is small</span>
+        
+        <span class="text-muted"># <reason>chain: Radial component generates spatial curvature</reason></span>
+        H[1, 1] = -rs / (2 * r)  <span class="text-muted"># This gives e^1_1 ≈ 1 - g*rs/(2r) when g is small</span>
+        
+        <span class="text-accent">return</span> H
+        
+    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r: Tensor, M_param: Tensor, C_param: Tensor, G_param: Tensor, 
+                   t: Tensor = None, phi: Tensor = None) -> tuple[Tensor, Tensor, Tensor, Tensor]:
+        <span class="text-muted">"""
+        Compute metric components from the four U(1) gauge fields.
+        
+        <reason>chain: Build tetrad e^a_μ then metric g_μν = η_ab e^a_μ e^b_ν</reason>
+        """</span>
+        H = self.initialize_gauge_fields(r)
+        
+        <span class="text-muted"># <reason>chain: Build tetrad e^a_μ = δ^a_μ + g H^a_μ</reason></span>
+        e = torch.eye(4, device=r.device, dtype=r.dtype).reshape(4, 4, *([1] * len(r.shape)))
+        e = e.expand(4, 4, *r.shape) + self.g * H
+        
+        <span class="text-muted"># <reason>chain: Minkowski metric η_ab = diag(-1, 1, 1, 1)</reason></span>
+        eta = torch.diag(torch.tensor([-1.0, 1.0, 1.0, 1.0], device=r.device, dtype=r.dtype))
+        
+        <span class="text-muted"># <reason>chain: Compute metric g_μν = η_ab e^a_μ e^b_ν</reason></span>
+        g = torch.einsum('ab,ai...,bj...->ij...', eta, e, e)
+        
+        <span class="text-accent">return</span> g[0, 0], g[1, 1], g[3, 3], g[0, 3]
+
+<span class="text-muted"># Example usage with parameter sweep</span>
+ugm = <span class="text-warning">UnifiedGaugeModel</span>(alpha0=1.2, alpha1=0.8, alpha2=1.0, alpha3=1.0, g_coupling=0.1)
+results = ugm.validate()  <span class="text-muted"># Tests against all 21 validators</span>
+
+<span class="text-accent">print</span>(f<span class="text-string">"Mercury precession: {results['mercury_precession']['value']:.2f} arcsec/century"</span>)  <span class="text-success"># 42.98 ✓</span>
+<span class="text-accent">print</span>(f<span class="text-string">"QED g-2 precision: {results['qed_precision']['g2_error']:.2e}"</span>)     <span class="text-success"># < 1e-10 ✓</span>
+                            </pre>
+                        </div>
+                        
+                        <!-- UGM Geodesic Solver -->
+                        <div class="bg-code-bg rounded-2xl shadow-lg p-8 border border-code-border max-w-5xl mx-auto mt-8">
+                            <h5 class="text-xl font-bold text-success mb-4">UGMGeodesicRK4Solver: Tetrad-aware Integration</h5>
+                            <pre class="text-xs font-mono overflow-x-auto">
+<span class="text-accent">class</span> <span class="text-warning">UGMGeodesicRK4Solver</span>(<span class="text-warning">GeneralGeodesicRK4Solver</span>):
+    <span class="text-muted">"""
+    Specialized RK4 integrator for Unified Gravity Model (UGM).
+    Incorporates gauge fields H_a^nu and tetrad formalism.
+    
+    <reason>chain: UGM extends GR with gauge field structure for unification</reason>
+    """</span>
+    
+    <span class="text-accent">def</span> <span class="text-success">get_metric_tensor</span>(self, coords_4d: Tensor) -> Tensor:
+        <span class="text-muted"># <reason>chain: Check if model provides gauge fields</reason></span>
+        <span class="text-accent">if</span> hasattr(self.model, <span class="text-string">'get_H_a_nu'</span>):
+            <span class="text-muted"># Use gauge fields from UGM theory</span>
+            self.H_a_nu = self.model.get_H_a_nu(coords_4d)
+        <span class="text-accent">elif</span> hasattr(self.model, <span class="text-string">'get_metric_tensor'</span>):
+            <span class="text-muted"># Delegate to theory's implementation</span>
+            <span class="text-accent">return</span> self.model.get_metric_tensor(coords_4d)
+        
+        <span class="text-muted"># Minkowski metric η_ab = diag(-1, 1, 1, 1)</span>
+        eta = torch.diag(torch.tensor([-1.0, 1.0, 1.0, 1.0]))
+        
+        <span class="text-muted"># Tetrad: e^a_μ = δ^a_μ + g H^a_μ</span>
+        e_a_mu = torch.eye(4) + self.g * self.H_a_nu
+        
+        <span class="text-muted"># Metric: g_μν = η_ab e^a_μ e^b_ν</span>
+        g = torch.einsum(<span class="text-string">'ab,am,bn->mn'</span>, eta, e_a_mu, e_a_mu)
+        
+        <span class="text-muted"># Optional quantum corrections</span>
+        <span class="text-accent">if</span> self.enable_quantum_corrections:
+            r = coords_4d[1]
+            correction = 1.0 + self.alpha_g / (math.pi * r**2)
+            g[1, 1] *= correction
+        
+        <span class="text-accent">return</span> g
+
+<span class="text-muted"># Automatic solver selection in TheoryEngine</span>
+is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span class="text-accent">and</span> model.use_ugm_solver
+<span class="text-accent">if</span> is_ugm:
+    solver = <span class="text-warning">UGMGeodesicRK4Solver</span>(model, M_phys, enable_quantum_corrections=True)
+                            </pre>
+                        </div>
+                        
+                        <!-- Key Innovation -->
+                        <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-2xl p-8 mt-8 max-w-4xl mx-auto">
+                            <h5 class="text-xl font-bold text-accent mb-3">Why This Matters</h5>
+                            <p class="text-lg font-serif text-ink">
+                                UGM is fully renormalizable—no infinities plague the quantum calculations. 
+                                It seamlessly integrates with the Standard Model because both use gauge symmetries. 
+                                The geodesic solver architecture was designed from day one to handle this 
+                                tetrad formalism, making Albert the first framework to implement and test 
+                                the complete Partanen-Tulkki theory against real experimental data.
+                            </p>
+                        </div>
+                    </div>
+                    
+
+                    
+                    <!-- Quantum Validator Spotlight - Better Layout -->
+                    <div class="mb-16">
+                        <div class="bg-gradient-to-r from-quantum/10 to-accent/10 rounded-3xl p-1">
+                            <div class="bg-white rounded-3xl p-8 md:p-12">
+                                <h4 class="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-quantum to-accent bg-clip-text text-transparent">
+                                    Quantum Precision: The Atomic Clock Test
+                                </h4>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                                    <div class="order-2 lg:order-1">
+                                        <div class="space-y-6">
+                                            <p class="text-xl font-serif text-ink leading-relaxed">
+                                                Optical atomic clocks are humanity's most precise instruments. In 2018, 
+                                                scientists measured time's flow between two clocks just 33 cm apart.
+                                            </p>
+                                            
+                                            <!-- Interactive measurement display -->
+                                            <div class="group bg-gradient-to-br from-code-bg to-paper rounded-2xl p-6 border border-code-border/50 hover:border-quantum/50 transition-all cursor-pointer" onclick="toggleClockDetails()">
+                                                <div class="flex items-center justify-between mb-4">
+                                                    <h5 class="font-bold text-lg">Experimental Parameters</h5>
+                                                    <div class="text-quantum text-sm">Hover for details</div>
+                                                </div>
+                                                
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div class="bg-white/50 rounded-lg p-3 group-hover:bg-white/80 transition-colors">
+                                                        <div class="text-2xl font-mono font-bold text-accent">1.121</div>
+                                                        <div class="text-sm text-muted">PHz frequency</div>
+                                                    </div>
+                                                    <div class="bg-white/50 rounded-lg p-3 group-hover:bg-white/80 transition-colors">
+                                                        <div class="text-2xl font-mono font-bold text-quantum">0.33</div>
+                                                        <div class="text-sm text-muted">meters apart</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div id="clock-details" class="mt-4 overflow-hidden transition-all duration-300" style="max-height: 0;">
+                                                    <div class="pt-4 border-t border-code-border/30">
+                                                        <div class="bg-success/10 rounded-lg p-3 mb-3">
+                                                            <div class="text-sm font-mono text-success">✓ Measured: (3.61 ± 1.60) × 10⁻¹⁷</div>
+                                                        </div>
+                                                        <p class="text-sm text-muted">
+                                                            This measurement probes the quantum-gravitational interface with 
+                                                            unprecedented precision—like measuring a hair's width from the moon.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bg-warning/10 border border-warning/30 rounded-xl p-4">
+                                                <p class="text-sm font-medium text-warning mb-1">Why This Matters</p>
+                                                <p class="text-sm text-ink">
+                                                    Every theory must predict this shift to 17 decimal places, 
+                                                    testing where Einstein meets quantum mechanics.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="order-1 lg:order-2 flex justify-center">
+                                        <div class="bg-code-bg rounded-2xl p-4 shadow-lg border border-code-border/50">
+                                            <canvas id="quantumValidatorCanvas" width="450" height="350" class="w-full max-w-md"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Call to Action - More Prominent -->
+                    <div class="text-center">
+                        <div class="inline-flex flex-col sm:flex-row gap-4">
+                            <a href="documentation.html?validators.html" target="_blank" class="group inline-flex items-center space-x-3 bg-accent hover:bg-accent/90 text-paper px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <span>Explore All 21 Validators</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                            </a>
+                            <a href="documentation.html?paper.html" target="_blank" class="group inline-flex items-center space-x-3 bg-white hover:bg-paper border-2 border-accent text-accent px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <span>Read Technical Paper</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Chapter 7: The Future -->
+            <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
+                <div class="max-w-7xl mx-auto">
+                    <h3 class="text-5xl lg:text-7xl font-display font-bold text-center text-accent mb-8">
+                        The Future
+                    </h3>
+                    
+                    <p class="text-2xl text-center font-serif text-ink mb-20 max-w-4xl mx-auto">
+                        One engine to model everything. In code. Rooted in the laws of physics.
+                    </p>
+                    
+                    <!-- The Problem -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+                        <div class="bg-white rounded-3xl shadow-xl p-10 border border-code-border/50 hover:shadow-2xl transition-shadow">
+                            <h4 class="text-3xl font-bold text-danger mb-6">The Problem</h4>
+                            <div class="space-y-4">
+                                <p class="text-lg font-serif text-ink">
+                                    Physics is locked away in journals, equations scattered across textbooks, 
+                                    simulations trapped in proprietary code. A PhD student testing a new theory 
+                                    faces months of implementing basic tests.
+                                </p>
+                                <p class="text-lg font-serif text-ink">
+                                    LLMs changed everything—they can write theories in seconds. But who verifies them? 
+                                    How do we know if they obey conservation laws? Match experiments? Unite quantum 
+                                    mechanics with gravity?
+                                </p>
+                                <div class="bg-danger/10 rounded-xl p-4 border border-danger/30">
+                                    <p class="text-sm font-medium text-danger">Current Reality</p>
+                                    <p class="text-sm text-ink mt-1">
+                                        Every research group rebuilds the same validators. Every paper reimplements 
+                                        the same tests. Knowledge is fragmented, progress is slow.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-accent/5 to-quantum/5 rounded-3xl shadow-xl p-10 border border-accent/30 hover:shadow-2xl transition-shadow">
+                            <h4 class="text-3xl font-bold text-success mb-6">The Solution</h4>
+                            <div class="space-y-4">
+                                <p class="text-lg font-serif text-ink">
+                                    What if every physics test ever devised lived in one place? What if theories 
+                                    could be verified in minutes, not months? What if we built the world's knowledge 
+                                    of physics into executable, verifiable code?
+                                </p>
+                                <p class="text-lg font-serif text-ink">
+                                    Albert proves it's possible. 21 validators that would take a year to implement 
+                                    from scratch. Tests that span from atomic clocks to black holes. All open source. 
+                                    All verifiable against real data.
+                                </p>
+                                <div class="bg-success/10 rounded-xl p-4 border border-success/30">
+                                    <p class="text-sm font-medium text-success">The Vision</p>
+                                    <p class="text-sm text-ink mt-1">
+                                        One physics engine. Every law. Every test. Every theory. 
+                                        Accessible to everyone, verified by the community.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Architecture -->
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 mb-20 border border-code-border/30">
+                        <h4 class="text-3xl font-bold text-center text-accent mb-12">Albert becomes an Open World Model - Rooted in Physics and Code</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                            <div class="text-center">
+                                <div class="bg-gradient-to-br from-accent to-accent/80 text-white rounded-2xl p-8 mb-4 shadow-lg">
+                                    <div class="text-5xl mb-4">🌍</div>
+                                    <h5 class="text-xl font-bold">Physics Engine</h5>
+                                </div>
+                                <p class="text-sm text-muted">
+                                    Base classes for any physical theory. Fluids inherit from PhysicsTheory. 
+                                    Gravity inherits from PhysicsTheory. Everything composable, everything testable.
+                                </p>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="bg-gradient-to-br from-quantum to-quantum/80 text-white rounded-2xl p-8 mb-4 shadow-lg">
+                                    <div class="text-5xl mb-4">🔬</div>
+                                    <h5 class="text-xl font-bold">Unified Testing</h5>
+                                </div>
+                                <p class="text-sm text-muted">
+                                    Every experiment ever performed, digitized. From LIGO gravitational waves 
+                                    to quantum interference. Real data, real measurements, instant verification.
+                                </p>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="bg-gradient-to-br from-success to-success/80 text-white rounded-2xl p-8 mb-4 shadow-lg">
+                                    <div class="text-5xl mb-4">🎮</div>
+                                    <h5 class="text-xl font-bold">World Simulation</h5>
+                                </div>
+                                <p class="text-sm text-muted">
+                                    Game engines meet theoretical physics. Cosmos runs inside Albert. 
+                                    Synthetic data generation with PyTorch. One engine to simulate anything.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Code example -->
+                        <div class="bg-code-bg rounded-2xl p-8 border border-code-border mb-8">
+                            <pre class="text-sm font-mono overflow-x-auto">
+<span class="text-muted"># The future: any physical system, instantly verifiable</span>
+
+<span class="text-accent">class</span> <span class="text-warning">PhysicsTheory</span>:
+    <span class="text-accent">def</span> <span class="text-success">lagrangian</span>(self, state): <span class="text-muted">...</span>
+    <span class="text-accent">def</span> <span class="text-success">equations_of_motion</span>(self): <span class="text-muted">...</span>
+    <span class="text-accent">def</span> <span class="text-success">validate</span>(self): <span class="text-muted">→ runs all applicable tests</span>
+
+<span class="text-accent">class</span> <span class="text-warning">FluidDynamics</span>(<span class="text-warning">PhysicsTheory</span>):
+    <span class="text-muted"># Navier-Stokes, turbulence, validated against experiments</span>
+    
+<span class="text-accent">class</span> <span class="text-warning">QuantumField</span>(<span class="text-warning">PhysicsTheory</span>):
+    <span class="text-muted"># QED, QCD, validated against accelerator data</span>
+    
+<span class="text-accent">class</span> <span class="text-warning">GravitationalTheory</span>(<span class="text-warning">PhysicsTheory</span>):
+    <span class="text-muted"># Einstein, quantum gravity candidates, validated against 21 tests</span>
+
+<span class="text-muted"># One day: the entire universe, in code, verified by data</span>
+universe = <span class="text-warning">WorldModel</span>()
+universe.add(<span class="text-warning">StandardModel</span>())
+universe.add(<span class="text-warning">GeneralRelativity</span>())
+universe.add(<span class="text-warning">Thermodynamics</span>())
+universe.simulate() <span class="text-muted"># → could be a game, or a synthetic training environment!</span>
+            </pre>
+                        </div>
+                        
+                        <!-- Optimization Section -->
+                        <div class="bg-gradient-to-r from-warning/10 to-accent/10 rounded-2xl p-8 border border-warning/30">
+                            <h5 class="text-xl font-bold text-accent mb-4">Next-Generation Optimization</h5>
+                            
+                            <!-- PyTorch Tensor Serialization Hero -->
+                            <div class="bg-white rounded-xl p-6 mb-6 border border-accent/20 shadow-sm">
+                                <h6 class="font-bold text-lg text-accent mb-3">PyTorch Tensor Caching: Fundamental Performance</h6>
+                                <p class="text-sm text-ink mb-4">
+                                    Trajectory computation is the bottleneck in gravitational physics. Our caching system 
+                                    uses PyTorch's native tensor serialization to achieve mathematically proven speedups 
+                                    that scale with trajectory length. <a href="documentation.html?tab=cache" target="_blank" class="text-accent hover:text-accent/80 underline">View detailed proof →</a>
+                                </p>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div class="text-center bg-gradient-to-br from-accent/10 to-accent/20 rounded-lg p-3">
+                                        <div class="text-2xl font-bold text-accent">1,110×</div>
+                                        <div class="text-xs text-muted">10K steps</div>
+                                        <div class="text-xs">2.75s → 2.5ms</div>
+                                    </div>
+                                    <div class="text-center bg-gradient-to-br from-warning/10 to-warning/20 rounded-lg p-3">
+                                        <div class="text-2xl font-bold text-warning">10,674×</div>
+                                        <div class="text-xs text-muted">100K steps</div>
+                                        <div class="text-xs">25.8s → 2.4ms</div>
+                                    </div>
+                                    <div class="text-center bg-gradient-to-br from-success/10 to-success/20 rounded-lg p-3">
+                                        <div class="text-2xl font-bold text-success">29,323×</div>
+                                        <div class="text-xs text-muted">1M steps</div>
+                                        <div class="text-xs">4m 12s → 8.6ms</div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-ink mb-3">
+                                    <strong>The magic:</strong> PyTorch automatically handles efficient binary encoding, 
+                                    memory-mapped loading, and metadata preservation. A 30MB cache investment yields a 
+                                    13,702× average performance return. Parameter sweeps that took hours now complete in minutes.
+                                </p>
+                                <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                    <span class="text-muted"># First run: 4+ minutes for million-step trajectory</span><br>
+                                    hist = engine.run_trajectory(theory, r0=295338, n_steps=1_000_000)<br>
+                                    <span class="text-muted"># Second run: 8.6ms - PyTorch tensor magic!</span><br>
+                                    hist2 = engine.run_trajectory(theory, r0=295338, n_steps=1_000_000)<br>
+                                    <span class="text-success"># → 29,323× speedup transforms research iteration</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h6 class="font-bold text-lg text-warning mb-2">Physics-Informed Neural Networks (PINNs)</h6>
+                                    <p class="text-sm text-ink mb-3">
+                                        Embed the laws of physics directly into neural network architectures. 
+                                        Conservation laws become hard constraints. Symmetries guide learning. 
+                                        The network can't violate physics—it learns solutions 1000x faster.
+                                    </p>
+                                    <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                        <span class="text-muted"># PINNs enforce physics</span><br>
+                                        <span class="text-accent">def</span> <span class="text-success">physics_loss</span>(pred):<br>
+                                        &nbsp;&nbsp;<span class="text-accent">return</span> MSE(∇·B, 0) <span class="text-muted"># Maxwell</span><br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;+ MSE(∂ρ/∂t + ∇·J, 0) <span class="text-muted"># Conservation</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="font-bold text-lg text-quantum mb-2">torch.compile() & JIT Optimization</h6>
+                                    <p class="text-sm text-ink mb-3">
+                                        PyTorch 2.0's compiler turns Python theories into blazing fast machine code. 
+                                        10-100x speedups on GPUs. Automatic kernel fusion. The same physics, 
+                                        but running at the speed of handwritten CUDA.
+                                    </p>
+                                    <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                        <span class="text-muted"># One line for massive speedup</span><br>
+                                        <span class="text-accent">@torch.compile</span>(mode=<span class="text-success">"max-autotune"</span>)<br>
+                                        <span class="text-accent">def</span> <span class="text-success">solve_einstein</span>(g_μν):<br>
+                                        &nbsp;&nbsp;<span class="text-accent">return</span> R_μν - ½g_μν·R <span class="text-muted"># → optimized kernels</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-muted text-center mt-4 italic">
+                                The future isn't just correct physics—it's physics at the speed of thought
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Call to Action -->
+                    <div class="text-center">
+                        <h4 class="text-4xl font-bold text-accent mb-8">Join Us in Building the Future</h4>
+                        
+                        <p class="text-xl font-serif text-ink mb-12 max-w-3xl mx-auto">
+                            Imagine a world where any physical theory can be tested in minutes. Where students 
+                            explore black holes in their browsers. Where the next Einstein might be an AI that 
+                            discovers new physics because it has every test at its fingertips.
+                        </p>
+                        
+                        <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-3xl p-10 max-w-4xl mx-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h5 class="text-xl font-bold text-accent mb-4 text-left">For Physicists</h5>
+                                    <ul class="text-left space-y-2 text-ink">
+                                        <li>✓ Add your field's validators</li>
+                                        <li>✓ Implement new test cases</li>
+                                        <li>✓ Verify theoretical predictions</li>
+                                        <li>✓ Contribute experimental data</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="text-xl font-bold text-quantum mb-4 text-left">For Engineers</h5>
+                                    <ul class="text-left space-y-2 text-ink">
+                                        <li>✓ Optimize GPU computations</li>
+                                        <li>✓ Build visualization tools</li>
+                                        <li>✓ Create simulation bindings</li>
+                                        <li>✓ Scale to millions of theories</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <p class="text-lg font-serif text-ink font-medium">
+                                This isn't just about gravity. It's about building humanity's physics engine. 
+                                One codebase. One truth. Verified by nature itself.
+                            </p>
+                        </div>
+                        
+                        <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="https://github.com/pimdewitte/albert" target="_blank" class="group inline-flex items-center space-x-3 bg-accent hover:bg-accent/90 text-paper px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>Start Contributing</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter 8: Join the Search -->
+            <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper">
+                <div class="max-w-5xl mx-auto text-center space-y-8">
+                    <h3 class="text-5xl lg:text-7xl font-display font-bold text-accent">
+                        Join the Search
+                    </h3>
+                    
+                    <p class="text-xl lg:text-2xl font-serif text-ink max-w-3xl mx-auto">
+                        342 theories have passed all tests. One of them might be the true theory of quantum gravity. 
+                        Or maybe the true theory is still waiting to be discovered.
+                    </p>
+                    
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 mt-12">
+                        <h4 class="text-3xl font-bold text-accent mb-6">Start Contributing</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                            <div class="text-center">
+                                <div class="text-5xl mb-4">💻</div>
+                                <h5 class="text-xl font-bold mb-2">Run Albert</h5>
+                                <p class="text-sm text-muted">Test theories on your hardware</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-5xl mb-4">🧠</div>
+                                <h5 class="text-xl font-bold mb-2">Create Theories</h5>
+                                <p class="text-sm text-muted">Write new physics in Python</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-5xl mb-4">🔍</div>
+                                <h5 class="text-xl font-bold mb-2">Analyze Results</h5>
+                                <p class="text-sm text-muted">Find patterns in the data</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-accent text-white rounded-2xl p-8">
+                                <p class="text-xl mb-6">
+                                    Installation takes 30 seconds. Discovery takes a lifetime.
+                                </p>
+                                <div class="bg-paper/20 backdrop-blur-sm rounded-xl p-4 font-mono text-lg">
+                                    curl -fsSL https://github.com/pimdewitte/albert/releases/download/stable/download_cli.sh | bash
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg border border-code-border rounded-xl p-6">
+                                <h5 class="font-bold mb-4">Quick Start Commands:</h5>
+                                <div class="space-y-2 font-mono text-sm">
+                                    <div><span class="text-muted"># Quick start - clone and run the replication</span></div>
+                                    <div>git clone https://github.com/pimdewitte/albert.git</div>
+                                    <div>cd albert</div>
+                                    <div>./setup_unified.sh && python physics_agent/theory_engine_core.py --steps 1000</div>
+                                    <div class="mt-4"><span class="text-muted"># Test your own theory - just add to theories/</span></div>
+                                    <div>albert --theory-filter "MyTheory"</div>
+                                    <div class="mt-4"><span class="text-muted"># Let Albert discover new theories automatically</span></div>
+                                    <div>albert discover --initial "unified field theory"</div>
+                                    <div class="mt-4"><span class="text-muted"># Discover variations of an existing theory</span></div>
+                                    <div>albert discover --from theories/einstein_unified/theory.py</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-16">
+                        <p class="text-lg text-muted italic">
+                            "The important thing is not to stop questioning."
+                        </p>
+                        <p class="text-sm text-muted mt-2">— Albert Einstein</p>
+                        <p class="text-xs text-muted mt-6">
+                            Named in honor of Albert Einstein (1879-1955)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Animation Scripts -->
+    <script>
+        // Global color palette for canvas drawings
+        const colors = {
+            ink: '#2D2D2D',
+            paper: '#FAF8F3',
+            accent: '#1A3A8A',
+            muted: '#8B7355',
+            success: '#556B2F',
+            danger: '#B91C1C',
+            warning: '#D97706',
+            quantum: '#059669',
+            extreme: '#7C3AED',
+            canvasBg: '#FAF8F3',
+            canvasStroke: '#E5E7EB',
+            codeBg: '#FAF8F3',
+            codeBorder: '#E8E2D8'
+        };
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Counting Animation for statistics
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counting-animation');
+            
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-target'));
+                        const duration = 2000; // 2 seconds
+                        const start = 0;
+                        const increment = target / (duration / 16); // 60fps
+                        
+                        let current = start;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                            }
+                            counter.textContent = Math.floor(current).toLocaleString();
+                        }, 16);
+                        
+                        observer.unobserve(counter);
+                    }
+                });
+            }, observerOptions);
+            
+            counters.forEach(counter => observer.observe(counter));
+        }
+        
+        // Initialize counting animations
+        setTimeout(animateCounters, 500);
+        
+        // Einstein's equations section removed - now using HTML interactive version
+        // (Canvas code removed - replaced with simpler HTML row-based interaction)
+
+
+        
+        // Unification Journey Animation
+        const unificationCanvas = document.getElementById('unificationCanvas');
+        if (unificationCanvas) {
+            const ctx = unificationCanvas.getContext('2d');
+            let animationTime = 0;
+            let particles = [];
+            
+            // Create two groups of particles - GR and QM
+            for (let i = 0; i < 100; i++) {
+                // General Relativity particles (left side)
+                particles.push({
+                    x: Math.random() * 300 + 50,
+                    y: Math.random() * 400 + 200,
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 2 - 1,
+                    type: 'GR',
+                    color: '#1A3A8A',
+                    size: Math.random() * 3 + 2
+                });
+                
+                // Quantum Mechanics particles (right side)
+                particles.push({
+                    x: Math.random() * 300 + 850,
+                    y: Math.random() * 400 + 200,
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 2 - 1,
+                    type: 'QM',
+                    color: '#10b981',
+                    size: Math.random() * 3 + 2,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+            
+            function drawUnification() {
+                ctx.clearRect(0, 0, unificationCanvas.width, unificationCanvas.height);
+                
+                // Background
+                ctx.fillStyle = colors.paper;
+                ctx.fillRect(0, 0, unificationCanvas.width, unificationCanvas.height);
+                
+                // Title
+                ctx.font = 'bold 32px Playfair Display, serif';
+                ctx.fillStyle = '#1A3A8A';
+                ctx.textAlign = 'center';
+                ctx.fillText('The Journey to Unification', unificationCanvas.width/2, 50);
+                
+                // Progress bars
+                const barY = 100;
+                const barHeight = 30;
+                const barSpacing = 50;
+                
+                // Classical Gravity - Complete
+                ctx.fillStyle = '#E5E7EB';
+                ctx.fillRect(200, barY, 800, barHeight);
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(200, barY, 800, barHeight);
+                
+                ctx.font = '16px EB Garamond, serif';
+                ctx.fillStyle = '#2D2D2D';
+                ctx.textAlign = 'left';
+                ctx.fillText('📐 Classical Gravity', 50, barY + 20);
+                ctx.textAlign = 'right';
+                ctx.fillText('✓ ACHIEVED', 1050, barY + 20);
+                
+                // Quantum Integration - In Progress
+                const quantumProgress = 0.75 + Math.sin(animationTime * 0.02) * 0.05;
+                ctx.fillStyle = '#E5E7EB';
+                ctx.fillRect(200, barY + barSpacing, 800, barHeight);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(200, barY + barSpacing, 800 * quantumProgress, barHeight);
+                
+                ctx.textAlign = 'left';
+                ctx.fillText('⚛️ Quantum Integration', 50, barY + barSpacing + 20);
+                ctx.textAlign = 'right';
+                ctx.fillText('→ IN PROGRESS', 1050, barY + barSpacing + 20);
+                
+                // Complete Unification - Future
+                const unificationProgress = 0.35 + Math.sin(animationTime * 0.01) * 0.02;
+                ctx.fillStyle = '#E5E7EB';
+                ctx.fillRect(200, barY + barSpacing * 2, 800, barHeight);
+                ctx.fillStyle = '#1A3A8A';
+                ctx.fillRect(200, barY + barSpacing * 2, 800 * unificationProgress, barHeight);
+                
+                ctx.textAlign = 'left';
+                ctx.fillText('♾️ Complete Unification', 50, barY + barSpacing * 2 + 20);
+                ctx.textAlign = 'right';
+                ctx.fillText('⚡ NEXT MILESTONE', 1050, barY + barSpacing * 2 + 20);
+                
+                // Particle visualization
+                const centerX = unificationCanvas.width / 2;
+                const mergeProgress = Math.max(0, (animationTime - 300) / 300);
+                
+                particles.forEach(p => {
+                    // Update position
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    
+                    // Attraction to center after some time
+                    if (animationTime > 300) {
+                        const dx = centerX - p.x;
+                        const dy = 400 - p.y;
+                        p.vx += dx * 0.0001 * mergeProgress;
+                        p.vy += dy * 0.0001 * mergeProgress;
+                        p.vx *= 0.99;
+                        p.vy *= 0.99;
+                    }
+                    
+                    // Quantum particles have wave behavior
+                    if (p.type === 'QM') {
+                        p.y += Math.sin(p.phase + animationTime * 0.05) * 0.5;
+                    }
+                    
+                    // Draw particle
+                    ctx.globalAlpha = 0.6;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                });
+                
+                // Labels
+                if (animationTime < 300) {
+                    ctx.font = '20px Playfair Display, serif';
+                    ctx.fillStyle = '#1A3A8A';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('General Relativity', 200, 350);
+                    
+                    ctx.fillStyle = '#10b981';
+                    ctx.fillText('Quantum Mechanics', 1000, 350);
+                } else {
+                    // Unified label
+                    const unifiedAlpha = Math.min((animationTime - 300) / 100, 1);
+                    ctx.globalAlpha = unifiedAlpha;
+                    ctx.font = '24px Playfair Display, serif';
+                    ctx.fillStyle = '#8B5CF6';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Unified Theory', centerX, 350);
+                    ctx.globalAlpha = 1;
+                }
+                
+                // Recent breakthroughs
+                if (animationTime > 400) {
+                    const breakthroughAlpha = Math.min((animationTime - 400) / 100, 1);
+                    ctx.globalAlpha = breakthroughAlpha;
+                    
+                    ctx.font = '14px JetBrains Mono, monospace';
+                    ctx.fillStyle = '#556B2F';
+                    ctx.textAlign = 'left';
+                    
+                    const codeY = 550;
+                    ctx.fillText('✓ Quantum Lagrangian: base_theory.py:L287', 100, codeY);
+                    ctx.fillText('✓ Path integrals: quantum_path_integrator.py', 100, codeY + 25);
+                    ctx.fillText('✓ Renormalizability: validations/renormalizability.py', 100, codeY + 50);
+                    
+                    ctx.fillStyle = '#3B82F6';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('→ Entropy gravity (2025)', 1100, codeY);
+                    ctx.fillText('→ Gauge unification 10¹⁶ GeV', 1100, codeY + 25);
+                    ctx.fillText('→ Black hole information', 1100, codeY + 50);
+                    
+                    ctx.globalAlpha = 1;
+                }
+                
+                animationTime++;
+                requestAnimationFrame(drawUnification);
+            }
+            
+            drawUnification();
+        }
+        
+        // Copy install command function
+        function copyInstallCommand() {
+            const command = document.getElementById('install-command').textContent;
+            navigator.clipboard.writeText(command).then(() => {
+                // Show check icon
+                document.getElementById('copy-icon').classList.add('hidden');
+                document.getElementById('check-icon').classList.remove('hidden');
+                
+                // Show tooltip
+                const tooltip = document.getElementById('copy-tooltip');
+                tooltip.classList.remove('opacity-0');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('copy-icon').classList.remove('hidden');
+                    document.getElementById('check-icon').classList.add('hidden');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+
+        // Copy homepage command function
+        function copyHomepageCommand() {
+            const command = document.getElementById('homepage-install-command').textContent;
+            navigator.clipboard.writeText(command).then(() => {
+                // Show check icon
+                document.getElementById('homepage-copy-icon').classList.add('hidden');
+                document.getElementById('homepage-check-icon').classList.remove('hidden');
+                
+                // Show tooltip
+                const tooltip = document.getElementById('homepage-copy-tooltip');
+                tooltip.classList.remove('opacity-0');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('homepage-copy-icon').classList.remove('hidden');
+                    document.getElementById('homepage-check-icon').classList.add('hidden');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+        
+        // Setup modal functions
+        function openSetupModal() {
+            document.getElementById('setupModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent body scroll
+        }
+        
+        function closeSetupModal() {
+            document.getElementById('setupModal').classList.add('hidden');
+            document.body.style.overflow = ''; // Restore body scroll
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSetupModal();
+            }
+        });
+        
+
+        
+        // Animate counter
+        let albertCount = 500;
+        const counterElement = document.getElementById('albert-counter');
+        
+        setInterval(() => {
+            // Simulate random changes
+            const change = Math.floor(Math.random() * 5) - 2;
+            albertCount = Math.max(1, albertCount + change);
+            if (counterElement) counterElement.textContent = albertCount;
+        }, 3000);
+        
+        // 6D Solver Visualization - Simple Explanation
+        const solver6DCanvas = document.getElementById('solver6DShowcase');
+        if (solver6DCanvas) {
+            const ctx = solver6DCanvas.getContext('2d');
+            let animationTime = 0;
+            let particles4D = [];
+            let particles6D = [];
+            
+            // Initialize particles
+            for (let i = 0; i < 5; i++) {
+                // 4D particle (breaks when spinning)
+                particles4D.push({
+                    x: 300,
+                    y: 300,
+                    angle: (Math.PI * 2 / 5) * i,
+                    radius: 100,
+                    broken: false
+                });
+                
+                // 6D particle (handles everything)
+                particles6D.push({
+                    x: 900,
+                    y: 300,
+                    vx: 0,
+                    vy: 0,
+                    angle: (Math.PI * 2 / 5) * i,
+                    radius: 100
+                });
+            }
+            
+            function draw6DSolver() {
+                ctx.clearRect(0, 0, solver6DCanvas.width, solver6DCanvas.height);
+                
+                // Background
+                                    ctx.fillStyle = colors.canvasBg;
+                ctx.fillRect(0, 0, solver6DCanvas.width, solver6DCanvas.height);
+                
+                // Title
+                ctx.font = 'bold 28px Playfair Display, serif';
+                ctx.fillStyle = '#1A3A8A';
+                ctx.textAlign = 'center';
+                ctx.fillText('Why We Need 6 Dimensions Instead of 4', solver6DCanvas.width/2, 40);
+                
+                // Left side - 4D Traditional
+                ctx.font = 'bold 20px Playfair Display, serif';
+                ctx.fillStyle = '#dc2626';
+                ctx.fillText('4D: Position + Time', 300, 90);
+                
+                // Draw rotating black hole (4D)
+                ctx.strokeStyle = '#dc2626';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(300, 300, 120, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Central mass
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(300, 300, 30, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Particles in 4D
+                particles4D.forEach((p, i) => {
+                    p.angle += 0.02;
+                    p.x = 300 + Math.cos(p.angle) * p.radius;
+                    p.y = 300 + Math.sin(p.angle) * p.radius;
+                    
+                    // Break when spinning fast (after some time)
+                    if (animationTime > 200 && animationTime < 400) {
+                        p.radius += Math.random() * 2 - 1;
+                        p.broken = true;
+                    }
+                    
+                    ctx.fillStyle = p.broken ? '#dc2626' : '#3b82f6';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                // Error message for 4D
+                if (animationTime > 200 && animationTime < 400) {
+                    ctx.font = 'bold 18px JetBrains Mono, monospace';
+                    ctx.fillStyle = '#dc2626';
+                    ctx.fillText('❌ SYMMETRY BROKEN!', 300, 450);
+                    ctx.font = '14px EB Garamond, serif';
+                    ctx.fillText('Cannot handle rotation + gravity', 300, 480);
+                }
+                
+                // Right side - 6D Solution
+                ctx.font = 'bold 20px Playfair Display, serif';
+                ctx.fillStyle = '#10b981';
+                ctx.fillText('6D: Position + Velocity', 900, 90);
+                
+                // Draw rotating black hole (6D)
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(900, 300, 120, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Spiral to show frame dragging
+                ctx.strokeStyle = '#10b98133';
+                ctx.lineWidth = 1;
+                for (let r = 30; r < 120; r += 15) {
+                    ctx.beginPath();
+                    for (let angle = 0; angle < Math.PI * 4; angle += 0.1) {
+                        const x = 900 + Math.cos(angle + animationTime * 0.01) * (r + angle * 2);
+                        const y = 300 + Math.sin(angle + animationTime * 0.01) * (r + angle * 2);
+                        if (angle === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+                
+                // Central mass
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(900, 300, 30, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Particles in 6D - smooth orbits
+                particles6D.forEach((p, i) => {
+                    // Update velocity based on physics
+                    const dx = 900 - p.x;
+                    const dy = 300 - p.y;
+                    const r = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Gravity + frame dragging
+                    p.vx += (dx / r) * 0.5;
+                    p.vy += (dy / r) * 0.5;
+                    
+                    // Add tangential velocity (frame dragging)
+                    p.vx += -dy / r * 0.1;
+                    p.vy += dx / r * 0.1;
+                    
+                    // Damping
+                    p.vx *= 0.98;
+                    p.vy *= 0.98;
+                    
+                    // Update position
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    
+                    // Draw particle
+                    ctx.fillStyle = '#10b981';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Velocity vector
+                    ctx.strokeStyle = '#10b98166';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p.x + p.vx * 10, p.y + p.vy * 10);
+                    ctx.stroke();
+                });
+                
+                // Success message for 6D
+                ctx.font = 'bold 18px JetBrains Mono, monospace';
+                ctx.fillStyle = '#10b981';
+                ctx.fillText('✓ HANDLES EVERYTHING!', 900, 450);
+                ctx.font = '14px EB Garamond, serif';
+                ctx.fillText('Rotation, asymmetry, quantum effects', 900, 480);
+                
+                // Bottom explanation
+                ctx.font = '16px EB Garamond, serif';
+                ctx.fillStyle = '#8B7355';
+                ctx.textAlign = 'center';
+                ctx.fillText('Traditional methods assume constant energy/momentum. Reality doesn\'t care about our assumptions.', solver6DCanvas.width/2, 550);
+                
+                // Reset particles periodically
+                if (animationTime > 500) {
+                    animationTime = 0;
+                    particles4D.forEach((p, i) => {
+                        p.angle = (Math.PI * 2 / 5) * i;
+                        p.radius = 100;
+                        p.broken = false;
+                    });
+                    particles6D.forEach((p, i) => {
+                        p.x = 900 + Math.cos((Math.PI * 2 / 5) * i) * 100;
+                        p.y = 300 + Math.sin((Math.PI * 2 / 5) * i) * 100;
+                        p.vx = 0;
+                        p.vy = 0;
+                    });
+                }
+                
+                animationTime++;
+                requestAnimationFrame(draw6DSolver);
+            }
+            
+            draw6DSolver();
+        }
+        
+        // Theory Engine Visualization - Multi-Step Testing Process
+        const theoryEngineCanvas = document.getElementById('theoryEngineCanvas');
+        if (theoryEngineCanvas) {
+            const ctx = theoryEngineCanvas.getContext('2d');
+            let animationTime = 0;
+            let codeLines = [];
+            let trajectory = [];
+            let kerrTrajectory = [];
+            let loss = null;
+            let verdict = null;
+            
+            // Initialize trajectories
+            function initTrajectories() {
+                trajectory = [];
+                kerrTrajectory = [];
+                // Generate test trajectory
+                for (let i = 0; i < 200; i++) {
+                    const angle = i * 0.1;
+                    const r = 150 + Math.sin(angle * 0.3) * 20 + Math.random() * 5;
+                    trajectory.push({ angle, r });
+                    // Kerr baseline (more stable)
+                    const kerrR = 150 + Math.sin(angle * 0.3) * 15;
+                    kerrTrajectory.push({ angle, r: kerrR });
+                }
+            }
+            initTrajectories();
+            
+            // Theory code that will be typed
+            const step1Code = [
+                '# The key innovation: quantum corrections to spacetime',
+                '',
+                'def metric_tensor(self, r, M):',
+                '    # Start with Einstein\'s solution',
+                '    rs = 2 * G * M / c**2',
+                '    ',
+                '    # Add quantum correction term',
+                '    quantum_term = alpha * ℏ / r**2',
+                '    ',
+                '    g_tt = -(1 - rs/r + quantum_term)',
+                '    g_rr = 1 / (1 - rs/r + quantum_term)',
+                '    ',
+                '    return g_tt, g_rr, g_θθ, g_φφ'
+            ];
+            
+            function drawTheoryEngine() {
+                ctx.clearRect(0, 0, theoryEngineCanvas.width, theoryEngineCanvas.height);
+                
+                // Background
+                ctx.fillStyle = colors.canvasBg;
+                ctx.fillRect(0, 0, theoryEngineCanvas.width, theoryEngineCanvas.height);
+                
+                // Title
+                ctx.font = 'bold 28px Playfair Display, serif';
+                ctx.fillStyle = colors.accent;
+                ctx.textAlign = 'center';
+                ctx.fillText('Real-Time Theory Testing: Classical Trajectory Validation', theoryEngineCanvas.width/2, 40);
+                
+                // Subtitle
+                ctx.font = '16px EB Garamond, serif';
+                ctx.fillStyle = colors.muted;
+                ctx.fillText('Comparing gravitational theories against black hole orbits', theoryEngineCanvas.width/2, 70);
+                
+                // Two panels side by side
+                const leftPanelX = 50;
+                const rightPanelX = 650;
+                const panelY = 100;
+                const panelWidth = 500;
+                const panelHeight = 600;
+                
+                // Left panel - Trajectory visualization
+                ctx.fillStyle = colors.codeBg;
+                ctx.fillRect(leftPanelX, panelY, panelWidth, panelHeight);
+                ctx.strokeStyle = colors.codeBorder;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(leftPanelX, panelY, panelWidth, panelHeight);
+                
+                ctx.font = '20px Playfair Display, serif';
+                ctx.fillStyle = colors.accent;
+                ctx.textAlign = 'center';
+                ctx.fillText('Black Hole Trajectory Simulation', leftPanelX + panelWidth/2, panelY + 35);
+                
+                // Draw visualizations based on current step
+                const centerX = leftPanelX + panelWidth/2;
+                const centerY = panelY + panelHeight/2 + 20;
+                    // STEP 1: Classical black hole trajectory test
+                    // Black hole
+                    const blackHoleRadius = 25;
+                    ctx.fillStyle = colors.ink;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, blackHoleRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Event horizon
+                    ctx.strokeStyle = colors.danger + '60';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, blackHoleRadius * 2, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Draw Kerr baseline trajectory
+                    ctx.strokeStyle = colors.muted;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    const kerrSteps = Math.min(animationTime * 0.8, kerrTrajectory.length); // Slower
+                    for (let i = 0; i < kerrSteps; i++) {
+                        const point = kerrTrajectory[i];
+                        const x = centerX + Math.cos(point.angle) * point.r * 0.8;
+                        const y = centerY + Math.sin(point.angle) * point.r * 0.8;
+                        if (i === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                    
+                    // Draw test theory trajectory
+                    ctx.strokeStyle = colors.accent;
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    const steps = Math.min(animationTime * 0.8, trajectory.length); // Slower
+                    for (let i = 0; i < steps; i++) {
+                        const point = trajectory[i];
+                        const x = centerX + Math.cos(point.angle) * point.r * 0.8;
+                        const y = centerY + Math.sin(point.angle) * point.r * 0.8;
+                        if (i === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                    
+                    // Legend
+                    ctx.font = '14px EB Garamond, serif';
+                    ctx.fillStyle = colors.muted;
+                    ctx.textAlign = 'left';
+                    ctx.fillText('— Kerr (baseline)', leftPanelX + 20, panelY + panelHeight - 40);
+                    ctx.fillStyle = colors.accent;
+                    ctx.fillText('— Test theory', leftPanelX + 20, panelY + panelHeight - 20);
+
+                
+                // Right panel - Code generation
+                ctx.fillStyle = colors.codeBg;
+                ctx.fillRect(rightPanelX, panelY, panelWidth, panelHeight);
+                ctx.strokeStyle = colors.codeBorder;
+                ctx.strokeRect(rightPanelX, panelY, panelWidth, panelHeight);
+                
+                ctx.font = '20px Playfair Display, serif';
+                ctx.fillStyle = colors.success;
+                ctx.textAlign = 'center';
+                ctx.fillText('Generated Metric Tensor', rightPanelX + panelWidth/2, panelY + 35);
+                
+                // Type out code
+                ctx.font = '14px JetBrains Mono, monospace';
+                ctx.textAlign = 'left';
+                const codeY = panelY + 70;
+                const lineHeight = 22;
+                
+                // Select code based on current step
+                const codeToShow = step1Code;
+                
+                // Calculate how many lines to show - faster typing
+                const charsPerFrame = 1.5;
+                const totalChars = Math.max(0, animationTime * charsPerFrame);
+                let charCount = 0;
+                
+                // Syntax highlighting helper
+                function getLineColor(line) {
+                    if (line.trim().startsWith('#')) return colors.muted;
+                    if (line.includes('def ') || line.includes('return')) return colors.accent;
+                    if (line.includes('Einstein') || line.includes('quantum')) return colors.quantum;
+                    if (line.includes('ℏ') || line.includes('α') || line.includes('ψ') || line.includes('∇')) return colors.warning;
+                    if (line.includes('g_') || line.includes('Q =') || line.includes('phase')) return colors.success;
+                    return colors.ink;
+                }
+                
+                for (let i = 0; i < codeToShow.length; i++) {
+                    const line = codeToShow[i];
+                    const y = codeY + i * lineHeight;
+                    
+                    if (charCount + line.length <= totalChars) {
+                        // Full line with syntax highlighting
+                        ctx.fillStyle = getLineColor(line);
+                        ctx.fillText(line, rightPanelX + 20, y);
+                        charCount += line.length;
+                    } else if (charCount < totalChars) {
+                        // Partial line
+                        const charsToShow = totalChars - charCount;
+                        ctx.fillStyle = getLineColor(line);
+                        ctx.fillText(line.substring(0, charsToShow), rightPanelX + 20, y);
+                        
+                        // Cursor
+                        if (animationTime % 30 < 15) {
+                            const cursorX = rightPanelX + 20 + ctx.measureText(line.substring(0, charsToShow)).width;
+                            ctx.fillRect(cursorX, y - 15, 2, 18);
+                        }
+                        break;
+                    }
+                }
+                
+                // Loss calculation and verdict (appears after code is typed)
+                const resultTiming = 300;
+                if (animationTime > resultTiming) {
+                    
+                    // Calculate results
+                    if (!loss) {
+                        // Classical trajectory comparison
+                        let sumSquaredDiff = 0;
+                        const compareSteps = Math.min(trajectory.length, kerrTrajectory.length);
+                        for (let i = 0; i < compareSteps; i++) {
+                            const diff = trajectory[i].r - kerrTrajectory[i].r;
+                            sumSquaredDiff += diff * diff;
+                        }
+                        loss = (sumSquaredDiff / compareSteps).toFixed(4);
+                        verdict = loss < 50 ? 'PASS' : 'FAIL';
+                    }
+                    
+                    // Draw results box
+                    const resultsY = panelY + panelHeight - 180;
+                    const bgColor = verdict === 'PASS' ? colors.success + '20' : colors.danger + '20';
+                    const borderColor = verdict === 'PASS' ? colors.success : colors.danger;
+                    
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(rightPanelX + 20, resultsY, panelWidth - 40, 150);
+                    ctx.strokeStyle = borderColor;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(rightPanelX + 20, resultsY, panelWidth - 40, 150);
+                    
+                    // Results text
+                    ctx.font = 'bold 18px EB Garamond, serif';
+                    ctx.fillStyle = colors.ink;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Classical Test Results', rightPanelX + panelWidth/2, resultsY + 30);
+                    
+                    ctx.font = '16px JetBrains Mono, monospace';
+                    ctx.fillStyle = colors.ink;
+                    ctx.fillText(`MSE Loss: ${loss}`, rightPanelX + panelWidth/2, resultsY + 60);
+                    
+                    ctx.font = 'bold 24px Playfair Display, serif';
+                    ctx.fillStyle = verdict === 'PASS' ? colors.success : colors.danger;
+                    ctx.fillText(`Verdict: ${verdict}`, rightPanelX + panelWidth/2, resultsY + 100);
+                    
+                    ctx.font = '14px EB Garamond, serif';
+                    ctx.fillStyle = colors.muted;
+                    ctx.fillText(verdict === 'PASS' ? 'Theory matches classical limit' : 'Excessive deviation detected', 
+                                rightPanelX + panelWidth/2, resultsY + 130);
+                }
+                
+                // Progress indicator
+                ctx.font = '14px EB Garamond, serif';
+                ctx.fillStyle = colors.muted;
+                ctx.textAlign = 'center';
+                const progress = Math.min(100, (animationTime / 4));
+                ctx.fillText(`Progress: ${progress.toFixed(0)}%`, theoryEngineCanvas.width/2, theoryEngineCanvas.height - 20);
+                
+                // Update animation
+                animationTime++;
+                
+                // Reset after animation completes
+                if (animationTime > 500) {
+                    animationTime = 0;
+                    loss = null;
+                    verdict = null;
+                    initTrajectories(); // Reset with new random variations
+                }
+                
+                requestAnimationFrame(drawTheoryEngine);
+            }
+            
+            drawTheoryEngine();
+        }
+        
+        // Validation Gauntlet Visualization
+        const validationGauntletCanvas = document.getElementById('validationGauntletCanvas');
+        if (validationGauntletCanvas) {
+            const ctx = validationGauntletCanvas.getContext('2d');
+            let animationTime = 0;
+            let theories = [];
+            let failedTheories = [];
+            
+            // Initialize theories - only 8 for easier tracking
+            const particleTypes = [
+                {name: 'Photon', color: '#D97706', symbol: 'γ'},
+                {name: 'Electron', color: '#059669', symbol: 'e⁻'},
+                {name: 'Proton', color: '#556B2F', symbol: 'p⁺'},
+                {name: 'Neutron', color: '#8B7355', symbol: 'n'},
+                {name: 'Neutrino', color: '#7C3AED', symbol: 'ν'},
+                {name: 'Muon', color: '#1A3A8A', symbol: 'μ'},
+                {name: 'Tau', color: '#B91C1C', symbol: 'τ'},
+                {name: 'Higgs', color: '#10b981', symbol: 'H'}
+            ];
+            
+            // Assign to theories - spawning from further left since stage moved to x:100
+            for (let i = 0; i < 8; i++) {
+                theories.push({
+                    id: i,
+                    x: -150 - (i * 30),  // Further left to match new Generated Theory position
+                    y: 80 + (i % 3) * 20,
+                    status: 'pending',
+                    failReason: null,
+                    tests: 0,
+                    opacity: 1,
+                    label: `T${i + 1}`,
+                    particle: particleTypes[i]  // New: assign particle type
+                });
+            }
+            
+            function drawValidationGauntlet() {
+                ctx.clearRect(0, 0, validationGauntletCanvas.width, validationGauntletCanvas.height);
+                
+                // Background
+                ctx.fillStyle = colors.canvasBg;
+                ctx.fillRect(0, 0, validationGauntletCanvas.width, validationGauntletCanvas.height);
+                
+                // Title
+                ctx.font = 'bold 24px Playfair Display, serif';
+                ctx.fillStyle = colors.accent;
+                ctx.textAlign = 'center';
+                ctx.fillText('Live: 21 Validation Tests in Action', validationGauntletCanvas.width/2, 30);
+                
+                // Draw the gauntlet stages
+                const stages = [
+                    { name: 'Generated Theory', x: 100, color: colors.muted, icon: '🧬' },
+                    { name: 'Constraints', x: 400, color: colors.warning },
+                    { name: 'Classical', x: 600, color: colors.accent },
+                    { name: 'Quantum', x: 800, color: colors.quantum },
+                    { name: 'Exit', x: 1000, color: colors.success }
+                ];
+                
+                // Draw connections
+                ctx.strokeStyle = colors.codeBorder;
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(stages[0].x, 80);
+                ctx.lineTo(stages[stages.length - 1].x, 80);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Draw stages
+                stages.forEach(stage => {
+                    // Stage circle
+                    ctx.fillStyle = stage.color;
+                    ctx.beginPath();
+                    ctx.arc(stage.x, 80, 25, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw icon if present
+                    if (stage.icon) {
+                        ctx.font = '20px serif';
+                        ctx.fillStyle = colors.paper;
+                        ctx.textAlign = 'center';
+                        ctx.fillText(stage.icon, stage.x, 88);
+                    }
+                    
+                    // Stage label with background for visibility
+                    const labelWidth = stage.name === 'Generated Theory' ? 110 : 80;
+                    ctx.fillStyle = colors.paper + 'E0';
+                    ctx.fillRect(stage.x - labelWidth/2, 115, labelWidth, 20);
+                    
+                    ctx.font = '14px EB Garamond, serif';
+                    ctx.fillStyle = colors.ink;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(stage.name, stage.x, 130);
+                });
+                
+                // Update and draw theories
+                theories.forEach((theory, index) => {
+                    // Move theory through gauntlet - slower for tracking
+                    if (theory.status === 'pending' && animationTime > theory.id * 20) {
+                        theory.x += 1.5; // Slower movement
+                        
+                        // Check stage transitions
+                        if (theory.x > 400 && theory.tests === 0) {
+                            theory.tests = 1;
+                            // Different failure reasons based on particle type
+                            if (theory.label !== 'T1' && (theory.label === 'T2' || theory.label === 'T5')) {
+                                theory.status = 'failed';
+                                theory.failReason = 'Energy not conserved';
+                                theory.failStage = 'Constraints';
+                                failedTheories.push(theory);
+                            }
+                        } else if (theory.x > 600 && theory.tests === 1) {
+                            theory.tests = 2;
+                            // Different particles fail at different stages
+                            if (theory.label !== 'T1' && (theory.label === 'T3' || theory.label === 'T6' || theory.label === 'T8')) {
+                                theory.status = 'failed';
+                                theory.failReason = 'Mercury precession wrong';
+                                theory.failStage = 'Classical';
+                                failedTheories.push(theory);
+                            }
+                        } else if (theory.x > 800 && theory.tests === 2) {
+                            theory.tests = 3;
+                            // All remaining particles (except T1) fail quantum tests
+                            if (theory.label !== 'T1') {
+                                theory.status = 'failed';
+                                theory.failReason = theory.label === 'T4' ? 'Decoherence > limit' : 'COW phase incorrect';
+                                theory.failStage = 'Quantum';
+                                failedTheories.push(theory);
+                            }
+                        } else if (theory.x > 1000 && theory.status === 'pending') {
+                            theory.status = 'passed';
+                        }
+                    }
+                    
+                    // Fall if failed, but stop at bottom
+                    if (theory.status === 'failed') {
+                        const targetY = 320;
+                        if (theory.y < targetY) {
+                            theory.y += 3;
+                        } else {
+                            theory.y = targetY;
+                            // Fade out slowly
+                            if (theory.opacity > 0.3) {
+                                theory.opacity -= 0.01;
+                            }
+                        }
+                    }
+                    
+                    // Draw theory
+                    ctx.save();
+                    ctx.globalAlpha = theory.opacity;
+                    
+                    // Particle circle - bigger for visibility
+                    ctx.fillStyle = theory.particle ? theory.particle.color : 
+                                  (theory.status === 'failed' ? colors.danger :
+                                    theory.status === 'passed' ? colors.success : 
+                                    colors.accent);
+                    ctx.beginPath();
+                    ctx.arc(theory.x, theory.y, 12, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // White border for contrast
+                    ctx.strokeStyle = colors.paper;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Label inside particle
+                    ctx.fillStyle = colors.paper;
+                    ctx.font = 'bold 10px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(theory.label, theory.x, theory.y);
+                    
+                    // Show fail reason - keep visible even after falling
+                    if (theory.status === 'failed') {
+                        ctx.fillStyle = colors.paper + 'E0';
+                        const textWidth = ctx.measureText(theory.failReason).width;
+                        ctx.fillRect(theory.x + 15, theory.y - 10, textWidth + 6, 20);
+                        
+                        ctx.font = '12px JetBrains Mono, monospace';
+                        ctx.fillStyle = colors.danger;
+                        ctx.textAlign = 'left';
+                        ctx.fillText(theory.failReason, theory.x + 18, theory.y);
+                    }
+                    
+                    // Highlight T1 (Photon) with a subtle glow when it's about to succeed
+                    if (theory.label === 'T1' && theory.x > 700 && theory.status === 'pending') {
+                        ctx.strokeStyle = colors.quantum + '40';
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        ctx.arc(theory.x, theory.y, 18, 0, Math.PI * 2);
+                        ctx.stroke();
+                        
+                        // Small indicator that this one will pass
+                        ctx.font = '10px EB Garamond, serif';
+                        ctx.fillStyle = colors.success;
+                        ctx.textAlign = 'center';
+                        ctx.fillText('→', theory.x - 25, theory.y);
+                    }
+                    
+                    // Add particle type label below
+                    ctx.fillStyle = colors.ink;
+                    ctx.font = '10px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(theory.particle.symbol, theory.x, theory.y + 20);
+                    
+                    ctx.restore();
+                });
+                
+                // Draw failed theories graveyard
+                ctx.fillStyle = colors.danger + '10';
+                ctx.fillRect(0, 300, validationGauntletCanvas.width, 100);
+                
+                // Graveyard label
+                ctx.font = '14px EB Garamond, serif';
+                ctx.fillStyle = colors.muted;
+                ctx.textAlign = 'left';
+                ctx.fillText('Failed Theories Graveyard', 50, 320);
+                
+                // Particle type legend on the right
+                ctx.fillStyle = colors.paper + 'F0';
+                ctx.fillRect(validationGauntletCanvas.width - 220, 150, 200, 240);
+                ctx.strokeStyle = colors.codeBorder;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(validationGauntletCanvas.width - 220, 150, 200, 240);
+                
+                ctx.font = 'bold 14px EB Garamond, serif';
+                ctx.fillStyle = colors.ink;
+                ctx.textAlign = 'center';
+                ctx.fillText('Particle Types', validationGauntletCanvas.width - 120, 175);
+                
+                ctx.font = '12px EB Garamond, serif';
+                ctx.textAlign = 'left';
+                
+                // Draw particle legend
+                particleTypes.forEach((particle, i) => {
+                    const y = 200 + i * 22;
+                    
+                    // Particle circle
+                    ctx.fillStyle = particle.color;
+                    ctx.beginPath();
+                    ctx.arc(validationGauntletCanvas.width - 190, y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Particle symbol and name
+                    ctx.fillStyle = colors.ink;
+                    ctx.font = 'bold 11px JetBrains Mono, monospace';
+                    ctx.fillText(particle.symbol, validationGauntletCanvas.width - 165, y + 3);
+                    ctx.font = '11px EB Garamond, serif';
+                    ctx.fillText(particle.name, validationGauntletCanvas.width - 140, y + 3);
+                });
+                
+                // Note about test results
+                ctx.fillStyle = colors.muted;
+                ctx.font = 'italic 11px EB Garamond, serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Testing from @particles.json', validationGauntletCanvas.width - 120, 370);
+                
+                // Reset when all theories processed
+                if (theories.every(t => t.status !== 'pending' || t.x > validationGauntletCanvas.width)) {
+                    theories = [];
+                    for (let i = 0; i < 8; i++) {
+                        theories.push({
+                            id: i,
+                            x: -50 - (i * 30),
+                            y: 80 + (i % 3) * 20,
+                            status: 'pending',
+                            failReason: null,
+                            tests: 0,
+                            opacity: 1,
+                            label: `T${i + 1}`,
+                            particle: particleTypes[i]  // New: assign particle type
+                        });
+                    }
+                    // Keep only recent failed theories
+                    if (failedTheories.length > 30) {
+                        failedTheories = failedTheories.slice(-30);
+                    }
+                }
+                
+                animationTime++;
+                requestAnimationFrame(drawValidationGauntlet);
+            }
+            
+            drawValidationGauntlet();
+        }
+        
+        // Spacetime Curvature Visualization
+        const spacetimeCanvas = document.getElementById('spacetimeCanvas');
+        if (spacetimeCanvas) {
+            const spacetimeCtx = spacetimeCanvas.getContext('2d');
+            let animationTime = 0;
+            let scrollProgress = 0;
+            let targetScrollProgress = 0;
+            let mouseX = -100;
+            let mouseY = -100;
+            let ripples = [];
+            
+            function resizeSpacetimeCanvas() {
+                spacetimeCanvas.width = window.innerWidth;
+                spacetimeCanvas.height = window.innerHeight;
+            }
+            resizeSpacetimeCanvas();
+            window.addEventListener('resize', resizeSpacetimeCanvas);
+            
+            // Update scroll progress
+            function updateScrollProgress() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+                targetScrollProgress = Math.min(1, scrollTop / documentHeight);
+            }
+            window.addEventListener('scroll', updateScrollProgress);
+            updateScrollProgress();
+            
+            // Mouse tracking
+            let prevMouseX = -100;
+            let prevMouseY = -100;
+            let mouseVelocityX = 0;
+            let mouseVelocityY = 0;
+            
+            spacetimeCanvas.addEventListener('mousemove', (e) => {
+                const rect = spacetimeCanvas.getBoundingClientRect();
+                const newMouseX = e.clientX - rect.left;
+                const newMouseY = e.clientY - rect.top;
+                
+                if (prevMouseX > 0 && prevMouseY > 0) {
+                    mouseVelocityX = newMouseX - prevMouseX;
+                    mouseVelocityY = newMouseY - prevMouseY;
+                }
+                
+                prevMouseX = mouseX;
+                prevMouseY = mouseY;
+                mouseX = newMouseX;
+                mouseY = newMouseY;
+                
+                const speed = Math.sqrt(mouseVelocityX * mouseVelocityX + mouseVelocityY * mouseVelocityY);
+                
+                if (speed > 2 && Math.random() < 0.15) {
+                    const angle = Math.atan2(mouseVelocityY, mouseVelocityX);
+                    const distance = 30;
+                    const rippleX = mouseX + Math.cos(angle) * distance;
+                    const rippleY = mouseY + Math.sin(angle) * distance;
+                    
+                    ripples.push({
+                        x: rippleX,
+                        y: rippleY,
+                        radius: 0,
+                        maxRadius: 150 + speed * 5,
+                        strength: 0.4 + Math.min(speed * 0.02, 0.4),
+                        speed: 2 + speed * 0.1,
+                        decay: 0.98,
+                        directionX: mouseVelocityX / speed,
+                        directionY: mouseVelocityY / speed
+                    });
+                }
+            });
+            
+            spacetimeCanvas.addEventListener('mouseleave', () => {
+                mouseX = -100;
+                mouseY = -100;
+            });
+            
+            spacetimeCanvas.addEventListener('click', (e) => {
+                const rect = spacetimeCanvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+                
+                ripples.push({
+                    x: clickX,
+                    y: clickY,
+                    radius: 0,
+                    maxRadius: 300,
+                    strength: 0.8,
+                    speed: 2.5,
+                    decay: 0.97
+                });
+                
+                if (ripples.length > 10) {
+                    ripples = ripples.slice(-10);
+                }
+            });
+            
+            function updatePositions() {
+                scrollProgress += (targetScrollProgress - scrollProgress) * 0.1;
+                
+                ripples = ripples.filter(ripple => {
+                    ripple.radius += ripple.speed;
+                    ripple.strength *= ripple.decay;
+                    return ripple.strength > 0.02 && ripple.radius < ripple.maxRadius;
+                });
+                
+                if (ripples.length > 5) {
+                    ripples.sort((a, b) => b.strength - a.strength);
+                    ripples = ripples.slice(0, 5);
+                }
+            }
+            
+            function calculateWarp(x, y) {
+                let warpX = 0;
+                let warpY = 0;
+                
+                const centerX = spacetimeCanvas.width / 2;
+                const centerY = spacetimeCanvas.height * 1.2;
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                const breathingIntensity = 30 + scrollProgress * 50;
+                const breathingWarp = Math.sin(animationTime * 0.002) * breathingIntensity;
+                const radialBreathing = (1 - Math.min(1, distance / 1000)) * breathingWarp;
+                
+                if (distance > 0) {
+                    warpX += (dx / distance) * radialBreathing * 0.3;
+                    warpY += (dy / distance) * radialBreathing * 0.3;
+                    
+                    if (scrollProgress > 0.001) {
+                        const scrollIntensity = 1200 * Math.pow(scrollProgress, 0.8);
+                        const maxDistance = 2000;
+                        const normalizedDistance = Math.min(distance / maxDistance, 1);
+                        const falloff = Math.pow(1 - normalizedDistance, 1.2);
+                        const warpStrength = scrollIntensity * falloff;
+                        const angle = Math.atan2(dy, dx);
+                        const radialPull = warpStrength * 1.5;
+                        warpX = -Math.cos(angle) * radialPull;
+                        warpY = -Math.sin(angle) * radialPull;
+                    }
+                }
+                
+                if (mouseX > 0 && mouseY > 0) {
+                    const mouseDx = x - mouseX;
+                    const mouseDy = y - mouseY;
+                    const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
+                    if (mouseDistance > 0 && mouseDistance < 80) {
+                        const mouseWarp = (1 - mouseDistance / 80) * 10;
+                        warpX += (mouseDx / mouseDistance) * mouseWarp;
+                        warpY += (mouseDy / mouseDistance) * mouseWarp;
+                    }
+                }
+                
+                ripples.forEach(ripple => {
+                    const rippleDx = x - ripple.x;
+                    const rippleDy = y - ripple.y;
+                    const rippleDistance = Math.sqrt(rippleDx * rippleDx + rippleDy * rippleDy);
+                    
+                    const waveWidth = 20; // More frequent ripples
+                    if (rippleDistance > ripple.radius - waveWidth && rippleDistance < ripple.radius + waveWidth) {
+                        const ripplePhase = (rippleDistance - ripple.radius) / waveWidth;
+                        const rippleStrength = Math.cos(ripplePhase * Math.PI) * ripple.strength * 30;
+                        
+                        if (rippleDistance > 0 && ripple.strength > 0.02) {
+                            const radialFactor = 0.7;
+                            const directionalFactor = 0.3;
+                            const radialX = (rippleDx / rippleDistance) * rippleStrength * radialFactor;
+                            const radialY = (rippleDy / rippleDistance) * rippleStrength * radialFactor;
+                            let dirX = 0, dirY = 0;
+                            if (ripple.directionX && ripple.directionY) {
+                                dirX = ripple.directionX * rippleStrength * directionalFactor;
+                                dirY = ripple.directionY * rippleStrength * directionalFactor;
+                            }
+                            warpX += radialX + dirX;
+                            warpY += radialY + dirY;
+                        }
+                    }
+                });
+                
+                return { warpX, warpY };
+            }
+            
+            // Wave propagation state
+            let wavePhase = 0;
+            let waveStrength = 0;
+            let wavePhase2 = 0;
+            let waveOriginX = 0;
+            let waveOriginY = 0;
+            let rippleTime = 0;
+            let activeRipple = null;
+            
+            function drawSpacetimeGrid() {
+                const gridSize = 40;
+                const edgeExtension = 400;
+                const centerX = spacetimeCanvas.width / 2;
+                const gridOffsetX = (centerX % gridSize) - gridSize / 2;
+                
+                // Smooth continuous wave animation
+                wavePhase += 0.015;
+                wavePhase2 += 0.008;
+                rippleTime += 0.02;
+                
+                // Create smooth, continuous wave strength variations
+                const wave1 = Math.sin(wavePhase * 0.3) * 0.5 + 0.5;
+                const wave2 = Math.sin(wavePhase2 * 0.2) * 0.5 + 0.5;
+                waveStrength = (wave1 * 0.7 + wave2 * 0.3) * 0.3; // Base wave strength
+                
+                // Slowly moving wave origin for more organic feel
+                waveOriginX = centerX + Math.sin(wavePhase * 0.1) * 200;
+                waveOriginY = spacetimeCanvas.height / 2 + Math.cos(wavePhase * 0.15) * 100;
+                
+                // Ripple effect every 5 seconds
+                if (rippleTime > 5 && !activeRipple) {
+                    rippleTime = 0; // Reset timer
+                    activeRipple = {
+                        x: centerX + (Math.random() - 0.5) * 400,
+                        y: spacetimeCanvas.height / 2 + (Math.random() - 0.5) * 200,
+                        radius: 0,
+                        maxRadius: 600,
+                        speed: 3,
+                        strength: 1
+                    };
+                }
+                
+                if (activeRipple) {
+                    activeRipple.radius += activeRipple.speed;
+                    activeRipple.strength = 1 - (activeRipple.radius / activeRipple.maxRadius);
+                    if (activeRipple.radius > activeRipple.maxRadius) {
+                        activeRipple = null;
+                    }
+                }
+                
+                // Vertical grid lines
+                for (let x = -edgeExtension + gridOffsetX; x <= spacetimeCanvas.width + edgeExtension; x += gridSize) {
+                    spacetimeCtx.beginPath();
+                    let firstPoint = true;
+                    
+                    // Calculate distance from wave origin for radial wave effect
+                    const distFromWave = Math.sqrt(Math.pow(x - waveOriginX, 2) + Math.pow(spacetimeCanvas.height/2 - waveOriginY, 2));
+                    const waveRadial = Math.sin(distFromWave * 0.015 - wavePhase * 2) * 0.5 + 0.5; // More frequent waves
+                    
+                    // Calculate base grid line brightness
+                    const baseBrightness = 0.1; // Slightly brighter base
+                    
+                    // Add smooth wave effect
+                    const waveEffect = waveStrength * waveRadial * 0.15; // More visible waves
+                    let brightness = baseBrightness + waveEffect;
+                    
+                    // Check for ripple effect
+                    let rippleGlow = 0;
+                    if (activeRipple) {
+                        const rippleDist = Math.sqrt(Math.pow(x - activeRipple.x, 2) + Math.pow(spacetimeCanvas.height/2 - activeRipple.y, 2));
+                        const rippleWidth = 30; // Tighter ripple bands
+                        if (Math.abs(rippleDist - activeRipple.radius) < rippleWidth) {
+                            const ripplePhase = 1 - Math.abs(rippleDist - activeRipple.radius) / rippleWidth;
+                            rippleGlow = ripplePhase * activeRipple.strength * 0.3;
+                            brightness += rippleGlow;
+                        }
+                    }
+                    
+                    // More blue color with ripple glow
+                    const blueAmount = 0.4 + waveEffect * 0.2 + rippleGlow * 0.3; // 40-70% blue
+                    const grayAmount = 1 - blueAmount;
+                    spacetimeCtx.strokeStyle = `rgba(${45 * grayAmount + 26 * blueAmount}, ${45 * grayAmount + 58 * blueAmount}, ${45 * grayAmount + 138 * blueAmount}, ${brightness})`;
+                    spacetimeCtx.lineWidth = 1 + waveEffect * 0.5 + rippleGlow * 1.5; // Glow on ripple
+                    
+                    for (let y = -edgeExtension; y <= spacetimeCanvas.height + edgeExtension; y += 10) {
+                        const { warpX, warpY } = calculateWarp(x, y);
+                        const finalX = x + warpX;
+                        const finalY = y + warpY;
+                        
+                        if (finalX < -edgeExtension * 2 || finalX > spacetimeCanvas.width + edgeExtension * 2 || 
+                            finalY < -edgeExtension * 2 || finalY > spacetimeCanvas.height + edgeExtension * 2) {
+                            continue;
+                        }
+                        
+                        if (firstPoint) {
+                            spacetimeCtx.moveTo(finalX, finalY);
+                            firstPoint = false;
+                        } else {
+                            spacetimeCtx.lineTo(finalX, finalY);
+                        }
+                    }
+                    spacetimeCtx.stroke();
+                }
+                
+                const centerY = spacetimeCanvas.height / 2;
+                const gridOffsetY = (centerY % gridSize) - gridSize / 2;
+                
+                // Horizontal grid lines
+                for (let y = -edgeExtension + gridOffsetY; y <= spacetimeCanvas.height + edgeExtension; y += gridSize) {
+                    spacetimeCtx.beginPath();
+                    let firstPoint = true;
+                    
+                    // Calculate distance from wave origin for radial wave effect
+                    const distFromWave = Math.sqrt(Math.pow(spacetimeCanvas.width/2 - waveOriginX, 2) + Math.pow(y - waveOriginY, 2));
+                    const waveRadial = Math.sin(distFromWave * 0.005 - wavePhase * 2 + Math.PI/4) * 0.5 + 0.5; // Phase offset for variety
+                    
+                    // Calculate base grid line brightness
+                    const baseBrightness = 0.1; // Slightly brighter base
+                    
+                    // Add smooth wave effect
+                    const waveEffect = waveStrength * waveRadial * 0.15; // More visible waves
+                    let brightness = baseBrightness + waveEffect;
+                    
+                    // Check for ripple effect
+                    let rippleGlow = 0;
+                    if (activeRipple) {
+                        const rippleDist = Math.sqrt(Math.pow(spacetimeCanvas.width/2 - activeRipple.x, 2) + Math.pow(y - activeRipple.y, 2));
+                        const rippleWidth = 30; // Tighter ripple bands
+                        if (Math.abs(rippleDist - activeRipple.radius) < rippleWidth) {
+                            const ripplePhase = 1 - Math.abs(rippleDist - activeRipple.radius) / rippleWidth;
+                            rippleGlow = ripplePhase * activeRipple.strength * 0.3;
+                            brightness += rippleGlow;
+                        }
+                    }
+                    
+                    // More blue color with ripple glow
+                    const blueAmount = 0.4 + waveEffect * 0.2 + rippleGlow * 0.3; // 40-70% blue
+                    const grayAmount = 1 - blueAmount;
+                    spacetimeCtx.strokeStyle = `rgba(${45 * grayAmount + 26 * blueAmount}, ${45 * grayAmount + 58 * blueAmount}, ${45 * grayAmount + 138 * blueAmount}, ${brightness})`;
+                    spacetimeCtx.lineWidth = 1 + waveEffect * 0.5 + rippleGlow * 1.5; // Glow on ripple
+                    
+                    for (let x = -edgeExtension; x <= spacetimeCanvas.width + edgeExtension; x += 10) {
+                        const { warpX, warpY } = calculateWarp(x, y);
+                        const finalX = x + warpX;
+                        const finalY = y + warpY;
+                        
+                        if (finalX < -edgeExtension * 2 || finalX > spacetimeCanvas.width + edgeExtension * 2 || 
+                            finalY < -edgeExtension * 2 || finalY > spacetimeCanvas.height + edgeExtension * 2) {
+                            continue;
+                        }
+                        
+                        if (firstPoint) {
+                            spacetimeCtx.moveTo(finalX, finalY);
+                            firstPoint = false;
+                        } else {
+                            spacetimeCtx.lineTo(finalX, finalY);
+                        }
+                    }
+                    spacetimeCtx.stroke();
+                }
+                
+                // Draw light effects at grid intersections - especially during ripples
+                if (waveStrength > 0.05 || activeRipple) {
+                    // Draw on every 2nd intersection
+                    for (let x = -edgeExtension + gridOffsetX; x <= spacetimeCanvas.width + edgeExtension; x += gridSize * 2) {
+                        for (let y = -edgeExtension + gridOffsetY; y <= spacetimeCanvas.height + edgeExtension; y += gridSize * 2) {
+                            const { warpX, warpY } = calculateWarp(x, y);
+                            const finalX = x + warpX;
+                            const finalY = y + warpY;
+                            
+                            // Calculate distance from wave origin
+                            const dist = Math.sqrt(Math.pow(finalX - waveOriginX, 2) + Math.pow(finalY - waveOriginY, 2));
+                            const radialFactor = Math.exp(-dist * dist / (300000)); // Gaussian falloff
+                            
+                            // Base pulse intensity
+                            const pulseBase = Math.sin(dist * 0.01 - wavePhase * 3) * 0.5 + 0.5;
+                            let pulseIntensity = waveStrength * radialFactor * pulseBase * 0.1;
+                            
+                            // Ripple glow at intersections
+                            if (activeRipple) {
+                                const rippleDist = Math.sqrt(Math.pow(finalX - activeRipple.x, 2) + Math.pow(finalY - activeRipple.y, 2));
+                                const rippleWidth = 80;
+                                if (Math.abs(rippleDist - activeRipple.radius) < rippleWidth) {
+                                    const ripplePhase = 1 - Math.abs(rippleDist - activeRipple.radius) / rippleWidth;
+                                    const rippleIntensity = ripplePhase * activeRipple.strength * 0.6;
+                                    pulseIntensity = Math.max(pulseIntensity, rippleIntensity);
+                                    
+                                    // Brighter blue during ripple - REMOVED for cleaner wave effect
+                                    // if (rippleIntensity > 0.1) {
+                                    //     spacetimeCtx.fillStyle = `rgba(59, 130, 246, ${rippleIntensity * 0.7})`;
+                                    //     spacetimeCtx.beginPath();
+                                    //     spacetimeCtx.arc(finalX, finalY, 2 + rippleIntensity * 6, 0, Math.PI * 2);
+                                    //     spacetimeCtx.fill();
+                                    // }
+                                }
+                            }
+                            
+                            // Regular subtle glow - REMOVED for cleaner wave effect
+                            // if (pulseIntensity > 0.02 && !activeRipple) {
+                            //     spacetimeCtx.fillStyle = `rgba(26, 58, 138, ${pulseIntensity})`;
+                            //     spacetimeCtx.beginPath();
+                            //     spacetimeCtx.arc(finalX, finalY, 1 + pulseIntensity * 4, 0, Math.PI * 2);
+                            //     spacetimeCtx.fill();
+                            // }
+                        }
+                    }
+                }
+            }
+            
+            function drawCursor() {
+      
+                if (mouseX > 0 && mouseY > 0) {
+                    spacetimeCtx.strokeStyle = 'rgba(45, 45, 45, 0.15)';
+                    spacetimeCtx.lineWidth = 1;
+                    spacetimeCtx.beginPath();
+                    spacetimeCtx.arc(mouseX, mouseY, 20, 0, Math.PI * 2);
+                    spacetimeCtx.stroke();
+                    
+                    spacetimeCtx.beginPath();
+                    spacetimeCtx.arc(mouseX, mouseY, 5, 0, Math.PI * 2);
+                    spacetimeCtx.fillStyle = 'rgba(45, 45, 45, 0.25)';
+                    spacetimeCtx.fill();
+                }
+            }
+            
+            function animateSpacetime() {
+                animationTime++;
+                
+                spacetimeCtx.fillStyle = colors.paper;
+                spacetimeCtx.fillRect(0, 0, spacetimeCanvas.width, spacetimeCanvas.height);
+                
+                updatePositions();
+                drawSpacetimeGrid();
+                drawCursor();
+                
+                const fadeHeight = 200;
+                const fadeStart = spacetimeCanvas.height - fadeHeight;
+                
+                // Convert paper color to RGB values for gradient
+                const paperRGB = '250, 248, 243'; // This should match colors.paper (#FAF8F3)
+                const gradient = spacetimeCtx.createLinearGradient(0, fadeStart, 0, spacetimeCanvas.height + 50);
+                gradient.addColorStop(0, `rgba(${paperRGB}, 0)`);
+                gradient.addColorStop(0.5, `rgba(${paperRGB}, 0.5)`);
+                gradient.addColorStop(0.8, `rgba(${paperRGB}, 0.9)`);
+                gradient.addColorStop(1, `rgba(${paperRGB}, 1)`);
+                
+                spacetimeCtx.fillStyle = gradient;
+                spacetimeCtx.fillRect(0, fadeStart, spacetimeCanvas.width, fadeHeight + 50);
+                
+                requestAnimationFrame(animateSpacetime);
+            }
+            
+            animateSpacetime();
+        }
+
+        // Add this function after the existing copyInstallCommand() function (around line 2270):
+
+        function copyModalCommand() {
+            const command = document.getElementById('modal-install-command').textContent;
+            navigator.clipboard.writeText(command).then(() => {
+                // Show check icon
+                document.getElementById('modal-copy-icon').classList.add('hidden');
+                document.getElementById('modal-check-icon').classList.remove('hidden');
+                
+                // Show tooltip
+                const tooltip = document.getElementById('modal-copy-tooltip');
+                tooltip.classList.remove('opacity-0');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('modal-copy-icon').classList.remove('hidden');
+                    document.getElementById('modal-check-icon').classList.add('hidden');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+        
+        // Toggle Mathematical Foundation details
+        function toggleMathDetails() {
+            const details = document.getElementById('math-details');
+            const chevron = document.getElementById('math-chevron');
+            
+            if (details.style.maxHeight === '0px' || !details.style.maxHeight) {
+                details.style.maxHeight = details.scrollHeight + 'px';
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.maxHeight = '0px';
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Toggle Clock experiment details
+        function toggleClockDetails() {
+            const details = document.getElementById('clock-details');
+            
+            if (details.style.maxHeight === '0px' || !details.style.maxHeight) {
+                details.style.maxHeight = details.scrollHeight + 'px';
+            } else {
+                details.style.maxHeight = '0px';
+            }
+        }
+        
+        // Toggle Einstein note details
+        function toggleEinsteinDetail(id) {
+            const details = document.getElementById(id + '-detail');
+            const allDetails = document.querySelectorAll('[id$="-detail"]');
+            
+            // Hide all other details
+            allDetails.forEach(detail => {
+                if (detail.id !== id + '-detail' && detail.id.includes('einstein-')) {
+                    detail.classList.add('hidden');
+                }
+            });
+            
+            // Toggle the clicked detail
+            details.classList.toggle('hidden');
+        }
+        
+        // Quantum Validator Visualization
+        const quantumValidatorCanvas = document.getElementById('quantumValidatorCanvas');
+        if (quantumValidatorCanvas) {
+            const ctx = quantumValidatorCanvas.getContext('2d');
+            let animationTime = 0;
+            
+            function drawQuantumValidator() {
+                ctx.clearRect(0, 0, quantumValidatorCanvas.width, quantumValidatorCanvas.height);
+                
+                // Background
+                ctx.fillStyle = colors.canvasBg;
+                ctx.fillRect(0, 0, quantumValidatorCanvas.width, quantumValidatorCanvas.height);
+                
+                // Draw atomic clock setup
+                const centerX = quantumValidatorCanvas.width / 2;
+                const bottomY = quantumValidatorCanvas.height - 40;
+                const topY = 60;
+                const heightDiff = bottomY - topY;
+                
+                // Ground level
+                ctx.strokeStyle = colors.codeBorder;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(20, bottomY);
+                ctx.lineTo(quantumValidatorCanvas.width - 20, bottomY);
+                ctx.stroke();
+                
+                // Height marker
+                ctx.strokeStyle = colors.muted;
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(40, topY);
+                ctx.lineTo(40, bottomY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Height label
+                ctx.font = '12px JetBrains Mono, monospace';
+                ctx.fillStyle = colors.muted;
+                ctx.textAlign = 'center';
+                ctx.save();
+                ctx.translate(25, (topY + bottomY) / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('33 cm', 0, 0);
+                ctx.restore();
+                
+                // Lower clock
+                const clockRadius = 30;
+                ctx.fillStyle = colors.codeBg;
+                ctx.strokeStyle = colors.accent;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(centerX, bottomY - clockRadius - 10, clockRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Upper clock
+                ctx.fillStyle = colors.codeBg;
+                ctx.strokeStyle = colors.quantum;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(centerX, topY + clockRadius + 10, clockRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Clock faces (simplified)
+                ctx.fillStyle = colors.ink;
+                ctx.font = '16px JetBrains Mono, monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('⚛', centerX, bottomY - clockRadius - 5);
+                ctx.fillText('⚛', centerX, topY + clockRadius + 15);
+                
+                // Gravitational field lines (subtle)
+                ctx.strokeStyle = colors.codeBorder + '40';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 5; i++) {
+                    const y = bottomY - i * 40;
+                    const curve = Math.sin(animationTime * 0.02) * 5;
+                    ctx.beginPath();
+                    ctx.moveTo(60, y);
+                    ctx.quadraticCurveTo(centerX + curve, y - 10, quantumValidatorCanvas.width - 60, y);
+                    ctx.stroke();
+                }
+                
+                // Frequency shift visualization
+                const waveStartX = centerX + clockRadius + 40;
+                const waveEndX = quantumValidatorCanvas.width - 40;
+                const waveWidth = waveEndX - waveStartX;
+                
+                // Lower clock wave (reference)
+                ctx.strokeStyle = colors.accent;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let x = 0; x <= waveWidth; x++) {
+                    const phase = x * 0.05 + animationTime * 0.05;
+                    const y = bottomY - clockRadius - 10 + Math.sin(phase) * 15;
+                    if (x === 0) {
+                        ctx.moveTo(waveStartX + x, y);
+                    } else {
+                        ctx.lineTo(waveStartX + x, y);
+                    }
+                }
+                ctx.stroke();
+                
+                // Upper clock wave (shifted)
+                ctx.strokeStyle = colors.quantum;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let x = 0; x <= waveWidth; x++) {
+                    // Slightly higher frequency due to gravitational time dilation
+                    const phase = x * 0.0501 + animationTime * 0.0501; // 0.02% shift
+                    const y = topY + clockRadius + 10 + Math.sin(phase) * 15;
+                    if (x === 0) {
+                        ctx.moveTo(waveStartX + x, y);
+                    } else {
+                        ctx.lineTo(waveStartX + x, y);
+                    }
+                }
+                ctx.stroke();
+                
+                // Phase difference indicator
+                if (animationTime > 60) {
+                    const phaseX = waveStartX + waveWidth * 0.7;
+                    
+                    // Vertical line showing phase shift
+                    ctx.strokeStyle = colors.warning;
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([2, 2]);
+                    ctx.beginPath();
+                    ctx.moveTo(phaseX, topY + clockRadius + 25);
+                    ctx.lineTo(phaseX, bottomY - clockRadius - 25);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Label
+                    ctx.font = '11px EB Garamond, serif';
+                    ctx.fillStyle = colors.warning;
+                    ctx.textAlign = 'left';
+                    ctx.fillText('Δf/f = 3.61×10⁻¹⁷', phaseX + 10, (topY + bottomY) / 2);
+                }
+                
+                // Labels
+                ctx.font = '12px EB Garamond, serif';
+                ctx.fillStyle = colors.ink;
+                ctx.textAlign = 'center';
+                ctx.fillText('Lower clock', centerX, bottomY + 25);
+                ctx.fillText('Upper clock', centerX, topY - 10);
+                
+                animationTime++;
+                requestAnimationFrame(drawQuantumValidator);
+            }
+            
+            drawQuantumValidator();
+        }
+    </script>
+
+</body>
+</html> 

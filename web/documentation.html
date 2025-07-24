@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert Framework - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header with tabs */
+        .header {
+            background-color: #1976d2;
+            color: white;
+            padding: 20px 20px 0 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        
+        /* Tab navigation */
+        .tabs {
+            display: flex;
+            gap: 0;
+        }
+        
+        .tab {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .tab:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .tab.active {
+            color: white;
+            border-bottom-color: white;
+        }
+        
+        /* Research preview notice */
+        .research-notice {
+            background-color: #FFF3CD;
+            border: 1px solid #FFEAA7;
+            color: #856404;
+            padding: 12px 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .research-notice svg {
+            flex-shrink: 0;
+        }
+        
+        /* Content area */
+        .content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            background-color: #f5f5f5;
+        }
+        
+        .iframe-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        .iframe-container.active {
+            display: block;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1976d2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .tab {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            .research-notice {
+                font-size: 12px;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Albert Documentation</h1>
+        <div class="tabs">
+            <button class="tab active">Overview</button>
+            <button class="tab">Solvers</button>
+            <button class="tab">Validators</button>
+            <button class="tab">Datasets</button>
+            <button class="tab">Self-Discovery</button>
+            <button class="tab">Scoring</button>
+            <button class="tab">Cache</button>
+        </div>
+    </div>
+    
+    <div class="research-notice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>
+            <strong>Research Preview:</strong> This is an early research preview of Albert. While the code is openly available, it has only been shared with a select group of researchers and early testers. Features and APIs may change significantly.
+        </span>
+    </div>
+    
+    <div class="content">
+        <div id="overview-container" class="iframe-container active">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Overview...</p>
+            </div>
+            <iframe src="flowchart.html" onload="hideLoading('overview')"></iframe>
+        </div>
+        
+        <div id="solvers-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Solvers...</p>
+            </div>
+            <iframe data-src="paper.html" onload="hideLoading('solvers')"></iframe>
+        </div>
+        
+        <div id="validators-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Validators...</p>
+            </div>
+            <iframe data-src="validators.html" onload="hideLoading('validators')"></iframe>
+        </div>
+        
+        <div id="datasets-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Datasets...</p>
+            </div>
+            <iframe data-src="dataset_table.html" onload="hideLoading('datasets')"></iframe>
+        </div>
+        
+        <div id="discovery-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Self-Discovery System...</p>
+            </div>
+            <iframe data-src="self_discovery.html" onload="hideLoading('discovery')"></iframe>
+        </div>
+        <div id="scoring-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Scoring...</p>
+            </div>
+            <iframe data-src="scoring.html" onload="hideLoading('scoring')"></iframe>
+        </div>
+        
+        <div id="cache-container" class="iframe-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading Cache System...</p>
+            </div>
+            <iframe data-src="cache.html" onload="hideLoading('cache')"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName, updateUrl = true) {
+            // Update active tab
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Find the correct tab button
+            const tabIndex = getTabIndex(tabName);
+            if (tabIndex !== -1) {
+                const targetTab = tabs[tabIndex];
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                }
+            }
+            
+            // Update active content
+            const containers = document.querySelectorAll('.iframe-container');
+            containers.forEach(container => container.classList.remove('active'));
+            document.getElementById(`${tabName}-container`).classList.add('active');
+            
+            // Lazy load iframe if not already loaded
+            const iframe = document.querySelector(`#${tabName}-container iframe`);
+            if (iframe.hasAttribute('data-src') && !iframe.src) {
+                iframe.src = iframe.getAttribute('data-src');
+                iframe.removeAttribute('data-src');
+            }
+            
+            // Update URL if requested
+            if (updateUrl) {
+                const url = new URL(window.location);
+                url.searchParams.set('tab', tabName);
+                history.pushState({ tab: tabName }, '', url);
+            }
+        }
+        
+        // Handle tab button clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach((button, index) => {
+                const tabNames = ['overview', 'solvers', 'validators', 'datasets', 'discovery', 'scoring', 'cache'];
+                button.addEventListener('click', function() {
+                    switchTab(tabNames[index]);
+                });
+            });
+            
+            // Check URL parameters on load
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            const validTabs = ['overview', 'solvers', 'validators', 'datasets', 'discovery', 'scoring', 'cache'];
+            
+            if (tabParam && validTabs.includes(tabParam)) {
+                switchTab(tabParam, false); // Don't update URL on initial load
+            } else {
+                // Default to overview if no valid tab specified
+                const url = new URL(window.location);
+                url.searchParams.set('tab', 'overview');
+                history.replaceState({ tab: 'overview' }, '', url);
+            }
+        });
+        
+        // Hide loading indicator when iframe loads
+        window.hideLoading = function(tabName) {
+            const loading = document.querySelector(`#${tabName}-container .loading`);
+            if (loading) {
+                loading.style.display = 'none';
+            }
+        }
+        
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.tab) {
+                switchTab(event.state.tab, false); // Don't update URL on popstate
+            }
+        });
+        
+        function getTabIndex(tabName) {
+            const tabNames = ['overview', 'solvers', 'validators', 'datasets', 'discovery', 'scoring', 'cache'];
+            return tabNames.indexOf(tabName);
+        }
+    </script>
+</body>
+</html> 

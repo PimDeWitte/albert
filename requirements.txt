@@ -1,0 +1,20 @@
+# Core dependencies
+wgpu
+PyYAML
+torch
+numpy
+scipy
+matplotlib
+Pillow
+PySide6  # Qt binding for UI (LGPL licensed)
+pennylane  # For quantum validation
+cryptography>=41.0.0
+
+# Optional: Albert Network integration
+# Uncomment if using Albert Network features:
+# supabase>=2.0.0
+# requests>=2.31.0
+# python-dotenv>=1.0.0
+
+# <reason>chain: Add psutil for system resource monitoring in parallel sweeps</reason>
+psutil>=5.9.0

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Reference - Gravity Compression Framework</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .dataset-table {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            padding: 32px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            font-size: 14px;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #1976d2;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        .uri-code {
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .source-link {
+            color: #2196F3;
+            text-decoration: none;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        .source-link:hover {
+            text-decoration: underline;
+        }
+        .category-header {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .note {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Centralized Dataset Registry</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">
+            All datasets used in the gravity compression framework with full provenance tracking
+        </p>
+        
+        <div class="note">
+            <h3>Dataset Management</h3>
+            <p>All datasets are managed through the central <code>DatasetLoader</code> class. Each dataset has:</p>
+            <ul>
+                <li>A unique URI: <code>dataloader://dataset_id</code></li>
+                <li>Source tracking in <code>source.txt</code> files</li>
+                <li>Automatic download and caching for remote datasets</li>
+                <li>Version control through timestamps</li>
+            </ul>
+        </div>
+
+        <div class="dataset-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dataset Name</th>
+                        <th>Reason for Existence</th>
+                        <th>Remote URL</th>
+                        <th>Last Downloaded</th>
+                        <th>Local URI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- OBSERVATIONAL DATASETS -->
+                    <tr class="category-header">
+                        <td colspan="5">OBSERVATIONAL DATASETS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Planck 2018 CMB TT Power Spectrum</strong></td>
+                        <td>CMB temperature anisotropies test early universe physics and quantum gravity effects</td>
+                        <td><a href="https://irsa.ipac.caltech.edu/data/Planck/release_3/ancillary-data/previews/COM_PowerSpect_CMB-TT-binned_R3.01.txt" class="source-link" target="_blank">Planck Data Archive</a></td>
+                        <td>2024-07-23 (local copy)</td>
+                        <td><code class="uri-code">dataloader://planck_cmb_2018</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>NANOGrav 15-year Pulsar Timing Array Data</strong></td>
+                        <td>Tests low-frequency gravitational wave background from supermassive black holes</td>
+                        <td><a href="https://data.nanograv.org/15yr/v1.1.0/15yr_cw_analysis/v1p1_all_dict.json" class="source-link" target="_blank">NANOGrav Data</a></td>
+                        <td>2024-07-23 (local copy)</td>
+                        <td><code class="uri-code">dataloader://nanograv_15yr</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>BICEP/Keck Array Primordial GW Constraints</strong></td>
+                        <td>Constrains tensor-to-scalar ratio and tests inflationary predictions</td>
+                        <td><a href="http://bicepkeck.org/bk18_2021_release/BK18_r_likelihood.txt" class="source-link" target="_blank">BICEP/Keck Data</a></td>
+                        <td>2024-07-23 (local copy)</td>
+                        <td><code class="uri-code">dataloader://bicep_keck_2021</code></td>
+                    </tr>
+                    
+                    <!-- HARDCODED EXPERIMENTAL VALUES -->
+                    <tr class="category-header">
+                        <td colspan="5">HARDCODED EXPERIMENTAL VALUES</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mercury Perihelion Advance</strong></td>
+                        <td>Classic GR test of post-Newtonian corrections in planetary orbits</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Solar Light Deflection</strong></td>
+                        <td>Tests null geodesics in curved spacetime, validates gravitational lensing</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Shapiro Time Delay (Cassini)</strong></td>
+                        <td>Most precise test of GR time delay, PPN parameter gamma</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::SHAPIRO_TIME_DELAY</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lunar Laser Ranging</strong></td>
+                        <td>Tests strong equivalence principle and PPN beta parameter</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::LUNAR_LASER_RANGING</code></a></td>
+                    </tr>
+                    
+                    <!-- QUANTUM GRAVITY EXPERIMENTS -->
+                    <tr class="category-header">
+                        <td colspan="5">QUANTUM GRAVITY EXPERIMENTS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>COW Neutron Interferometry</strong></td>
+                        <td>Tests quantum effects in gravity, gravitational phase shift</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::COW_INTERFEROMETRY</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atom Interferometry Gravitational Redshift</strong></td>
+                        <td>Ultra-precise gravitational redshift at meter scales</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::ATOM_INTERFEROMETRY</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quantum Clock Time Dilation</strong></td>
+                        <td>Tests gravitational time dilation at quantum scales</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::QUANTUM_CLOCK</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gravitational Decoherence Bounds</strong></td>
+                        <td>Tests gravity-induced collapse models and quantum decoherence</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::GRAVITATIONAL_DECOHERENCE</code></a></td>
+                    </tr>
+                    
+                    <!-- PULSAR DATASETS -->
+                    <tr class="category-header">
+                        <td colspan="5">PULSAR DATASETS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PSR J0740+6620 Binary Pulsar</strong></td>
+                        <td>Most massive neutron star, tests GR in strong field with Shapiro delay</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="dataset_loader.py#L166" class="source-link"><code>dataset_loader.py registry (lines 166-178)</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>PSR J0952-0607 Black Widow Pulsar</strong></td>
+                        <td>Most massive neutron star known, tests equation of state limits</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::PSR_J0952_0607</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>PSR B1913+16 Hulse-Taylor Binary</strong></td>
+                        <td>Nobel Prize system, orbital decay confirms GW emission</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::PSR_B1913_16</code></a></td>
+                    </tr>
+                    
+                    <!-- COSMOLOGICAL PARAMETERS -->
+                    <tr class="category-header">
+                        <td colspan="5">COSMOLOGICAL PARAMETERS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Planck 2018 Cosmological Parameters</strong></td>
+                        <td>Comprehensive cosmological model parameters including CMB anomalies</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::PLANCK_COSMOLOGY</code></a></td>
+                    </tr>
+                    
+                    <!-- TEST CONFIGURATIONS -->
+                    <tr class="category-header">
+                        <td colspan="5">TEST CONFIGURATIONS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standard Test Radii</strong></td>
+                        <td>Standard radii for metric testing in Schwarzschild units</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::TEST_RADII_FACTORS</code></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standard Orbit Parameters</strong></td>
+                        <td>Standard orbital configurations for conservation tests</td>
+                        <td>Hardcoded from constants.py</td>
+                        <td>N/A</td>
+                        <td><a href="constants.py" class="source-link"><code>constants.py::STANDARD_ORBITS</code></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="note">
+            <h4>Usage Example</h4>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">
+from physics_agent.dataset_loader import get_dataset_loader
+
+# Load a dataset
+loader = get_dataset_loader()
+dataset = loader.load_dataset('planck_cmb_2018')
+
+# Access the data
+data = dataset['data']  # NumPy array or dict
+metadata = dataset['metadata']  # Full dataset info
+uri = dataset['uri']  # dataloader://planck_cmb_2018
+            </pre>
+        </div>
+        
+        <div class="note">
+            <h4>Data Directory Structure</h4>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">
+physics_agent/data/dataloader/
+├── planck_cmb_2018/
+│   ├── COM_PowerSpect_CMB-TT-binned_R3.01.txt
+│   └── source.txt
+├── mercury_perihelion/
+│   ├── data.json
+│   └── source.txt
+└── ... (other datasets)
+            </pre>
+        </div>
+    </div>
+</body>
+</html> 

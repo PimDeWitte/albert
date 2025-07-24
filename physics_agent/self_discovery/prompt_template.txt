@@ -1,0 +1,89 @@
+# Self-Discovery Prompt Template
+# 
+# This template is used to generate new gravitational theories via LLM APIs.
+# Edit this file to customize the theory generation process.
+# 
+# Available variables:
+#   {baseline_theories} - List of baseline theories for comparison
+#   {initial_prompt} - Initial idea from command line
+#
+# See PROMPT_TEMPLATE_README.md for detailed customization guide.
+# ============================================================
+
+Generate a novel gravitational theory as a Python class inheriting from GravitationalTheory.
+
+The new theory will be benchmarked against the following baseline theories:
+{baseline_theories}
+
+Your generated theory must:
+- Be implemented as a Python class named 'CustomTheory' that inherits from 'GravitationalTheory'.
+- Have a 'get_metric' method that returns the metric tensor components (g_tt, g_rr, g_pp, g_tp).
+- Include a Lagrangian formulation by setting self.lagrangian = sympy expression in __init__.
+  Note: While the framework can auto-generate L=R as a default, providing the correct Lagrangian
+  is CRITICAL for validation. The Lagrangian should encode the actual physics of your theory.
+- Aim to unify gravity and electromagnetism, or explore other novel geometric approaches to gravity.
+
+## SymPy Syntax for Lagrangians
+
+Import sympy at the top of your code:
+```python
+import sympy as sp
+```
+
+Available symbols and how to use them:
+```python
+# Pre-defined symbols you can use:
+R = sp.Symbol('R')           # Ricci scalar
+r = sp.Symbol('r')           # Radial coordinate
+M = sp.Symbol('M')           # Mass parameter
+Q = sp.Symbol('Q')           # Charge parameter
+c = sp.Symbol('c')           # Speed of light
+G = sp.Symbol('G')           # Gravitational constant
+
+# Common SymPy operations:
+# Powers: R**2, r**(-2), sp.sqrt(R)
+# Logarithms: sp.log(R), sp.log(1 + R)
+# Exponentials: sp.exp(-R), sp.exp(R/R0)
+# Fractions: R/(1 + R), sp.Rational(1,2)*R
+# Constants: sp.pi, sp.E
+```
+
+Example Lagrangian expressions:
+```python
+# Einstein-Hilbert action:
+self.lagrangian = sp.Symbol('R')
+
+# f(R) gravity:
+self.lagrangian = sp.Symbol('R') + alpha * sp.Symbol('R')**2
+
+# Scalar-tensor theory:
+phi = sp.Symbol('phi')
+self.lagrangian = phi * sp.Symbol('R') - omega/phi * (sp.diff(phi, r))**2
+
+# Quantum corrections:
+l_p = sp.Symbol('l_p')  # Planck length
+self.lagrangian = sp.Symbol('R') + l_p**2 * sp.Symbol('R')**2
+
+# With electromagnetic field:
+F = sp.Symbol('F')  # Field strength tensor
+self.lagrangian = sp.Symbol('R') - sp.Rational(1,4) * F**2
+
+# Modified gravity with log correction:
+R0 = sp.Symbol('R0')
+self.lagrangian = sp.Symbol('R') + beta * sp.Symbol('R') * sp.log(sp.Symbol('R')/R0)
+```
+
+For custom parameters, define them as class attributes:
+```python
+def __init__(self):
+    super().__init__("My Theory")
+    self.alpha = 0.1  # Your parameter
+    self.beta = 1.0   # Another parameter
+    
+    # Use in Lagrangian:
+    self.lagrangian = sp.Symbol('R') + self.alpha * sp.Symbol('R')**2
+```
+
+Initial idea: {initial_prompt}
+    
+Return ONLY the Python code, no explanations. 

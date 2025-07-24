@@ -1,0 +1,9 @@
+Flask>=2.0.0
+requests>=2.28.0
+werkzeug>=2.0.0
+
+# Optional: Albert Network integration
+# Uncomment the following lines to enable Albert Network features:
+# python-dotenv>=1.0.0
+# supabase>=2.0.0
+# cryptography>=40.0.0 

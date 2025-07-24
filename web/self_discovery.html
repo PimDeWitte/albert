@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Discovery System for Gravitational Theory Exploration</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .paper {
+            background: white;
+            padding: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .abstract {
+            background: #f0f7ff;
+            padding: 20px;
+            border-left: 4px solid #1976d2;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        
+        .abstract h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .highlight {
+            background: #fffacd;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .workflow-diagram {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .workflow-step {
+            display: inline-block;
+            background: white;
+            border: 2px solid #1976d2;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 6px;
+            position: relative;
+        }
+        
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #1976d2;
+        }
+        
+        .workflow-step:last-child::after {
+            display: none;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .feature-box h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .command-example {
+            background: #f4f4f4;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        
+        .pr-instructions {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .golden-ratio {
+            color: #d4af37;
+            font-weight: bold;
+        }
+        
+        /* Main Diagram Styles */
+        .main-diagram {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .diagram-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .diagram-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .diagram-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            flex: 1;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .diagram-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .box-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .diagram-box h4 {
+            color: #333;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        
+        .diagram-box p {
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+        
+        .diagram-box code {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            background: #f0f0f0;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .arrow {
+            font-size: 36px;
+            color: #1976d2;
+            font-weight: bold;
+        }
+        
+        .llm-box {
+            border-color: #4285f4;
+        }
+        
+        .llm-box:hover {
+            border-color: #4285f4;
+            background: linear-gradient(to bottom, #fff, #f0f7ff);
+        }
+        
+        .eval-box {
+            border-color: #ea4335;
+        }
+        
+        .eval-box:hover {
+            border-color: #ea4335;
+            background: linear-gradient(to bottom, #fff, #fff5f5);
+        }
+        
+        .rank-box {
+            border-color: #fbbc04;
+        }
+        
+        .rank-box:hover {
+            border-color: #fbbc04;
+            background: linear-gradient(to bottom, #fff, #fffaf0);
+        }
+        
+        .candidate-box {
+            border-color: #34a853;
+        }
+        
+        .candidate-box:hover {
+            border-color: #34a853;
+            background: linear-gradient(to bottom, #fff, #f0fff4);
+        }
+        
+        .git-box {
+            border-color: #673ab7;
+        }
+        
+        .git-box:hover {
+            border-color: #673ab7;
+            background: linear-gradient(to bottom, #fff, #f5f0ff);
+        }
+        
+        .pr-box {
+            border-color: #ff5722;
+        }
+        
+        .pr-box:hover {
+            border-color: #ff5722;
+            background: linear-gradient(to bottom, #fff, #fff5f3);
+        }
+        
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .file-list span {
+            margin: 2px 0;
+        }
+        
+        @media (max-width: 1024px) {
+            .diagram-row {
+                flex-direction: column;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+            }
+            
+            .diagram-box {
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="paper">
+        <h1>Self-Discovery System for Gravitational Theory Exploration</h1>
+        <p class="subtitle">Automated Theory Generation and Candidate Management in the Albert Framework</p>
+        
+        <div class="main-diagram">
+            <div class="diagram-title">Self-Discovery Workflow</div>
+            <div class="diagram-container">
+                <div class="diagram-row">
+                    <div class="diagram-box llm-box">
+                        <div class="box-icon">🤖</div>
+                        <h4>LLM Generation</h4>
+                        <p>AI generates novel theories based on prompts</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="diagram-box eval-box">
+                        <div class="box-icon">🔬</div>
+                        <h4>Evaluation</h4>
+                        <p>Test against baselines & observational data</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="diagram-box rank-box">
+                        <div class="box-icon">🏆</div>
+                        <h4>Ranking</h4>
+                        <p>Top 10 theories promoted to candidates</p>
+                    </div>
+                </div>
+                <div class="diagram-row second-row">
+                    <div class="diagram-box candidate-box">
+                        <div class="box-icon">📁</div>
+                        <h4>Candidate Storage</h4>
+                        <p>c_{timestamp}_{hash}/</p>
+                        <div class="file-list">
+                            <span>• theory.py</span>
+                            <span>• README.md</span>
+                            <span>• trajectory.pt</span>
+                            <span>• losses.json</span>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="diagram-box git-box">
+                        <div class="box-icon">🌿</div>
+                        <h4>Git Workflow</h4>
+                        <p>Automated branch & commit</p>
+                        <code>python submit_candidate.py</code>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="diagram-box pr-box">
+                        <div class="box-icon">🔄</div>
+                        <h4>Pull Request</h4>
+                        <p>Community review on GitHub</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>1. System Architecture</h2>
+        
+        <h3>1.1 Component Overview</h3>
+        <p>
+            The self-discovery system consists of three main components:
+        </p>
+        
+        <div class="features">
+            <div class="feature-box">
+                <h4>Self-Discovery Module</h4>
+                <p>Manages LLM interaction, theory instantiation, and candidate promotion logic</p>
+            </div>
+            <div class="feature-box">
+                <h4>Candidate System</h4>
+                <p>Provides structured storage and versioning for promising but unreviewed theories</p>
+            </div>
+            <div class="feature-box">
+                <h4>Submission Tools</h4>
+                <p>Automates git workflow for contributing candidates to the main repository</p>
+            </div>
+        </div>
+        
+        <h3>1.2 Workflow Diagram</h3>
+        <div class="workflow-diagram">
+            <div class="workflow-step">Discovery</div>
+            <div class="workflow-step">Evaluation</div>
+            <div class="workflow-step">Promotion</div>
+            <div class="workflow-step">Review</div>
+            <div class="workflow-step">Integration</div>
+        </div>
+        
+        <h2>2. Theory Generation Process</h2>
+        
+        <h3>2.1 Prompt Engineering</h3>
+        <p>
+            The system uses customizable prompt templates that guide LLMs to generate valid
+            gravitational theories. Key requirements include:
+        </p>
+        
+        <pre><code># Example prompt structure
+Generate a novel gravitational theory as a Python class inheriting from GravitationalTheory.
+
+Your generated theory must:
+- Implement get_metric() returning (g_tt, g_rr, g_pp, g_tp)
+- Include a Lagrangian formulation using SymPy
+- Aim to unify gravity and electromagnetism
+- Incorporate principles aligned with Albert's quest</code></pre>
+        
+        <h3>2.2 Focused Improvement Mode</h3>
+        <p>
+            The system supports targeted theory improvement through the <code>--theory</code> parameter:
+        </p>
+        
+        <div class="command-example">
+            python self_discovery.py --self-discover --theory theories/quantum_corrected \
+                --initial-prompt "Add holographic corrections inspired by AdS/CFT"
+        </div>
+        
+        <h2>3. Candidate Management</h2>
+        
+        <h3>3.1 Directory Structure</h3>
+        <p>
+            Candidates are stored with cryptographically unique identifiers:
+        </p>
+        
+        <pre><code>physics_agent/theories/candidates/
+├── c_20240723_140530_a7b9c2d1/
+│   ├── theory.py           # Generated theory code
+│   ├── README.md          # Discovery context
+│   ├── trajectory.pt      # Computed trajectory
+│   ├── losses.json        # Performance metrics
+│   └── validation/        # Validation results
+└── README.md              # Candidate guidelines</code></pre>
+        
+        <h3>3.2 Promotion Criteria</h3>
+        <p>
+            A theory is promoted to candidate status when it:
+        </p>
+        <table>
+            <tr>
+                <th>Criterion</th>
+                <th>Threshold</th>
+                <th>Rationale</th>
+            </tr>
+            <tr>
+                <td>Average Loss</td>
+                <td>&lt; 0.1</td>
+                <td>Competitive with baseline theories</td>
+            </tr>
+            <tr>
+                <td>Leaderboard Rank</td>
+                <td>Top 10</td>
+                <td>Among best performers</td>
+            </tr>
+            <tr>
+                <td>Validation Pass</td>
+                <td>Core tests</td>
+                <td>Physical consistency</td>
+            </tr>
+        </table>
+        
+        <h2>4. Evaluation Framework</h2>
+        
+        <h3>4.1 Baseline Comparison</h3>
+        <p>
+            Generated theories are evaluated against established baselines:
+        </p>
+        <ul>
+            <li><strong>Kerr (a=0)</strong>: Pure gravity baseline (Schwarzschild)</li>
+            <li><strong>Kerr-Newman (a=0, Q=0.5)</strong>: Gravity + electromagnetism (Reissner-Nordström)</li>
+        </ul>
+        
+        <h3>4.2 Loss Calculation</h3>
+        <p>
+            The system uses Ricci tensor comparison for loss calculation, providing a
+            geometrically meaningful measure of trajectory deviation.
+        </p>
+        
+        <h2>5. GitHub Integration</h2>
+        
+        <h3>5.1 Automated Submission</h3>
+        <p>
+            When a candidate shows promise, the system provides automated submission tools:
+        </p>
+        
+        <div class="pr-instructions">
+            <h4>🎉 PROMISING CANDIDATE DISCOVERED!</h4>
+            <p>Candidate ID: c_20240723_140530_a7b9c2d1</p>
+            <p>
+                <strong>Automated submission:</strong><br>
+                <code>python submit_candidate.py c_20240723_140530_a7b9c2d1</code>
+            </p>
+            <p>
+                This will:
+                <ul>
+                    <li>Create a feature branch</li>
+                    <li>Stage the candidate directory</li>
+                    <li>Commit with descriptive message</li>
+                    <li>Push to GitHub with PR link</li>
+                </ul>
+            </p>
+        </div>
+        
+        <h2>6. Usage Examples</h2>
+        
+        <h3>6.1 Default Discovery Mode</h3>
+        <div class="command-example">
+            # Run baselines and generate new theory
+            python physics_agent/self_discovery/self_discovery.py --self-discover
+        </div>
+        
+        <h3>6.2 Testing All Candidates</h3>
+        <div class="command-example">
+            # Evaluate all theories including candidates
+            python -m physics_agent.theory_engine_core --candidates
+        </div>
+        
+        <h3>6.3 Custom Prompt from File</h3>
+        <div class="command-example">
+            # Use Einstein's notes as inspiration
+            python self_discovery.py --self-discover \
+                --initial-prompt einstein_notes.txt
+        </div>
+        
+        <h2>7. Scientific Validation</h2>
+        
+        <p>
+            The system ensures scientific rigor through multiple validation layers:
+        </p>
+        
+        <div class="highlight">
+            <h4>Validation Pipeline</h4>
+            <ol>
+                <li><strong>Syntax Validation</strong>: Ensures valid Python and proper inheritance</li>
+                <li><strong>Physics Validation</strong>: Checks metric signature, coordinate limits</li>
+                <li><strong>Numerical Validation</strong>: Tests trajectory stability, energy conservation</li>
+                <li><strong>Observational Validation</strong>: Compares against experimental data</li>
+            </ol>
+        </div>
+        
+        <h2>8. Future Directions</h2>
+        
+        <p>
+            Planned enhancements include:
+        </p>
+        <ul>
+            <li>Multi-agent collaboration for theory refinement</li>
+            <li>Automated hyperparameter optimization</li>
+            <li>Integration with quantum computing simulators</li>
+            <li>Real-time collaboration features</li>
+        </ul>
+    </div>
+</body>
+</html> 

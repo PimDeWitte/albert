@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Engine Core - Execution Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .mermaid {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .note {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        .save-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+        .save-button:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Theory Engine Core - Execution Flowchart</h1>
+    
+    <button class="save-button" onclick="saveAsImage()">Save as Image</button>
+    
+    <div class="note">
+        <strong>Note:</strong> This flowchart shows the exact sequence of events in theory_engine_core.py, including:
+        <ul>
+            <li>Dynamic theory loading via code injection</li>
+            <li>Multiprocessing/threading for parameter sweeps</li>
+            <li>Three-phase evaluation process</li>
+            <li>Validation hierarchy</li>
+        </ul>
+    </div>
+
+    <div class="mermaid">
+flowchart TD
+    START(["main Entry Point"]) --> PARSE["Parse CLI Arguments"]
+    
+    PARSE --> SETUP["Setup Execution Mode"]
+    
+    SETUP --> DEVICE["Determine Device & Dtype<br/>GPU/CPU, float32/float64"]
+    
+    DEVICE --> ENGINE["Create TheoryEngine Instance<br/>device, dtype, quantum config"]
+    
+    ENGINE --> LOADER["Create TheoryLoader<br/>theories_base_dir=physics_agent/theories"]
+    
+    LOADER --> DISCOVER["Discover Theories<br/>loader.discover_theories"]
+    
+    DISCOVER --> WALK["Walk Directory Tree<br/>os.walk"]
+    
+    WALK --> FINDTHEORY{Find theory.py files?}
+    
+    FINDTHEORY -->|Yes| LOADCLASS["Dynamic Code Loading<br/>importlib.util.spec_from_file_location<br/>spec.loader.exec_module"]
+    
+    LOADCLASS --> INSPECT["Inspect Module<br/>Find GravitationalTheory subclasses<br/>Extract metadata: category, sweep, params"]
+    
+    INSPECT --> STORE["Store Theory Class<br/>self.loaded_theories key = class"]
+    
+    STORE --> WALK
+    
+    FINDTHEORY -->|No| NEXTDIR["Continue Directory Walk"]
+    
+    NEXTDIR --> WALK
+    
+    WALK -->|Complete| FILTER["Apply Theory Filter<br/>if args.theory_filter"]
+    
+    FILTER --> INSTANTIATE["Instantiate Theories<br/>loader.instantiate_theory"]
+    
+    INSTANTIATE --> BASELINES["Load Baseline Theories<br/>Import Kerr, KerrNewman<br/>Create instances with a=0"]
+    
+    BASELINES --> RUNDIR["Create Run Directory<br/>runs/run_TIMESTAMP_dtype/"]
+    
+    RUNDIR --> LOGGER["Start RunLogger<br/>Capture all output to log file"]
+    
+    LOGGER --> PHASE0["PHASE 0: Baseline Simulation<br/>Run Kerr & Kerr-Newman"]
+    
+    PHASE0 --> BASELINE_LOOP{For each baseline}
+    
+    BASELINE_LOOP --> RUN_BASELINE["engine.run_trajectory<br/>Store in baseline_results"]
+    
+    RUN_BASELINE --> BASELINE_LOOP
+    
+    BASELINE_LOOP -->|Complete| PHASE1["PHASE 1: Theory Validation"]
+    
+    PHASE1 --> THEORY_LOOP{For each theory}
+    
+    THEORY_LOOP --> HASSWEEP{Has parameter sweep?<br/>and args.enable_sweeps?}
+    
+    HASSWEEP -->|Yes| SWEEP_SETUP["Generate Parameter Combinations<br/>itertools.product"]
+    
+    SWEEP_SETUP --> WORKERS["Determine Worker Count<br/>CPU count, memory check<br/>max 8 workers"]
+    
+    WORKERS --> POOL["Create ProcessPoolExecutor<br/>max_workers=calculated"]
+    
+    POOL --> SUBMIT["Submit All Combinations<br/>executor.submit"]
+    
+    SUBMIT --> SWEEP_PROCESS["Worker Process<br/>- Create temp directory<br/>- Instantiate theory with params<br/>- Create new engine<br/>- Run validation"]
+    
+    SWEEP_PROCESS --> COLLECT["Collect Results<br/>as_completed"]
+    
+    COLLECT --> SAVE_SWEEP["Save Sweep Summary<br/>theory_sweep_summary.json"]
+    
+    SAVE_SWEEP --> THEORY_LOOP
+    
+    HASSWEEP -->|No| VALIDATE_ONLY["validate_theory_only<br/>Run validation trajectory<br/>100 steps only"]
+    
+    VALIDATE_ONLY --> CONSTRAINTS["Run Constraint Validators<br/>- Conservation<br/>- Metric Properties<br/>- Lagrangian"]
+    
+    CONSTRAINTS --> CONSTPASS{Constraints passed?}
+    
+    CONSTPASS -->|No| FAIL_THEORY["Move to fail/ directory"]
+    
+    FAIL_THEORY --> THEORY_LOOP
+    
+    CONSTPASS -->|Yes| OBSERVATIONAL["Run Observational Validators<br/>- Mercury Precession<br/>- Light Deflection<br/>- PPN Parameters<br/>- etc."]
+    
+    OBSERVATIONAL --> QUANTUM{Is quantum theory?}
+    
+    QUANTUM -->|Yes| QUANTUM_VAL["Run Quantum Validators<br/>- COW Interferometry<br/>- Atom Interferometry<br/>- Decoherence<br/>- Quantum Clocks<br/>- Lagrangian Grounding"]
+    
+    QUANTUM_VAL --> CHECK_PASS
+    
+    QUANTUM -->|No| CHECK_PASS{80% validators passed?}
+    
+    CHECK_PASS -->|Yes| PASSED_LIST["Add to theories_that_passed"]
+    
+    CHECK_PASS -->|No| FAIL_THEORY
+    
+    PASSED_LIST --> THEORY_LOOP
+    
+    THEORY_LOOP -->|Complete| PHASE2["PHASE 2: Full Trajectories<br/>For validated theories only"]
+    
+    PHASE2 --> TRAJ_LOOP{For each passed theory}
+    
+    TRAJ_LOOP --> RUN_TRAJ["run_trajectory_and_visualize<br/>Full N_STEPS simulation"]
+    
+    RUN_TRAJ --> PROCESS_EVAL["process_and_evaluate_theory<br/>- Run trajectory<br/>- Generate visualizations<br/>- Calculate scores"]
+    
+    PROCESS_EVAL --> VISUAL["Create Visualizations<br/>- Phase space plots<br/>- Energy plots<br/>- Trajectory comparison"]
+    
+    VISUAL --> REPORT["Generate HTML Report<br/>ComprehensiveReportGenerator"]
+    
+    REPORT --> TRAJ_LOOP
+    
+    TRAJ_LOOP -->|Complete| PHASE3["PHASE 3: Predictions<br/>run_predictions_on_finalists"]
+    
+    PHASE3 --> GET_FINALISTS["Get All Finalists<br/>theories not in fail/"]
+    
+    GET_FINALISTS --> PRED_VALIDATORS["Initialize Prediction Validators<br/>- CMB Power Spectrum<br/>- PTA Stochastic GW<br/>- Primordial GWs<br/>- Future Detectors<br/>- Novel Signatures"]
+    
+    PRED_VALIDATORS --> PRED_LOOP{For each finalist}
+    
+    PRED_LOOP --> RECONSTRUCT["Reconstruct Theory Instance<br/>Using saved theory_info.json"]
+    
+    RECONSTRUCT --> RUN_PRED["Run Each Validator<br/>Download real data<br/>Compare to SOTA"]
+    
+    RUN_PRED --> UPDATE_SCORES["Update Comprehensive Scores<br/>Add prediction results"]
+    
+    UPDATE_SCORES --> PRED_LOOP
+    
+    PRED_LOOP -->|Complete| UPDATE_REPORTS["update_comprehensive_reports_with_predictions<br/>Regenerate HTML with predictions"]
+    
+    UPDATE_REPORTS --> LEADERBOARD["generate_leaderboard<br/>Create final ranking HTML"]
+    
+    LEADERBOARD --> SUMMARY["Generate Comprehensive Summary<br/>All pass/fail results"]
+    
+    SUMMARY --> STOP_LOG["Stop RunLogger<br/>Save complete log file"]
+    
+    STOP_LOG --> END([End])
+
+    style START fill:#90EE90
+    style END fill:#FFB6C1
+    style PHASE0 fill:#FFE4B5
+    style PHASE1 fill:#FFE4B5
+    style PHASE2 fill:#FFE4B5
+    style PHASE3 fill:#FFE4B5
+    style SWEEP_PROCESS fill:#E6E6FA
+    style LOADCLASS fill:#F0E68C
+    style POOL fill:#87CEEB
+    </div>
+
+    <div class="note">
+        <h3>Key Implementation Details:</h3>
+        <ul>
+            <li><strong>Dynamic Theory Loading:</strong> Uses Python's importlib to dynamically load theory.py files from the filesystem and inject them as code modules</li>
+            <li><strong>Multiprocessing:</strong> Parameter sweeps use ProcessPoolExecutor with up to 8 workers (determined by CPU count and memory)</li>
+            <li><strong>Worker Isolation:</strong> Each sweep worker creates its own temp directory, engine instance, and log file</li>
+            <li><strong>Theory Reconstruction:</strong> Baseline theories are serialized as class info and reconstructed in worker processes</li>
+            <li><strong>Three-Phase Evaluation:</strong>
+                <ol>
+                    <li>Validation only (100 steps) - quick constraint/observational checks</li>
+                    <li>Full trajectory (20K-500K steps) - only for theories that pass phase 1</li>
+                    <li>Predictions - batch run on all finalists after phase 2 completes</li>
+                </ol>
+            </li>
+            <li><strong>Validation Hierarchy:</strong> Constraints → Observational → Quantum (if applicable) → Predictions</li>
+            <li><strong>Fail Fast:</strong> Theories that fail constraints skip all further validation</li>
+        </ul>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        function saveAsImage() {
+            // Get the SVG element from the Mermaid diagram
+            const svgElement = document.querySelector('.mermaid svg');
+            if (!svgElement) {
+                alert('Diagram not yet rendered. Please wait a moment and try again.');
+                return;
+            }
+
+            // Clone the SVG to avoid modifying the original
+            const svgClone = svgElement.cloneNode(true);
+            
+            // Get SVG dimensions
+            const bbox = svgElement.getBBox();
+            const width = bbox.width + 40; // Add some padding
+            const height = bbox.height + 40;
+            
+            // Set explicit dimensions on the clone
+            svgClone.setAttribute('width', width);
+            svgClone.setAttribute('height', height);
+            svgClone.setAttribute('viewBox', `${bbox.x - 20} ${bbox.y - 20} ${width} ${height}`);
+            
+            // Add white background
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', bbox.x - 20);
+            rect.setAttribute('y', bbox.y - 20);
+            rect.setAttribute('width', width);
+            rect.setAttribute('height', height);
+            rect.setAttribute('fill', 'white');
+            svgClone.insertBefore(rect, svgClone.firstChild);
+            
+            // Convert SVG to string
+            const svgData = new XMLSerializer().serializeToString(svgClone);
+            
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            const scaleFactor = 2; // For higher resolution
+            canvas.width = width * scaleFactor;
+            canvas.height = height * scaleFactor;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.scale(scaleFactor, scaleFactor);
+            
+            // Create an image from the SVG
+            const img = new Image();
+            img.onload = function() {
+                // Draw the image to canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // Convert canvas to blob and download
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = 'theory_engine_flowchart.png';
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            };
+            
+            // Load the SVG data into the image
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        }
+    </script>
+</body>
+</html> 

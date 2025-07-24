@@ -1,0 +1,62 @@
+# Example Prompt Template: Quantum Gravity Focus
+# 
+# This is an example of a customized prompt template for exploring
+# quantum corrections to general relativity.
+# ============================================================
+
+Generate a quantum gravity theory as a Python class inheriting from GravitationalTheory.
+
+The new theory will be benchmarked against:
+{baseline_theories}
+
+Your theory MUST incorporate quantum corrections and should:
+
+1. **Quantum Structure**:
+   - Include a quantum correction parameter (e.g., ℓ_P for Planck length)
+   - Have corrections that scale as powers of ℓ_P/r
+   - Preserve unitarity and causality
+
+2. **Implementation Requirements**:
+   - Class named 'CustomTheory' inheriting from GravitationalTheory
+   - Implement get_metric(r, M, c, G) returning (g_tt, g_rr, g_pp, g_tp)
+   - Include a Lagrangian with quantum correction terms
+
+3. **Physical Behavior**:
+   - Reduce to Schwarzschild metric when ℓ_P → 0
+   - Resolve the singularity at r = 0 with a minimum length scale
+   - Predict modified Hawking radiation spectrum
+   - Include running of Newton's constant G(r)
+
+4. **Mathematical Framework**:
+   - Use effective field theory approach
+   - Include loop corrections to Einstein-Hilbert action
+   - Preserve general covariance
+
+## SymPy Implementation
+
+Import and use SymPy for the Lagrangian:
+```python
+import sympy as sp
+
+# In your __init__ method:
+R = sp.Symbol('R')
+l_p = sp.Symbol('l_p')  # Planck length
+r = sp.Symbol('r')
+
+# Example quantum gravity Lagrangian:
+self.lagrangian = R + alpha1 * (l_p**2/r**2) * R**2 + alpha2 * (l_p**4/r**4) * R**3
+
+# Or with running coupling:
+G_eff = G * (1 + beta * l_p**2 / r**2)
+self.lagrangian = R/G_eff + gamma * R**2
+
+# Logarithmic quantum corrections:
+self.lagrangian = R * (1 + delta * sp.log(R * l_p**2))
+```
+
+Available SymPy functions: sp.log(), sp.exp(), sp.sqrt(), sp.sin(), sp.cos(), sp.tanh()
+Use sp.Rational(n,m) for exact fractions, sp.pi for π, sp.E for e.
+
+Initial exploration direction: {initial_prompt}
+
+Return ONLY the Python code implementation, no explanations. 

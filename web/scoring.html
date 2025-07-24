@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Scoring Documentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        h1, h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Quantum Scoring Process</h1>
+    <p>The Quantum Score (also known as Unified Score) is a comprehensive metric evaluating quantum gravity theories across multiple dimensions. It is calculated as a weighted sum of component scores, with multipliers for bonuses, penalties, and category adjustments. The final score is capped at 1.0.</p>
+    
+    <h2>Component Scores</h2>
+    <table>
+        <tr>
+            <th>Component</th>
+            <th>Weight</th>
+            <th>Calculation Method</th>
+            <th>Details</th>
+        </tr>
+        <tr>
+            <td>Constraints</td>
+            <td>0.20</td>
+            <td>Weighted average of passed validators (1=passed, 0=failed)</td>
+            <td>Sub-weights: Conservation 0.40, Metric Properties 0.30, Lagrangian 0.30</td>
+        </tr>
+        <tr>
+            <td>Observational</td>
+            <td>0.25</td>
+            <td>Weighted average of passed quantum experiment validators</td>
+            <td>Equal sub-weights 0.20 for each: COW, Atom Interferometry, Decoherence, Quantum Clock, Lagrangian Grounding</td>
+        </tr>
+        <tr>
+            <td>Predictions</td>
+            <td>0.30</td>
+            <td>1 if beats SOTA, else 0.5 + 0.5*exp(improvement/100)</td>
+            <td>Sub-weights: CMB 0.25, PTA GW 0.25, Primordial GWs 0.20, Future Detectors 0.15, Novel Signatures 0.15</td>
+        </tr>
+        <tr>
+            <td>Trajectory</td>
+            <td>0.05</td>
+            <td>Weighted sum of exp(-best_loss/scale) per particle type vs baselines</td>
+            <td>Particles (each 0.20): electron, photon, proton, neutrino, graviton. Loss types: trajectory_mse, ricci, etc.</td>
+        </tr>
+        <tr>
+            <td>Unification</td>
+            <td>0.20</td>
+            <td>Sum of sub-scores for unification aspects</td>
+            <td>Sub-weights: SM bridging 0.30 (1 or 0.5), Novel predictions 0.30 (1 if present), Scale hierarchy 0.20 (1 or 0.5), Field content 0.20 (1 if complete)</td>
+        </tr>
+    </table>
+    
+    <h2>Bonuses</h2>
+    <table>
+        <tr>
+            <th>Bonus</th>
+            <th>Multiplier</th>
+            <th>Condition</th>
+        </tr>
+        <tr>
+            <td>Beats SOTA</td>
+            <td>1.5</td>
+            <td>Any prediction beats state-of-the-art</td>
+        </tr>
+        <tr>
+            <td>Perfect Conservation</td>
+            <td>1.2</td>
+            <td>All constraints passed perfectly</td>
+        </tr>
+        <tr>
+            <td>All Tests Passed</td>
+            <td>1.1</td>
+            <td>100% pass rate in constraints and observational</td>
+        </tr>
+    </table>
+    
+    <h2>Penalties</h2>
+    <table>
+        <tr>
+            <th>Penalty</th>
+            <th>Multiplier</th>
+            <th>Condition</th>
+        </tr>
+        <tr>
+            <td>Trajectory Failed</td>
+            <td>0.5</td>
+            <td>No trajectory data available</td>
+        </tr>
+        <tr>
+            <td>Missing Lagrangian</td>
+            <td>0.8</td>
+            <td>Incomplete field content</td>
+        </tr>
+        <tr>
+            <td>Numerical Instability</td>
+            <td>0.7</td>
+            <td>Integration failures</td>
+        </tr>
+    </table>
+    
+    <h2>Category Bonuses</h2>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Multiplier</th>
+        </tr>
+        <tr>
+            <td>Unified</td>
+            <td>1.1</td>
+        </tr>
+        <tr>
+            <td>Quantum</td>
+            <td>1.05</td>
+        </tr>
+        <tr>
+            <td>Classical</td>
+            <td>1.0</td>
+        </tr>
+        <tr>
+            <td>Unknown</td>
+            <td>0.95</td>
+        </tr>
+    </table>
+    
+    <h2>Final Calculation</h2>
+    <p>base_score = Σ (weight * component_score)<br>
+    final_score = min(1.0, base_score * bonus_multiplier * penalty_multiplier * category_multiplier)<br>
+    Additional 1.1 multiplier if all constraints and observational tests passed.</p>
+</body>
+</html> 

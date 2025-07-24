@@ -1,0 +1,150 @@
+# GI Engine - Generative Intelligence Physics Engine .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments (keep .venv, ignore all others)
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# PyTorch & ML specific
+runs/
+runs/**/*.npy
+*.npy
+*.npz
+*.pth
+*.pt
+*.onnx
+*.pkl
+checkpoint/
+checkpoints/
+*.ckpt
+lightning_logs/
+wandb/
+mlruns/
+
+# JAX cache (Apple Silicon optimization)
+jax_cache/
+__jax_cache__/
+
+# WebGPU & Graphics
+*.wgsl.cache
+.wgpu_cache/
+
+# GI Engine specific outputs
+gi_engine/results/
+physics_agent/cache/
+physics_agent/generated_codes/
+physics_agent/logs/
+physics_agent/data/physics_states/
+physics_agent/data/trajectories/
+results/
+*.ascii.txt
+frame_*.png
+frame_*.jpg
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.ipynb
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.fleet/
+
+# System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Tensorboard logs
+events.out.tfevents.*
+logs/
+tb_logs/
+
+# Data files (large datasets should not be in git)
+data/
+datasets/
+*.csv
+*.json
+*.h5
+*.hdf5
+*.mat
+*.npy
+
+# Temporary files
+tmp/
+temp/
+.cache/
+*.tmp
+*.temp
+
+# Documentation builds
+docs/_build/
+docs/build/
+site/
+
+# Testing & Coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Profiling data
+*.prof
+profile_default/
+ipython_config.py
+
+# Video/Animation outputs
+*.mp4
+*.avi
+*.mov
+*.gif
+
+# Scientific computing cache
+.numba_cache/
+.numba/
+
+# Misc
+.gitattributes
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+node_modules/
