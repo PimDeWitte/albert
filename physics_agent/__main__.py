@@ -21,6 +21,8 @@ Examples:
   albert run                    # Run all theories in the theories folder
   albert run --theory-filter ugm  # Run only UGM theories
   albert run --steps 1000       # Run with custom step count
+  albert run --validate         # Run with pre-run environment tests
+  albert validate               # Run environment validation tests
   albert setup                  # Configure Albert instance
   albert discover               # Start self-discovery mode
   albert benchmark              # Run model benchmarks
@@ -83,11 +85,30 @@ For more information on each command, use: albert <command> --help
             
         run_parser.add_argument(*action.option_strings, **kwargs)
     
+    # Add --validate flag for pre-run validation
+    run_parser.add_argument(
+        '--validate', 
+        action='store_true',
+        help='Run pre-run environment tests to verify solver correctness (recommended)'
+    )
+    
     # Setup command
     setup_parser = subparsers.add_parser(
         'setup',
         help='Configure your Albert instance',
         description='Set up API keys, cryptographic identity, and network participation'
+    )
+    
+    # Validate command - runs environment tests
+    validate_parser = subparsers.add_parser(
+        'validate',
+        help='Run environment validation tests',
+        description='Test the physics solver and environment to ensure everything is working correctly'
+    )
+    validate_parser.add_argument(
+        '--full', 
+        action='store_true',
+        help='Run full validation suite with more extensive tests'
     )
     
     # Discover command
@@ -126,6 +147,17 @@ For more information on each command, use: albert <command> --help
     
     # Handle commands
     if args.command == 'run':
+        # Check if --validate flag is set
+        if hasattr(args, 'validate') and args.validate:
+            print("🔬 Running pre-run environment tests...")
+            from physics_agent.run_environment_tests import run_environment_tests
+            if not run_environment_tests(steps=100):
+                print("\n❌ Environment tests failed! Please fix the issues before running.")
+                sys.exit(1)
+            print("✅ Pre-run environment tests passed!\n")
+        else:
+            print("💡 Tip: Use --validate flag to run pre-run environment tests to ensure solver correctness\n")
+        
         # Run the theory engine
         from physics_agent.theory_engine_core import main as run_theories
         from physics_agent.cli import get_cli_parser
@@ -141,7 +173,7 @@ For more information on each command, use: albert <command> --help
         sys.argv = ['albert-run']  # Set program name
         # Add all the arguments back, but only if they were explicitly set
         for key, value in vars(args).items():
-            if key != 'command' and value is not None:
+            if key not in ['command', 'validate'] and value is not None:
                 # Skip if it's a default value (not explicitly set by user)
                 if key in defaults and value == defaults[key]:
                     continue
@@ -158,6 +190,20 @@ For more information on each command, use: albert <command> --help
         # Run the setup script
         from albert_setup import main as run_setup
         run_setup()
+        
+    elif args.command == 'validate':
+        # Run validation tests
+        print("🔬 Running environment validation tests...\n")
+        from physics_agent.run_environment_tests import run_environment_tests
+        full_test = args.full if hasattr(args, 'full') else False
+        steps = 1000 if full_test else 100
+        
+        if run_environment_tests(steps=steps, full=full_test):
+            print("\n✅ All environment tests passed!")
+            sys.exit(0)
+        else:
+            print("\n❌ Some environment tests failed!")
+            sys.exit(1)
         
     elif args.command == 'discover':
         # Run self-discovery

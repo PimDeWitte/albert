@@ -123,19 +123,23 @@ class GravitationalTheory:
     # Metadata for the theory
     category: str = "base"  # "classical", "quantum"
     
-    def __init__(self, name: str, force_6dof_solver: bool = None, lagrangian: sp.Expr = None, 
+    def __init__(self, name: str = None, force_6dof_solver: bool = None, lagrangian: sp.Expr = None, 
                  enable_quantum: bool = None, **kwargs):
         """
         Initialize a gravitational theory.
         
         Args:
-            name: Theory name for display
+            name: Theory name for display. If None, defaults to class name.
             force_6dof_solver: If True, forces use of 6-DOF general solver even if metric is symmetric.
                              If False, forces use of 4-DOF symmetric solver (if metric allows).
                              If None (default), auto-detects based on g_tp component.
             lagrangian: Symbolic expression for the theory's Lagrangian
             enable_quantum: Whether to enable quantum calculations. If None, auto-determined by category.
         """
+        # If no name provided, use class name
+        if name is None:
+            name = self.__class__.__name__
+            
         self.name = name
         self.force_6dof_solver = force_6dof_solver  # Explicit solver override
         self._is_symmetric_cached = None    # Cache for auto-detection

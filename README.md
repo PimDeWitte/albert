@@ -113,36 +113,25 @@ albert --help                                 # Show all commands
 
 ## 📊 Complete Validator Reference
 
-Albert uses 21 comprehensive validators to test gravitational theories against experimental data:
+Albert uses 10 core validators to test gravitational theories against experimental data:
 
 ### Constraint Validators (Must Pass)
-| Test Name | Description | Reference Data | Precision |
-|-----------|-------------|----------------|-----------|
-| **Conservation** | Energy, angular momentum conservation | 1000 step trajectories | 1e-12 relative |
-| **Metric Properties** | Lorentzian signature, asymptotic flatness | Standard GR | Analytical |
-| **Lagrangian** | Completeness, renormalizability checks | Weinberg criteria | Symbolic |
-| **Renormalizability** | UV behavior, ghost analysis | QFT standards | Dimensional |
+- **Conservation**: Energy/angular momentum < 1e-12 drift
+- **Metric Properties**: Signature, smoothness, asymptotic limits
 
-### Observational Validators
-| Test Name | Description | Reference Data | Status |
-|-----------|-------------|----------------|---------|
-| **Mercury Precession** | Perihelion advance | 42.98 ± 0.04 arcsec/century | ✅ 0.02% error |
-| **Light Deflection** | Solar light bending | 1.7512 ± 0.0015 arcsec | ✅ 0.03% error |
-| **PPN Parameters** | Post-Newtonian γ, β | γ = 1.000021 ± 0.000023 | ✅ γ=1.0, β=1.0 |
-| **Photon Sphere** | Black hole light ring | r_ph = 3GM/c² | ✅ r = 1.5 r_s |
-| **COW Interferometry** | Quantum phase shift | 2.70 ± 0.21 radians | ✅ 0.12% error |
-| **Atom Interferometry** | Gravitational redshift | 1.093e-16 Hz/Hz/m | ✅ Validated |
-| **Quantum Clocks** | Time dilation at 33cm | 3.61e-17 ± 1.60e-18 | ✅ Validated |
-| **GW Propagation** | Wave speed & polarization | LIGO/Virgo data | ✅ Validated |
-| **Cosmology** | Hubble expansion, FLRW | Planck 2018 | ✅ Validated |
-| **Hawking Temperature** | Black hole thermodynamics | T_H = ℏc³/(8πGMk_B) | ✅ Theoretical |
+### Observational Validators  
+- **Mercury Precession**: 42.98 ± 0.04 arcsec/century
+- **Light Deflection**: 1.7509 ± 0.0003 arcsec  
+- **PPN Parameters**: γ = 1.000 ± 0.002, β = 1.000 ± 0.003
+- **Photon Sphere**: Black hole shadow size (EHT)
+- **Gravitational Waves**: LIGO/Virgo waveform match > 0.95
 
-### Prediction Validators
-| Test Name | Description | Dataset | Result |
-|-----------|-------------|---------|---------|
-| **CMB Power Spectrum** | TT spectrum l=2-30 | Planck 2018 | χ²/dof = 53.08 |
-| **Primordial GWs** | Tensor-to-scalar ratio | BICEP/Keck | r = 0.010 < 0.036 |
-| **PTA GW Background** | nHz gravitational waves | NANOGrav 15yr | Validated |
+### Quantum Validators
+- **COW Interferometry**: Neutron phase shift tests (quantum theories only)
+
+### Prediction Validators (Phase 3)
+- **CMB Power Spectrum**: Planck 2018 anomalies (χ²/dof)
+- **Primordial GWs**: Tensor-to-scalar ratio (r < 0.032)
 
 ---
 
@@ -152,7 +141,7 @@ Albert uses AI to generate and test new gravitational theories automatically:
 
 ### How It Works
 1. **AI Generation**: LLM generates novel theory code based on prompts
-2. **Validation**: Theories tested against all 21 validators
+2. **Validation**: Theories tested against 10 core validators
 3. **Ranking**: Top performers promoted to candidate status
 4. **Storage**: Candidates saved with full results and metadata
 5. **Review**: Community can review and submit via pull requests
@@ -275,7 +264,7 @@ Future extensions will include:
 ## 📚 Documentation
 
 - [Technical Paper](docs/paper.html) - Geodesic solver development
-- [Validators](docs/validators.html) - All 21 tests explained
+- [Validators](docs/validators.html) - All validation tests explained
 - [Self Discovery](docs/self_discovery.html) - AI theory generation
 - [API Reference](https://albert.so/documentation.html) - Full documentation
 
@@ -347,7 +336,7 @@ flowchart TD
 ```mermaid
 graph TD
     A[🎯 THEORY SPECIFICATION<br/>Define g_μν + parameters] 
-    A --> B[🧪 VALIDATION SUITE<br/>21 Tests Ready]
+    A --> B[🧪 VALIDATION SUITE<br/>10 Core Tests]
     B --> C[⚙️ THEORY ENGINE<br/>Auto-detect symmetries]
     C --> D{🔍 SOLVER SELECTION}
     
@@ -361,7 +350,7 @@ graph TD
     G --> I  
     H --> I
     
-    I --> J[✅ TEST EXECUTION<br/>20+ Validators Run]
+    I --> J[✅ TEST EXECUTION<br/>10 Validators Run]
     J --> K{📊 RESULTS ANALYSIS}
     
     K -->|Pass| L[✨ NOVEL PREDICTIONS]

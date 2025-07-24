@@ -129,6 +129,16 @@
             Precise grounding of each test in experimental data and theoretical predictions
         </p>
         
+        <div class="note" style="background-color: #e8f5e9; border-left-color: #4caf50; margin-bottom: 30px;">
+            <h3 style="color: #2e7d32;">Currently Active Validators: 10</h3>
+            <p style="color: #424242;">The Albert framework currently runs <strong>10 core validators</strong> in production:</p>
+            <ul style="color: #424242;">
+                <li><strong>Phase 1 & 2 (Always Run):</strong> Conservation, Metric Properties, Mercury Precession, Light Deflection, PPN Parameters, Photon Sphere, GW Waveform, COW Interferometry (quantum theories only)</li>
+                <li><strong>Phase 3 (After All Theories Complete):</strong> CMB Power Spectrum, Primordial GWs</li>
+            </ul>
+            <p style="color: #666; font-style: italic;">Additional validators are implemented but not included in standard runs. They can be activated for specialized testing.</p>
+        </div>
+        
         <div class="note">
             <h3>Validator Types</h3>
             <p><span class="type-constraint">Constraint</span> - Must pass for theory to be considered valid. Failure prevents further testing.</p>
@@ -160,7 +170,7 @@
                             Based on standard numerical GR tests <a href="https://link.springer.com/article/10.12942/lrr-2014-4">Will (2014) review</a> (works)
                         </td>
                         <td>N/A (simulation-based; tolerances from CODATA/numerical standards)</td>
-                        <td><a href="../physics_agent/validations/conservation_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/conservation_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Metric Properties Validator</strong></td>
@@ -171,7 +181,7 @@
                             Standard GR textbook checks <a href="https://press.uchicago.edu/ucp/books/book/chicago/G/bo5978156.html">Wald (1984)</a> (works)
                         </td>
                         <td>N/A (analytical properties)</td>
-                        <td><a href="../physics_agent/validations/metric_properties_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/metric_properties_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Lagrangian Validator</strong></td>
@@ -182,7 +192,7 @@
                             Renormalizability criteria <a href="https://www.cambridge.org/core/books/quantum-theory-of-fields/2E0C9D42FAAF5A4D1C4E68A174AEE5F5">Weinberg (1995)</a> (works)
                         </td>
                         <td>N/A (symbolic check)</td>
-                        <td><a href="../physics_agent/validations/lagrangian_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/lagrangian_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Renormalizability Validator</strong></td>
@@ -193,7 +203,7 @@
                             <a href="https://www.cambridge.org/core/books/quantum-theory-of-fields/2E0C9D42FAAF5A4D1C4E68A174AEE5F5">Weinberg QFT textbook</a>
                         </td>
                         <td>N/A (symbolic analysis of Lagrangian)</td>
-                        <td><a href="../physics_agent/validations/renormalizability_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/renormalizability_validator.py" class="code-link">Show code</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -217,7 +227,7 @@
                     <tr>
                         <td><strong>COW Neutron Interferometry Validator</strong>
                             <span class="test-score">✅ PASSED (0.12% error)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_quantum_interferometry() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_quantum_interferometry() →</a>
                         </td>
                         <td><span class="type-observational">Observational</span></td>
                         <td>Measures phase shift in neutron interferometry due to gravitational potential difference. Uses Colella-Overhauser-Werner (COW) experiment setup with neutron wavelength 2.2 Å, enclosed area 0.3 cm², height difference 0.1 m. Compares predicted phase shift against observed 2.70 ± 0.21 radians.</td>
@@ -226,8 +236,8 @@
                             <a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.34.1472">Original COW paper (1975)</a> (works); 
                             <a href="https://arxiv.org/abs/2305.10478">Review on quantum gravity tests (2023)</a> (works)
                         </td>
-                        <td>Local: <a href="../physics_agent/constants.py" class="source-link"><code>constants.py::COW_INTERFEROMETRY</code></a></td>
-                        <td><a href="../physics_agent/validations/cow_interferometry_validator.py" class="code-link">Show code</a></td>
+                        <td>Local: <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py" class="source-link"><code>constants.py::COW_INTERFEROMETRY</code></a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/cow_interferometry_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Atom Interferometry Validator</strong></td>
@@ -238,8 +248,8 @@
                             <a href="https://www.nature.com/articles/nature09341">Müller et al. (2010) Nature paper</a> (works); 
                             <a href="https://arxiv.org/abs/2401.12345">Recent review (2024)</a> (works)
                         </td>
-                        <td>Local: <a href="../physics_agent/constants.py" class="source-link"><code>constants.py::ATOM_INTERFEROMETRY</code></a></td>
-                        <td><a href="../physics_agent/validations/atom_interferometry_validator.py" class="code-link">Show code</a></td>
+                        <td>Local: <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py" class="source-link"><code>constants.py::ATOM_INTERFEROMETRY</code></a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/atom_interferometry_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Gravitational Decoherence Validator</strong></td>
@@ -250,8 +260,8 @@
                             <a href="https://iopscience.iop.org/article/10.1088/0264-9381/30/3/035002">Bassi et al. (2013) review</a> (works); 
                             <a href="https://www.nature.com/articles/s41567-024-02491-w">Recent bound (2024)</a> (works)
                         </td>
-                        <td>Local: <a href="../physics_agent/constants.py" class="source-link"><code>constants.py::GRAVITATIONAL_DECOHERENCE</code></a></td>
-                        <td><a href="../physics_agent/validations/gravitational_decoherence_validator.py" class="code-link">Show code</a></td>
+                        <td>Local: <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py" class="source-link"><code>constants.py::GRAVITATIONAL_DECOHERENCE</code></a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/gravitational_decoherence_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Quantum Clock Validator</strong></td>
@@ -262,8 +272,8 @@
                             <a href="https://www.nature.com/articles/s41586-018-0738-2">Theoretical prediction based on clocks (2018)</a> (works); 
                             <a href="https://arxiv.org/abs/2402.06104">2024 update</a> (works)
                         </td>
-                        <td>Local: <a href="../physics_agent/constants.py" class="source-link"><code>constants.py::QUANTUM_CLOCK</code></a></td>
-                        <td><a href="../physics_agent/validations/quantum_clock_validator.py" class="code-link">Show code</a></td>
+                        <td>Local: <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py" class="source-link"><code>constants.py::QUANTUM_CLOCK</code></a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/quantum_clock_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Quantum Lagrangian Grounding Validator</strong></td>
@@ -274,7 +284,7 @@
                             Aggregates above references; GR limit from standard calculations <a href="https://press.princeton.edu/books/hardcover/9780691177793/gravitation">Misner, Thorne, Wheeler (1973)</a> (works)
                         </td>
                         <td>N/A (composite validator; no single dataset)</td>
-                        <td><a href="../physics_agent/validations/quantum_lagrangian_grounding_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/quantum_lagrangian_grounding_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Trajectory Matching</strong></td>
@@ -285,12 +295,12 @@
                             Standard numerical GR <a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.87.1083">Teukolsky (2015)</a> (works)
                         </td>
                         <td>N/A (simulation-based)</td>
-                        <td><a href="../physics_agent/theory_engine_core.py#L2420" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/theory_engine_core.py#L2420" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Mercury Precession Validator</strong>
                             <span class="test-score">✅ PASSED (0.02% error)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_mercury_comparison() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_mercury_comparison() →</a>
                         </td>
                         <td><span class="type-observational">Observational</span></td>
                         <td>Validates theory against Mercury's perihelion advance of 42.98 ± 0.04 arcsec/century. Uses full orbital parameters (a=5.79e10 m, e=0.2056, T=87.969 days) and computes GR correction.</td>
@@ -298,13 +308,13 @@
                         <td>
                             <a href="https://doi.org/10.1103/RevModPhys.87.1083">Teukolsky (2015)</a>; historical observations
                         </td>
-                        <td>Local: <a href="../physics_agent/constants.py" class="source-link"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a></td>
-                        <td><a href="../physics_agent/validations/mercury_precession_validator.py" class="code-link">Show code</a></td>
+                        <td>Local: <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py" class="source-link"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/mercury_precession_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Light Deflection Validator</strong>
                             <span class="test-score">✅ PASSED (0.03% error)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_light_deflection_comparison() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_light_deflection_comparison() →</a>
                         </td>
                         <td><span class="type-observational">Observational</span></td>
                         <td>Tests light bending by the Sun. Measures deflection angle at solar limb: 1.7512 ± 0.0015 arcsec from solar eclipse observations and VLBI measurements.</td>
@@ -312,13 +322,13 @@
                         <td>
                             <a href="https://www.nature.com/articles/226064a0">Pound & Snider (1965)</a>; modern VLBI data
                         </td>
-                        <td>Local: <a href="../physics_agent/constants.py" class="source-link"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a></td>
-                        <td><a href="../physics_agent/validations/light_deflection_validator.py" class="code-link">Show code</a></td>
+                        <td>Local: <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py" class="source-link"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/light_deflection_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>PPN Parameter Validator</strong>
                             <span class="test-score">✅ PASSED (γ=1.0, β=1.0)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_ppn_comparison() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_ppn_comparison() →</a>
                         </td>
                         <td><span class="type-observational">Observational</span></td>
                         <td>Computes Parameterized Post-Newtonian (PPN) parameters, particularly γ. Tests weak-field expansion g_rr ≈ 1 + (1+γ)·2GM/(c²r). GR predicts γ=1.</td>
@@ -327,7 +337,7 @@
                             <a href="https://link.springer.com/article/10.12942/lrr-2014-4">Will (2014) Living Reviews</a>
                         </td>
                         <td>N/A (theoretical calculation)</td>
-                        <td><a href="../physics_agent/validations/ppn_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/ppn_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>GW Validator</strong></td>
@@ -338,7 +348,7 @@
                             <a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.116.061102">LIGO GW150914</a>
                         </td>
                         <td>N/A (uses theoretical waveforms)</td>
-                        <td><a href="../physics_agent/validations/gw_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/gw_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Cosmology Validator</strong></td>
@@ -349,12 +359,12 @@
                             <a href="https://www.aanda.org/articles/aa/abs/2020/09/aa33910-18/aa33910-18.html">Planck 2018 cosmological parameters</a>
                         </td>
                         <td>N/A (uses standard cosmological parameters)</td>
-                        <td><a href="../physics_agent/validations/cosmology_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/cosmology_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Photon Sphere Validator</strong>
                             <span class="test-score">✅ PASSED (r_ph = 1.5 r_s)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_photon_sphere_comparison() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_photon_sphere_comparison() →</a>
                         </td>
                         <td><span class="type-observational">Observational</span></td>
                         <td>Calculates photon sphere radius for black holes. For Schwarzschild: r_ph = 3GM/c². Tests circular photon orbits and light ring structure.</td>
@@ -363,7 +373,7 @@
                             <a href="https://iopscience.iop.org/article/10.3847/2041-8213/ab0ec7">Event Horizon Telescope M87</a>
                         </td>
                         <td>N/A (theoretical calculation)</td>
-                        <td><a href="../physics_agent/validations/photon_sphere_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/photon_sphere_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Hawking Temperature Validator</strong></td>
@@ -374,7 +384,7 @@
                             <a href="https://www.nature.com/articles/248030a0">Hawking (1974)</a>
                         </td>
                         <td>N/A (theoretical prediction, no observations yet)</td>
-                        <td><a href="../physics_agent/validations/hawking_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/hawking_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Unification Scale Validator</strong></td>
@@ -385,7 +395,7 @@
                             <a href="https://arxiv.org/abs/hep-ph/0601023">Particle Data Group reviews</a>
                         </td>
                         <td>N/A (extrapolation of measured couplings)</td>
-                        <td><a href="../physics_agent/validations/unification_scale_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/unification_scale_validator.py" class="code-link">Show code</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -408,7 +418,7 @@
                     <tr>
                         <td><strong>CMB Power Spectrum Prediction Validator</strong>
                             <span class="test-score">✅ PASSED (χ²/dof = 53.08)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_cmb_power_spectrum() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_cmb_power_spectrum() →</a>
                         </td>
                         <td><span class="type-prediction">Prediction</span></td>
                         <td>Computes χ²/dof for TT spectrum (l=2-30) vs. Planck 2018 data. Compares to ΛCDM SOTA (χ²/dof ~53.08).</td>
@@ -419,12 +429,12 @@
                         <td>
                             Remote: <code class="uri-code">dataloader://planck_cmb_2018</code>
                         </td>
-                        <td><a href="../physics_agent/validations/cmb_power_spectrum_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>PTA Stochastic GW Background Validator</strong>
                             <span class="test-score">✓ Tested via GW Inspiral</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_gravitational_wave_inspiral() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_gravitational_wave_inspiral() →</a>
                         </td>
                         <td><span class="type-prediction">Prediction</span></td>
                         <td>Predicts GW amplitude and spectral index vs. NANOGrav 15yr data (amp 1.70e-15 ±7.82e-16, index -0.680 ±0.250). Computes lnL vs. SMBHB SOTA.</td>
@@ -435,12 +445,12 @@
                         <td>
                             Remote: <code class="uri-code">dataloader://nanograv_15yr</code>
                         </td>
-                        <td><a href="../physics_agent/validations/pta_stochastic_gw_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/pta_stochastic_gw_validator.py" class="code-link">Show code</a></td>
                     </tr>
                     <tr>
                         <td><strong>Primordial GWs Validator</strong>
                             <span class="test-score">✅ PASSED (r = 0.010)</span>
-                            <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_bicep_keck_primordial_gws() →</a>
+                            <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_bicep_keck_primordial_gws() →</a>
                         </td>
                         <td><span class="type-prediction">Prediction</span></td>
                         <td>Predicts tensor-to-scalar ratio r and tilt n_t vs. standard inflation (r&lt;0.036 upper limit from BICEP/Keck).</td>
@@ -449,7 +459,7 @@
                             <a href="https://arxiv.org/abs/2310.05224">BICEP/Keck 2023</a> (works)
                         </td>
                         <td>Remote: <code class="uri-code">dataloader://bicep_keck_2021</code></td>
-                        <td><a href="../physics_agent/validations/primordial_gws_validator.py" class="code-link">Show code</a></td>
+                        <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/primordial_gws_validator.py" class="code-link">Show code</a></td>
                     </tr>
 
                 </tbody>

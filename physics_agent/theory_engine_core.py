@@ -50,7 +50,8 @@ from physics_agent.validations import (
     # QuantumLagrangianGroundingValidator # Not tested
 )
 # from physics_agent.validations.lagrangian_validator import LagrangianValidator # Not tested
-from physics_agent.theory_visualizer import TheoryVisualizer  # Add new import
+from physics_agent.theory_visualizer import TheoryVisualizer
+from physics_agent.update_checker import check_on_startup  # Add new import
 # <reason>chain: Import comprehensive report generator for detailed HTML reports</reason>
 from physics_agent.run_logger import generate_comprehensive_summary
 from physics_agent.validations.comprehensive_report_generator import ComprehensiveReportGenerator
@@ -3337,6 +3338,10 @@ def process_sweep_combination(combo_data):
         }
 
 def main():
+    """Main execution function"""
+    # Check for updates at startup
+    check_on_startup()
+    
     parser = get_cli_parser()
     args = parser.parse_args()
     

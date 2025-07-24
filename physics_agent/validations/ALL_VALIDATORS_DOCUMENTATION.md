@@ -1,5 +1,39 @@
 # Complete Documentation of All Gravitational Theory Validators
 
+## Active Validators Summary
+
+Currently, **10 validators** are tested and run in the Albert framework:
+
+### Phase 1 & 2 (Always Run)
+1. **Conservation Validator** ✅
+2. **Metric Properties Validator** ✅
+3. **Mercury Precession Validator** ✅
+4. **Light Deflection Validator** ✅
+5. **PPN Parameter Validator** ✅
+6. **Photon Sphere Validator** ✅
+7. **Gravitational Wave Validator** ✅
+8. **COW Interferometry Validator** ✅ (quantum theories only)
+
+### Phase 3 (Run After All Theories Complete)
+9. **CMB Power Spectrum Validator** ✅
+10. **Primordial GWs Validator** ✅
+
+### Inactive Validators (Implemented but Not in Standard Runs)
+- Lagrangian Validator ❌
+- Atom Interferometry Validator ❌
+- Quantum Clock Validator ❌
+- Gravitational Decoherence Validator ❌
+- Quantum Lagrangian Grounding Validator ❌
+- Hawking Radiation Validator ❌
+- Cosmology Validator ❌
+- PsrJ0740 Validator ❌
+- Renormalizability Validator ❌
+- Unification Scale Validator ❌
+- PTA Stochastic GW Validator ❌
+- QED Precision Validator ❌
+
+---
+
 ## Table of Contents
 1. [Overview](#overview)
 2. [Constraint Validators](#constraint-validators)
@@ -23,7 +57,7 @@ This document provides complete documentation for all validators in the physics_
 
 ## Constraint Validators
 
-### 1. Conservation Validator
+### 1. Conservation Validator ✅ ACTIVE
 **File**: `conservation_validator.py`  
 **Category**: constraint  
 **Purpose**: Ensures energy and angular momentum are conserved during orbital evolution
@@ -41,7 +75,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 2. Lagrangian Validator
+### 2. Lagrangian Validator ❌ INACTIVE
 **File**: `lagrangian_validator.py`  
 **Category**: constraint  
 **Purpose**: Verifies that the metric satisfies the Einstein-Hilbert action
@@ -60,7 +94,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 3. Metric Properties Validator  
+### 3. Metric Properties Validator ✅ ACTIVE
 **File**: `metric_properties_validator.py`  
 **Category**: constraint  
 **Purpose**: Ensures metric tensor has correct mathematical properties
@@ -83,7 +117,7 @@ This document provides complete documentation for all validators in the physics_
 
 ## Observational Validators
 
-### 4. Mercury Precession Validator
+### 4. Mercury Precession Validator ✅ ACTIVE
 **File**: `mercury_precession_validator.py`  
 **Category**: observational  
 **Purpose**: Tests perihelion precession of Mercury
@@ -100,7 +134,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 5. Light Deflection Validator
+### 5. Light Deflection Validator ✅ ACTIVE
 **File**: `light_deflection_validator.py`  
 **Category**: observational  
 **Purpose**: Tests deflection of light by the Sun
@@ -117,7 +151,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 6. PPN Parameter Validator
+### 6. PPN Parameter Validator ✅ ACTIVE
 **File**: `ppn_validator.py`  
 **Category**: observational  
 **Purpose**: Computes Parameterized Post-Newtonian parameters
@@ -136,7 +170,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 7. Photon Sphere Validator
+### 7. Photon Sphere Validator ✅ ACTIVE
 **File**: `photon_sphere_validator.py`  
 **Category**: observational  
 **Purpose**: Tests black hole shadow and photon sphere radius
@@ -154,7 +188,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 8. Gravitational Wave Validator
+### 8. Gravitational Wave Validator ✅ ACTIVE
 **File**: `gw_validator.py`  
 **Category**: observational  
 **Purpose**: Tests gravitational wave waveform generation
@@ -172,7 +206,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 9. Cosmology Validator
+### 9. Cosmology Validator ❌ INACTIVE
 **File**: `cosmology_validator.py`  
 **Category**: observational  
 **Purpose**: Tests cosmological predictions
@@ -192,7 +226,7 @@ This document provides complete documentation for all validators in the physics_
 
 ## Quantum Validators
 
-### 10. Atom Interferometry Validator
+### 10. Atom Interferometry Validator ❌ INACTIVE
 **File**: `atom_interferometry_validator.py`  
 **Category**: observational/quantum  
 **Purpose**: Tests quantum interference in gravitational fields
@@ -213,7 +247,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 11. Quantum Clock Validator
+### 11. Quantum Clock Validator ❌ INACTIVE
 **File**: `quantum_clock_validator.py`  
 **Category**: observational/quantum  
 **Purpose**: Tests gravitational time dilation at quantum precision
@@ -233,7 +267,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 12. Gravitational Decoherence Validator
+### 12. Gravitational Decoherence Validator ❌ INACTIVE
 **File**: `gravitational_decoherence_validator.py`  
 **Category**: quantum  
 **Purpose**: Tests quantum decoherence from gravitational effects
@@ -251,7 +285,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 13. Hawking Radiation Validator
+### 13. Hawking Radiation Validator ❌ INACTIVE
 **File**: `hawking_validator.py`  
 **Category**: quantum  
 **Purpose**: Tests black hole thermodynamics
@@ -269,9 +303,85 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
+### 14. COW Interferometry Validator ✅ ACTIVE
+**File**: `cow_interferometry_validator.py`  
+**Category**: observational/quantum  
+**Purpose**: Tests neutron interferometry phase shifts in gravitational fields
+
+**Methodology**:
+- Computes phase shift from gravitational potential difference
+- Based on Colella-Overhauser-Werner experiment
+- Includes quantum corrections if available
+
+**Experimental Data**:
+- Phase shift: 2.70 ± 0.21 radians
+
+**Acceptance Criteria**:
+- Within 2σ of observed value
+
+**Physical Significance**: Direct test of quantum matter in gravity
+
+---
+
+## Prediction Validators
+
+### 15. CMB Power Spectrum Validator ✅ ACTIVE (Phase 3)
+**File**: `cmb_power_spectrum_validator.py`  
+**Category**: prediction  
+**Purpose**: Tests theories against Planck 2018 CMB data
+
+**Methodology**:
+- Computes χ²/dof for TT spectrum (l=2-30)
+- Focuses on large-scale anomalies
+- Compares with ΛCDM baseline
+
+**Acceptance Criteria**:
+- Must improve χ² by Δχ² > 2 over ΛCDM
+
+**Physical Significance**: Tests early universe physics
+
+---
+
+### 16. Primordial GWs Validator ✅ ACTIVE (Phase 3)
+**File**: `primordial_gws_validator.py`  
+**Category**: prediction  
+**Purpose**: Tests tensor-to-scalar ratio predictions
+
+**Methodology**:
+- Predicts r and tensor tilt n_t
+- Compares with BICEP/Keck constraints
+- Tests inflationary models
+
+**Acceptance Criteria**:
+- r < 0.032 (upper limit)
+- Physical tensor tilt
+
+**Physical Significance**: Tests inflationary epoch
+
+---
+
+### 17. PTA Stochastic GW Validator ❌ INACTIVE
+**File**: `pta_stochastic_gw_validator.py`  
+**Category**: prediction  
+**Purpose**: Tests nanohertz gravitational wave background
+
+**Methodology**:
+- Predicts GW amplitude and spectral index
+- Compares with NANOGrav 15yr data
+- Tests against SMBHB model
+
+**Acceptance Criteria**:
+- Must improve likelihood over SMBHB model
+
+**Physical Significance**: Tests GW background from supermassive black holes
+
+---
+
+---
+
 ## Precision & Quality Assurance
 
-### 14. Precision Tracker
+### 18. Precision Tracker
 **File**: `precision_tracker.py`  
 **Category**: quality assurance  
 **Purpose**: Monitors numerical precision throughout calculations
@@ -291,7 +401,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 15. Uncertainty Quantifier
+### 19. Uncertainty Quantifier
 **File**: `uncertainty_quantifier.py`  
 **Category**: quality assurance  
 **Purpose**: Propagates uncertainties through calculations
@@ -309,7 +419,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 16. Reproducibility Framework
+### 20. Reproducibility Framework
 **File**: `reproducibility_framework.py`  
 **Category**: quality assurance  
 **Purpose**: Ensures complete reproducibility of results
@@ -328,7 +438,7 @@ This document provides complete documentation for all validators in the physics_
 
 ---
 
-### 17. Scientific Report Generator
+### 21. Scientific Report Generator
 **File**: `scientific_report_generator.py`  
 **Category**: quality assurance  
 **Purpose**: Generates publication-ready validation reports
@@ -451,4 +561,4 @@ This validation suite provides comprehensive testing of gravitational theories a
 - Cosmological scales
 - Dynamic spacetimes (gravitational waves)
 
-The combination of physical tests and numerical quality assurance ensures that any theory passing these validators meets the highest standards of scientific rigor. 
+Currently, 10 core validators are actively run in the Albert framework, with additional validators available for specialized testing. The combination of physical tests and numerical quality assurance ensures that any theory passing these validators meets the highest standards of scientific rigor.

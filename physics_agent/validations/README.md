@@ -51,53 +51,68 @@ results = engine.run_all_validations(theory, hist, y0_general)
 
 ## Validator Categories
 
-### 🔬 Constraint Validators
+### 🔬 Constraint Validators (Always Run)
 Test fundamental mathematical and physical constraints:
 - **Conservation Validator** - Energy & angular momentum conservation
-- **Lagrangian Validator** - Metric-Lagrangian consistency  
 - **Metric Properties Validator** - Mathematical structure of spacetime
 
-### 🔭 Observational Validators
+### 🔭 Observational Validators (Always Run)
 Compare predictions with experimental data:
 - **Mercury Precession** - Classic weak-field test
 - **Light Deflection** - Solar gravitational lensing
 - **PPN Parameters** - Comprehensive Solar System tests
 - **Photon Sphere** - Black hole shadow predictions
 - **Gravitational Waves** - Waveform matching
-- **Cosmology** - Large-scale structure tests
 
-### ⚛️ Quantum Validators
+### ⚛️ Quantum Validators (Run for Quantum Theories)
 Test quantum gravity effects:
-- **Atom Interferometry** - Matter wave phase shifts
-- **Quantum Clocks** - Ultra-precise time dilation
-- **Gravitational Decoherence** - Quantum coherence limits
-- **Hawking Radiation** - Black hole thermodynamics
+- **COW Neutron Interferometry** - Matter wave phase shifts in gravity
 
-### 📊 Quality Assurance Tools
+### 📊 Prediction Validators (Run in Phase 3)
+Test novel predictions against state-of-the-art:
+- **CMB Power Spectrum** - Tests against Planck 2018 data
+- **Primordial GWs** - Tests inflationary predictions
+
+### Quality Assurance Tools
 Ensure numerical accuracy and reproducibility:
 - **Precision Tracker** - Real-time error monitoring
 - **Uncertainty Quantifier** - Error propagation analysis
 - **Reproducibility Framework** - Complete environment logging
 - **Scientific Report Generator** - Publication-ready LaTeX reports
 
-## Available Validators
+## Currently Active Validators
 
-### Additional Validators
+The following validators are tested and run in the current version:
 
-#### PpnValidator
-Computes PPN parameters and compares to GR values.
+### Phase 1 & 2 (Constraint & Observational)
+1. **Conservation Validator** - Energy and angular momentum conservation
+2. **Metric Properties Validator** - Metric mathematical properties
+3. **Mercury Precession Validator** - Perihelion advance test
+4. **Light Deflection Validator** - Solar gravitational lensing
+5. **PPN Parameters Validator** - Post-Newtonian parameters
+6. **Photon Sphere Validator** - Black hole shadow size
+7. **GW Waveform Validator** - Gravitational wave templates
+8. **COW Interferometry Validator** - Quantum matter wave interference (quantum theories only)
 
-#### PhotonSphereValidator
-Validates black hole shadow and photon sphere properties.
+### Phase 3 (Prediction - Run After All Theories Complete)
+9. **CMB Power Spectrum Validator** - Tests against Planck 2018 anomalies
+10. **Primordial GWs Validator** - Tensor-to-scalar ratio predictions
 
-#### GwValidator
-Tests gravitational wave waveform matching.
+## Validators Not Currently Active
 
-#### HawkingValidator
-Computes Hawking temperature and entropy.
-
-#### CosmologyValidator
-Validates cosmological redshift and distance measures.
+The following validators are implemented but not included in standard runs:
+- Lagrangian Validator (not tested in solver_tests)
+- Atom Interferometry Validator
+- Gravitational Decoherence Validator  
+- Quantum Clock Validator
+- Quantum Lagrangian Grounding Validator
+- Hawking Radiation Validator
+- Cosmology Validator
+- PsrJ0740 Validator
+- Renormalizability Validator
+- Unification Scale Validator
+- PTA Stochastic GW Validator
+- QED Precision Validator
 
 ## Validation Standards
 
@@ -120,9 +135,9 @@ results = engine.run_all_validations(theory, hist, y0_general,
 results = engine.run_all_validations(theory, hist, y0_general,
                                     categories=["observational"])
 
-# Only quantum tests
+# Only prediction tests (run separately in Phase 3)
 results = engine.run_all_validations(theory, hist, y0_general,
-                                    categories=["quantum"])
+                                    categories=["prediction"])
 ```
 
 ### With Quality Tracking
@@ -181,15 +196,9 @@ See [ALL_VALIDATORS_DOCUMENTATION.md](./ALL_VALIDATORS_DOCUMENTATION.md#adding-n
 Results from this validation framework are suitable for publication in:
 - Physical Review D/Letters
 - Classical and Quantum Gravity
-- Living Reviews in Relativity
-- MNRAS/ApJ (for cosmological tests)
+- Journal of Cosmology and Astroparticle Physics
+- Monthly Notices of the Royal Astronomical Society
 
-The framework meets or exceeds peer review standards through:
-- Comprehensive error analysis
-- Complete reproducibility
-- Statistical significance testing
-- Publication-ready report generation
+## References
 
-## Support
-
-For questions or contributions, please refer to the main project documentation or open an issue. 
+See individual validator files for specific experimental references and datasets used. 

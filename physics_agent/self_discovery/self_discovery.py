@@ -21,6 +21,8 @@ from physics_agent.theory_engine_core import TheoryEngine, get_cli_parser
 from physics_agent.theory_loader import TheoryLoader
 from physics_agent.base_theory import GravitationalTheory
 from physics_agent.ui.leaderboard_html_generator import LeaderboardHTMLGenerator
+import time
+from physics_agent.update_checker import check_on_startup
 
 def extend_cli(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     """Adds self-discovery specific arguments to the base parser."""
@@ -166,6 +168,9 @@ def show_pr_instructions(candidate_id: str, candidate_path: str):
 
 def main():
     """Main execution function for self-discovery system"""
+    # Check for updates at startup
+    check_on_startup()
+    
     parser = get_cli_parser()
     parser = extend_cli(parser)
     args = parser.parse_args()
@@ -246,7 +251,7 @@ def main():
         baseline_results = {}
         
         # Set up trajectory parameters
-        N_STEPS = args.steps if hasattr(args, 'steps') and args.steps else 20000
+        N_STEPS = args.steps if hasattr(args, 'steps') and args.steps else 1000
         DTau = torch.tensor(0.1, device=engine.device, dtype=engine.dtype)
         r0 = torch.tensor(12.0, device=engine.device, dtype=engine.dtype)
         
@@ -356,6 +361,11 @@ def main():
                             
                             # Show PR instructions
                             show_pr_instructions(candidate_id, candidate_path)
+                            
+                            # Add note about API key
+                            print("\nNote: The GROK_API_KEY is for generating theories via the xAI Grok model.")
+                            print("Automated theory submission to the Albert Network is not yet implemented,")
+                            print("but will use this API in the future for automatic PR creation. Open a PR for now!")
                         else:
                             print(f"\nTheory did not rank in top 10. Average loss: {avg_loss:.3e}")
                     else:
@@ -376,6 +386,14 @@ def main():
         print("\n--- Self-Discovery Session Complete ---")
         print(f"Results saved to: {run_dir}")
         print("\nRuntime remains open for further agent operations...")
+        print("Press Ctrl+C to exit, or run additional commands.")
+        
+        # Keep the process alive
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("\nExiting self-discovery mode.")
         
     else:
         print("\nThis script is for self-discovery. Run with --self-discover to generate new theories.")

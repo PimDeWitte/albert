@@ -10,6 +10,15 @@ Prediction validators are a special class of validators that test gravitational 
 
 **Important**: Mock or synthetic data is never used for actual validation to ensure scientific integrity.
 
+## Currently Active Prediction Validators
+
+Only **2 prediction validators** are currently active in Phase 3:
+
+1. **CMB Power Spectrum Validator** ✅
+2. **Primordial GWs Validator** ✅
+
+The PTA Stochastic GW Validator is implemented but not included in standard runs.
+
 ## Workflow
 
 1. **Theory Evaluation**: All theories run through standard trajectory simulations and validations
@@ -39,16 +48,20 @@ Before running prediction validators, ensure you have:
    - Data will be cached after first download
    - If download fails, validation will be skipped
 
-2. **For PTA Validator**: NANOGrav data file (`v1p1_all_dict.json`)
+2. **For Primordial GWs Validator**: BICEP/Keck constraints are built-in
+   - No external data download required
+
+3. **For PTA Validator (inactive)**: NANOGrav data file (`v1p1_all_dict.json`)
+   - Only needed if manually running this validator
    - Place in one of these locations:
      - `physics_agent/validations/.cache/`
      - `physics_agent/validations/`
      - `physics_agent/data/`
    - Template will be created showing expected format
 
-## Available Prediction Validators
+## Active Prediction Validators
 
-### 1. CMB Power Spectrum Validator (`CMBPowerSpectrumValidator`)
+### 1. CMB Power Spectrum Validator (`CMBPowerSpectrumValidator`) ✅
 
 **Purpose**: Tests theories against Planck 2018 CMB angular power spectrum data, focusing on large-scale (low-l) anomalies.
 
@@ -71,7 +84,31 @@ Before running prediction validators, ensure you have:
 
 **Novel Predictions**: Theories with IR modifications (e.g., stochastic loss) may naturally explain low-l deficit without fine-tuning.
 
-### 2. PTA Stochastic GW Validator (`PTAStochasticGWValidator`)
+### 2. Primordial GWs Validator (`PrimordialGWsValidator`) ✅
+
+**Purpose**: Tests theories' predictions for primordial gravitational waves from inflation.
+
+**Dataset**:
+- Source: BICEP/Keck 2023 constraints
+- Measurement: Upper limit on tensor-to-scalar ratio
+- Built into validator (no download needed)
+
+**SOTA Benchmark**: Single-field slow-roll inflation
+
+**Observations**:
+- r < 0.032 (95% upper limit)
+- Consistency relation: n_t = -r/8 (for single-field models)
+
+**Success Criteria**:
+- r must be positive and below upper limit
+- Physical tensor tilt n_t
+- Consistency with inflationary models
+
+**Novel Predictions**: Modified gravity theories may predict different r-n_t relations or allow higher r values while satisfying constraints.
+
+### 3. PTA Stochastic GW Validator (`PTAStochasticGWValidator`) ❌ INACTIVE
+
+**Note**: This validator is implemented but not included in standard runs.
 
 **Purpose**: Tests theories against NANOGrav pulsar timing array observations of the stochastic gravitational wave background.
 

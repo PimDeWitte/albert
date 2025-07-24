@@ -445,12 +445,33 @@ class ComprehensiveReportGenerator:
         # <reason>chain: Check in the raw validation list as well</reason>
         # Sometimes results are stored in a 'validations' array
         if 'validations' in theory_results:
+            # First try exact match with result_key
             for val in theory_results['validations']:
                 if val.get('validator') == result_key:
                     if 'details' in val:
                         merged = {**val, **val['details']}
                         return merged
                     return val
+            
+            # <reason>chain: Also check for direct class name match</reason>
+            # For cases where validator name doesn't go through the mapping
+            # e.g., PpnValidator, PhotonSphereValidator, GwValidator
+            class_names = {
+                'PPN Parameters Validator': 'PpnValidator',
+                'Photon Sphere Validator': 'PhotonSphereValidator',
+                'GW Waveform Validator': 'GwValidator',
+                'CMB Power Spectrum Prediction Validator': 'CMBPowerSpectrumValidator',
+                'Primordial GWs Validator': 'PrimordialGWsValidator'
+            }
+            
+            if validator_name in class_names:
+                class_name = class_names[validator_name]
+                for val in theory_results['validations']:
+                    if val.get('validator') == class_name:
+                        if 'details' in val:
+                            merged = {**val, **val['details']}
+                            return merged
+                        return val
                     
         return {}
         

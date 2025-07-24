@@ -143,6 +143,160 @@
     </div>
 </div>
 
+<h3>📊 Detailed Test Specifications with Datasets</h3>
+
+<p>The following tests validate our geodesic integrator implementation against state-of-the-art (SOTA) experimental results. Each test targets a specific aspect of gravitational physics, from classical solar system dynamics to quantum gravity effects. <strong>All test implementations are now consolidated in the single file <code>test_geodesic_validator_comparison.py</code></strong> for easier maintenance and to ensure consistency across all validations.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 15%">Test</th>
+            <th style="width: 10%">Theory</th>
+            <th style="width: 20%">Dataset/Source</th>
+            <th style="width: 15%">Dataset Locator</th>
+            <th style="width: 25%">Why Correct</th>
+            <th style="width: 15%">Code</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Mercury Perihelion Precession</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> JPL Horizons ephemeris data<br/>
+                <strong>Source:</strong> <a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank">NASA JPL Horizons</a><br/>
+                <strong>Accuracy:</strong> 0.004"/century (Pitjeva & Pitjev 2013)</td>
+            <td><strong>Code:</strong> <code>test_mercury_precession.py</code><br/>
+                <strong>Data:</strong> <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a><br/>
+                - r_perihelion = 46.00e9 m<br/>
+                - Semi-major axis = 57.91e9 m<br/>
+                - Period = 87.969 days</td>
+            <td>This is a classical solar system test of GR, measuring the anomalous precession of Mercury's orbit (43 arcsec/century), which Schwarzschild metric predicts exactly, validated by observations since 1915 and refined with modern radar ranging (SOTA accuracy: <0.1% deviation from GR, per Cassini mission PPN tests).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_mercury_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Gravitational Lensing (Light Deflection)</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> ESA Gaia DR3 astrometry<br/>
+                <strong>Source:</strong> <a href="https://www.cosmos.esa.int/web/gaia/data-release-3" target="_blank">Gaia DR3 Catalog</a><br/>
+                <strong>Accuracy:</strong> 10 μas for bright stars</td>
+            <td><strong>Code:</strong> <code>test_light_deflection.py</code><br/>
+                <strong>Data:</strong> <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a><br/>
+                - R_sun = 6.96e8 m<br/>
+                - Expected deflection = 1.75 arcsec<br/>
+                - Impact parameter = R_sun</td>
+            <td>Deflection of starlight by Sun (1.75 arcsec at limb) tests Schwarzschild's weak-field limit; SOTA from VLBI/Gaia (accuracy <0.01 mas, confirming GR to 10^{-5}).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_light_deflection_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Black Hole Shadow Size</strong></td>
+            <td>Kerr</td>
+            <td><strong>Dataset:</strong> EHT M87* observations<br/>
+                <strong>Source:</strong> <a href="https://eventhorizontelescope.org/data" target="_blank">Event Horizon Telescope</a><br/>
+                <strong>Measurement:</strong> 42±3 μas diameter (ApJL 875:L1, 2019)</td>
+            <td><strong>Code:</strong> <code>test_black_hole_shadow.py</code><br/>
+                <strong>Data:</strong> Hardcoded in test<br/>
+                - M_bh = 6.5e9 M_sun<br/>
+                - Distance = 16.8 Mpc<br/>
+                - Expected = 42 μas</td>
+            <td>EHT image of M87* shadow (diameter ~42 μas) tests Kerr predictions; SOTA from EHT 2022 (accuracy ~10%, consistent with Kerr to ~20% deviations).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_photon_sphere_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Nonlinear Stability/Particle Chaos</strong></td>
+            <td>Kerr-Newman</td>
+            <td><strong>Dataset:</strong> LIGO/Virgo GW waveforms<br/>
+                <strong>Source:</strong> <a href="https://gwosc.org/" target="_blank">GWOSC Open Data</a><br/>
+                <strong>Analysis:</strong> arXiv:1410.6626 (Kerr-Newman review)</td>
+            <td><strong>Code:</strong> <code>test_particle_chaos.py</code><br/>
+                <strong>Data:</strong> Theory-based calculation<br/>
+                - M_bh = 10 M_sun<br/>
+                - Expected λ ~ 1/(4πM)<br/>
+                - MSS chaos bound</td>
+            <td>Simulations of charged particle motion in KN fields test chaos bounds; SOTA from 2022 JHEP paper on violation in AdS (Lyapunov exponent λ~1/M, consistent with KN to ~10^{-3}).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_circular_orbit_period()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Quantum Gravity Lab Tests (Entanglement)</strong></td>
+            <td>Quantum Gravity</td>
+            <td><strong>Dataset:</strong> Bose-Marletto-Vedral proposal simulations<br/>
+                <strong>Source:</strong> <a href="https://link.aps.org/doi/10.1103/RevModPhys.97.015006" target="_blank">Rev. Mod. Phys. 97, 015006 (2025)</a><br/>
+                <strong>Precision:</strong> Phase shifts ~10^{-3} rad</td>
+            <td><strong>Code:</strong> <code>test_quantum_entanglement.py</code><br/>
+                <strong>Data:</strong> Experimental proposal<br/>
+                - M_source = 1e-14 kg<br/>
+                - Separation = 250 μm<br/>
+                - Expected ~ 10^-3 rad</td>
+            <td>SOTA lab proposals test gravity's quantum nature via entanglement (e.g., Bose-Marletto-Vedral experiment); 2024 Phys Rev Lett confirms no classical channel, accuracy ~10^{-3} in phase shifts.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_quantum_interferometry()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Pulsar Timing (Shapiro Delay)</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> NANOGrav PSR J0740+6620<br/>
+                <strong>Source:</strong> <a href="https://doi.org/10.3847/2041-8213/ac03b8" target="_blank">Fonseca et al. 2021, ApJL</a><br/>
+                <strong>Precision:</strong> M_c = 2.08±0.004 M☉, rms 0.18 μs</td>
+            <td><strong>Code:</strong> <code>geodesic_integrator.py</code><br/>
+                <strong>Function:</strong> <code>validator_psr_j0740()</code><br/>
+                <strong>Data:</strong> Hardcoded in function<br/>
+                - Lines 527-539: All parameters<br/>
+                - <code>/data/</code>: NANOGrav 15yr data</td>
+            <td>Binary pulsar Shapiro delays test GR in strong-field regime; PSR J0740+6620 provides highest-precision neutron star mass measurement, constraining deviations at 10^{-5} level.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_ppn_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Pulsar Timing Array</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> NANOGrav 15-year data<br/>
+                <strong>Source:</strong> <a href="https://data.nanograv.org/" target="_blank">NANOGrav Data Portal</a><br/>
+                <strong>Precision:</strong> ≤ 1 μs timing residuals</td>
+            <td><strong>Code:</strong> <code>test_pulsar_timing.py</code><br/>
+                <strong>Data Source:</strong> dataloader://nanograv_15yr<br/>
+                <strong>File:</strong> v1p1_all_dict.json<br/>
+                <strong>Contains:</strong> Full 15yr CW analysis parameters</td>
+            <td>Millisecond pulsar timing tests GR via Shapiro delays and gravitational wave backgrounds; NANOGrav 15yr data provides nHz GW sensitivity.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_gravitational_wave_inspiral()</code></td>
+        </tr>
+        <tr>
+            <td><strong>CMB Power Spectrum</strong></td>
+            <td>Cosmological models</td>
+            <td><strong>Dataset:</strong> Planck 2018 TT power spectrum<br/>
+                <strong>Source:</strong> <a href="https://pla.esac.esa.int/pla/" target="_blank">Planck Legacy Archive</a><br/>
+                <strong>Multipoles:</strong> l=2-2508, cosmic variance limited</td>
+            <td><strong>Code:</strong> <code>test_cmb_power_spectrum.py</code><br/>
+                <strong>Data Source:</strong> dataloader://planck_cmb_2018<br/>
+                <strong>File:</strong> COM_PowerSpect_CMB-TT-binned_R3.01.txt<br/>
+                <strong>Format:</strong> l, D_l, +error, -error<br/>
+                <strong>Test loads:</strong> All multipoles l=2-2508</td>
+            <td>CMB temperature anisotropies test early universe physics and quantum gravity effects; Planck data constrains primordial power spectrum to 0.1% precision.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_cmb_power_spectrum()</code></td>
+        </tr>
+        <tr>
+            <td><strong>BICEP/Keck Tensor Modes</strong></td>
+            <td>Inflationary models</td>
+            <td><strong>Dataset:</strong> BICEP/Keck 2021 BK18 constraints<br/>
+                <strong>Source:</strong> <a href="http://bicepkeck.org/" target="_blank">BICEP/Keck Collaboration</a><br/>
+                <strong>Constraint:</strong> r < 0.036 (95% CL)</td>
+            <td><strong>Code:</strong> <code>test_bicep_keck.py</code><br/>
+                <strong>Data Source:</strong> dataloader://bicep_keck_2021<br/>
+                <strong>File:</strong> BK18_r_likelihood.txt<br/>
+                <strong>Format:</strong> r, -2ln(L)<br/>
+                <strong>Contains:</strong> Tensor-to-scalar ratio likelihood</td>
+            <td>Primordial gravitational wave constraints test inflationary predictions; BICEP/Keck 2021 limits tensor-to-scalar ratio r < 0.036, testing quantum gravity suppression of tensor modes.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_bicep_keck_primordial_gws()</code></td>
+        </tr>
+    </tbody>
+</table>
+
+
 <p>This summary outlines the development of a PyTorch-based geodesic integrator system designed to simulate particle and light trajectories in various gravitational spacetimes, with extensions for testing unified theories. The tool was built to facilitate novel predictions required for unification, such as modified dispersion relations and quantum corrections to cosmological observables. It emphasizes modularity, empirical validation, and safeguards against overfitting or circularity in simulations.</p>
 
 <p>The implementation was inspired by background research into numerical geodesic solving, particularly the foundational work from Aalto University on geodesic integrators for curved spacetimes. The Aalto approach initially formulated the problem in full 8D phase space (4 positions + 4 momenta), which we recognized could be reduced for practical implementation. We streamlined this to a 6D state-space approach (3 spatial coordinates + 3 velocities, with time as the integration parameter) for general non-symmetric spacetimes, and further optimized to 4D (2 coordinates + 2 velocities) for symmetric cases by exploiting conserved quantities. This dimensional reduction maintains full physical accuracy while significantly improving computational efficiency. More critically, the core theoretical motivation draws from Partanen and Tulkki's 2025 paper, "Gravity generated by four one-dimensional unitary gauge symmetries and the Standard Model" (Reports on Progress in Physics, DOI: <a href="https://doi.org/10.1088/1361-6633/adc82e">10.1088/1361-6633/adc82e</a>), which provided the mathematical framework for UGM—a renormalizable gauge theory unifying gravity with the Standard Model via four compact U(1) symmetries. We referenced this paper extensively for incorporating tetrads, gauge fields, and quantum loop corrections into our solvers.</p>
@@ -164,7 +318,7 @@
         <tr>
             <td><strong>6D State-Space Solver</strong></td>
             <td>
-                <a href="../physics_agent/geodesic_integrator.py#L296" class="code-reference">GeneralGeodesicRK4Solver</a>
+                <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/geodesic_integrator.py#L296" class="code-reference">GeneralGeodesicRK4Solver</a>
                 <span class="author-note">(by Pim de Witte)</span>
                 <button class="show-code-btn" onclick="toggleCodePreview('general-geodesic-preview')">Show code</button>
                 <div id="general-geodesic-preview" class="code-preview">
@@ -366,177 +520,6 @@
 <div style="background-color: #e8f0fe; border-left: 4px solid #1a5490; padding: 20px; margin: 20px 0; font-style: italic; border-radius: 5px;">
     The 4d and 6d solvers are the key central points for trajectory calculation in this project, and so the biggest risk is implementing a solver that is so based on one theorem that it overfits to that theorem when the trajectory calculation is ran. This is why we have a set of dedicated tests to the solver itself, that help avoid circularity.
 </div>
-
-<h3>📊 Detailed Test Specifications with Datasets</h3>
-
-<p>The following tests validate our geodesic integrator implementation against state-of-the-art (SOTA) experimental results. Each test targets a specific aspect of gravitational physics, from classical solar system dynamics to quantum gravity effects. <strong>All test implementations are now consolidated in the single file <code>test_geodesic_validator_comparison.py</code></strong> for easier maintenance and to ensure consistency across all validations.</p>
-
-<table>
-    <thead>
-        <tr>
-            <th style="width: 15%">Test</th>
-            <th style="width: 10%">Theory</th>
-            <th style="width: 20%">Dataset/Source</th>
-            <th style="width: 15%">Dataset Locator</th>
-            <th style="width: 25%">Why Correct</th>
-            <th style="width: 15%">Code</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><strong>Mercury Perihelion Precession</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> JPL Horizons ephemeris data<br/>
-                <strong>Source:</strong> <a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank">NASA JPL Horizons</a><br/>
-                <strong>Accuracy:</strong> 0.004"/century (Pitjeva & Pitjev 2013)</td>
-            <td><strong>Code:</strong> <code>test_mercury_precession.py</code><br/>
-                <strong>Data:</strong> <a href="../physics_agent/constants.py"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a><br/>
-                - r_perihelion = 46.00e9 m<br/>
-                - Semi-major axis = 57.91e9 m<br/>
-                - Period = 87.969 days</td>
-            <td>This is a classical solar system test of GR, measuring the anomalous precession of Mercury's orbit (43 arcsec/century), which Schwarzschild metric predicts exactly, validated by observations since 1915 and refined with modern radar ranging (SOTA accuracy: <0.1% deviation from GR, per Cassini mission PPN tests).</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_mercury_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Gravitational Lensing (Light Deflection)</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> ESA Gaia DR3 astrometry<br/>
-                <strong>Source:</strong> <a href="https://www.cosmos.esa.int/web/gaia/data-release-3" target="_blank">Gaia DR3 Catalog</a><br/>
-                <strong>Accuracy:</strong> 10 μas for bright stars</td>
-            <td><strong>Code:</strong> <code>test_light_deflection.py</code><br/>
-                <strong>Data:</strong> <a href="../physics_agent/constants.py"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a><br/>
-                - R_sun = 6.96e8 m<br/>
-                - Expected deflection = 1.75 arcsec<br/>
-                - Impact parameter = R_sun</td>
-            <td>Deflection of starlight by Sun (1.75 arcsec at limb) tests Schwarzschild's weak-field limit; SOTA from VLBI/Gaia (accuracy <0.01 mas, confirming GR to 10^{-5}).</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_light_deflection_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Black Hole Shadow Size</strong></td>
-            <td>Kerr</td>
-            <td><strong>Dataset:</strong> EHT M87* observations<br/>
-                <strong>Source:</strong> <a href="https://eventhorizontelescope.org/data" target="_blank">Event Horizon Telescope</a><br/>
-                <strong>Measurement:</strong> 42±3 μas diameter (ApJL 875:L1, 2019)</td>
-            <td><strong>Code:</strong> <code>test_black_hole_shadow.py</code><br/>
-                <strong>Data:</strong> Hardcoded in test<br/>
-                - M_bh = 6.5e9 M_sun<br/>
-                - Distance = 16.8 Mpc<br/>
-                - Expected = 42 μas</td>
-            <td>EHT image of M87* shadow (diameter ~42 μas) tests Kerr predictions; SOTA from EHT 2022 (accuracy ~10%, consistent with Kerr to ~20% deviations).</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_photon_sphere_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Nonlinear Stability/Particle Chaos</strong></td>
-            <td>Kerr-Newman</td>
-            <td><strong>Dataset:</strong> LIGO/Virgo GW waveforms<br/>
-                <strong>Source:</strong> <a href="https://gwosc.org/" target="_blank">GWOSC Open Data</a><br/>
-                <strong>Analysis:</strong> arXiv:1410.6626 (Kerr-Newman review)</td>
-            <td><strong>Code:</strong> <code>test_particle_chaos.py</code><br/>
-                <strong>Data:</strong> Theory-based calculation<br/>
-                - M_bh = 10 M_sun<br/>
-                - Expected λ ~ 1/(4πM)<br/>
-                - MSS chaos bound</td>
-            <td>Simulations of charged particle motion in KN fields test chaos bounds; SOTA from 2022 JHEP paper on violation in AdS (Lyapunov exponent λ~1/M, consistent with KN to ~10^{-3}).</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_circular_orbit_period()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Quantum Gravity Lab Tests (Entanglement)</strong></td>
-            <td>Quantum Gravity</td>
-            <td><strong>Dataset:</strong> Bose-Marletto-Vedral proposal simulations<br/>
-                <strong>Source:</strong> <a href="https://link.aps.org/doi/10.1103/RevModPhys.97.015006" target="_blank">Rev. Mod. Phys. 97, 015006 (2025)</a><br/>
-                <strong>Precision:</strong> Phase shifts ~10^{-3} rad</td>
-            <td><strong>Code:</strong> <code>test_quantum_entanglement.py</code><br/>
-                <strong>Data:</strong> Experimental proposal<br/>
-                - M_source = 1e-14 kg<br/>
-                - Separation = 250 μm<br/>
-                - Expected ~ 10^-3 rad</td>
-            <td>SOTA lab proposals test gravity's quantum nature via entanglement (e.g., Bose-Marletto-Vedral experiment); 2024 Phys Rev Lett confirms no classical channel, accuracy ~10^{-3} in phase shifts.</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_quantum_interferometry()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Pulsar Timing (Shapiro Delay)</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> NANOGrav PSR J0740+6620<br/>
-                <strong>Source:</strong> <a href="https://doi.org/10.3847/2041-8213/ac03b8" target="_blank">Fonseca et al. 2021, ApJL</a><br/>
-                <strong>Precision:</strong> M_c = 2.08±0.004 M☉, rms 0.18 μs</td>
-            <td><strong>Code:</strong> <code>geodesic_integrator.py</code><br/>
-                <strong>Function:</strong> <code>validator_psr_j0740()</code><br/>
-                <strong>Data:</strong> Hardcoded in function<br/>
-                - Lines 527-539: All parameters<br/>
-                - <code>/data/</code>: NANOGrav 15yr data</td>
-            <td>Binary pulsar Shapiro delays test GR in strong-field regime; PSR J0740+6620 provides highest-precision neutron star mass measurement, constraining deviations at 10^{-5} level.</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_ppn_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Pulsar Timing Array</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> NANOGrav 15-year data<br/>
-                <strong>Source:</strong> <a href="https://data.nanograv.org/" target="_blank">NANOGrav Data Portal</a><br/>
-                <strong>Precision:</strong> ≤ 1 μs timing residuals</td>
-            <td><strong>Code:</strong> <code>test_pulsar_timing.py</code><br/>
-                <strong>Data Source:</strong> dataloader://nanograv_15yr<br/>
-                <strong>File:</strong> v1p1_all_dict.json<br/>
-                <strong>Contains:</strong> Full 15yr CW analysis parameters</td>
-            <td>Millisecond pulsar timing tests GR via Shapiro delays and gravitational wave backgrounds; NANOGrav 15yr data provides nHz GW sensitivity.</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_gravitational_wave_inspiral()</code></td>
-        </tr>
-        <tr>
-            <td><strong>CMB Power Spectrum</strong></td>
-            <td>Cosmological models</td>
-            <td><strong>Dataset:</strong> Planck 2018 TT power spectrum<br/>
-                <strong>Source:</strong> <a href="https://pla.esac.esa.int/pla/" target="_blank">Planck Legacy Archive</a><br/>
-                <strong>Multipoles:</strong> l=2-2508, cosmic variance limited</td>
-            <td><strong>Code:</strong> <code>test_cmb_power_spectrum.py</code><br/>
-                <strong>Data Source:</strong> dataloader://planck_cmb_2018<br/>
-                <strong>File:</strong> COM_PowerSpect_CMB-TT-binned_R3.01.txt<br/>
-                <strong>Format:</strong> l, D_l, +error, -error<br/>
-                <strong>Test loads:</strong> All multipoles l=2-2508</td>
-            <td>CMB temperature anisotropies test early universe physics and quantum gravity effects; Planck data constrains primordial power spectrum to 0.1% precision.</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_cmb_power_spectrum()</code></td>
-        </tr>
-        <tr>
-            <td><strong>BICEP/Keck Tensor Modes</strong></td>
-            <td>Inflationary models</td>
-            <td><strong>Dataset:</strong> BICEP/Keck 2021 BK18 constraints<br/>
-                <strong>Source:</strong> <a href="http://bicepkeck.org/" target="_blank">BICEP/Keck Collaboration</a><br/>
-                <strong>Constraint:</strong> r < 0.036 (95% CL)</td>
-            <td><strong>Code:</strong> <code>test_bicep_keck.py</code><br/>
-                <strong>Data Source:</strong> dataloader://bicep_keck_2021<br/>
-                <strong>File:</strong> BK18_r_likelihood.txt<br/>
-                <strong>Format:</strong> r, -2ln(L)<br/>
-                <strong>Contains:</strong> Tensor-to-scalar ratio likelihood</td>
-            <td>Primordial gravitational wave constraints test inflationary predictions; BICEP/Keck 2021 limits tensor-to-scalar ratio r < 0.036, testing quantum gravity suppression of tensor modes.</td>
-            <td><a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_bicep_keck_primordial_gws()</code></td>
-        </tr>
-    </tbody>
-</table>
-
-<h3>🎯 Precision Requirements</h3>
-
-<p>As per the user rules, we must maintain absolute precision throughout our calculations:</p>
-<ul>
-    <li>Never lose precision along the way</li>
-    <li>No shortcuts allowed</li>
-    <li>Write comprehensive stress tests</li>
-    <li>Tests must be critically reasoned and not bypassed</li>
-</ul>
-
-<h3>📁 Test Implementation Files</h3>
-<ul>
-    <li><code>geodesic_integrator.py</code> - Main solver implementations and pulsar validator</li>
-    <li><code>cosmological_predictor.py</code> - Cosmological observable predictions</li>
-    <li><code>validations/</code> directory - Full suite of physics validators</li>
-    <li>Run all tests: <code>python run_validator.py</code></li>
-</ul>
 
 <h2>✅ Test Execution Results</h2>
 

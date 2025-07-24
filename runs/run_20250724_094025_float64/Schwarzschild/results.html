@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTheory (p=1.0) - Comprehensive Validation Results</title>
+    <title>Schwarzschild - Comprehensive Validation Results</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
         h1 { color: #333; text-align: center; }
@@ -30,10 +30,10 @@
     </style>
 </head>
 <body>
-    <h1>Comprehensive Validation Results: MyTheory (p=1.0)</h1>
+    <h1>Comprehensive Validation Results: Schwarzschild</h1>
     <div class="meta-info">
-        <p><strong>Theory:</strong> MyTheory (p=1.0)</p>
-        <p><strong>Generated:</strong> <span class="timestamp">2025-07-24 04:22:33</span></p>
+        <p><strong>Theory:</strong> Schwarzschild</p>
+        <p><strong>Generated:</strong> <span class="timestamp">2025-07-24 09:40:28</span></p>
         <p><strong>Total Validators Run:</strong> 11</p>
     <h2>Visualizations</h2>
     <div class="viz-container">
@@ -54,29 +54,17 @@
     </div>
     <h3>Particle Trajectories</h3>
     <div class="meta-info">
-        <p><strong>Particles Simulated:</strong> 8</p>
-        <p><strong>Trajectory Steps:</strong> 1001</p>
-        <p><strong>📦 Cached Trajectories Used:</strong> electron, photon, proton, neutrino</p>
+        <p><strong>Particles Simulated:</strong> 4</p>
+        <div class="warning"><strong>⚠️ Warning:</strong> Low trajectory steps (101). Consider re-running with more steps for better accuracy.</div>
         <ul>
-            <li>Electron_cache</li>
-            <li>Electron (cached, 0.0 MB)</li>
-            <li>Neutrino_cache</li>
-            <li>Neutrino (cached, 0.0 MB)</li>
-            <li>Photon_cache</li>
-            <li>Photon (cached, 0.0 MB)</li>
-            <li>Proton_cache</li>
-            <li>Proton (cached, 0.0 MB)</li>
-        </ul>
-        <p><strong>Cached Trajectory Files:</strong></p>
-        <ul>
-            <li><a href="particles/electron_cached_source.pt">electron_cached_source.pt</a></li>
-            <li><a href="particles/neutrino_cached_source.pt">neutrino_cached_source.pt</a></li>
-            <li><a href="particles/photon_cached_source.pt">photon_cached_source.pt</a></li>
-            <li><a href="particles/proton_cached_source.pt">proton_cached_source.pt</a></li>
+            <li>Electron</li>
+            <li>Neutrino</li>
+            <li>Photon</li>
+            <li>Proton</li>
         </ul>
     </div>
-        <p><strong>Theory Implementation:</strong> <code>MyTheory</code> in <a href="code/theory_source.py" class="code-button">Show Theory Code</a> (<a href="code/theory_instance.py">Instance</a>)</p>
-        <p><strong>Command Line:</strong> <code>theory_engine_core.py --steps 1000</code></p>
+        <p><strong>Theory Implementation:</strong> <code>Schwarzschild</code> in <a href="code/theory_source.py" class="code-button">Show Theory Code</a> (<a href="code/theory_instance.py">Instance</a>)</p>
+        <p><strong>Command Line:</strong> <code>albert-run --steps 100 --theory-filter schwarzschild</code></p>
     </div>
     <table>
         <thead>
@@ -103,8 +91,8 @@
                 <td>Drift &lt; 1e-12 (relative)</td>
                 <td>General Relativity (exact conservation)</td>
                 <td>[Numerical relativity textbook (Baumgarte 2010)](https://global.oup.com/academic/product/numerical-relativity-9780199691531)</td>
-                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 3.56e-06</td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/conservation_validator.py" class="code-button">Show Code</a></td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 5.29e-15</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/conservation_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>Metric Properties Validator</td>
@@ -115,8 +103,8 @@
                 <td>Signature (-,+,+,+), flat at infinity</td>
                 <td>General Relativity (Schwarzschild metric)</td>
                 <td>[Metric properties in GR](https://en.wikipedia.org/wiki/Metric_tensor_(general_relativity))</td>
-                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 3.39e-10</td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/metric_properties_validator.py" class="code-button">Show Code</a></td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 0.00e+00</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/metric_properties_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>Mercury Precession Validator</td>
@@ -128,7 +116,7 @@
                 <td>General Relativity</td>
                 <td>[Tests of GR - Mercury](https://en.wikipedia.org/wiki/Tests_of_general_relativity#Perihelion_precession_of_Mercury)</td>
                 <td class="sota-match"><span class="pass">PASS</span> - SCORE: 42.9889 arcsec/century (Error: 0.0%)</td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/mercury_precession_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/mercury_precession_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>Light Deflection Validator</td>
@@ -140,7 +128,7 @@
                 <td>General Relativity</td>
                 <td>[1919 Eclipse - light bending](https://en.wikipedia.org/wiki/Eddington_experiment)</td>
                 <td class=""><span class="fail">FAIL</span> - SCORE: 0.8754 arcsec (Error: 50.0%)</td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/light_deflection_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/light_deflection_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>PPN Parameters Validator</td>
@@ -152,7 +140,7 @@
                 <td>General Relativity (γ=β=1)</td>
                 <td>[PPN formalism](https://en.wikipedia.org/wiki/Parameterized_post-Newtonian_formalism)</td>
                 <td class=""><span class="na">N/A - Not Run</span></td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/ppn_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/ppn_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>Photon Sphere Validator</td>
@@ -164,7 +152,7 @@
                 <td>General Relativity</td>
                 <td>[Black hole shadow](https://en.wikipedia.org/wiki/Black_hole#Photon_sphere)</td>
                 <td class=""><span class="na">N/A - Not Run</span></td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/photon_sphere_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/photon_sphere_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>GW Waveform Validator</td>
@@ -176,7 +164,7 @@
                 <td>General Relativity</td>
                 <td>[LIGO detections](https://en.wikipedia.org/wiki/List_of_gravitational_wave_observations)</td>
                 <td class=""><span class="na">N/A - Not Run</span></td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/gw_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/gw_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>COW Neutron Interferometry Validator</td>
@@ -188,7 +176,7 @@
                 <td>General Relativity (semiclassical limit)</td>
                 <td>[COW experiment Wikipedia with references](https://en.wikipedia.org/wiki/Colella%E2%80%93Overhauser%E2%80%93Werner_experiment)</td>
                 <td class=""><span class="na">N/A - Not Run</span></td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/cow_interferometry_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/cow_interferometry_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>CMB Power Spectrum Prediction Validator</td>
@@ -200,7 +188,7 @@
                 <td>ΛCDM cosmology</td>
                 <td>[Planck 2018 cosmology paper](https://arxiv.org/abs/1807.06209)</td>
                 <td class=""><span class="na">N/A - Not Run</span></td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>Primordial GWs Validator</td>
@@ -212,7 +200,7 @@
                 <td>Single-field slow-roll inflation</td>
                 <td>[BICEP/Keck collaboration paper (2023)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.131.041001)</td>
                 <td class=""><span class="na">N/A - Not Run</span></td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/physics_agent/validations/primordial_gws_validator.py" class="code-button">Show Code</a></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/validations/primordial_gws_validator.py" class="code-button">Show Code</a></td>
             </tr>
             <tr>
                 <td>Trajectory Matching</td>
@@ -223,8 +211,8 @@
                 <td>Deviation &lt;1e-10 (relative)</td>
                 <td>Kerr metric (exact solution)</td>
                 <td>[Kerr metric Wikipedia](https://en.wikipedia.org/wiki/Kerr_metric)</td>
-                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 8.94e-17 (cosine vs Kerr-Newman (a=0.00, q_e=0.50))</td>
-                <td><a href="file:///Users/p/dev/albehttps://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/N/A (part of trajectory calculation)" class="code-button">Show Code</a></td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: -1.76e-17 (cosine vs Kerr-Newman (a=0.00, q_e=0.50))</td>
+                <td><a href="file:///Users/p/dev/albert/N/A (part of trajectory calculation)" class="code-button">Show Code</a></td>
             </tr>
         </tbody>
     </table>
