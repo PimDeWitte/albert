@@ -296,7 +296,7 @@
             
             /* Make Einstein's Unfinished Quest the first visible section */
             #journey {
-                padding-top: 140px !important; /* Account for fixed header + research notice */
+                padding-top: 80px !important; /* Account for fixed header only on mobile */
             }
             
             /* Fix header navigation on mobile */
@@ -675,7 +675,7 @@
     </nav>
 
     <!-- Research Preview Notice -->
-    <div class="fixed top-16 left-0 right-0 bg-warning/10 border-b border-warning/20 py-3 px-4 sm:px-6 lg:px-8 z-30 backdrop-blur-sm">
+    <div class="relative md:fixed md:top-16 left-0 right-0 bg-warning/10 border-b border-warning/20 py-3 px-4 sm:px-6 lg:px-8 z-30 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-center gap-3">
             <svg class="w-5 h-5 text-warning flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
@@ -1018,15 +1018,7 @@
                                     enabling precision tests at the quantum-gravitational interface. Every theory 
                                     must couple correctly to fermions and gauge bosons.
                                 </p>
-                                <div class="bg-code-bg rounded-lg p-4 mb-4">
-                                    <code class="text-xs font-mono">
-# From physics_agent/base_theory.py<br/>
-# L_QED = ψ̄(iγ^μD_μ - m)ψ - (1/4)F_μν F^μν<br/>
-matter_lagrangian = sp.I * psi_bar * gamma_mu * D_mu * psi - m * psi_bar * psi<br/>
-gauge_lagrangian = -sp.Rational(1, 4) * F_munu * F^munu<br/>
-interaction_lagrangian = -e * psi_bar * gamma_mu * psi * A_mu
-                                    </code>
-                                </div>
+
                                 
                                 <!-- Real Implementation Example -->
                                 <div class="mt-6">
@@ -1079,43 +1071,6 @@ results = theory.validate()
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                     </svg>
                                 </a>
-                            </div>
-                            
-                            <!-- Experimental Validation -->
-                            <div class="bg-gradient-to-br from-quantum/10 to-accent/10 rounded-2xl shadow-lg p-8 border border-quantum/30">
-                                <h5 class="text-2xl font-bold text-quantum mb-4">Experimental Validation</h5>
-                                
-                                <div class="space-y-4">
-                                    <!-- QED g-2 Test -->
-                                    <div class="bg-white/80 rounded-lg p-4 border border-code-border/50">
-                                        <h6 class="font-bold text-lg mb-2 text-success">✓ Electron g-2 (QED)</h6>
-                                        <div class="font-mono text-sm">
-                                            <div>Theory: 0.00115965218178</div>
-                                            <div>Measured: 0.00115965218059 ± 1.3×10⁻¹³</div>
-                                            <div class="text-xs text-muted mt-1">Harvard 2023 - 12 digits precision</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Quantum Clock Test -->
-                                    <div class="bg-white/80 rounded-lg p-4 border border-code-border/50">
-                                        <h6 class="font-bold text-lg mb-2 text-success">✓ Quantum Clock (33cm)</h6>
-                                        <div class="font-mono text-sm">
-                                            <div>Predicted: 3.61×10⁻¹⁷</div>
-                                            <div>Measured: (3.61 ± 1.60)×10⁻¹⁷</div>
-                                            <div class="text-xs text-muted mt-1">NIST Al+ optical clocks - 2018</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Lamb Shift -->
-                                    <div class="bg-white/80 rounded-lg p-4 border border-code-border/50">
-                                        <h6 class="font-bold text-lg mb-2 text-success">✓ Lamb Shift</h6>
-                                        <div class="font-mono text-sm">
-                                            <div>Theory: 1057.839 MHz</div>
-                                            <div>Measured: 1057.845 ± 0.009 MHz</div>
-                                            <div class="text-xs text-muted mt-1">CODATA 2018</div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1630,11 +1585,6 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                     <div class="text-center">
                         <h4 class="text-4xl font-bold text-accent mb-8">Join Us in Building the Future</h4>
                         
-                        <p class="text-xl font-serif text-ink mb-12 max-w-3xl mx-auto">
-                            Imagine a world where any physical theory can be tested in minutes. Where students 
-                            explore black holes in their browsers. Where the next Einstein might be an AI that 
-                            discovers new physics because it has every test at its fingertips.
-                        </p>
                         
                         <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-3xl p-10 max-w-4xl mx-auto">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -1736,57 +1686,9 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                     
                     <!-- How to Benchmark -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 max-w-5xl mx-auto">
-                        <div class="bg-gradient-to-br from-quantum/10 to-accent/10 rounded-2xl shadow-lg p-8 border border-quantum/30">
-                            <h5 class="text-2xl font-bold text-quantum mb-4">Quick Start: Benchmark Your Model</h5>
-                            
-                            <div class="bg-white/80 rounded-lg p-4 mb-4 font-mono text-sm">
-                                <div class="text-muted"># During setup, register your model</div>
-                                <div class="text-accent">./albert_setup.py</div>
-                                <div class="mt-2 text-muted"># Choose: "Register model for benchmarking"</div>
-                                <div class="text-muted"># Enter your OpenAI-compatible endpoint</div>
-                                <div class="mt-2 text-accent">albert benchmark --model "your-model"</div>
-                            </div>
-                            
-                            <p class="text-sm text-ink mb-3">
-                                Albert automatically tests your model's ability to:
-                            </p>
-                            <ul class="text-sm space-y-1 text-ink">
-                                <li>• Generate valid Lagrangians</li>
-                                <li>• Satisfy conservation laws</li>
-                                <li>• Match experimental data</li>
-                                <li>• Discover novel physics</li>
-                            </ul>
-                        </div>
                         
-                        <div class="bg-white rounded-2xl shadow-lg p-8 border border-code-border">
-                            <h5 class="text-2xl font-bold text-accent mb-4">Model Provider Benefits</h5>
-                            
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-3">
-                                    <span class="text-2xl">🎖️</span>
-                                    <div>
-                                        <h6 class="font-bold text-ink">Scientific Attribution</h6>
-                                        <p class="text-sm text-muted">Your model gets credited for any valid theories it discovers</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-start gap-3">
-                                    <span class="text-2xl">📊</span>
-                                    <div>
-                                        <h6 class="font-bold text-ink">Public Benchmark Score</h6>
-                                        <p class="text-sm text-muted">Showcase your model's scientific reasoning capabilities</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-start gap-3">
-                                    <span class="text-2xl">🔬</span>
-                                    <div>
-                                        <h6 class="font-bold text-ink">Real Scientific Impact</h6>
-                                        <p class="text-sm text-muted">Contribute to humanity's understanding of physics</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
+                        
                     </div>
                     
                     

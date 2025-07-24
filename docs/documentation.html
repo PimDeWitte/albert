@@ -71,6 +71,17 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* On mobile, make research notice disappear on scroll */
+        @media (max-width: 768px) {
+            .research-notice.scrolled {
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+            }
         }
         
         .research-notice svg {
@@ -315,6 +326,25 @@
             const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
             return tabNames.indexOf(tabName);
         }
+        
+        // Hide research notice on mobile when scrolling
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            if (window.innerWidth <= 768) {
+                const notice = document.querySelector('.research-notice');
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (currentScroll > lastScrollTop && currentScroll > 50) {
+                    // Scrolling down
+                    notice.classList.add('scrolled');
+                } else {
+                    // Scrolling up
+                    notice.classList.remove('scrolled');
+                }
+                
+                lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+            }
+        }, false);
     </script>
 </body>
 </html> 
