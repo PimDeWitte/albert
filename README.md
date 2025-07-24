@@ -26,22 +26,22 @@ cd albert
 ./setup_unified.sh
 
 # Run all theories (standard run)
-./albert run
+albert run
 
 # Run with specific options
-./albert run --steps 1000
-./albert run --theory-filter "ugm"
-./albert run --gpu-f32
-./albert run --enable-sweeps
+albert run --steps 1000
+albert run --theory-filter "ugm"
+albert run --gpu-f32
+albert run --enable-sweeps
 
 # Configure Albert (API keys, etc.)
-./albert setup
+albert setup
 
 # Discover new theories automatically
-./albert discover --initial "unified field theory"
+albert discover --initial "unified field theory"
 
 # Discover variations of an existing theory
-./albert discover --from theories/einstein_unified/theory.py
+albert discover --from theories/einstein_unified/theory.py
 
 # Optional: Make albert available globally
 sudo ln -s $(pwd)/albert /usr/local/bin/albert
@@ -57,57 +57,56 @@ Albert provides a unified CLI with multiple subcommands:
 ### `albert run` - Run Theory Simulations
 ```bash
 # Run all theories with default settings
-./albert run
+albert run
 
 # Run specific theories
-./albert run --theory-filter "kerr"           # Run Kerr theory
-./albert run --category ugm                   # Run all UGM theories
-./albert run --candidates                     # Include candidate theories
+albert run --theory-filter "kerr"           # Run Kerr theory
+albert run --category ugm                   # Run all UGM theories
+albert run --candidates                     # Include candidate theories
 
 # Performance options
-./albert run --gpu-f32                        # GPU with float32
-./albert run --cpu-f64                        # CPU with float64
-./albert run --steps 10000                    # Custom step count
-./albert run --no-cache                       # Force recomputation
+albert run --gpu-f32                        # GPU with float32
+albert run --cpu-f64                        # CPU with float64
+albert run --steps 10000                    # Custom step count
+albert run --no-cache                       # Force recomputation
 
 # Parameter sweeps
-./albert run --enable-sweeps                  # Enable parameter sweeps
-./albert run --sweep-only gamma               # Sweep only gamma parameter
-./albert run --sweep-workers 8                # Set parallel workers
+albert run --enable-sweeps                  # Enable parameter sweeps
+albert run --sweep-only gamma               # Sweep only gamma parameter
+albert run --sweep-workers 8                # Set parallel workers
 
 # Advanced options
-./albert run --close-orbit                    # Use 6RS orbit (stronger fields)
-./albert run --early-stop                     # Enable convergence detection
-./albert run --experimental                   # Enable quantum kicks
-./albert run --verbose                        # Detailed logging
+albert run --close-orbit                    # Use 6RS orbit (stronger fields)
+albert run --early-stop                     # Enable convergence detection
+albert run --experimental                   # Enable quantum kicks
+albert run --verbose                        # Detailed logging
 ```
 
 ### `albert discover` - AI Theory Discovery
 ```bash
 # Start discovery with default settings
-./albert discover
+albert discover
 
 # Discovery with initial prompt
-./albert discover --initial "unified field theory with torsion"
+albert discover --initial "unified field theory with torsion"
 
 # Improve existing theory
-./albert discover --from theories/einstein_unified/theory.py
+albert discover --from theories/einstein_unified/theory.py
 
 # Continuous monitoring mode
-./albert discover --self-monitor
+albert discover --self-monitor
 ```
 
 ### `albert setup` - Configuration
 ```bash
 # Interactive setup wizard
-./albert setup
+albert setup
 ```
 
 ### Other Commands
 ```bash
-./albert benchmark --model "GPT-4"            # Benchmark AI models
-./albert submit c_20240723_140530_a7b9c2d1    # Submit candidate theory
-./albert --help                               # Show all commands
+albert validate theories/my_theory/theory.py  # Validate specific theory
+albert --help                                 # Show all commands
 ```
 
 ---
@@ -161,16 +160,16 @@ Albert uses AI to generate and test new gravitational theories automatically:
 ### Discovery Modes
 ```bash
 # Basic discovery
-./albert discover
+albert discover
 
 # Guided discovery with physics hints
-./albert discover --initial "incorporate holographic principle"
+albert discover --initial "incorporate holographic principle"
 
 # Theory improvement
-./albert discover --from theories/quantum_corrected/theory.py
+albert discover --from theories/quantum_corrected/theory.py
 
 # Continuous discovery with monitoring
-./albert discover --self-monitor
+albert discover --self-monitor
 ```
 
 ---
@@ -192,13 +191,13 @@ Albert uses AI to generate and test new gravitational theories automatically:
 ### Optimization Settings
 ```bash
 # Maximum performance
-./albert run --gpu-f32 --enable-sweeps --sweep-workers 16
+albert run --gpu-f32 --enable-sweeps --sweep-workers 16
 
 # Maximum precision
-./albert run --cpu-f64 --steps 1000000
+albert run --cpu-f64 --steps 1000000
 
 # Quick testing
-./albert run --steps 100 --theory-filter "test"
+albert run --steps 100 --theory-filter "test"
 ```
 
 ---
@@ -229,7 +228,7 @@ class MyTheory(GravitationalTheory):
 
 3. **Run validation**:
 ```bash
-./albert run --theory-filter "My Theory"
+albert run --theory-filter "My Theory"
 ```
 
 ---

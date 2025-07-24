@@ -44,7 +44,80 @@
     </style>
 </head>
 <body>
-    <h1>Theory Engine Core - Execution Flowchart</h1>
+    <h1>Albert System Overview</h1>
+    
+    <!-- Command Line Interface -->
+    <div style="background-color: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="color: #2196F3; margin-bottom: 20px;">Command Line Interface</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5em;">🚀</span> albert run
+                </h3>
+                <p style="margin: 10px 0;">Run gravitational theory simulations with comprehensive validation</p>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
+albert run                    # Run all theories
+albert run --theory-filter ugm  # Run specific theory
+albert run --gpu-f32          # GPU acceleration
+albert run --enable-sweeps    # Parameter sweeps</pre>
+            </div>
+            
+            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5em;">🧪</span> albert discover
+                </h3>
+                <p style="margin: 10px 0;">AI-powered theory discovery and generation</p>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
+albert discover               # Basic discovery
+albert discover --initial "prompt"  # Guided
+albert discover --from theory.py    # Improve
+albert discover --self-monitor      # Continuous</pre>
+            </div>
+            
+            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5em;">⚙️</span> albert setup
+                </h3>
+                <p style="margin: 10px 0;">Configure Albert instance (API keys, network)</p>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
+albert setup  # Interactive configuration wizard</pre>
+            </div>
+            
+            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5em;">📊</span> albert validate
+                </h3>
+                <p style="margin: 10px 0;">Validate specific theory against experimental data</p>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
+albert validate theories/my_theory/theory.py</pre>
+            </div>
+            
+            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5em;">🏆</span> albert benchmark
+                </h3>
+                <p style="margin: 10px 0;">Test AI models on physics discovery tasks</p>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
+albert benchmark --model "GPT-4"</pre>
+            </div>
+            
+            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5em;">📤</span> albert submit
+                </h3>
+                <p style="margin: 10px 0;">Submit a candidate theory for community review</p>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
+albert submit c_20240723_140530_a7b9c2d1</pre>
+            </div>
+        </div>
+        
+        <p style="text-align: center; color: #666; margin-top: 20px; font-style: italic;">
+            Use <code>albert &lt;command&gt; --help</code> for detailed options on each command
+        </p>
+    </div>
+    
+    <h2 style="margin-top: 40px;">Theory Engine Core - Execution Flowchart</h2>
     
     <button class="save-button" onclick="saveAsImage()">Save as Image</button>
     

@@ -306,62 +306,24 @@ case "$1" in
         echo "Albert updated successfully!"
         ;;
     
-    discover)
-        shift
-        python physics_agent/self_discovery/self_discovery.py --self-monitor "$@"
-        ;;
-    
-    validate)
-        shift
-        python physics_agent/run_validator.py "$@"
-        ;;
-    
-    visualize)
-        shift
-        python physics_agent/visualize_run.py "$@"
-        ;;
-    
-    engine)
-        shift
-        python engine/launch.py "$@"
-        ;;
-    
-    setup)
-        python albert_setup.py
-        ;;
-    
     version)
         echo "Albert v$(cat VERSION 2>/dev/null || echo 'unknown')"
         ;;
     
     help|--help|-h|"")
-        echo "Albert - Self-Discovering Physics Agent"
-        echo ""
-        echo "Usage: albert <command> [options]"
-        echo ""
-        echo "Commands:"
-        echo "  discover    Run self-discovery to generate new theories"
-        echo "  validate    Validate a theory against experimental data"
-        echo "  visualize   Visualize theory predictions and trajectories"
-        echo "  engine      Launch the 3D physics engine"
-        echo "  setup       Configure Albert (API keys, network settings)"
-        echo "  update      Update Albert to the latest version"
-        echo "  version     Show Albert version"
-        echo "  help        Show this help message"
-        echo ""
-        echo "Examples:"
-        echo "  albert discover --initial 'unified field theory'"
-        echo "  albert validate theories/my_theory/theory.py"
-        echo "  albert visualize runs/run_12345"
-        echo "  albert engine --scene stacked_boxes"
-        echo ""
-        echo "For more information, visit: https://github.com/pimdewitte/albert"
+        # Pass through to Python for help
+        python -m physics_agent.__main__ --help
+        ;;
+    
+    validate)
+        # Keep validate for backward compatibility
+        shift
+        python physics_agent/run_validator.py "$@"
         ;;
     
     *)
-        echo "Unknown command: $1"
-        echo "Run 'albert help' for usage information"
-        exit 1
+        # Pass all other commands to Python
+        python -m physics_agent.__main__ "$@"
         ;;
 esac
 EOF

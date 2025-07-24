@@ -286,6 +286,147 @@
             border-radius: 0.5rem;
             pointer-events: none;
         }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            /* Hide animated hero section on mobile */
+            #home {
+                display: none !important;
+            }
+            
+            /* Make Einstein's Unfinished Quest the first visible section */
+            #journey {
+                padding-top: 140px !important; /* Account for fixed header + research notice */
+            }
+            
+            /* Fix header navigation on mobile */
+            nav {
+                padding: 0 0.5rem;
+            }
+            
+            .sketch-frame {
+                padding: 0.5rem !important;
+            }
+            
+            .sketch-paper {
+                padding: 0.25rem !important;
+            }
+            
+            .sketch-frame img {
+                height: 3rem !important;
+            }
+            
+            /* Fix research notice spacing on mobile */
+            .research-notice {
+                padding: 0.5rem 1rem;
+                font-size: 12px;
+            }
+            
+            /* Improve mobile typography */
+            h3.text-4xl {
+                font-size: 1.875rem !important; /* text-3xl */
+            }
+            
+            h3.text-5xl {
+                font-size: 2.25rem !important; /* text-4xl */
+            }
+            
+            .text-lg {
+                font-size: 1rem !important;
+            }
+            
+            /* Fix Einstein's final work box on mobile */
+            .grid.grid-cols-1.lg\\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Adjust padding for mobile */
+            .px-4, .px-6, .px-8 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            .py-20 {
+                padding-top: 3rem !important;
+                padding-bottom: 3rem !important;
+            }
+            
+            /* Fix canvas containers on mobile */
+            canvas {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+            
+            /* Hide non-essential animations on mobile */
+            .gravitational-text {
+                animation: none !important;
+            }
+            
+            .gravitational-pulse {
+                animation: none !important;
+            }
+            
+            /* Fix modal on mobile */
+            #setupModal .max-w-3xl {
+                max-width: calc(100vw - 2rem) !important;
+                margin: 1rem !important;
+            }
+            
+            /* Improve button spacing on mobile */
+            .flex.gap-6 {
+                gap: 1rem !important;
+                flex-direction: column !important;
+            }
+            
+            .w-64 {
+                width: 100% !important;
+            }
+            
+            /* Fix code blocks on mobile */
+            .code-block, pre {
+                font-size: 0.75rem !important;
+                padding: 1rem !important;
+            }
+            
+            /* Fix Princeton Hospital box on mobile */
+            #einstein-asymmetric-detail,
+            #einstein-connection-detail,
+            #einstein-field-detail {
+                font-size: 0.75rem !important;
+            }
+            
+            /* Make validation visualizations responsive */
+            #validationGauntletCanvas,
+            #theoryEngineCanvas {
+                height: 300px !important;
+            }
+        }
+        
+        /* Additional mobile improvements */
+        @media (max-width: 640px) {
+            /* Even smaller adjustments for very small screens */
+            h3.text-4xl {
+                font-size: 1.5rem !important;
+            }
+            
+            h3.text-5xl {
+                font-size: 1.875rem !important;
+            }
+            
+            .text-2xl {
+                font-size: 1.25rem !important;
+            }
+            
+            /* Stack buttons vertically on very small screens */
+            .flex.items-center.justify-center.gap-6 {
+                flex-direction: column !important;
+            }
+            
+            /* Full width install command on mobile */
+            .max-w-3xl {
+                max-width: 100% !important;
+            }
+        }
     </style>
 </head>
 <body class="text-ink antialiased bg-paper">
@@ -366,14 +507,88 @@
                             <div><span class="text-muted"># Quick start - clone and run the replication</span></div>
                             <div class="text-accent">git clone https://github.com/pimdewitte/albert.git</div>
                             <div class="text-accent">cd albert</div>
-                            <div class="text-accent">./setup_unified.sh && python physics_agent/theory_engine_core.py --steps 1000</div>
+                            <div class="text-accent">./setup_unified.sh && albert run --steps 1000</div>
                             <div class="mt-4"><span class="text-muted"># Test your own theory - just add to theories/</span></div>
-                            <div class="text-accent">albert --theory-filter "MyTheory"</div>
+                            <div class="text-accent">albert run --theory-filter "MyTheory"</div>
                             <div class="mt-4"><span class="text-muted"># Let Albert discover new theories automatically</span></div>
                             <div class="text-accent">albert discover --initial "unified field theory"</div>
                             <div class="mt-4"><span class="text-muted"># Discover variations of an existing theory</span></div>
                             <div class="text-accent">albert discover --from theories/einstein_unified/theory.py</div>
                         </div>
+                    </div>
+                    
+                    <!-- Available Commands -->
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Available Commands</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">🚀</span> albert run
+                                </h4>
+                                <p class="text-sm text-muted">Run gravitational theory simulations with comprehensive validation</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>--theory-filter "name"</div>
+                                    <div>--steps 10000</div>
+                                    <div>--gpu-f32 / --cpu-f64</div>
+                                    <div>--enable-sweeps</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">🧪</span> albert discover
+                                </h4>
+                                <p class="text-sm text-muted">AI-powered theory discovery and generation</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>--initial "prompt"</div>
+                                    <div>--from theory.py</div>
+                                    <div>--self-monitor</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">⚙️</span> albert setup
+                                </h4>
+                                <p class="text-sm text-muted">Configure API keys and network settings</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>Interactive wizard</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">📊</span> albert validate
+                                </h4>
+                                <p class="text-sm text-muted">Validate specific theory against experimental data</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>theories/my_theory/theory.py</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">🏆</span> albert benchmark
+                                </h4>
+                                <p class="text-sm text-muted">Test AI models on physics discovery tasks</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>--model "GPT-4"</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">📤</span> albert submit
+                                </h4>
+                                <p class="text-sm text-muted">Submit a candidate theory for review</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>c_20240723_140530_a7b9c2d1</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-muted mt-3 text-center">
+                            Use <span class="font-mono">albert &lt;command&gt; --help</span> for detailed options
+                        </p>
                     </div>
                     
                     <!-- Links -->
@@ -2686,7 +2901,10 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
         
         // Spacetime Curvature Visualization
         const spacetimeCanvas = document.getElementById('spacetimeCanvas');
-        if (spacetimeCanvas) {
+        const isMobile = window.innerWidth <= 768;
+        
+        // Skip canvas animation on mobile for performance
+        if (spacetimeCanvas && !isMobile) {
             const spacetimeCtx = spacetimeCanvas.getContext('2d');
             let animationTime = 0;
             let scrollProgress = 0;
