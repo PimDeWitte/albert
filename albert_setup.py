@@ -170,8 +170,8 @@ class AlbertSetup:
         
         config['model_info'] = {
             'max_tokens': int(input("Maximum context length (tokens) [128000]: ") or "128000"),
-            'supports_json': not self.get_yes_no("Supports JSON mode?"),  # Note: inverting for compatibility
-            'supports_tools': self.get_yes_no("Supports function calling?"),
+            'supports_json': self.get_yes_no("Supports JSON mode? (default: yes)"),
+            'supports_tools': self.get_yes_no("Supports function calling? (default: no)"),
             'temperature_range': input("Recommended temperature range [0.0-1.0]: ") or "0.0-1.0"
         }
         
@@ -186,10 +186,10 @@ class AlbertSetup:
         print()
         
         config['consent'] = {
-            'benchmark_agreement': input("Do you agree to these terms? (y/n): ").lower() == 'y',
-            'publish_results': input("Publish results on leaderboard? (y/n): ").lower() == 'y',
+            'benchmark_agreement': self.get_yes_no("Do you agree to these terms?"),
+            'publish_results': self.get_yes_no("Publish results on leaderboard?"),
             'share_discoveries': True,  # Always true for benchmark models
-            'marketing_consent': input("Allow us to feature your model in marketing? (y/n): ").lower() == 'y'
+            'marketing_consent': self.get_yes_no("Allow us to feature your model in marketing?")
         }
         
         if not config['consent']['benchmark_agreement']:
@@ -321,7 +321,7 @@ class AlbertSetup:
         
         if self.key_file.exists():
             print(f"Existing key found at: {self.key_file}")
-            if input("Use existing key? (y/n): ").lower() == 'y':
+            if self.get_yes_no("Use existing key?"):
                 with open(self.public_key_file, 'rb') as f:
                     public_key = serialization.load_pem_public_key(
                         f.read(), backend=default_backend()
@@ -408,12 +408,12 @@ class AlbertSetup:
         print("  • System information")
         print("  • Email address\n")
         
-        share = input("Share validated discoveries with the network? (y/n): ").lower() == 'y'
+        share = self.get_yes_no("Share validated discoveries with the network?")
         consent['share_discoveries'] = share
         
         if share:
-            consent['share_failed'] = input("Also share failed attempts for research? (y/n): ").lower() == 'y'
-            consent['allow_contact'] = input("Allow other researchers to contact you? (y/n): ").lower() == 'y'
+            consent['share_failed'] = self.get_yes_no("Also share failed attempts for research?")
+            consent['allow_contact'] = self.get_yes_no("Allow other researchers to contact you?")
         else:
             consent['share_failed'] = False
             consent['allow_contact'] = False
@@ -489,9 +489,9 @@ class AlbertSetup:
         
         registration_data = {
             'name': config['name'],
-            'email': config.get('email', ''),
-            'organization': config.get('organization', ''),
-            'location': config.get('location', ''),
+            'email': '',  # No longer collected
+            'organization': '',  # No longer collected
+            'location': '',  # No longer collected
             'public_key': config['public_key'],
             'consent': config['consent']
         }
@@ -543,7 +543,7 @@ def main():
     # Check if already configured
     if setup.config_file.exists():
         print("Albert is already configured.")
-        if input("Reconfigure? (y/n): ").lower() != 'y':
+        if not setup.get_yes_no("Reconfigure?"):
             print("Setup cancelled.")
             return
     

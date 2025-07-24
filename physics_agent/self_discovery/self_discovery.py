@@ -242,7 +242,7 @@ def main():
         baseline_results = {}
         
         # Set up trajectory parameters
-        N_STEPS = 20000
+        N_STEPS = args.steps if hasattr(args, 'steps') and args.steps else 20000
         DTau = torch.tensor(0.1, device=engine.device, dtype=engine.dtype)
         r0 = torch.tensor(12.0, device=engine.device, dtype=engine.dtype)
         
