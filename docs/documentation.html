@@ -150,14 +150,14 @@
     <div class="header">
         <h1>Albert Documentation</h1>
         <div class="tabs">
-            <button class="tab active">Validators</button>
+            <button class="tab">Validators</button>
             <button class="tab">System Diagram</button>
             <button class="tab">Solvers</button>
             <button class="tab">Datasets</button>
             <button class="tab">Self-Discovery</button>
             <button class="tab">Scoring</button>
             <button class="tab">Cache</button>
-            <button class="tab">Leaderboard</button>
+            <button class="tab active">Leaderboard</button>
         </div>
     </div>
     
@@ -171,12 +171,12 @@
     </div>
     
     <div class="content">
-        <div id="validators-container" class="iframe-container active">
+        <div id="validators-container" class="iframe-container">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Loading Validators...</p>
             </div>
-            <iframe src="validators.html" onload="hideLoading('validators')"></iframe>
+            <iframe data-src="validators.html" onload="hideLoading('validators')"></iframe>
         </div>
         
         <div id="system-diagram-container" class="iframe-container">
@@ -226,12 +226,12 @@
             <iframe data-src="cache.html" onload="hideLoading('cache')"></iframe>
         </div>
         
-        <div id="leaderboard-container" class="iframe-container">
+        <div id="leaderboard-container" class="iframe-container active">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Loading Leaderboard...</p>
             </div>
-            <iframe data-src="https://albert.so/latest_run/run_results_unified.html" onload="hideLoading('leaderboard')"></iframe>
+            <iframe src="https://albert.so/latest_run/run_results_unified.html" onload="hideLoading('leaderboard')"></iframe>
         </div>
     </div>
     
@@ -289,10 +289,10 @@
             if (tabParam && validTabs.includes(tabParam)) {
                 switchTab(tabParam, false); // Don't update URL on initial load
             } else {
-                // Default to validators if no valid tab specified
+                // Default to leaderboard if no valid tab specified
                 const url = new URL(window.location);
-                url.searchParams.set('tab', 'validators');
-                history.replaceState({ tab: 'validators' }, '', url);
+                url.searchParams.set('tab', 'leaderboard');
+                history.replaceState({ tab: 'leaderboard' }, '', url);
             }
         });
         
