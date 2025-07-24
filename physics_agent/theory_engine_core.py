@@ -1000,13 +1000,18 @@ class TheoryEngine:
                 except Exception as e:
                     print(f"  Error running {validator.name}: {str(e)}")
                     import traceback
-                    traceback.print_exc()
+                    tb_str = traceback.format_exc()  # <reason>chain: Capture full traceback for report</reason>
+                    print(tb_str)
                     result = {
                         'validator': validator.name,
                         'type': 'constraint',
                         'loss': 1.0,
                         'flags': {'overall': 'ERROR', 'details': str(e)},
-                        'details': {}
+                        'details': {
+                            'error': str(e),
+                            'error_type': type(e).__name__,
+                            'traceback': tb_str  # <reason>chain: Include traceback in details</reason>
+                        }
                     }
                     validation_results.append(result)
                     constraints_passed = False
@@ -1103,13 +1108,18 @@ class TheoryEngine:
                 except Exception as e:
                     print(f"  Error running {validator.name}: {str(e)}")
                     import traceback
-                    traceback.print_exc()
+                    tb_str = traceback.format_exc()  # <reason>chain: Capture full traceback for report</reason>
+                    print(tb_str)
                     result = {
                         'validator': validator.name,
                         'type': getattr(validator, 'category', 'observational'),
                         'loss': 1.0,
                         'flags': {'overall': 'ERROR', 'details': str(e)},
-                        'details': {}
+                        'details': {
+                            'error': str(e),
+                            'error_type': type(e).__name__,
+                            'traceback': tb_str  # <reason>chain: Include traceback in details</reason>
+                        }
                     }
                     validation_results.append(result)
                     observations_passed = False
@@ -1179,13 +1189,18 @@ class TheoryEngine:
                 except Exception as e:
                     print(f"  Error running {validator.name}: {str(e)}")
                     import traceback
-                    traceback.print_exc()
+                    tb_str = traceback.format_exc()  # <reason>chain: Capture full traceback for report</reason>
+                    print(tb_str)
                     result = {
                         'validator': validator.name,
                         'type': getattr(validator, 'category', 'prediction'),
                         'loss': 1.0,
                         'flags': {'overall': 'ERROR', 'details': str(e)},
-                        'details': {}
+                        'details': {
+                            'error': str(e),
+                            'error_type': type(e).__name__,
+                            'traceback': tb_str  # <reason>chain: Include traceback in details</reason>
+                        }
                     }
                     validation_results.append(result)
 

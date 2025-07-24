@@ -219,6 +219,10 @@ class ComprehensiveReportGenerator:
             '        .viz-item { text-align: center; }',
             '        .viz-item img { max-width: 100%; height: auto; border: 1px solid #ddd; max-height: 600px; }',
             '        .warning { background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0; }',
+            '        .error { background-color: #ffebee; color: #c62828; padding: 2px 6px; border-radius: 3px; }',
+            '        details { margin: 10px 0; }',
+            '        details summary { cursor: pointer; color: #1976d2; font-weight: 500; }',
+            '        details summary:hover { text-decoration: underline; }',
             '    </style>',
             '</head>',
             '<body>',
@@ -320,6 +324,16 @@ class ComprehensiveReportGenerator:
             '    </div>'
         ])
         
+        # <reason>chain: Add dedicated error section for validation exceptions</reason>
+        error_section = self._generate_error_section(theory_results)
+        if error_section:
+            html_parts.extend([
+                '    <h2>Validation Errors</h2>',
+                '    <div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336;">',
+                f'        {error_section}',
+                '    </div>'
+            ])
+            
         # Visualization section already added at top
         
         # Add logs if provided
@@ -479,6 +493,13 @@ class ComprehensiveReportGenerator:
         """<reason>chain: Format our score for display in table - always show score, not just pass/fail</reason>"""
         if not result:
             return '<span class="na">N/A - Not Run</span>'
+            
+        # <reason>chain: Check for ERROR status from exceptions first</reason>
+        if result.get('flags', {}).get('overall') == 'ERROR':
+            error_msg = result.get('flags', {}).get('details', 'Unknown error')
+            error_type = result.get('details', {}).get('error_type', 'Exception')
+            # Show error with red background and details
+            return f'<span class="error" style="background-color: #ffebee; color: #c62828; padding: 2px 6px; border-radius: 3px;">ERROR - {error_type}: {html.escape(str(error_msg)[:100])}{"..." if len(str(error_msg)) > 100 else ""}</span>'
             
         # Special handling for different validators
         if 'Trajectory' in validator_name:
@@ -732,3 +753,46 @@ class ComprehensiveReportGenerator:
             parts.append('    </div>')
         
         return parts 
+
+    def _generate_error_section(self, theory_results: Dict[str, Any]) -> str:
+        """<reason>chain: Generate a dedicated section for validation exceptions</reason>"""
+        error_parts = []
+        
+        # Check all validations for errors
+        if 'validations' in theory_results:
+            for val in theory_results['validations']:
+                if val.get('flags', {}).get('overall') == 'ERROR':
+                    validator_name = val.get('validator', 'Unknown Validator')
+                    error_msg = val.get('flags', {}).get('details', 'Unknown error')
+                    
+                    # Extract additional error details if available
+                    error_details = val.get('details', {})
+                    error_type = error_details.get('error_type', 'Exception')
+                    
+                    error_parts.append(f'<div style="margin-bottom: 15px;">')
+                    error_parts.append(f'<strong>{html.escape(validator_name)}</strong> - <code>{html.escape(error_type)}</code><br>')
+                    error_parts.append(f'<pre style="background: #f5f5f5; padding: 10px; margin-top: 5px; overflow-x: auto; font-size: 12px;">{html.escape(str(error_msg))}</pre>')
+                    
+                    # Add traceback if available
+                    if 'traceback' in error_details:
+                        error_parts.append(f'<details style="margin-top: 5px;">')
+                        error_parts.append(f'<summary style="cursor: pointer;">Show Traceback</summary>')
+                        error_parts.append(f'<pre style="background: #f5f5f5; padding: 10px; margin-top: 5px; overflow-x: auto; font-size: 11px;">{html.escape(error_details["traceback"])}</pre>')
+                        error_parts.append(f'</details>')
+                    
+                    error_parts.append(f'</div>')
+        
+        # Also check individual category results for errors
+        for category in ['constraints', 'observational', 'predictions']:
+            if category in theory_results:
+                for validator_name, result in theory_results[category].items():
+                    if not result.get('passed', True) and 'error' in result.get('details', {}):
+                        error_parts.append(f'<div style="margin-bottom: 15px;">')
+                        error_parts.append(f'<strong>{html.escape(validator_name)}</strong> (from {category})<br>')
+                        error_msg = result['details'].get('error', 'Unknown error')
+                        error_parts.append(f'<pre style="background: #f5f5f5; padding: 10px; margin-top: 5px; overflow-x: auto; font-size: 12px;">{html.escape(str(error_msg))}</pre>')
+                        error_parts.append(f'</div>')
+        
+        if error_parts:
+            return '\n'.join(error_parts)
+        return "" 

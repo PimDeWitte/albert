@@ -82,6 +82,16 @@ m_n = NEUTRON_MASS
 # Reference: CODATA 2022
 
 # ============================================================================
+# MATHEMATICAL CONSTANTS
+# ============================================================================
+
+# <reason>chain: Euler-Mascheroni constant - appears in GW phase calculations and other physics formulas</reason>
+# <reason>chain: Value 0.5772156649015329 from OEIS A001620. Web reference: https://oeis.org/A001620 </reason>
+EULER_GAMMA = 0.5772156649015329  # γ (Euler-Mascheroni constant)
+euler_gamma = EULER_GAMMA  # Common alias
+# Reference: OEIS A001620
+
+# ============================================================================
 # PLANCK UNITS (Natural Units for Quantum Gravity)
 # ============================================================================
 

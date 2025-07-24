@@ -173,9 +173,9 @@ class CustomTheory(GravitationalTheory):
     """
     
     def __init__(self, alpha: float = 0.1):
-        super().__init__(name=f"Quantum Corrected RN (α={alpha})")
+        # Use force_6dof_solver=False to indicate symmetric metric
+        super().__init__(name=f"Quantum Corrected RN (α={alpha})", force_6dof_solver=False)
         self.alpha = alpha
-        self.is_symmetric = True
         self.category = "quantum"
     
     def get_metric(self, r, M_param, C_param, G_param, Q_param=1e-5, **kwargs):

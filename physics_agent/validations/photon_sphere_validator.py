@@ -63,7 +63,7 @@ class PhotonSphereValidator(BaseValidation):
             expected_shadow = 5.196  # in units of r_s
             
             # Compute errors
-            abs(r_photon_rs - expected_r_ph) / expected_r_ph
+            r_ph_error = abs(r_photon_rs - expected_r_ph) / expected_r_ph  # <reason>chain: Assign the calculation result to variable</reason>
             shadow_error = abs(shadow_diameter_rs - expected_shadow) / expected_shadow
             
             # <reason>chain: Include stability check in validation</reason>

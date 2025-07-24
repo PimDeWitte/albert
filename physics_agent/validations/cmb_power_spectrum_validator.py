@@ -699,10 +699,16 @@ class CMBPowerSpectrumValidator(PredictionValidator):
         
         Includes quantum-related notes if applicable.
         """
+        # <reason>chain: Get data URL from dataloader config if available</reason>
+        data_url = 'https://pla.esac.esa.int/pla/#cosmology'
+        if self.dataset_loader:
+            dl_config = self.dataset_loader.datasets.get('planck_cmb_2018', {})
+            data_url = dl_config.get('url', data_url)
+        
         return {
             'source': 'Planck 2018 TT Power Spectrum',
             'focus': f'Low-l ({self.l_min}-{self.l_max}) anomalies',
-            'url': self.data_url,
+            'url': data_url,  # <reason>chain: Use data_url instead of self.data_url which doesn't exist</reason>
             'description': 'Angular power spectrum D_l testing large-scale anomalies',
             'anomalies': [
                 'Power deficit at l=2 (quadrupole)',

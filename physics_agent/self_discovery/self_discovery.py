@@ -339,7 +339,7 @@ def main():
                         # Calculate loss against baselines
                         losses = {}
                         for baseline_name, baseline_hist in baseline_results.items():
-                            loss = engine.calculate_loss(hist, baseline_hist)
+                            loss = engine.loss_calculator.compute_trajectory_loss(hist, baseline_hist, 'trajectory_mse')
                             losses[baseline_name] = loss.item()
                             print(f"  Loss vs {baseline_name}: {loss.item():.3e}")
                         
@@ -386,15 +386,108 @@ def main():
         
         print("\n--- Self-Discovery Session Complete ---")
         print(f"Results saved to: {run_dir}")
-        print("\nRuntime remains open for further agent operations...")
-        print("Press Ctrl+C to exit, or run additional commands.")
         
-        # Keep the process alive
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print("\nExiting self-discovery mode.")
+        # Continue discovery loop if API key is available
+        if api is not None and os.environ.get(f'{args.api_provider.upper()}_API_KEY'):
+            print("\n--- Starting Continuous Discovery Loop ---")
+            print("Press Ctrl+C to exit at any time.")
+            
+            iteration = 1
+            try:
+                while True:
+                    print(f"\n\n{'='*70}")
+                    print(f"DISCOVERY ITERATION {iteration}")
+                    print(f"{'='*70}")
+                    
+                    # Wait a bit between iterations
+                    time.sleep(5)
+                    
+                    # Generate new theory
+                    print("\nGenerating new theory...")
+                    new_prompt = initial_prompt if iteration == 1 else f"Generate a different approach than previous attempts. {initial_prompt}"
+                    theory_code = generate_theory_via_api(
+                        args.api_provider, 
+                        new_prompt, 
+                        baseline_theories
+                    )
+                    
+                    if theory_code:
+                        # Process the new theory
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        iter_dir = os.path.join(run_dir, f"iteration_{iteration}_{timestamp}")
+                        os.makedirs(iter_dir, exist_ok=True)
+                        
+                        # Save generated theory
+                        theory_file = os.path.join(iter_dir, "generated_theory.py")
+                        with open(theory_file, 'w') as f:
+                            f.write(theory_code)
+                        
+                        # Import and evaluate the theory
+                        try:
+                            spec = importlib.util.spec_from_file_location("generated_theory", theory_file)
+                            module = importlib.util.module_from_spec(spec)
+                            spec.loader.exec_module(module)
+                            
+                            # Find the theory class
+                            theory_class = None
+                            for name, obj in vars(module).items():
+                                if (isinstance(obj, type) and 
+                                    issubclass(obj, GravitationalTheory) and 
+                                    obj != GravitationalTheory):
+                                    theory_class = obj
+                                    break
+                            
+                            if theory_class:
+                                # Test the theory
+                                generated_theory = theory_class()
+                                print(f"\nTesting theory: {generated_theory.name}")
+                                
+                                theory_dir = os.path.join(iter_dir, generated_theory.name.replace(' ', '_'))
+                                os.makedirs(theory_dir, exist_ok=True)
+                                
+                                # Run trajectory computation
+                                hist, losses = engine.run_theory(
+                                    generated_theory,
+                                    N_STEPS,
+                                    DTau,
+                                    r0,
+                                    "",
+                                    output_dir=theory_dir,
+                                    disable_cache=True
+                                )
+                                
+                                if hist is not None:
+                                    # Check results
+                                    avg_loss = sum(losses.values()) / len(losses)
+                                    print(f"\n✨ Theory average loss: {avg_loss:.3e}")
+                                    
+                                    if avg_loss < 0.1:
+                                        print(f"\n🎉 PROMISING THEORY FOUND! Creating candidate...")
+                                        candidate_id, candidate_path = create_candidate_directory(timestamp, theory_code)
+                                        copy_run_to_candidate(theory_dir, candidate_path, theory_code)
+                                        show_pr_instructions(candidate_id, candidate_path)
+                                
+                        except Exception as e:
+                            print(f"\nError in iteration {iteration}: {str(e)}")
+                            import traceback
+                            traceback.print_exc()
+                    
+                    iteration += 1
+                    
+            except KeyboardInterrupt:
+                print("\n\nExiting continuous discovery mode.")
+                print(f"Completed {iteration - 1} discovery iterations.")
+        else:
+            print("\nRuntime remains open for further agent operations...")
+            print("Set your API key to enable continuous discovery loop.")
+            print("Press Ctrl+C to exit.")
+            
+            # Keep the process alive
+            try:
+                while True:
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                print("\nExiting self-discovery mode.")
         
     else:
         print("\nThis script is for self-discovery. Run with --self-discover to generate new theories.")

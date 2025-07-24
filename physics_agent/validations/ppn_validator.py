@@ -19,6 +19,17 @@ class PpnValidator(BaseValidation):
         AU = 1.496e11  # Astronomical unit in meters
         verbose = kwargs.get('verbose', False)
         
+        # Import experimental bounds from constants
+        from physics_agent.constants import SHAPIRO_TIME_DELAY, LUNAR_LASER_RANGING
+        
+        # Observational constraints
+        obs_gamma = SHAPIRO_TIME_DELAY['gamma']
+        obs_gamma_uncertainty = SHAPIRO_TIME_DELAY['uncertainty']
+        
+        # Beta constraint from lunar laser ranging
+        obs_beta = LUNAR_LASER_RANGING['beta']
+        obs_beta_uncertainty = LUNAR_LASER_RANGING['beta_uncertainty']
+        
         if verbose:
             print(f"\nCalculating PPN parameters for {theory.name}...")
         
@@ -78,17 +89,6 @@ class PpnValidator(BaseValidation):
             if rs > 0:
                 g_rr_deviation = torch.mean(g_rr - 1.0)
                 beta_est = 1.0 + g_rr_deviation.item() / (2 * rs / torch.mean(sampled_r).item())
-            
-            # Import experimental bounds from constants
-            from physics_agent.constants import SHAPIRO_TIME_DELAY, LUNAR_LASER_RANGING
-            
-            # Observational constraints
-            obs_gamma = SHAPIRO_TIME_DELAY['gamma']
-            obs_gamma_uncertainty = SHAPIRO_TIME_DELAY['uncertainty']
-            
-            # Beta constraint from lunar laser ranging
-            obs_beta = LUNAR_LASER_RANGING['beta']
-            obs_beta_uncertainty = LUNAR_LASER_RANGING['beta_uncertainty']
             
             # Calculate errors for both parameters
             gamma_error = abs(gamma_est - obs_gamma)

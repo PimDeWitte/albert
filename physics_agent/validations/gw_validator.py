@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from typing import Dict, Any, TYPE_CHECKING
 from .base_validation import BaseValidation
+from physics_agent.constants import EULER_GAMMA  # <reason>chain: Import Euler's constant from centralized constants module</reason>
 
 if TYPE_CHECKING:
     from physics_agent.base_theory import GravitationalTheory
@@ -74,8 +75,8 @@ class GwValidator(BaseValidation):
             phi_2 = 3715/756 + 55*eta/9  # 1PN
             phi_3 = -16*np.pi + 113*chi_eff/3  # 1.5PN with spin
             phi_4 = 15293365/508032 + 27145*eta/504 + 3085*eta**2/72  # 2PN
-            phi_5 = np.pi*(38645/756 - 65*eta/9) * (1 + 3*np.log(v))  # 2.5PN
-            phi_6 = 11583231236531/4694215680 - 640*np.pi**2/3 - 6848*np.euler_gamma/21  # 3PN
+            phi_5 = np.pi*(38645/756 - 65*eta/9) * (1 + 3*torch.log(v))  # 2.5PN, <reason>chain: Use torch.log for tensor operations</reason>
+            phi_6 = 11583231236531/4694215680 - 640*np.pi**2/3 - 6848*EULER_GAMMA/21  # 3PN
             phi_7 = np.pi*(77096675/254016 + 378515*eta/1512 - 74045*eta**2/756)  # 3.5PN
             
             # Total phase

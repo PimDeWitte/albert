@@ -21,8 +21,9 @@ Examples:
   albert run                    # Run all theories in the theories folder
   albert run --theory-filter ugm  # Run only UGM theories
   albert run --steps 1000       # Run with custom step count
-  albert run --validate         # Run with pre-run environment tests
-  albert validate               # Run environment validation tests
+  albert run --test             # Run with pre-run environment tests
+  albert test                   # Run environment/solver tests
+  albert validate theories/mytheory/theory.py  # Validate a specific theory
   albert setup                  # Configure Albert instance
   albert discover               # Start self-discovery mode
   albert benchmark              # Run model benchmarks
@@ -85,9 +86,9 @@ For more information on each command, use: albert <command> --help
             
         run_parser.add_argument(*action.option_strings, **kwargs)
     
-    # Add --validate flag for pre-run validation
+    # Add --test flag for pre-run environment tests
     run_parser.add_argument(
-        '--validate', 
+        '--test', 
         action='store_true',
         help='Run pre-run environment tests to verify solver correctness (recommended)'
     )
@@ -99,16 +100,33 @@ For more information on each command, use: albert <command> --help
         description='Set up API keys, cryptographic identity, and network participation'
     )
     
-    # Validate command - runs environment tests
-    validate_parser = subparsers.add_parser(
-        'validate',
-        help='Run environment validation tests',
-        description='Test the physics solver and environment to ensure everything is working correctly'
+    # Test command - runs environment/solver tests
+    test_parser = subparsers.add_parser(
+        'test',
+        help='Run environment/solver tests',
+        description='Test the physics solver and computational environment to ensure everything is working correctly'
     )
-    validate_parser.add_argument(
+    test_parser.add_argument(
         '--full', 
         action='store_true',
-        help='Run full validation suite with more extensive tests'
+        help='Run full test suite with more extensive tests'
+    )
+    
+    # Validate command - validates individual theories
+    validate_parser = subparsers.add_parser(
+        'validate',
+        help='Validate a specific theory',
+        description='Run validation tests on a specific gravitational theory'
+    )
+    validate_parser.add_argument(
+        'theory_path',
+        help='Path to the theory file to validate (e.g., theories/mytheory/theory.py)'
+    )
+    validate_parser.add_argument(
+        '--steps',
+        type=int,
+        default=10000,
+        help='Number of integration steps for validation (default: 10000)'
     )
     
     # Discover command
@@ -147,8 +165,8 @@ For more information on each command, use: albert <command> --help
     
     # Handle commands
     if args.command == 'run':
-        # Check if --validate flag is set
-        if hasattr(args, 'validate') and args.validate:
+        # Check if --test flag is set
+        if hasattr(args, 'test') and args.test:
             print("🔬 Running pre-run environment tests...")
             from physics_agent.run_environment_tests import run_environment_tests
             if not run_environment_tests(steps=100):
@@ -156,7 +174,7 @@ For more information on each command, use: albert <command> --help
                 sys.exit(1)
             print("✅ Pre-run environment tests passed!\n")
         else:
-            print("💡 Tip: Use --validate flag to run pre-run environment tests to ensure solver correctness\n")
+            print("💡 Tip: Use --test flag to run pre-run environment tests to ensure solver correctness\n")
         
         # Run the theory engine
         from physics_agent.theory_engine_core import main as run_theories
@@ -173,7 +191,7 @@ For more information on each command, use: albert <command> --help
         sys.argv = ['albert-run']  # Set program name
         # Add all the arguments back, but only if they were explicitly set
         for key, value in vars(args).items():
-            if key not in ['command', 'validate'] and value is not None:
+            if key not in ['command', 'test'] and value is not None:
                 # Skip if it's a default value (not explicitly set by user)
                 if key in defaults and value == defaults[key]:
                     continue
@@ -191,9 +209,9 @@ For more information on each command, use: albert <command> --help
         from albert_setup import main as run_setup
         run_setup()
         
-    elif args.command == 'validate':
-        # Run validation tests
-        print("🔬 Running environment validation tests...\n")
+    elif args.command == 'test':
+        # Run environment/solver tests
+        print("🔬 Running environment/solver tests...\n")
         from physics_agent.run_environment_tests import run_environment_tests
         full_test = args.full if hasattr(args, 'full') else False
         steps = 1000 if full_test else 100
@@ -204,6 +222,194 @@ For more information on each command, use: albert <command> --help
         else:
             print("\n❌ Some environment tests failed!")
             sys.exit(1)
+            
+    elif args.command == 'validate':
+        # Validate a specific theory
+        print(f"🔍 Validating theory: {args.theory_path}\n")
+        
+        # Check if theory file exists
+        if not os.path.exists(args.theory_path):
+            print(f"❌ Error: Theory file not found: {args.theory_path}")
+            sys.exit(1)
+        
+        # Import necessary modules
+        import torch
+        import importlib.util
+        from pathlib import Path
+        from physics_agent.theory_engine_core import TheoryEngine
+        from physics_agent.base_theory import GravitationalTheory
+        
+        # Load the theory
+        theory_name = Path(args.theory_path).stem
+        spec = importlib.util.spec_from_file_location(theory_name, args.theory_path)
+        if spec is None or spec.loader is None:
+            print(f"❌ Error: Could not load module from {args.theory_path}")
+            sys.exit(1)
+            
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[theory_name] = module
+        spec.loader.exec_module(module)
+        
+        # Find the theory class
+        theory_class = None
+        for name in dir(module):
+            obj = getattr(module, name)
+            if (isinstance(obj, type) and 
+                issubclass(obj, GravitationalTheory) and 
+                obj != GravitationalTheory):
+                theory_class = obj
+                break
+        
+        if theory_class is None:
+            print(f"❌ Error: No GravitationalTheory subclass found in {args.theory_path}")
+            sys.exit(1)
+        
+        # Instantiate the theory
+        try:
+            theory = theory_class()
+            print(f"✅ Successfully loaded: {theory.name}\n")
+        except Exception as e:
+            print(f"❌ Error instantiating theory: {str(e)}")
+            sys.exit(1)
+        
+        # Initialize minimal engine for validation
+        engine = TheoryEngine(device='cpu', dtype=torch.float64, verbose=False)
+        
+        # Run basic validation checks
+        print("Running validation checks...\n")
+        
+        # 1. Check metric implementation
+        print("1. Checking metric implementation...")
+        try:
+            # Test at a safe radius (10 Schwarzschild radii)
+            from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
+            rs = 2 * GRAVITATIONAL_CONSTANT * SOLAR_MASS / SPEED_OF_LIGHT**2
+            r = torch.tensor(10.0 * rs / engine.length_scale, dtype=engine.dtype)
+            t = torch.tensor(0.0, dtype=engine.dtype)
+            theta = torch.tensor(torch.pi/2, dtype=engine.dtype)
+            phi = torch.tensor(0.0, dtype=engine.dtype)
+            
+            # Most theories use get_metric_components, not metric directly
+            if hasattr(theory, 'get_metric_components'):
+                components = theory.get_metric_components(r, theta, phi, t)
+                if all(comp is not None for comp in components.values()):
+                    print("   ✅ Metric components implementation OK")
+                else:
+                    print("   ❌ Some metric components are None")
+            elif hasattr(theory, 'metric'):
+                g = theory.metric(r, theta, phi, t)
+                if g.shape != (4, 4):
+                    print(f"   ❌ Metric has wrong shape: {g.shape} (expected (4, 4))")
+                elif torch.isnan(g).any() or torch.isinf(g).any():
+                    print("   ❌ Metric contains NaN or Inf values")
+                else:
+                    print("   ✅ Metric implementation OK")
+            else:
+                print("   ✅ Theory uses base metric implementation")
+        except Exception as e:
+            print(f"   ❌ Metric implementation failed: {str(e)}")
+        
+        # 2. Check if theory is symmetric
+        print("\n2. Checking symmetry properties...")
+        print(f"   Is symmetric: {theory.is_symmetric}")
+        print(f"   Theory category: {getattr(theory, 'category', 'unknown')}")
+        
+        # 3. Run a short trajectory test
+        print("\n3. Running trajectory test...")
+        hist = None
+        try:
+            r0_si = float(r * engine.length_scale)  # Convert to SI and ensure it's a float
+            n_steps = min(args.steps, 100)
+            dtau_si = 0.1 * engine.time_scale
+            
+            hist, tag, _ = engine.run_trajectory(
+                theory, 
+                r0_si,  # Pass as float
+                n_steps,  # Number of steps
+                dtau_si,  # Time step in SI
+                no_cache=True,
+                verbose=False
+            )
+            
+            if hist is None:
+                print("   ❌ Trajectory computation failed")
+            else:
+                print(f"   ✅ Trajectory computed successfully ({hist.shape[0]} steps)")
+        except Exception as e:
+            print(f"   ❌ Trajectory test failed: {str(e)}")
+        
+        # 4. Check conservation laws if trajectory succeeded
+        if hist is not None and len(hist) > 10:
+            print("\n4. Checking conservation laws...")
+            try:
+                # Extract trajectory components
+                r_traj = hist[:, 1] / engine.length_scale  # Convert to geometric units
+                phi_traj = hist[:, 2]
+                
+                # Compute angular momentum
+                if len(hist) > 1:
+                    dphi_dtau = torch.diff(phi_traj) / 0.1
+                    dphi_dtau = torch.cat([dphi_dtau[:1], dphi_dtau])
+                    L = r_traj**2 * dphi_dtau
+                    
+                    L_mean = L.mean().abs()
+                    if L_mean > 1e-10:
+                        L_variation = (L.max() - L.min()) / L_mean
+                        if L_variation < 1e-6:
+                            print(f"   ✅ Angular momentum conserved (variation: {L_variation:.2e})")
+                        else:
+                            print(f"   ⚠️  Angular momentum variation: {L_variation:.2e}")
+                    else:
+                        print("   ℹ️  No angular momentum (radial trajectory)")
+            except Exception as e:
+                print(f"   ⚠️  Could not check conservation laws: {str(e)}")
+        
+        # 5. Run selected validators
+        print("\n5. Running physics validators...")
+        
+        # Get validators based on theory category
+        category = getattr(theory, 'category', 'classical')
+        if category == 'quantum':
+            print("   Running quantum validators...")
+        else:
+            print("   Running classical validators...")
+        
+        # Import and run basic validators
+        try:
+            from physics_agent.validations import MercuryPrecessionValidator, LightDeflectionValidator
+            
+            # Mercury precession
+            print("\n   Mercury Precession Test:")
+            mercury_validator = MercuryPrecessionValidator(engine)
+            mercury_result = mercury_validator.validate(theory, verbose=False)
+            if isinstance(mercury_result, dict) and mercury_result.get('passed'):
+                print(f"     ✅ PASSED (error: {mercury_result.get('error', 0):.3f} arcsec/century)")
+            elif isinstance(mercury_result, dict):
+                print(f"     ❌ FAILED (error: {mercury_result.get('error', 0):.3f} arcsec/century)")
+            else:
+                print(f"     ⚠️  Unexpected result format")
+            
+            # Light deflection
+            print("\n   Light Deflection Test:")
+            light_validator = LightDeflectionValidator(engine)
+            light_result = light_validator.validate(theory, verbose=False)
+            if isinstance(light_result, dict) and light_result.get('passed'):
+                print(f"     ✅ PASSED (error: {light_result.get('error', 0):.3f} arcsec)")
+            elif isinstance(light_result, dict):
+                print(f"     ❌ FAILED (error: {light_result.get('error', 0):.3f} arcsec)")
+            else:
+                print(f"     ⚠️  Unexpected result format")
+                
+        except Exception as e:
+            print(f"   ⚠️  Could not run all validators: {str(e)}")
+        
+        # Summary
+        print(f"\n{'='*60}")
+        print(f"Validation Summary for {theory.name}")
+        print(f"{'='*60}")
+        print("\nValidation complete. Check the results above for any issues.")
+        print(f"\nFor full validation with all tests, run:")
+        print(f"  albert run --theory-filter {theory_name}")
         
     elif args.command == 'discover':
         # Run self-discovery
