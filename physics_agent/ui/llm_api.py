@@ -80,6 +80,17 @@ Return ONLY the Python code, no explanations."""
         if not code:
             return code
             
+        # Strip markdown code blocks
+        if '```python' in code:
+            # Extract code between ```python and ```
+            start = code.find('```python') + 9
+            end = code.find('```', start)
+            if end > start:
+                code = code[start:end].strip()
+        elif '```' in code:
+            # Strip any code blocks
+            code = code.replace('```', '')
+            
         # Fix incorrect imports
         code = code.replace('from gravitational_theory import', 'from physics_agent.base_theory import')
         code = code.replace('import gravitational_theory', 'import physics_agent.base_theory')

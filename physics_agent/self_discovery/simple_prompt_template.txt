@@ -1,56 +1,44 @@
-# Quantum Theory Template for Unification
-# Generates quantum gravitational theories with unification potential
+# Quantum Unification Theory Template
 
-Generate a quantum gravitational theory that unifies gravity with other forces.
-
-Requirements:
-- Class name: CustomTheory  
-- Inherit from: GravitationalTheory
-- Set category = "quantum"
-- Implement get_metric method returning (g_tt, g_rr, g_pp, g_tp)
-- Include quantum field Lagrangian terms using sympy
-- Focus on unification of gravity with electromagnetism or other forces
+Generate a Python class that:
+1. Inherits from GravitationalTheory
+2. Has category = "quantum" 
+3. Unifies gravity with electromagnetism or other forces
+4. Includes quantum field terms in the Lagrangian
 
 Initial idea: {initial_prompt}
 
-IMPORTANT: Use this exact import:
-```python
+Use these exact imports:
 import torch
 import sympy as sp
 from physics_agent.base_theory import GravitationalTheory
 
+Structure your class like this:
+
 class CustomTheory(GravitationalTheory):
-    """
-    Quantum theory unifying gravity with [other forces]
-    
-    Lagrangian: L = R + [quantum terms] + [interaction terms]
-    """
     category = "quantum"
     
-    def __init__(self, coupling_param=0.1):
-        super().__init__(name=f"Quantum Unified Theory (κ={coupling_param})")
-        self.coupling = coupling_param
+    def __init__(self, coupling=0.1):
+        super().__init__(name="Quantum Unified Theory")
+        self.coupling = coupling
         
-        # Define Lagrangian with quantum field terms
+        # Define Lagrangian symbols
         R = sp.Symbol('R')  # Ricci scalar
-        F = sp.Symbol('F')  # Field strength
-        psi = sp.Symbol('ψ')
+        F = sp.Symbol('F')  # EM field strength
+        T = sp.Symbol('T')  # Torsion (if requested)
         
-        # Example: Einstein-Maxwell with quantum corrections
-        self.lagrangian = R - sp.Rational(1,4)*F**2 + coupling_param*R*F
+        # Your Lagrangian here - must include quantum unification terms
+        self.lagrangian = R + ...
         
     def get_metric(self, r, M_param, C_param, G_param):
         rs = 2 * G_param * M_param / C_param**2
         
-        # Modified metric with quantum corrections
-        quantum_correction = self.coupling / r**2
-        
-        g_tt = -(1 - rs/r + quantum_correction)
-        g_rr = 1/(1 - rs/r - quantum_correction)
+        # Implement your modified metric
+        g_tt = -(1 - rs/r)  # modify as needed
+        g_rr = 1/(1 - rs/r) # modify as needed
         g_pp = r**2
-        g_tp = torch.zeros_like(r)  # Or add frame-dragging
+        g_tp = torch.zeros_like(r)
         
         return g_tt, g_rr, g_pp, g_tp
-```
 
-Return only Python code for a quantum theory with unification potential. 
+Generate only the Python code. No explanations or markdown. 

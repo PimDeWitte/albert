@@ -702,8 +702,8 @@ class CMBPowerSpectrumValidator(PredictionValidator):
         # <reason>chain: Get data URL from dataloader config if available</reason>
         data_url = 'https://pla.esac.esa.int/pla/#cosmology'
         if self.dataset_loader:
-            dl_config = self.dataset_loader.datasets.get('planck_cmb_2018', {})
-            data_url = dl_config.get('url', data_url)
+            dl_config = self.dataset_loader.registry.get('planck_cmb_2018', {})
+            data_url = dl_config.get('remote_url', data_url)
         
         return {
             'source': 'Planck 2018 TT Power Spectrum',
