@@ -410,6 +410,15 @@ class ComprehensiveReportGenerator:
                 best_loss_type = None
                 for loss_type, baselines in trajectory_losses.items():
                     for baseline, loss_val in baselines.items():
+                        # <reason>chain: Handle loss values that might be strings from JSON</reason>
+                        if isinstance(loss_val, str):
+                            if loss_val in ['inf', 'Infinity']:
+                                loss_val = float('inf')
+                            else:
+                                try:
+                                    loss_val = float(loss_val)
+                                except ValueError:
+                                    loss_val = float('inf')
                         if loss_val < best_loss:
                             best_loss = loss_val
                             best_loss_type = f"{loss_type} vs {baseline}"

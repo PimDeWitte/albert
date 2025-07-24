@@ -2778,6 +2778,24 @@ def generate_leaderboard(main_run_dir: str):
     
     print('\n'.join(summary_lines))
 
+def _safe_improvement_float(value):
+    """<reason>chain: Convert improvement values to float, handling strings and infinity</reason>"""
+    if isinstance(value, str):
+        if value in ['inf', 'Infinity']:
+            return 0.0  # Treat infinity as no improvement for sorting
+        elif value in ['-inf', '-Infinity']:
+            return 0.0  # Treat negative infinity as no improvement
+        try:
+            return float(value)
+        except ValueError:
+            return 0.0
+    elif isinstance(value, (int, float)):
+        if np.isinf(value):
+            return 0.0  # Treat infinity as no improvement for sorting
+        return float(value)
+    return 0.0
+
+
 def run_predictions_on_finalists(engine: TheoryEngine, main_run_dir: str, args: argparse.Namespace):
     """
     <reason>chain: Run prediction validators on all theories that passed constraint/observational tests</reason>
@@ -3007,6 +3025,20 @@ def run_predictions_on_finalists(engine: TheoryEngine, main_run_dir: str, args: 
                         if 'predictions' not in comp_scores:
                             comp_scores['predictions'] = {}
                         
+                        # <reason>chain: Handle improvement values that might be infinity or strings</reason>
+                        improvement = prediction_result['improvement']
+                        if isinstance(improvement, str):
+                            # Convert string representations back to float
+                            if improvement == 'inf' or improvement == 'Infinity':
+                                improvement = float('inf')
+                            elif improvement == '-inf' or improvement == '-Infinity':
+                                improvement = float('-inf')
+                            else:
+                                try:
+                                    improvement = float(improvement)
+                                except ValueError:
+                                    improvement = 0.0
+                        
                         comp_scores['predictions'][validator.name] = {
                             'beats_sota': bool(result.beats_sota),  # Ensure it's a Python bool
                             'improvement': float(improvement) if not np.isinf(improvement) else 0.0,
@@ -3065,7 +3097,8 @@ def run_predictions_on_finalists(engine: TheoryEngine, main_run_dir: str, args: 
                         'theory': theory_name,
                         'category': predictions['category'],
                         'beats_sota': bool(pred['beats_sota']),
-                        'improvement': float(pred['improvement']) if not np.isinf(pred['improvement']) else 0.0,
+                        # <reason>chain: Handle improvement values that might be strings or infinity</reason>
+                        'improvement': _safe_improvement_float(pred['improvement']),
                         'theory_value': float(pred.get('theory_value', 0)) if pred.get('theory_value') is not None and not np.isinf(pred.get('theory_value', 0)) else None,
                         'sota_value': float(pred.get('sota_value', 0)) if pred.get('sota_value') is not None and not np.isinf(pred.get('sota_value', 0)) else None,
                         'units': str(pred['units']),
@@ -3986,13 +4019,27 @@ def update_comprehensive_reports_with_predictions(main_run_dir: str):
                     if 'predictions' not in theory_scores:
                         theory_scores['predictions'] = {}
                         
+                    # <reason>chain: Handle improvement values that might be infinity or strings</reason>
+                    improvement = theory_result['improvement']
+                    if isinstance(improvement, str):
+                        # Convert string representations back to float
+                        if improvement == 'inf' or improvement == 'Infinity':
+                            improvement = float('inf')
+                        elif improvement == '-inf' or improvement == '-Infinity':
+                            improvement = float('-inf')
+                        else:
+                            try:
+                                improvement = float(improvement)
+                            except ValueError:
+                                improvement = 0.0
+                    
                     # Store the prediction result
                     theory_scores['predictions'][validator_name] = {
                         'loss': 0.0 if theory_result['beats_sota'] else 1.0,
                         'passed': theory_result['beats_sota'],
                         'details': {
                             'beats_sota': theory_result['beats_sota'],
-                            'improvement': theory_result['improvement'],
+                            'improvement': improvement,
                             'theory_value': theory_result.get('theory_value'),
                             'sota_value': theory_result.get('sota_value'),
                             'units': theory_result['units']
@@ -4028,6 +4075,8 @@ def update_comprehensive_reports_with_predictions(main_run_dir: str):
                 
             except Exception as e:
                 print(f"  [WARNING] Failed to update report for {theory_name}: {e}")
+                import traceback
+                traceback.print_exc()
     
     print(f"\nUpdated {theories_updated} theory reports with prediction results")
     print(f"{'='*60}")

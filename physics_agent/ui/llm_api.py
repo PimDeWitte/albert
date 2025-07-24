@@ -18,7 +18,7 @@ class LLMApi:
         if provider == "grok":
             self.api_key = os.getenv("GROK_API_KEY", "")
             self.base_url = "https://api.x.ai/v1"
-            self.model = "grok-beta"
+            self.model = "grok-3"
         elif provider == "openai":
             # Experimental support
             self.api_key = os.getenv("OPENAI_API_KEY", "")

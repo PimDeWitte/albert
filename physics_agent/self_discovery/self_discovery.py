@@ -340,8 +340,9 @@ def main():
                         losses = {}
                         for baseline_name, baseline_hist in baseline_results.items():
                             loss = engine.loss_calculator.compute_trajectory_loss(hist, baseline_hist, 'trajectory_mse')
-                            losses[baseline_name] = loss.item()
-                            print(f"  Loss vs {baseline_name}: {loss.item():.3e}")
+                            loss_val = loss if isinstance(loss, float) else loss.item()
+                            losses[baseline_name] = loss_val
+                            print(f"  Loss vs {baseline_name}: {loss_val:.3e}")
                         
                         # Save losses
                         with open(os.path.join(theory_dir, "losses.json"), 'w') as f:
