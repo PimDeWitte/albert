@@ -1288,29 +1288,29 @@
                     <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-3xl p-1">
                         <div class="bg-white rounded-3xl p-8 md:p-12">
                             <h4 class="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-accent to-quantum bg-clip-text text-transparent">
-                                Example: Binary Pulsar Test PSR J0740+6620
+                                Example: COW Experiment Test
                             </h4>
                             
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div class="space-y-6">
                                     <div class="bg-paper rounded-2xl p-6 border border-code-border">
                                         <h5 class="font-bold text-lg mb-3 text-accent">Dataset Source</h5>
-                                        <p class="text-sm text-ink mb-2">Fonseca et al. 2021, ApJL</p>
-                                        <p class="text-xs text-muted">DOI: 10.3847/2041-8213/ac03b8</p>
+                                        <p class="text-sm text-ink mb-2">Colella et al. 1975, Phys Rev Lett</p>
+                                        <p class="text-xs text-muted">DOI: 10.1103/PhysRevLett.34.1472</p>
                                     </div>
                                     
                                     <div class="bg-paper rounded-2xl p-6 border border-code-border">
                                         <h5 class="font-bold text-lg mb-3 text-quantum">Precision Achieved</h5>
-                                        <div class="font-mono text-lg">M_c = 2.08±0.004 M☉</div>
-                                        <div class="text-sm text-muted mt-1">RMS timing residual: 0.18 μs</div>
+                                        <div class="font-mono text-lg">Δφ = 2.70±0.21 rad</div>
+                                        <div class="text-sm text-muted mt-1">Neutron phase shift measurement</div>
                                     </div>
                                     
                                     <div class="bg-paper rounded-2xl p-6 border border-code-border">
                                         <h5 class="font-bold text-lg mb-3 text-success">Why This Matters</h5>
                                         <p class="text-sm text-ink">
-                                            Binary pulsar Shapiro delays test GR in the strong-field regime. 
-                                            PSR J0740+6620 provides the highest-precision neutron star mass 
-                                            measurement, constraining deviations at the 10⁻⁵ level.
+                                            The COW experiment demonstrates quantum interference in a gravitational field. 
+                                            Neutrons split into two paths experience different gravitational potentials, 
+                                            creating a phase shift that tests the equivalence principle at the quantum level.
                                         </p>
                                     </div>
                                 </div>
@@ -1318,20 +1318,20 @@
                                 <div class="bg-code-bg rounded-2xl p-8 border border-code-border">
                                     <h5 class="font-bold text-lg mb-4 text-accent">Test Implementation</h5>
                                     <pre class="text-xs font-mono overflow-x-auto">
-<span class="text-muted"># From test_geodesic_validator_comparison.py</span>
-<span class="text-accent">def</span> <span class="text-success">test_ppn_comparison</span>():
-    <span class="text-muted"># NANOGrav PSR J0740+6620 parameters</span>
-    M_c = <span class="text-warning">2.08</span>  <span class="text-muted"># Solar masses ± 0.004</span>
-    i = <span class="text-warning">51.7</span>   <span class="text-muted"># deg, inclination</span>
+<span class="text-muted"># From COWInterferometryValidator</span>
+<span class="text-accent">def</span> <span class="text-success">validate</span>(theory, verbose=True):
+    <span class="text-muted"># COW experiment parameters</span>
+    neutron_wavelength = <span class="text-warning">2.2e-10</span>  <span class="text-muted"># meters (2.2 Å)</span>
+    enclosed_area = <span class="text-warning">3.12e-5</span>      <span class="text-muted"># m² (0.312 cm²)</span>
+    neutron_velocity = <span class="text-warning">1798.1</span>      <span class="text-muted"># m/s</span>
     
-    <span class="text-muted"># Run validator with precision bounds</span>
-    result = validator_psr_j0740(
-        kappa=<span class="text-warning">0.0</span>,  <span class="text-muted"># GR baseline</span>
-        mc_samples=<span class="text-warning">100</span>
+    <span class="text-muted"># Calculate phase shift</span>
+    phase_shift = calculate_cow_phase(
+        theory, neutron_wavelength, enclosed_area
     )
     
-    <span class="text-accent">assert</span> result[<span class="text-string">'rms'</span>] < <span class="text-warning">0.2e-6</span>  <span class="text-success">✓</span>
-    <span class="text-accent">assert</span> result[<span class="text-string">'chi2_dof'</span>] < <span class="text-warning">1.5</span>  <span class="text-success">✓</span>
+    <span class="text-accent">assert</span> abs(phase_shift - <span class="text-warning">2.70</span>) < <span class="text-warning">0.21</span>  <span class="text-success">✓</span>
+    <span class="text-accent">assert</span> theory.g_metric ≈ <span class="text-warning">-9.81</span>  <span class="text-success">✓</span>
                                     </pre>
                                 </div>
                             </div>
