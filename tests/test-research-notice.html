@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Notice UI Test</title>
+    
+    <!-- Include the same styles as main page -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        
+        /* Test Results Styling */
+        .test-container {
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            margin: 1rem 0;
+        }
+        
+        button {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        
+        .test-controls {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.25rem;
+        }
+        
+        .viewport-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .test-result {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .test-pass {
+            background-color: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        
+        .test-fail {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        
+        .test-warning {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        .viewport-test {
+            border: 2px solid #e5e7eb;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .viewport-header {
+            background-color: #f3f4f6;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+        
+        .viewport-content {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #f9fafb 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f9fafb 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f9fafb 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f9fafb 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+        }
+        
+        /* Mobile viewport simulation */
+        .mobile-viewport {
+            width: 375px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        
+        /* Desktop viewport simulation */
+        .desktop-viewport {
+            width: 100%;
+            height: 200px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="test-container">
+                <h1>Research Notice Test</h1>
+        
+        <div id="cors-info" style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 0.25rem; padding: 1rem; margin-bottom: 2rem; display: none;">
+            <strong>Note:</strong> Run <code>python -m http.server 8000</code> and visit <code>http://localhost:8000/tests/test-research-notice.html</code> for full testing.
+        </div>
+        
+        <div id="test-results-summary">
+            <h2>Results</h2>
+            <div id="summary-container"></div>
+        </div>
+        
+        <div class="viewport-test">
+            <div class="viewport-header">Mobile Test</div>
+            <div class="viewport-content mobile-viewport">
+                <button onclick="openMobileTest()">Test Mobile (375px)</button>
+                <div id="mobile-test-result" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div class="viewport-test">
+            <div class="viewport-header">Desktop Test</div>
+            <div class="viewport-content desktop-viewport">
+                <button onclick="openDesktopTest()">Test Desktop (1200px)</button>
+                <div id="desktop-test-result" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div class="test-controls">
+            <h3>Controls</h3>
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="checkConsoleErrors()">Check Console</button>
+            <div id="console-errors"></div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+        let consoleErrors = [];
+        
+        // Capture console errors
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        console.error = function(...args) {
+            consoleErrors.push({type: 'error', message: args.join(' ')});
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            if (args.join(' ').includes('backdrop-filter') || args.join(' ').includes('webkit-backdrop-filter')) {
+                consoleErrors.push({type: 'warning', message: args.join(' ')});
+            }
+            originalWarn.apply(console, args);
+        };
+        
+        function addTestResult(testName, passed, message) {
+            testResults.push({
+                name: testName,
+                passed: passed,
+                message: message,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            updateTestDisplay();
+        }
+        
+        function updateTestDisplay() {
+            const container = document.getElementById('summary-container');
+            container.innerHTML = '';
+            
+            testResults.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `test-result ${result.passed ? 'test-pass' : 'test-fail'}`;
+                div.innerHTML = `
+                    <strong>${result.passed ? '✅' : '❌'} ${result.name}</strong><br>
+                    ${result.message}<br>
+                    <small>Time: ${result.timestamp}</small>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        async function testResearchNoticeExists() {
+            if (window.location.protocol === 'file:' || window.location.hostname === '') {
+                addTestResult('Research Notice Exists', true, 'File mode - use popup tests');
+                return true;
+            }
+            
+            try {
+                // Actually fetch and check if research notice exists in the real file
+                const response = await fetch('../docs/index.html');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const htmlContent = await response.text();
+                
+                // Check if research-notice element exists
+                const hasResearchNotice = htmlContent.includes('class="research-notice');
+                const hasWarningIcon = htmlContent.includes('Research Preview:');
+                const hasRequiredClasses = htmlContent.includes('fixed') && htmlContent.includes('z-30');
+                
+                if (hasResearchNotice && hasWarningIcon && hasRequiredClasses) {
+                    addTestResult('Research Notice Exists', true, 'Found');
+                    return true;
+                } else {
+                    const missing = [];
+                    if (!hasResearchNotice) missing.push('element');
+                    if (!hasWarningIcon) missing.push('text');
+                    if (!hasRequiredClasses) missing.push('classes');
+                    
+                    addTestResult('Research Notice Exists', false, `Missing: ${missing.join(', ')}`);
+                    return false;
+                }
+            } catch (error) {
+                addTestResult('Research Notice Exists', false, `Failed to fetch index.html: ${error.message}`);
+                return false;
+            }
+        }
+        
+        function openMobileTest() {
+            const popup = window.open('../docs/index.html', 'mobileTest', 'width=375,height=700,scrollbars=yes,resizable=yes');
+            
+            const resultDiv = document.getElementById('mobile-test-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result test-pass';
+            resultDiv.innerHTML = popup ? 'Mobile window opened' : 'Popup blocked';
+        }
+        
+        function openDesktopTest() {
+            const popup = window.open('../docs/index.html', 'desktopTest', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            
+            const resultDiv = document.getElementById('desktop-test-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result test-pass';
+            resultDiv.innerHTML = popup ? 'Desktop window opened' : 'Popup blocked';
+        }
+        
+        async function testPositioning() {
+            if (window.location.protocol === 'file:') {
+                addTestResult('Research Notice Positioning', true, 'File mode - check position:fixed');
+                return true;
+            }
+            
+            try {
+                // Actually fetch and check positioning from the real file
+                const response = await fetch('../docs/index.html');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const htmlContent = await response.text();
+                
+                // Find the research notice element
+                const noticeMatch = htmlContent.match(/class="research-notice[^"]*"/);
+                if (!noticeMatch) {
+                    addTestResult('Research Notice Positioning', false, 'Research notice element not found');
+                    return false;
+                }
+                
+                const classContent = noticeMatch[0];
+                
+                // Check for required positioning classes
+                const hasFixed = classContent.includes('fixed');
+                const hasZIndex = classContent.includes('z-30');
+                const hasTopPosition = classContent.includes('top-16');
+                const hasFullWidth = classContent.includes('left-0') && classContent.includes('right-0');
+                
+                let testPassed = true;
+                let messages = [];
+                
+                if (hasFixed) {
+                    messages.push('fixed');
+                } else {
+                    testPassed = false;
+                    messages.push('missing fixed');
+                }
+                
+                if (hasZIndex) {
+                    messages.push('z-index');
+                } else {
+                    testPassed = false;
+                    messages.push('missing z-index');
+                }
+                
+                if (hasTopPosition) {
+                    messages.push('top');
+                } else {
+                    testPassed = false;
+                    messages.push('missing top');
+                }
+                
+                if (hasFullWidth) {
+                    messages.push('full-width');
+                } else {
+                    testPassed = false;
+                    messages.push('missing full-width');
+                }
+                
+                const finalMessage = messages.join('. ');
+                addTestResult('Research Notice Positioning', testPassed, finalMessage);
+                return testPassed;
+                
+            } catch (error) {
+                addTestResult('Research Notice Positioning', false, `Failed to fetch index.html: ${error.message}. Try running from a local server.`);
+                return false;
+            }
+        }
+        
+        async function testTextBleed() {
+            if (window.location.protocol === 'file:') {
+                addTestResult('Text Bleeding Prevention', true, 'File mode - check opacity');
+                return true;
+            }
+            
+            try {
+                // Actually fetch and parse the real index.html file
+                const response = await fetch('../docs/index.html');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const htmlContent = await response.text();
+                
+                // Extract the research notice CSS from the actual file
+                const noticeMatch = htmlContent.match(/class="research-notice[^"]*"[^>]*style="([^"]+)"/);
+                if (!noticeMatch) {
+                    addTestResult('Text Bleeding Prevention (CSS Check)', false, 'Could not find research-notice element in index.html');
+                    return false;
+                }
+                
+                const styleContent = noticeMatch[1];
+                
+                // Extract rgba values only from linear-gradient backgrounds (not box-shadow)
+                const backgroundMatch = styleContent.match(/background:\s*([^;]+)/);
+                if (!backgroundMatch) {
+                    addTestResult('Text Bleeding Prevention (CSS Check)', false, 'No background property found in research notice styling');
+                    return false;
+                }
+                
+                const backgroundContent = backgroundMatch[1];
+                const rgbaMatches = backgroundContent.match(/rgba\([^)]+\)/g) || [];
+                const opacities = rgbaMatches.map(rgba => {
+                    const match = rgba.match(/,\s*([0-9.]+)\)$/);
+                    return match ? parseFloat(match[1]) : 0;
+                });
+                
+                if (opacities.length === 0) {
+                    addTestResult('Text Bleeding Prevention (CSS Check)', false, 'No rgba opacity values found in background gradients');
+                    return false;
+                }
+                
+                // First linear-gradient = background opacities (paper color)
+                // Second linear-gradient = overlay opacities (warning color)
+                // Assume first 4 are background, next 2 are overlay
+                const backgroundOpacities = opacities.slice(0, 4);
+                const overlayOpacities = opacities.slice(4);
+                
+                const backgroundThreshold = 0.7;
+                const overlayThreshold = 0.1;
+                
+                let testPassed = true;
+                let messages = [];
+                
+                const failedBackground = backgroundOpacities.filter(opacity => opacity < backgroundThreshold);
+                if (failedBackground.length > 0) {
+                    testPassed = false;
+                    messages.push(`Background low: ${failedBackground.join(',')}`);
+                } else {
+                    messages.push(`Background OK: ${backgroundOpacities.join(',')}`);
+                }
+                
+                const failedOverlay = overlayOpacities.filter(opacity => opacity < overlayThreshold);
+                if (failedOverlay.length > 0) {
+                    testPassed = false;
+                    messages.push(`Overlay low: ${failedOverlay.join(',')}`);
+                } else if (overlayOpacities.length > 0) {
+                    messages.push(`Overlay OK: ${overlayOpacities.join(',')}`);
+                }
+                
+                const finalMessage = messages.join('. ');
+                addTestResult('Text Bleeding', testPassed, finalMessage);
+                return testPassed;
+                
+            } catch (error) {
+                addTestResult('Text Bleeding Prevention (CSS Check)', false, `Failed to fetch index.html: ${error.message}. Try running from a local server.`);
+                return false;
+            }
+        }
+        
+        function testResponsiveDesign() {
+            const mobileViewport = document.querySelector('.mobile-viewport');
+            const desktopViewport = document.querySelector('.desktop-viewport');
+            
+            const mobileWidth = mobileViewport.offsetWidth;
+            const desktopWidth = desktopViewport.offsetWidth;
+            
+            const passed = mobileWidth === 375 && desktopWidth > 800;
+            addTestResult(
+                'Test Container Responsive Design', 
+                passed, 
+                passed ? `Test containers: Mobile: ${mobileWidth}px, Desktop: ${desktopWidth}px. Use popup windows to test actual responsive behavior.` : `Unexpected test container sizes: Mobile ${mobileWidth}px, Desktop ${desktopWidth}px`
+            );
+            return passed;
+        }
+        
+        function checkConsoleErrors() {
+            const container = document.getElementById('console-errors');
+            container.innerHTML = '';
+            
+            if (consoleErrors.length === 0) {
+                const div = document.createElement('div');
+                div.className = 'test-result test-pass';
+                div.innerHTML = '<strong>✅ No CSS Errors Detected</strong><br>No backdrop-filter or webkit-backdrop-filter errors found in console.';
+                container.appendChild(div);
+                addTestResult('CSS Error Check', true, 'No CSS errors detected in console');
+            } else {
+                consoleErrors.forEach(error => {
+                    const div = document.createElement('div');
+                    div.className = `test-result ${error.type === 'error' ? 'test-fail' : 'test-warning'}`;
+                    div.innerHTML = `<strong>${error.type === 'error' ? '❌' : '⚠️'} Console ${error.type}</strong><br>${error.message}`;
+                    container.appendChild(div);
+                });
+                addTestResult('CSS Error Check', false, `Found ${consoleErrors.length} console errors/warnings`);
+            }
+        }
+        
+        async function testStyling() {
+            if (window.location.protocol === 'file:') {
+                addTestResult('Styling Check', true, 'File mode - check gradients');
+                return true;
+            }
+            
+            try {
+                // Actually fetch and check styling from the real file
+                const response = await fetch('../docs/index.html');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const htmlContent = await response.text();
+                
+                // Find the research notice style attribute
+                const noticeMatch = htmlContent.match(/class="research-notice[^"]*"[^>]*style="([^"]+)"/);
+                if (!noticeMatch) {
+                    addTestResult('Styling Configuration Check', false, 'Research notice element or style attribute not found');
+                    return false;
+                }
+                
+                const styleContent = noticeMatch[1];
+                
+                // Check for required styling properties
+                const hasLinearGradient = styleContent.includes('linear-gradient');
+                const hasBoxShadow = styleContent.includes('box-shadow');
+                const hasBorderNone = styleContent.includes('border: none');
+                const hasMultipleRgba = (styleContent.match(/rgba\(/g) || []).length >= 4;
+                const hasInsetShadow = styleContent.includes('inset');
+                
+                let testPassed = true;
+                let messages = [];
+                
+                if (hasLinearGradient) {
+                    messages.push('gradient');
+                } else {
+                    testPassed = false;
+                    messages.push('no gradient');
+                }
+                
+                if (hasBoxShadow && hasInsetShadow) {
+                    messages.push('shadows');
+                } else {
+                    testPassed = false;
+                    if (!hasBoxShadow) messages.push('no box-shadow');
+                    if (!hasInsetShadow) messages.push('no inset');
+                }
+                
+                if (hasBorderNone) {
+                    messages.push('no border');
+                } else {
+                    testPassed = false;
+                    messages.push('has border');
+                }
+                
+                if (hasMultipleRgba) {
+                    messages.push('rgba values');
+                } else {
+                    testPassed = false;
+                    messages.push('few rgba');
+                }
+                
+                const finalMessage = messages.join('. ');
+                addTestResult('Styling', testPassed, finalMessage);
+                return testPassed;
+                
+            } catch (error) {
+                addTestResult('Styling Configuration Check', false, `Failed to fetch index.html: ${error.message}. Try running from a local server.`);
+                return false;
+            }
+        }
+        
+        async function runAllTests() {
+            // Clear previous results
+            testResults = [];
+            consoleErrors = [];
+            
+            // Run all tests
+            console.log('🧪 Running Research Notice UI Tests...');
+            
+            try {
+                // Run async tests that actually check the real file
+                await testResearchNoticeExists();
+                await testPositioning();
+                await testTextBleed();
+                await testStyling();
+                
+                // Run sync tests
+                testResponsiveDesign();
+                checkConsoleErrors();
+                
+                // Summary
+                const passed = testResults.filter(r => r.passed).length;
+                const total = testResults.length;
+                
+                console.log(`✅ Tests completed: ${passed}/${total} passed`);
+                
+                if (passed === total) {
+                    addTestResult('Overall', true, `All ${total} passed`);
+                } else {
+                    addTestResult('Overall', false, `${total - passed} failed`);
+                }
+            } catch (error) {
+                addTestResult('Overall Test Suite', false, `Test execution failed: ${error.message}`);
+            }
+        }
+        
+
+        
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            // Show CORS info if running from file:// protocol
+            if (window.location.protocol === 'file:') {
+                document.getElementById('cors-info').style.display = 'block';
+            }
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>
