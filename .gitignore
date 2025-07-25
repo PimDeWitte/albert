@@ -63,6 +63,7 @@ physics_agent/logs/
 physics_agent/data/physics_states/
 physics_agent/data/trajectories/
 results/
+runs/
 *.ascii.txt
 frame_*.png
 frame_*.jpg
