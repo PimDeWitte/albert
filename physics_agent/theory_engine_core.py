@@ -79,6 +79,7 @@ from physics_agent.geodesic_integrator import (
     GeodesicRK4Solver, GeneralGeodesicRK4Solver, ChargedGeodesicRK4Solver,
     SymmetricChargedGeodesicRK4Solver, NullGeodesicRK4Solver, UGMGeodesicRK4Solver
 )
+from physics_agent.geodesic_integrator_stable import QuantumGeodesicSolver
 from physics_agent.unified_trajectory_calculator import UnifiedTrajectoryCalculator
 from physics_agent.base_theory import GravitationalTheory, Tensor
 from physics_agent.theory_loader import TheoryLoader
@@ -136,7 +137,7 @@ class TheoryEngine:
     """Core engine for gravitational theory simulation and evaluation"""
     
     def __init__(self, device: str = 'cpu', dtype: torch.dtype = torch.float64, theories_base_dir: str = 'physics_agent/theories', particles_base_dir: str = 'physics_agent/particles',
-                 quantum_field_content: str = 'all', quantum_phase_precision: float = QUANTUM_PHASE_PRECISION, verbose: bool = False):
+                 quantum_field_content: str = 'all', quantum_phase_precision: float = QUANTUM_PHASE_PRECISION, verbose: bool = False, black_hole_type: str = 'kerr'):
         """
         Initialize the TheoryEngine with device, datatype, and directory paths.
         """
@@ -151,8 +152,12 @@ class TheoryEngine:
         self.quantum_field_content = quantum_field_content
         self.quantum_phase_precision = quantum_phase_precision
         
+        # <reason>chain: Store black hole type for configuring mass and properties</reason>
+        self.black_hole_type = black_hole_type
+        
         # <reason>chain: Use constants from constants.py module for SI values</reason>
-        self.M_si = M_sun  # Solar mass in kg
+        # For now, we still use solar mass but this can be customized based on black_hole_type later
+        self.M_si = M_sun  # Solar mass in kg (default - can be modified based on black_hole_type)
         self.c_si = c  # Speed of light in m/s
         self.G_si = G  # Gravitational constant in m^3 kg^-1 s^-2
         
@@ -1087,7 +1092,16 @@ class TheoryEngine:
                     y_new = solver.rk4_step_simple(y, h_current)
                 else:
                     # Standard call for all solvers
-                    y_new = solver.rk4_step(y, h_current)
+                    # <reason>chain: Pass particle properties for quantum solvers if they accept kwargs</reason>
+                    if isinstance(solver, QuantumGeodesicSolver) and particle:
+                        # Quantum solver accepts particle properties
+                        y_new = solver.rk4_step(y, h_current, 
+                                              particle_mass=particle.mass,
+                                              particle_charge=particle.charge,
+                                              particle_spin=particle.spin)
+                    else:
+                        # Classical solvers don't accept extra kwargs
+                        y_new = solver.rk4_step(y, h_current)
                 
                 if y_new is None or torch.any(~torch.isfinite(y_new)):
                     if adaptive_stepping:
@@ -3787,19 +3801,21 @@ def main():
         else:
             device = "cpu"
             
-    # <reason>chain: Pass quantum configuration to TheoryEngine</reason>
+    # <reason>chain: Pass quantum configuration and black hole type to TheoryEngine</reason>
     engine = TheoryEngine(
         device=device, 
         dtype=dtype,
         quantum_field_content=getattr(args, 'quantum_field_content', 'all'),
         quantum_phase_precision=getattr(args, 'quantum_phase_precision', 1e-30),
-        verbose=args.verbose
+        verbose=args.verbose,
+        black_hole_type=args.black_hole_type
     )
     engine.loss_type = 'ricci'  # <reason>chain: Ricci tensor is the only loss type</reason>
     print(f"Running on device: {engine.device}, with dtype: {engine.dtype}")
     
     # <reason>chain: Print quantum configuration for clarity</reason>
     print(f"Quantum field content for quantum theories: {engine.quantum_field_content}")
+    print(f"Black hole type for mass/radius scaling: {engine.black_hole_type}")
     
     # --- Run Solver Calibration ---
     # <reason>chain: Calibrate solvers before running theories to ensure environment is properly configured</reason>
@@ -4007,23 +4023,41 @@ def main():
         from physics_agent.theories.defaults.baselines.kerr import Kerr
         from physics_agent.theories.defaults.baselines.kerr_newman import KerrNewman
         
-        # Create instances with default parameters
-        # <reason>chain: Load all four baselines as requested by the user</reason>
-        schwarzschild_instance = Schwarzschild()  # Pure Schwarzschild (non-rotating, uncharged)
-        baseline_theories[schwarzschild_instance.name] = schwarzschild_instance
-        print(f"  Loaded baseline: {schwarzschild_instance.name} (non-rotating, uncharged)")
-        
-        rn_instance = ReissnerNordstrom(q_e=0.5)  # Reissner-Nordström (non-rotating, charged)
-        baseline_theories[rn_instance.name] = rn_instance
-        print(f"  Loaded baseline: {rn_instance.name} (non-rotating, charged)")
-        
-        kerr_instance = Kerr(a=0.5)  # Kerr (rotating, uncharged)
-        baseline_theories[kerr_instance.name] = kerr_instance
-        print(f"  Loaded baseline: {kerr_instance.name} (rotating, uncharged)")
-        
-        kn_instance = KerrNewman(a=0.5, Q=0.5)  # Kerr-Newman (rotating, charged) - Note: Q not q_e
-        baseline_theories[kn_instance.name] = kn_instance  
-        print(f"  Loaded baseline: {kn_instance.name} (rotating, charged)")
+        # <reason>chain: Determine which baselines to load based on CLI argument</reason>
+        if args.no_baselines:
+            print("  Skipping baseline loading (--no-baselines flag)")
+        else:
+            baselines_to_load = []
+            if args.baselines.lower() == 'all':
+                baselines_to_load = ['schwarzschild', 'reissner_nordstrom', 'kerr', 'kerr_newman']
+            else:
+                # Parse comma-separated list and normalize names
+                baselines_to_load = [b.strip().lower().replace('-', '_') for b in args.baselines.split(',')]
+            
+            # Create instances based on requested baselines
+            for baseline_name in baselines_to_load:
+                if baseline_name == 'schwarzschild':
+                    instance = Schwarzschild()  # Pure Schwarzschild (non-rotating, uncharged)
+                    baseline_theories[instance.name] = instance
+                    print(f"  Loaded baseline: {instance.name} (non-rotating, uncharged)")
+                elif baseline_name == 'reissner_nordstrom':
+                    instance = ReissnerNordstrom(q_e=0.5)  # Reissner-Nordström (non-rotating, charged)
+                    baseline_theories[instance.name] = instance
+                    print(f"  Loaded baseline: {instance.name} (non-rotating, charged)")
+                elif baseline_name == 'kerr':
+                    instance = Kerr(a=0.5)  # Kerr (rotating, uncharged)
+                    baseline_theories[instance.name] = instance
+                    print(f"  Loaded baseline: {instance.name} (rotating, uncharged)")
+                elif baseline_name == 'kerr_newman':
+                    instance = KerrNewman(a=0.5, Q=0.5)  # Kerr-Newman (rotating, charged) - Note: Q not q_e
+                    baseline_theories[instance.name] = instance
+                    print(f"  Loaded baseline: {instance.name} (rotating, charged)")
+                else:
+                    print(f"  Warning: Unknown baseline '{baseline_name}', skipping...")
+                    
+            if len(baseline_theories) == 0:
+                print("  Warning: No valid baselines loaded")
+                
     except Exception as e:
         print(f"  Failed to load baselines: {e}")
     

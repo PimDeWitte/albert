@@ -1,0 +1,106 @@
+Computing 1 baselines sequentially...
+
+  Computing baseline: Kerr (a=0.50)
+    ✓ Computed 0/4 particle trajectories
+
+Completed 0/1 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 1 Theories ---
+  Using preferred values for Quantum Corrected (α=+0.01): {'alpha': 0.01}
+
+--- Validating: Quantum Corrected (α=+0.01) ---
+  Running validation trajectory for Quantum Corrected (α=+0.01)...
+    Creating QuantumGeodesicSolver for quantum theory: Quantum Corrected (α=+0.01)
+Warning: Particle 'unknown' not found. Using default massive neutral particle.
+    Trajectory saved to cache: Quantum_Corrected_____0_01__e99cd9b3dacaaa91_steps_100.pt
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 0
+  Failed: 1
+============================================================
+
+Theories that failed validation:
+  ✗ Quantum Corrected (α=+0.01)
+    → Moved to: runs/run_20250728_182001_float64/fail/Quantum_Corrected_α_+0_01
+
+============================================================
+Run complete. All results saved to: runs/run_20250728_182001_float64
+============================================================
+
+Updating homepage with latest trajectory images...
+No trajectory images found in run directory
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (1):
+  ✗ fail (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+No finalist theories passed all validations for prediction testing.
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+No prediction results found. Skipping report update.
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+No scored theories found.
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+📋 CALIBRATION CERTIFICATE
+   ID: ce59937738f0c359
+   Status: VALID
+   Health Score: 100%
+   Guarantees:
+     ✓ Engine Correctness: GUARANTEED
+     ✓ Solver Accuracy: GUARANTEED
+     ✓ Environment Stability: GUARANTEED
+     ✓ Performance Optimized: GUARANTEED
+
+TOTAL THEORIES TESTED: 1
+PASSED: 0
+FAILED: 1
+
+============================================================
+THEORIES THAT FAILED:
+============================================================
+
+  ✗ Quantum Corrected (α=+0.01)
+    Failure Category: validation failed
+    Failed Tests:
+      - Metric Properties Validator: Failed validation
+
+============================================================
+FAILURE REASON BREAKDOWN:
+============================================================
+  validation failed: 1 theories
+
+📊 Detailed summary saved to: runs/run_20250728_182001_float64/comprehensive_summary.json

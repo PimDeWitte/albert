@@ -19,12 +19,9 @@ import sys
 from physics_agent.base_theory import GravitationalTheory
 from physics_agent.cache import TrajectoryCache
 from physics_agent.geodesic_integrator_stable import (
-    GeodesicRK4Solver, 
+    GeodesicRK4Solver, GeneralGeodesicRK4Solver,
     ChargedGeodesicRK4Solver, UGMGeodesicRK4Solver
 )
-# <reason>chain: Import true 6DOF solver from non-stable version for quantum theories</reason>
-from physics_agent.geodesic_integrator_stable import GeneralGeodesicRK4Solver as GeneralGeodesicRK4Solver_4D
-from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver as GeneralGeodesicRK4Solver_6D
 from physics_agent.quantum_path_integrator import (
     QuantumLossCalculator, visualize_quantum_paths
 )
@@ -80,13 +77,6 @@ class UnifiedTrajectoryCalculator:
         c = self.c
         G = self.G
         
-        # <reason>chain: Check if this is a quantum theory that needs 6DOF even if symmetric</reason>
-        is_quantum_theory = (
-            hasattr(self.theory, 'category') and self.theory.category == 'quantum' or
-            hasattr(self.theory, 'enable_quantum') and self.theory.enable_quantum or
-            'quantum' in self.theory.__class__.__name__.lower()
-        )
-        
         # Choose solver based on theory properties
         if hasattr(self.theory, 'use_ugm_solver') and self.theory.use_ugm_solver:
             self.classical_solver = UGMGeodesicRK4Solver(
@@ -104,15 +94,10 @@ class UnifiedTrajectoryCalculator:
                 self.theory, M, c, G,
                 q=self.theory.charge
             )
-        elif is_quantum_theory:
-            # <reason>chain: Force true 6DOF solver for quantum theories even if symmetric</reason>
-            # Quantum theories need full phase space for proper quantum corrections
-            self.classical_solver = GeneralGeodesicRK4Solver_6D(self.theory, M, c, G)
         elif self.theory.is_symmetric:
             self.classical_solver = GeodesicRK4Solver(self.theory, M, c, G)
         else:
-            # <reason>chain: Use 4D version for non-quantum asymmetric theories for stability</reason>
-            self.classical_solver = GeneralGeodesicRK4Solver_4D(self.theory, M, c, G)
+            self.classical_solver = GeneralGeodesicRK4Solver(self.theory, M, c, G)
             
     def _init_quantum_solver(self):
         """<reason>chain: Initialize quantum path integrator and loss calculator</reason>"""
@@ -128,7 +113,7 @@ class UnifiedTrajectoryCalculator:
                                    time_steps: int = 1000,
                                    step_size: float = 0.01) -> Dict:
         """
-        <reason>chain: Compute classical geodesic trajectory</reason>
+        <reason>chain: Compute classical geodesic trajectory, or quantum trajectory for quantum theories</reason>
         
         Args:
             initial_conditions: Dict with 'r', 'phi', 'E', 'Lz' (or full state)
@@ -142,6 +127,28 @@ class UnifiedTrajectoryCalculator:
         if not self.enable_classical or self.classical_solver is None:
             return {'error': 'Classical calculations disabled'}
         
+        # <reason>chain: For quantum theories, check if we should use QuantumGeodesicSolver</reason>
+        # If this is a quantum theory and quantum is enabled, use quantum solver
+        from physics_agent.geodesic_integrator_stable import is_quantum_theory, QuantumGeodesicSolver
+        
+        actual_solver = self.classical_solver
+        solver_type_name = type(self.classical_solver).__name__
+        
+        if self.enable_quantum and is_quantum_theory(self.theory):
+            # Create quantum solver if not already using one
+            if not isinstance(self.classical_solver, QuantumGeodesicSolver):
+                print(f"    Creating QuantumGeodesicSolver for quantum theory: {self.theory.name}")
+                quantum_solver = QuantumGeodesicSolver(
+                    self.theory, 
+                    torch.tensor(self.M, dtype=torch.float64),
+                    self.c, 
+                    self.G,
+                    enable_qed_corrections=True,
+                    quantum_method='wkb'  # Use WKB for efficiency
+                )
+                actual_solver = quantum_solver
+                solver_type_name = 'QuantumGeodesicSolver'
+            
         # <reason>chain: Check cache before computing</reason>
         cache_path = None
         if self._cache is not None:
@@ -203,7 +210,7 @@ class UnifiedTrajectoryCalculator:
             
 
             
-            if isinstance(self.classical_solver, GeodesicRK4Solver):
+            if isinstance(actual_solver, GeodesicRK4Solver):
                 # 4D state: [t, r, phi, dr/dtau]
                 # <reason>chain: GeodesicRK4Solver works in geometric units internally</reason>
                 # Need to convert to geometric units
@@ -211,8 +218,8 @@ class UnifiedTrajectoryCalculator:
                 Lz = initial_conditions['Lz']
                 
                 # Set conserved quantities first
-                self.classical_solver.E = E
-                self.classical_solver.Lz = Lz
+                actual_solver.E = E
+                actual_solver.Lz = Lz
                 
 
                 
@@ -229,23 +236,16 @@ class UnifiedTrajectoryCalculator:
                 dr_dtau0 = initial_conditions.get('dr_dtau', dr_dtau0)
                 
                 y0 = torch.tensor([t0_geom, r0_geom, phi0, dr_dtau0], dtype=torch.float64)
-            elif isinstance(self.classical_solver, GeneralGeodesicRK4Solver_6D):
-                # <reason>chain: True 6D solver expects [t, r, phi, u^t, u^r, u^phi] in SI units</reason>
-                u_t = initial_conditions.get('u_t', 1.0)
-                u_r = initial_conditions.get('u_r', 0.0)
-                u_phi = initial_conditions.get('u_phi', 0.0)
-                
-                y0 = torch.tensor([t0, r0_si, phi0, u_t, u_r, u_phi], dtype=torch.float64)
             else:
                 # <reason>chain: 4D GeneralGeodesicRK4Solver_4D still uses conserved quantities</reason>
                 E = initial_conditions['E']
                 Lz = initial_conditions['Lz']
                 
                 # Set conserved quantities
-                if hasattr(self.classical_solver, 'E'):
-                    self.classical_solver.E = E
-                if hasattr(self.classical_solver, 'Lz'):
-                    self.classical_solver.Lz = Lz
+                if hasattr(actual_solver, 'E'):
+                    actual_solver.E = E
+                if hasattr(actual_solver, 'Lz'):
+                    actual_solver.Lz = Lz
                 
                 # Convert to geometric units for 4D solver
                 t0_geom = t0 / self.time_scale
@@ -259,12 +259,12 @@ class UnifiedTrajectoryCalculator:
         y = y0
         
         # <reason>chain: Step size handling depends on solver type</reason>
-        if isinstance(self.classical_solver, GeodesicRK4Solver):
+        if isinstance(actual_solver, GeodesicRK4Solver):
             # GeodesicRK4Solver expects step size in geometric units as tensor
             h = torch.tensor(step_size, dtype=torch.float64)
             
             for i in range(time_steps):
-                y_new = self.classical_solver.rk4_step(y, h)
+                y_new = actual_solver.rk4_step(y, h)
                 if y_new is None:
                     break
                 y = y_new
@@ -274,7 +274,7 @@ class UnifiedTrajectoryCalculator:
             h_si = step_size * self.time_scale
             
             for i in range(time_steps):
-                y_new = self.classical_solver.rk4_step(y, h_si)
+                y_new = actual_solver.rk4_step(y, h_si)
                 if y_new is None:
                     break
                 y = y_new
@@ -284,7 +284,7 @@ class UnifiedTrajectoryCalculator:
         
         # <reason>chain: Convert trajectory back to SI units if using geometric solver</reason>
         trajectory_array = np.array(trajectory)
-        if isinstance(self.classical_solver, GeodesicRK4Solver):
+        if isinstance(actual_solver, GeodesicRK4Solver):
             # Convert from geometric to SI units
             trajectory_array[:, 0] *= self.time_scale  # time
             trajectory_array[:, 1] *= self.length_scale  # radius
@@ -299,7 +299,7 @@ class UnifiedTrajectoryCalculator:
             
         return {
             'trajectory': trajectory_array,
-            'solver_type': type(self.classical_solver).__name__,
+            'solver_type': solver_type_name,
             'time_steps': len(trajectory),
             'step_size': step_size,
             'cache_path': cache_path if cache_path else None

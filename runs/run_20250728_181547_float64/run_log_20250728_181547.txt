@@ -1,0 +1,3 @@
+Computing 1 baselines sequentially...
+
+  Computing baseline: Kerr (a=0.50)

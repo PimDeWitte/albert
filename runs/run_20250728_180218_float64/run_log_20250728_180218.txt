@@ -1,0 +1,9 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+    ✓ Computed 3/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 3/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)

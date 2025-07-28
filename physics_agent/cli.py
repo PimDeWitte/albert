@@ -107,6 +107,11 @@ PARALLELIZATION NOTE:
                    help="Enable early stopping based on loss convergence (credit: Ben Geist)")
     p.add_argument("--no-baselines", action="store_true",
                    help="Skip baseline theory calculations (saves memory)")
+    p.add_argument("--baselines", type=str, default="kerr",
+                   help="Comma-separated list of baseline theories to load (e.g., 'kerr,schwarzschild,reissner_nordstrom,kerr_newman'). Default: 'kerr' only. Use 'all' to load all available baselines.")
+    p.add_argument("--black-hole-type", type=str, default="kerr",
+                   choices=['kerr', 'schwarzschild', 'reissner_nordstrom', 'kerr_newman'],
+                   help="Black hole type to use for mass/radius scaling. Default: 'kerr' (rotating black hole with a=0.5)")
     
     # Filtering arguments
     p.add_argument("--theory-filter", type=str, default=None, 
