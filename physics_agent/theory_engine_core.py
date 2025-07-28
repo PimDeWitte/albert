@@ -785,7 +785,9 @@ class TheoryEngine:
                     'Lz': Lz_calc.item() if torch.is_tensor(Lz_calc) else Lz_calc,
                     'u_t': y0_gen[3].item(),
                     'u_r': y0_gen[4].item(), 
-                    'u_phi': y0_gen[5].item()
+                    'u_phi': y0_gen[5].item(),
+                    # <reason>chain: Include particle info in initial conditions for cache key</reason>
+                    'particle_name': particle_name if particle_name else 'unknown'
                 }
                 
                 # Compute unified trajectory (both classical and quantum)

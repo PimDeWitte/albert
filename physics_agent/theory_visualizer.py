@@ -205,6 +205,7 @@ class TheoryVisualizer:
         # <reason>chain: Define a monochrome color palette for all baselines for visual consistency.
         baseline_colors = {
             'Schwarzschild': '#A9A9A9',
+            'Reissner-Nordström': '#C0C0C0',
             'Kerr': '#D3D3D3',
             'Kerr-Newman': '#FFFFFF',
         }
@@ -310,6 +311,8 @@ class TheoryVisualizer:
             color = 'gray' # default
             if 'Kerr-Newman' in baseline_name:
                 color = baseline_colors['Kerr-Newman']
+            elif 'Reissner' in baseline_name or 'Nordstr' in baseline_name:
+                color = baseline_colors['Reissner-Nordström']
             elif 'Kerr' in baseline_name:
                 color = baseline_colors['Kerr']
             elif 'Schwarzschild' in baseline_name:
@@ -333,6 +336,9 @@ class TheoryVisualizer:
             if 'Schwarzschild' in baseline_name:
                 baseline_legend_elements.append(Line2D([0], [0], color=color, lw=2, linestyle='--', 
                                             label='-- Schwarzschild (uncharged)', alpha=0.7))
+            elif 'Reissner' in baseline_name or 'Nordstr' in baseline_name:
+                baseline_legend_elements.append(Line2D([0], [0], color=color, lw=0, marker='+', markersize=8,
+                                            label='++ Reissner-Nordström (charged)', alpha=0.7))
             elif 'Kerr' in baseline_name and 'Newman' not in baseline_name:
                 baseline_legend_elements.append(Line2D([0], [0], color=color, lw=2, linestyle='--', 
                                             label='-- Kerr (uncharged, rotating)', alpha=0.7))

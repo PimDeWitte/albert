@@ -1,0 +1,38 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 4/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 2 Theories ---
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+  Kerr metric components at r=12.000:
+    g_tt=-0.833333, g_rr=1.197505
+    g_pp=144.291667, g_tp=-0.083333
+  Using orbital parameters for electron:
+    Angular factor: 1.0
+    Radial factor: 0.0
+    Orbit type: circular
+  Theory detected: Kerr (a=0.50)
+    - Category: base
+    - Is Kerr-type: True
+    - enable_quantum: False
+    - use_quantum_trajectories: True
+    - NOTE: Using UnifiedTrajectoryCalculator for better performance
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Warning: Failed to use quantum trajectory calculator: TrajectoryCache.get_cache_path() got multiple values for argument 'r0'
