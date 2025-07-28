@@ -3,12 +3,21 @@ import json
 from typing import Dict
 
 class Particle:
-    def __init__(self, name: str, particle_type: str, mass: float, charge: float, spin: float):
+    def __init__(self, name: str, particle_type: str, mass: float, charge: float, spin: float, 
+                 orbital_parameters: dict = None, color: str = None):
         self.name = name
         self.particle_type = particle_type
         self.mass = mass
         self.charge = charge
         self.spin = spin
+        self.color = color or 'white' # Default to white if no color is provided
+        # Store orbital parameters for trajectory visualization
+        self.orbital_parameters = orbital_parameters or {
+            'angular_velocity_factor': 1.0,
+            'radial_velocity_factor': 0.0,
+            'orbit_type': 'circular',
+            'description': 'Default circular orbit'
+        }
 
 class ParticleLoader:
     def __init__(self, base_dir='physics_agent/particles'):

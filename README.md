@@ -67,7 +67,8 @@ albert run --candidates                     # Include candidate theories
 # Performance options
 albert run --gpu-f32                        # GPU with float32
 albert run --cpu-f64                        # CPU with float64
-albert run --steps 10000                    # Custom step count
+albert run --max-steps 10000                # Maximum simulation steps (may stop at event horizon)
+albert run --radius 15.0                    # Starting radius in Schwarzschild radii (default: 6.0)
 albert run --no-cache                       # Force recomputation
 
 # Parameter sweeps
@@ -108,6 +109,20 @@ albert setup
 albert validate theories/my_theory/theory.py  # Validate specific theory
 albert --help                                 # Show all commands
 ```
+
+### Understanding Event Horizon Behavior
+When running simulations, trajectories may terminate early when reaching the event horizon (r = 2M):
+- **17% completion**: Particle reached event horizon after 17,000/100,000 steps
+- **100% completion**: Particle completed all steps without reaching event horizon
+
+To control this behavior:
+```bash
+albert run --radius 6.0    # Default: likely to reach event horizon
+albert run --radius 15.0   # More stable orbit, longer before horizon
+albert run --radius 30.0   # Very stable, may never reach horizon
+```
+
+Progress bars will show "Event Horizon Reached" when terminating early.
 
 ---
 
@@ -186,7 +201,12 @@ albert run --gpu-f32 --enable-sweeps --sweep-workers 16
 albert run --cpu-f64 --steps 1000000
 
 # Quick testing
-albert run --steps 100 --theory-filter "test"
+albert run --max-steps 100 --theory-filter "test"
+
+# Event horizon experiments
+albert run --radius 6.0                     # Default: spiral to event horizon
+albert run --radius 15.0                    # Longer trajectory before horizon
+albert run --radius 30.0                    # Very stable orbit
 ```
 
 ---

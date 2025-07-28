@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albert - Physics at the speed of AI: A timely agent for gravitational theory discovery</title>
+    <title>Albert - AI-Accelerated Physics Discovery</title>
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='70' font-size='90'>⚛️</text></svg>">
     
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Albert - Autonomous A timely agent for gravitational theory discovery">
-    <meta name="description" content="An AI system that discovers new theories of quantum gravity. Test your models on the hardest physics benchmark. Join Einstein's unfinished quest.">
+    <meta name="title" content="Albert - AI-Accelerated Physics Discovery">
+    <meta name="description" content="PyTorch-native framework for exploring gravitational theories. Inspired by Einstein's vision, powered by modern AI. Test theories against precision experimental data in minutes.">
     <meta name="keywords" content="quantum gravity, physics AI, gravitational theories, Einstein, general relativity, unified field theory, scientific discovery, AI benchmark">
     <meta name="author" content="Albert Project">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://albert.so/">
-    <meta property="og:title" content="Albert - A timely agent for gravitational theory discovery">
-    <meta property="og:description" content="An AI system that discovers new theories of quantum gravity. Test your models on the hardest physics benchmark. Join Einstein's unfinished quest.">
+    <meta property="og:title" content="Albert - AI-Accelerated Physics Discovery">
+    <meta property="og:description" content="PyTorch-native framework for exploring gravitational theories. Inspired by Einstein's vision, powered by modern AI. Test theories against precision experimental data in minutes.">
     <meta property="og:image" content="https://albert.so/docs/sketch.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -27,8 +27,8 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://albert.so/">
-    <meta property="twitter:title" content="Albert - A timely agent for gravitational theory discovery>
-    <meta property="twitter:description" content="An AI system that discovers new theories of quantum gravity. Test your models on the hardest physics benchmark. Join Einstein's unfinished quest.">
+    <meta property="twitter:title" content="Albert - AI-Accelerated Physics Discovery">
+    <meta property="twitter:description" content="PyTorch-native framework for exploring gravitational theories. Inspired by Einstein's vision, powered by modern AI. Test theories against precision experimental data in minutes.">
     <meta property="twitter:image" content="https://albert.so/docs/sketch.png">
     
     <!-- Additional Meta Tags -->
@@ -512,7 +512,7 @@
                             <div><span class="text-muted"># Quick start - clone and run the replication</span></div>
                             <div class="text-accent">git clone https://github.com/pimdewitte/albert.git</div>
                             <div class="text-accent">cd albert</div>
-                            <div class="text-accent">./setup_unified.sh && albert run --steps 1000</div>
+                            <div class="text-accent">./setup_unified.sh && albert run --max-steps 1000</div>
                             <div class="mt-4"><span class="text-muted"># Test your own theory - just add to theories/</span></div>
                             <div class="text-accent">albert run --theory-filter "MyTheory"</div>
                             <div class="mt-4"><span class="text-muted"># Let Albert discover new theories automatically</span></div>
@@ -533,7 +533,8 @@
                                 <p class="text-sm text-muted">Run gravitational theory simulations with comprehensive validation</p>
                                 <div class="text-xs font-mono mt-2 text-ink">
                                     <div>--theory-filter "name"</div>
-                                    <div>--steps 10000</div>
+                                    <div>--max-steps 10000</div>
+                                    <div>--radius 15.0</div>
                                     <div>--gpu-f32 / --cpu-f64</div>
                                     <div>--enable-sweeps</div>
                                 </div>
@@ -680,13 +681,14 @@
     </nav>
 
     <!-- Research Preview Notice -->
-    <div class="fixed top-16 left-0 right-0 bg-warning/10 border-b border-warning/20 py-3 px-4 sm:px-6 lg:px-8 z-30 backdrop-blur-sm">
+    <div class="research-notice fixed top-16 left-0 right-0 bg-warning/10 border-b border-warning/20 py-3 px-4 sm:px-6 lg:px-8 z-30" style="background: linear-gradient(135deg, rgba(250, 248, 243, 0.95) 0%, rgba(250, 248, 243, 0.92) 30%, rgba(250, 248, 243, 0.94) 70%, rgba(250, 248, 243, 0.95) 100%), linear-gradient(rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.25)) !important; border: none !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.05) !important;">
         <div class="max-w-7xl mx-auto flex items-center justify-center gap-3">
             <svg class="w-5 h-5 text-warning flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
             </svg>
             <p class="text-sm text-ink font-medium text-center">
-                <strong>Research Preview:</strong> This is an early research preview of Albert. While the code is openly available, it has only been shared with a select group of researchers and early testers.
+                <strong>Research Preview:</strong> Early access framework for gravitational theory exploration. 
+                Active development with select research collaborators.
             </p>
         </div>
     </div>
@@ -710,7 +712,7 @@
                 
                 <h1 class="text-4xl sm:text-6xl lg:text-8xl font-bold mb-8 fade-in font-display">
                     <span class="text-accent">Introducing Albert</span>
-                    <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4">A timely agent for gravitational theory research</span>
+                    <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4">A PyTorch Simulation Engine: Physics at the speed of AI</span>
                 </h1>
                 
     
@@ -719,7 +721,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">Quick Start Installation</h3>
-                            <p class="text-gray-600 text-sm">Trusted by researchers worldwide • Open source • MIT Licensed</p>
+                            <p class="text-gray-600 text-sm">PyTorch-native • Research Preview • MIT Licensed</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
@@ -804,7 +806,7 @@
                         <span class="inline-block w-2 h-2 rounded-full bg-success animate-pulse flex-shrink-0"></span>
                         <div class="flex items-center gap-2">
                             <div class="text-lg font-serif font-bold" id="albert-counter">501</div>
-                            <div class="text-sm text-muted font-medium font-semibold">Currently Researching</div>
+                            <div class="text-sm text-muted font-medium font-semibold">Active Simulations</div>
                         </div>
                     </button>
                 </div>
@@ -824,36 +826,35 @@
                             <h3 class="text-4xl lg:text-5xl font-display font-bold text-accent">
                                 Einstein's Unfinished Quest
                             </h3>
-                            <p class="text-lg font-serif text-ink">
-                                From 1925 until his death in 1955, Einstein dedicated himself to finding a unified field theory 
-                                that would combine gravity with electromagnetism. He published over 40 papers on various 
-                                approaches, exploring teleparallel gravity, Kaluza-Klein theory, and asymmetric metric tensors.
-                            </p>
-                            <p class="text-lg font-serif text-ink">
-                                His final calculations, found on his hospital bed at Princeton, showed he was still working 
-                                on a system of equations involving a non-symmetric metric tensor. While his approach didn't 
-                                succeed, it laid groundwork for modern theories like string theory and loop quantum gravity.
-                            </p>
-                            <p class="text-lg font-serif text-ink">
-                                But Einstein's greatest gift wasn't just relativity or E=mc². It was permission to think differently.
-                                Before Einstein, physics followed rigid mathematical formalism. He showed us that the biggest 
-                                breakthroughs come from unexpected angles.
-                            </p>
-                        
-                            <p class="text-lg font-serif text-ink">
-                                AlphaFold transformed biology by moving protein folding into computable space. Once you can 
-                                simulate something, you can apply reinforcement learning, search algorithms, and AI to explore 
-                                millions of possibilities. Albert does the same for physics: instead of waiting centuries to 
-                                test quantum gravity theories experimentally, we simulate them. We can now search the space of 
-                                possible unified theories computationally. With the hopes of it being as impactful on humanity. 
-                            </p>
+                                                    <p class="text-lg font-serif text-ink">
+                            From 1925 until his death in 1955, Einstein explored novel approaches to unification—teleparallel gravity, 
+                            Kaluza-Klein dimensions, asymmetric metrics. His final calculations at Princeton involved non-symmetric 
+                            field equations, attempting to geometrize electromagnetism alongside gravity.
+                        </p>
+                        <p class="text-lg font-serif text-ink">
+                            While Einstein's specific approaches didn't succeed, they established a tradition: the courage to explore 
+                            unconventional mathematical structures in pursuit of deeper understanding. This spirit of exploration—not 
+                            any particular theory—inspired Albert's creation.
+                        </p>
+                        <p class="text-lg font-serif text-ink">
+                            Today, we have tools Einstein could only dream of. PyTorch enables automatic differentiation through 
+                            complex field equations. GPUs simulate gravitational interactions at unprecedented scales. Machine learning 
+                            can explore vast theory spaces systematically.
+                        </p>
+                    
+                        <p class="text-lg font-serif text-ink">
+                            Albert transforms gravitational physics into a computational science. Like AlphaFold for proteins, 
+                            we can now simulate and validate theories in minutes rather than decades. Each theory faces the same 
+                            rigorous tests: from Mercury's precession to quantum interference patterns, implemented with numerical 
+                            precision Einstein himself demanded.
+                        </p>
                         </div>
                         
                         <div class="relative">
                             <!-- Einstein's Final Work - Interactive -->
                             <div class="bg-white rounded-2xl shadow-2xl border border-code-border overflow-hidden">
                                 <div class="bg-gradient-to-r from-accent/10 to-muted/10 p-4 border-b border-code-border">
-                                    <h4 class="text-lg font-bold text-center text-accent">Princeton Hospital • April 1955</h4>
+                                    <h4 class="text-lg font-bold text-center text-accent">Einstein's Final Work • Princeton, 1955</h4>
                                 </div>
                                 
                                 <div class="p-6 space-y-4">
@@ -959,7 +960,7 @@
                                     
                                     <div class="text-center mt-4">
                                         <p class="text-xs text-muted italic">
-                                            Albert continues this quest today!
+                                            These insights inspire Albert's exploration of theory space
                                         </p>
                                     </div>
                                 </div>
@@ -976,12 +977,12 @@
             <section id="theories-computational" class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-gradient-to-b from-paper to-white py-20">
                 <div class="max-w-7xl mx-auto">
                     <h3 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-8">
-                        Theories in Computational Space
+                        Use the same stack for physics and AI
                     </h3>
                     
                     <p class="text-2xl text-center font-serif text-ink mb-16 max-w-4xl mx-auto">
-                        Each visualization compares particle trajectories between quantum gravity theories and general relativity near black holes. 
-                        Click any image to view the full leaderboard.
+                        PyTorch enables High-precision particle trajectories computed in milliseconds. Each theory's predictions 
+                        compared against general relativity near extreme gravitational fields. And it's easy to implement ML tooling where needed. 
                     </p>
                     
                     <!-- Scrollable Gallery -->
@@ -1019,7 +1020,7 @@
                                 <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Post-Quantum_Gravity_γ_1_00e-02/viz/trajectory_comparison.png" 
+                                            <img src="../runs/run_20250728_135126_float64/Einstein_Asymmetric_α_0_0e+00/viz/trajectory_comparison_neutrino.png" 
                                                  alt="Post-Quantum Gravity trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1035,7 +1036,7 @@
                                 <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison.png" 
+                                            <img src="../runs/run_20250728_135126_float64/Post-Quantum_Gravity_γ_1_00e-02/viz/trajectory_comparison_neutrino.png" 
                                                  alt="Regularised Core QG trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1051,7 +1052,7 @@
                                 <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison.png" 
+                                            <img src="../runs/run_20250728_135126_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_neutrino.png" 
                                                  alt="Phase Transition QG trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1067,7 +1068,7 @@
                                 <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Weyl-EM_Quantum_ω_0_00/viz/trajectory_comparison.png" 
+                                            <img src="../runs/run_20250728_135126_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_neutrino.png" 
                                                  alt="Weyl-EM Quantum trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1083,7 +1084,7 @@
                                 <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
                                     <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
                                         <div class="relative">
-                                            <img src="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/runs/run_20250724_120537_float64/Newtonian_Limit/viz/trajectory_comparison.png" 
+                                            <img src="../runs/run_20250728_135126_float64/Weyl-EM_Quantum_ω_0_00/viz/trajectory_comparison_neutrino.png" 
                                                  alt="Newtonian Limit trajectory comparison" 
                                                  class="w-80 h-64 object-cover">
                                             <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1094,8 +1095,35 @@
                                         </div>
                                     </div>
                                 </a>
+                                
+                                <!-- Quantum Corrected -->
+                                <a href="documentation.html?tab=leaderboard" class="group block flex-shrink-0">
+                                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-code-border">
+                                        <div class="relative">
+                                            <img src="../runs/run_20250728_135126_float64/Newtonian_Limit/viz/trajectory_comparison_neutrino.png" 
+                                                 alt="Quantum Corrected trajectory comparison" 
+                                                 class="w-80 h-64 object-cover">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        </div>
+                                        <div class="p-4">
+                                            <h5 class="font-bold text-quantum mb-1">Quantum Corrected</h5>
+                                            <p class="text-sm text-muted">Quantum corrections • Adjustable α parameter</p>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
                         </div>
+                    </div>
+                    
+                    <!-- Call to action -->
+                    <div class="text-center mt-12">
+                        <a href="documentation.html?tab=leaderboard" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
+                            <span>View Complete Leaderboard</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                        <p class="text-sm text-muted mt-3">Compare all 30+ theories with detailed metrics</p>
                     </div>
                 </div>
             </section>
@@ -1106,22 +1134,41 @@
                     <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-accent/20">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div>
-                                <img src="image.png" alt="RL Unification Framework" class="w-full rounded-xl shadow-lg">
+                                <img src="../runs/run_20250728_135126_float64/Quantum_Corrected_α_+0_01/viz/trajectory_comparison_neutrino.png" alt="RL Unification Framework" class="w-full rounded-xl shadow-lg">
                             </div>
                             <div class="space-y-6">
-                                <h3 class="text-3xl font-bold text-accent">Exploring Unification with RL</h3>
+                                <h3 class="text-3xl font-bold text-accent">Future Research: Automated Theory Discovery</h3>
                                 
                                 <p class="text-lg text-ink leading-relaxed">
-                                    Albert unites theoretical physics with modern AI. By implementing gravitational theories in PyTorch, we gain automatic differentiation, GPU acceleration, and the ability to explore new frontiers.
+                                    Albert provides infrastructure for systematic theory exploration. With PyTorch integration, 
+                                    theories become differentiable computational graphs amenable to modern optimization techniques.
                                 </p>
                                 
                                 <p class="text-lg text-ink leading-relaxed">
-                                    A potential area of exploration: using reinforcement learning to steer code generated quantum formulas 
-                                    into baseline checkpoints and measuring loss, increasing checkpoint distance and size as you go. By treating gravitational theories as learnable policies, 
-                                    we could discover paths between quantum mechanics and general relativity.
+                                    Active research areas include: reinforcement learning for parameter optimization, 
+                                    gradient-based theory refinement against experimental data, and automated exploration 
+                                    of mathematical structures that preserve established physics while predicting new phenomena.
                                 </p>
+                                
+                                <div class="bg-paper rounded-xl p-6 border border-code-border mb-6">
+                                    <h4 class="font-bold text-accent mb-3">Discovery Mode: AI-Powered Theory Generation</h4>
+                                    <p class="text-sm text-ink mb-3">
+                                        Albert includes an experimental discovery mode that uses large language models to generate 
+                                        novel gravitational theories. Simply run:
+                                    </p>
+                                    <div class="bg-code-bg rounded-lg p-3 font-mono text-sm mb-3">
+                                        <div class="text-accent">albert discover --initial "unified field theory"</div>
+                                        <div class="text-muted"># Or explore variations of existing theories:</div>
+                                        <div class="text-accent">albert discover --from theories/einstein_asymmetric/theory.py</div>
+                                    </div>
+                                    <p class="text-sm text-muted">
+                                        The AI generates mathematically consistent theories, implements them in PyTorch, 
+                                        and validates against all experimental constraints automatically.
+                                    </p>
+                                </div>
+                                
                                 <div class="bg-paper rounded-xl p-6 border border-code-border">
-                                    <h4 class="font-bold text-quantum mb-3">The Vision</h4>
+                                    <h4 class="font-bold text-quantum mb-3">Research Directions</h4>
                                     <ul class="space-y-2 text-sm text-ink">
                                         <li class="flex items-start gap-2">
                                             <span class="text-success mt-1">→</span>
@@ -1148,17 +1195,17 @@
                 <div class="max-w-6xl mx-auto">
                     
                     <h3 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-16">
-                        Compute efficient selection process
+                        Multi-Stage Validation Pipeline
                     </h3>
                     
                     <div class="max-w-4xl mx-auto space-y-6 mb-16">
                        
                         <p class="text-lg font-serif text-ink">
-                            Before going to trajectory calculations, each theory faces a brutal gauntlet of 21 tests. Classical tests that Einstein passed. 
-                            Quantum tests that probe the intersection of gravity and quantum mechanics. 
-                            
-                            Eventually, inspired by world modeling research and deep learning, we measure the trajectory loss of quantum gravity theories against general relativity with different particles approaching the event horizon of a black hole, using QED.
-
+                            Every theory undergoes rigorous validation: 2 constraint validators ensure mathematical consistency, 
+                            6 observational validators test against experimental data (Mercury precession, light deflection, 
+                            gravitational redshift, COW experiment, CMB spectrum, black hole shadows), 
+                            and 2 prediction validators examine novel phenomena. Only theories passing all tests proceed to 
+                            trajectory analysis.
                         </p>
                     </div>
                     
@@ -1227,17 +1274,17 @@
                             </div>
                             <ul class="space-y-3 text-ink">
                                 <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
+                                    <span class="text-muted mt-1">⚠</span>
                                     <div>
                                         <strong>Quantum Entanglement</strong>
-                                        <div class="text-sm text-muted">Bose-Marletto-Vedral: 10⁻³ rad</div>
+                                        <div class="text-sm text-muted">Bose-Marletto-Vedral: 10⁻³ rad (Coming soon)</div>
                                     </div>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
+                                    <span class="text-muted mt-1">⚠</span>
                                     <div>
                                         <strong>Atom Interferometry</strong>
-                                        <div class="text-sm text-muted">NIST clocks: 10⁻¹⁷ precision</div>
+                                        <div class="text-sm text-muted">NIST clocks: 10⁻¹⁷ precision (Coming soon)</div>
                                     </div>
                                 </li>
                                 <li class="flex items-start gap-2">
@@ -1260,10 +1307,10 @@
                             </div>
                             <ul class="space-y-3 text-ink">
                                 <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
+                                    <span class="text-muted mt-1">⚠</span>
                                     <div>
                                         <strong>Pulsar Timing</strong>
-                                        <div class="text-sm text-muted">NANOGrav 15yr: 1 μs residuals</div>
+                                        <div class="text-sm text-muted">NANOGrav 15yr: 1 μs residuals (Coming soon)</div>
                                     </div>
                                 </li>
                                 <li class="flex items-start gap-2">
@@ -1288,29 +1335,29 @@
                     <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-3xl p-1">
                         <div class="bg-white rounded-3xl p-8 md:p-12">
                             <h4 class="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-accent to-quantum bg-clip-text text-transparent">
-                                Example: Binary Pulsar Test PSR J0740+6620
+                                Example: COW Experiment Test
                             </h4>
                             
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div class="space-y-6">
                                     <div class="bg-paper rounded-2xl p-6 border border-code-border">
                                         <h5 class="font-bold text-lg mb-3 text-accent">Dataset Source</h5>
-                                        <p class="text-sm text-ink mb-2">Fonseca et al. 2021, ApJL</p>
-                                        <p class="text-xs text-muted">DOI: 10.3847/2041-8213/ac03b8</p>
+                                        <p class="text-sm text-ink mb-2">Colella et al. 1975, Phys Rev Lett</p>
+                                        <p class="text-xs text-muted">DOI: 10.1103/PhysRevLett.34.1472</p>
                                     </div>
                                     
                                     <div class="bg-paper rounded-2xl p-6 border border-code-border">
                                         <h5 class="font-bold text-lg mb-3 text-quantum">Precision Achieved</h5>
-                                        <div class="font-mono text-lg">M_c = 2.08±0.004 M☉</div>
-                                        <div class="text-sm text-muted mt-1">RMS timing residual: 0.18 μs</div>
+                                        <div class="font-mono text-lg">Δφ = 2.70±0.21 rad</div>
+                                        <div class="text-sm text-muted mt-1">Neutron phase shift measurement</div>
                                     </div>
                                     
                                     <div class="bg-paper rounded-2xl p-6 border border-code-border">
                                         <h5 class="font-bold text-lg mb-3 text-success">Why This Matters</h5>
                                         <p class="text-sm text-ink">
-                                            Binary pulsar Shapiro delays test GR in the strong-field regime. 
-                                            PSR J0740+6620 provides the highest-precision neutron star mass 
-                                            measurement, constraining deviations at the 10⁻⁵ level.
+                                            The COW experiment demonstrates quantum interference in a gravitational field. 
+                                            Neutrons split into two paths experience different gravitational potentials, 
+                                            creating a phase shift that tests the equivalence principle at the quantum level.
                                         </p>
                                     </div>
                                 </div>
@@ -1318,20 +1365,19 @@
                                 <div class="bg-code-bg rounded-2xl p-8 border border-code-border">
                                     <h5 class="font-bold text-lg mb-4 text-accent">Test Implementation</h5>
                                     <pre class="text-xs font-mono overflow-x-auto">
-<span class="text-muted"># From test_geodesic_validator_comparison.py</span>
-<span class="text-accent">def</span> <span class="text-success">test_ppn_comparison</span>():
-    <span class="text-muted"># NANOGrav PSR J0740+6620 parameters</span>
-    M_c = <span class="text-warning">2.08</span>  <span class="text-muted"># Solar masses ± 0.004</span>
-    i = <span class="text-warning">51.7</span>   <span class="text-muted"># deg, inclination</span>
+<span class="text-muted"># From COWInterferometryValidator</span>
+<span class="text-accent">def</span> <span class="text-success">validate</span>(theory, verbose=True):
+    <span class="text-muted"># COW experiment parameters</span>
+    neutron_wavelength = <span class="text-warning">2.2e-10</span>  <span class="text-muted"># meters (2.2 Å)</span>
+    enclosed_area = <span class="text-warning">3.12e-5</span>      <span class="text-muted"># m² (0.312 cm²)</span>
+    neutron_velocity = <span class="text-warning">1798.1</span>      <span class="text-muted"># m/s</span>
     
-    <span class="text-muted"># Run validator with precision bounds</span>
-    result = validator_psr_j0740(
-        kappa=<span class="text-warning">0.0</span>,  <span class="text-muted"># GR baseline</span>
-        mc_samples=<span class="text-warning">100</span>
+    <span class="text-muted"># Calculate phase shift</span>
+    phase_shift = calculate_cow_phase(
+        theory, neutron_wavelength, enclosed_area
     )
     
-    <span class="text-accent">assert</span> result[<span class="text-string">'rms'</span>] < <span class="text-warning">0.2e-6</span>  <span class="text-success">✓</span>
-    <span class="text-accent">assert</span> result[<span class="text-string">'chi2_dof'</span>] < <span class="text-warning">1.5</span>  <span class="text-success">✓</span>
+    <span class="text-accent">assert</span> abs(phase_shift - <span class="text-warning">2.70</span>) < <span class="text-warning">0.21</span>  <span class="text-success">✓</span>
                                     </pre>
                                 </div>
                             </div>
@@ -1341,12 +1387,12 @@
                     <!-- Call to Action -->
                     <div class="text-center mt-16">
                         <p class="text-xl font-serif text-ink mb-8">
-                            Every theory must match these precision measurements or be rejected. 
-                            No shortcuts. No approximations. Pure physics.
+                            10 active validators ensure theoretical consistency with experimental data. 
+                            Each test implements state-of-the-art precision measurements.
                         </p>
                         <div class="inline-flex flex-col sm:flex-row gap-4">
                             <a href="paper.html" target="_blank" class="group inline-flex items-center space-x-3 bg-accent hover:bg-accent/90 text-paper px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
-                                <span>View Full Test Specifications</span>
+                                <span>Read Documentation</span>
                                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                 </svg>
@@ -1431,17 +1477,17 @@
         g_tp = self.alpha * rs / r * torch.sqrt(r)  <span class="text-muted"># Couples time-space!</span>
         <span class="text-accent">return</span> g_tt, g_rr, g_pp, g_tp
 
-<span class="text-muted"># Test against all 21 validators including QED precision</span>
+<span class="text-muted"># Validate against experimental data</span>
 theory = <span class="text-warning">EinsteinAsymmetric</span>(alpha=1e-3)
 results = theory.validate()
-<span class="text-accent">assert</span> results['qed_precision']['g2_error'] < 1e-10  <span class="text-success">✓</span>
-<span class="text-accent">assert</span> results['quantum_clock']['error'] < 1e-17   <span class="text-success">✓</span>
+<span class="text-accent">assert</span> results['mercury_precession']['error'] < 0.004  <span class="text-success">✓</span>
+<span class="text-accent">assert</span> results['light_deflection']['error'] < 1e-5   <span class="text-success">✓</span>
                                     </pre>
                                 </div>
                                 
                                 <p class="text-sm text-muted mb-4">
-                                    This allows unified theories to be tested against QED precision measurements
-                                    with 13 significant figures of accuracy.
+                                    Einstein's asymmetric approach inspired modern gauge theories and string theory.
+                                    Albert implements these historical insights with modern computational precision.
                                 </p>
                                 <a href="documentation.html?tab=solvers" target="_blank" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm">
                                     <span>View Documentation</span>
@@ -2028,7 +2074,7 @@ universe.simulate() <span class="text-muted"># → could be a game, or a synthet
                                     
                                     </div>
                                     <div class="text-center mt-4">
-                                        <a href="documentation.html?tab=leaderboard" class="text-accent hover:text-accent/80 text-sm font-sans">View full leaderboard →</a>
+                                        <a href="documentation.html?tab=leaderboard" class="text-accent hover:text-accent/80 text-lg font-semibold">View full leaderboard →</a>
                                     </div>
                                 </div>
                             </div>

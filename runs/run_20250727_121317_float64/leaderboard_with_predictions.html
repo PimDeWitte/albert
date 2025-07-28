@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Run Leaderboard - Including Failed Theories</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        .beats-sota { background-color: #e8f5e9; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Theory Evaluation Leaderboard</h1>
+    <p>Including theories that failed validation but showed interesting predictions</p>
+    
+    <table>
+        <tr>
+            <th>Theory</th>
+            <th>Validation Status</th>
+            <th>CMB χ²/dof</th>
+            <th>ΛCDM χ²/dof</th>
+            <th>Beats SOTA?</th>
+            <th>Notes</th>
+        </tr>
+        <tr class="beats-sota">
+            <td>Quantum Corrected (α=+0.01)</td>
+            <td>FAILED (photon sphere)</td>
+            <td>52.17</td>
+            <td>53.08</td>
+            <td>✅ YES</td>
+            <td>Beats ΛCDM despite failing strong-field test!</td>
+        </tr>
+    </table>
+    
+    <p><a href="fail/Quantum_Corrected_α_+0_01/results.html">View detailed results</a></p>
+</body>
+</html>

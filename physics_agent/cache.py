@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Optional, Union, Dict, Any
 from torch import Tensor
 
+# Import constants that affect trajectory computation
+from physics_agent.constants import NUMERICAL_THRESHOLDS, INTEGRATION_STEP_FACTORS
 
 # <reason>chain: Version control for cache invalidation when core logic changes</reason>
 SOFTWARE_VERSION = "1.0.0"
@@ -70,13 +72,14 @@ class TrajectoryCache:
         # <reason>chain: Sanitize theory name for filesystem compatibility</reason>
         sanitized_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', theory_name)
         
-        # <reason>chain: Build parameter string for basic cache key</reason>
-        params_str = f"{sanitized_name}_r0-{r0_val:.2f}_steps-{n_steps}_dt-{dtau_val:.4f}_dtype-{dtype_str}"
-        
-        # <reason>chain: Include additional parameters in hash to avoid cache collisions</reason>
-        extra_params = {}
+        # <reason>chain: Include all parameters except n_steps in hash to avoid cache collisions</reason>
+        extra_params = {
+            'r0': r0_val,
+            'dtau': dtau_val,
+            'dtype': dtype_str
+        }
         for key in ['run_to_horizon', 'horizon_threshold', 'particle_name', 
-                    'quantum_interval', 'quantum_beta', 'y0_general']:
+                    'quantum_interval', 'quantum_beta', 'y0_general', 'singularity_threshold']:
             if key in kwargs and kwargs[key] is not None:
                 if key == 'y0_general' and isinstance(kwargs[key], torch.Tensor):
                     # <reason>chain: Handle tensor parameters by converting to hashable format</reason>
@@ -95,36 +98,84 @@ class TrajectoryCache:
         # Add any theory parameters that would change the metric (a, q_e, alpha, etc.)
         if 'metric_params' in kwargs:
             extra_params['metric_params'] = str(sorted(kwargs['metric_params'].items()))
+        
+        # <reason>chain: Include critical numerical constants that affect trajectory computation</reason>
+        # This ensures cache invalidation when constants change
+        extra_params['numerical_thresholds'] = {
+            'radius_min': NUMERICAL_THRESHOLDS['radius_min'],
+            'radius_max': NUMERICAL_THRESHOLDS['radius_max'],
+            'singularity_radius': NUMERICAL_THRESHOLDS['singularity_radius'],
+            'orbit_stability': NUMERICAL_THRESHOLDS['orbit_stability'],
+            'epsilon': NUMERICAL_THRESHOLDS['epsilon'],
+            'norm_check': NUMERICAL_THRESHOLDS['norm_check']
+        }
+        
+        # <reason>chain: Include integration step factors that affect numerical accuracy</reason>
+        extra_params['integration_factors'] = {
+            'standard_reduction': INTEGRATION_STEP_FACTORS['standard_reduction'],
+            'aggressive_reduction': INTEGRATION_STEP_FACTORS['aggressive_reduction'],
+            'ergo_sphere_limit': INTEGRATION_STEP_FACTORS['ergo_sphere_limit']
+        }
+        
+        # <reason>chain: Include software version for cache invalidation on updates</reason>
+        extra_params['software_version'] = SOFTWARE_VERSION
+        
+        # <reason>chain: Include physical constants if provided (affects unit conversions)</reason>
+        if 'M_si' in kwargs:
+            extra_params['M_si'] = kwargs['M_si']
+        if 'c_si' in kwargs:
+            extra_params['c_si'] = kwargs['c_si']
+        if 'G_si' in kwargs:
+            extra_params['G_si'] = kwargs['G_si']
                     
-        if extra_params:
-            # <reason>chain: Generate hash of extra parameters for unique identification</reason>
-            param_hash = hashlib.sha256(
-                str(sorted(extra_params.items())).encode()
-            ).hexdigest()[:12]
-            filename = f"{params_str}_{param_hash}.pt"
-        else:
-            filename = f"{params_str}.pt"
+        # Always use hash-based filename for consistency and to include all parameters
+        # <reason>chain: Generate hash of all parameters except n_steps for unique identification</reason>
+        # <reason>chain: This allows longer trajectories to be broken down into shorter cached segments</reason>
+        param_hash = hashlib.sha256(
+            str(sorted(extra_params.items())).encode()
+        ).hexdigest()[:16]  # Use 16 characters for good uniqueness
+        
+        # <reason>chain: Format: (theory)_(params_hash)_steps_(n_steps).pt</reason>
+        # <reason>chain: The _steps suffix allows fetching partial trajectories from longer runs</reason>
+        filename = f"{sanitized_name}_{param_hash}_steps_{n_steps}.pt"
             
         return os.path.join(self.trajectories_dir, filename)
         
-    def load_trajectory(self, cache_path: str, device: torch.device) -> Optional[Tensor]:
+    def load_trajectory(self, cache_path: str, device: torch.device, 
+                       max_steps: Optional[int] = None) -> Optional[Tensor]:
         """
         Load a cached trajectory from disk.
         <reason>chain: Separate loading logic for better error handling</reason>
+        <reason>chain: Supports loading partial trajectories from longer cache files</reason>
         
         Args:
             cache_path: Path to cache file
             device: PyTorch device to load tensor to
+            max_steps: Maximum number of steps to load (None = load all)
             
         Returns:
             Loaded trajectory tensor or None if loading fails
         """
         if not os.path.exists(cache_path):
-            return None
+            # <reason>chain: Try to find a longer trajectory we can use</reason>
+            if max_steps is not None:
+                longer_cache = self._find_longer_trajectory(cache_path, max_steps)
+                if longer_cache:
+                    cache_path = longer_cache
+                else:
+                    return None
+            else:
+                return None
             
         try:
             print(f"Loading cached trajectory from: {cache_path}")
             trajectory = torch.load(cache_path, map_location=device)
+            
+            # <reason>chain: Return only the requested number of steps if specified</reason>
+            if max_steps is not None and trajectory.shape[0] > max_steps:
+                print(f"  Truncating trajectory from {trajectory.shape[0]} to {max_steps} steps")
+                trajectory = trajectory[:max_steps]
+                
             return trajectory
         except Exception as e:
             print(f"Warning: Failed to load cache: {e}")
@@ -160,6 +211,59 @@ class TrajectoryCache:
         except Exception as e:
             print(f"Warning: Failed to save cache: {e}")
             return False
+    
+    def _find_longer_trajectory(self, requested_path: str, min_steps: int) -> Optional[str]:
+        """
+        Find a cached trajectory with more steps than requested.
+        <reason>chain: Allows reusing longer trajectory runs by loading partial data</reason>
+        
+        Args:
+            requested_path: The originally requested cache path
+            min_steps: Minimum number of steps needed
+            
+        Returns:
+            Path to a longer trajectory file, or None if not found
+        """
+        # Extract base pattern from requested filename
+        base_dir = os.path.dirname(requested_path)
+        filename = os.path.basename(requested_path)
+        
+        # Parse the filename pattern: (theory)_(hash)_steps_(N).pt
+        import re
+        match = re.match(r'(.+)_([a-f0-9]+)_steps_(\d+)\.pt$', filename)
+        if not match:
+            return None
+            
+        theory_name, param_hash, requested_steps = match.groups()
+        requested_steps = int(requested_steps)
+        
+        # Look for files with same theory and hash but more steps
+        pattern = f"{theory_name}_{param_hash}_steps_*.pt"
+        
+        try:
+            import glob
+            matching_files = glob.glob(os.path.join(base_dir, pattern))
+            
+            # Find files with enough steps
+            candidates = []
+            for file_path in matching_files:
+                file_match = re.match(r'.+_steps_(\d+)\.pt$', os.path.basename(file_path))
+                if file_match:
+                    file_steps = int(file_match.group(1))
+                    if file_steps >= min_steps:
+                        candidates.append((file_path, file_steps))
+            
+            # Return the file with fewest steps that still meets requirement
+            if candidates:
+                candidates.sort(key=lambda x: x[1])
+                chosen_path, chosen_steps = candidates[0]
+                print(f"  Found longer trajectory: {chosen_steps} steps (requested {requested_steps})")
+                return chosen_path
+                
+        except Exception as e:
+            print(f"Warning: Error searching for longer trajectories: {e}")
+            
+        return None
             
     def get_cache_info(self, theory_dir: str) -> Dict[str, Any]:
         """

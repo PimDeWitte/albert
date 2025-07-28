@@ -82,438 +82,23 @@
                 btn.textContent = 'Show code';
             }
         }
+        
+        function toggleImprovements() {
+            const table = document.getElementById('improvements-table');
+            const summary = document.getElementById('improvements-summary');
+            if (table.style.display === 'none' || table.style.display === '') {
+                table.style.display = 'block';
+                summary.textContent = 'Click to hide detailed improvements table';
+            } else {
+                table.style.display = 'none';
+                summary.textContent = 'Click to view 7 key improvements (6D solver, 4D optimization, charged/null extensions, UGM solver, quantum predictions, validation framework)';
+            }
+        }
     </script>
 </head>
 <body>
 
 <h1>Summary of Geodesic Solver Development for Unified Gravitational Theories</h1>
-
-<div class="flowchart-container">
-    <div class="flowchart-title">🚀 How the ALBERT Physics Engine Works</div>
-    <div class="mermaid">
-    flowchart TD
-        Start["🎯 THEORY SPECIFICATION<br/>Define metric g_μν(r,θ,φ)<br/>+ theory parameters"]
-        
-        Start --> Validate["🧪 VALIDATION SUITE<br/>21 Tests Available:<br/>Classical + Quantum + Cosmology"]
-        
-        Validate --> Engine["⚙️ THEORY ENGINE<br/>TheoryEngine.run_trajectory()<br/>Auto-detects symmetries"]
-        
-        Engine --> SolverChoice{"🔍 SOLVER SELECTION<br/>Based on spacetime properties"}
-        
-        SolverChoice -->|"Static/Spherical"| Solver4D["📐 4D SOLVER<br/>Fast symmetric solver<br/>Uses conserved E, Lz"]
-        
-        SolverChoice -->|"Rotating/General"| Solver6D["📊 6D SOLVER<br/>General metric solver<br/>No symmetry assumptions"]
-        
-        SolverChoice -->|"Charged particles"| SolverCharged["⚡ CHARGED SOLVER<br/>Includes Lorentz force<br/>EM interactions"]
-        
-        SolverChoice -->|"Quantum effects"| SolverQuantum["🌌 QUANTUM SOLVER<br/>Path integrals + corrections<br/>Unification features"]
-        
-        Solver4D --> Integrate["🔄 INTEGRATION<br/>RK4 numerical integration<br/>PyTorch GPU acceleration"]
-        Solver6D --> Integrate
-        SolverCharged --> Integrate
-        SolverQuantum --> Integrate
-        
-        Integrate --> RunTests["✅ RUN ALL TESTS<br/>Mercury • Pulsars • Light<br/>Quantum • Cosmology • GWs"]
-        
-        RunTests --> Results{"📊 COMPARE TO DATA<br/>Match observations?"}
-        
-        Results -->|"Yes ✅"| Predictions["✨ NOVEL PREDICTIONS<br/>CMB modifications<br/>Quantum gravity effects<br/>New phenomena"]
-        
-        Results -->|"No ❌"| Reject["❌ THEORY REJECTED<br/>Document failures<br/>Learn for next iteration"]
-        
-        Predictions --> Score["🏆 SCORING<br/>χ²/dof • AIC • BIC<br/>Statistical comparison"]
-        
-        Score --> Leaderboard["📈 LEADERBOARD<br/>Rank all theories<br/>Track best performers"]
-        
-        Reject --> Feedback["🔄 AI FEEDBACK<br/>Refine theory space<br/>Improve next generation"]
-        
-        Feedback --> ALBERT["🤖 ALBERT AI<br/>500+ instances<br/>Generating new theories"]
-        
-        ALBERT --> Start
-        Leaderboard --> ALBERT
-        
-        style Start fill:#90EE90,stroke:#006400,stroke-width:3px
-        style Validate fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
-        style RunTests fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
-        style SolverChoice fill:#87CEEB,stroke:#4682B4,stroke-width:2px
-        style Results fill:#87CEEB,stroke:#4682B4,stroke-width:2px
-        style Predictions fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
-        style Score fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
-        style ALBERT fill:#DDA0DD,stroke:#8B008B,stroke-width:3px
-    </div>
-</div>
-
-<h3>📊 Detailed Test Specifications with Datasets</h3>
-
-<p>The following tests validate our geodesic integrator implementation against state-of-the-art (SOTA) experimental results. Each test targets a specific aspect of gravitational physics, from classical solar system dynamics to quantum gravity effects. <strong>All test implementations are now consolidated in the single file <code>test_geodesic_validator_comparison.py</code></strong> for easier maintenance and to ensure consistency across all validations.</p>
-
-<table>
-    <thead>
-        <tr>
-            <th style="width: 15%">Test</th>
-            <th style="width: 10%">Theory</th>
-            <th style="width: 20%">Dataset/Source</th>
-            <th style="width: 15%">Dataset Locator</th>
-            <th style="width: 25%">Why Correct</th>
-            <th style="width: 15%">Code</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><strong>Mercury Perihelion Precession</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> JPL Horizons ephemeris data<br/>
-                <strong>Source:</strong> <a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank">NASA JPL Horizons</a><br/>
-                <strong>Accuracy:</strong> 0.004"/century (Pitjeva & Pitjev 2013)</td>
-            <td><strong>Code:</strong> <code>test_mercury_precession.py</code><br/>
-                <strong>Data:</strong> <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a><br/>
-                - r_perihelion = 46.00e9 m<br/>
-                - Semi-major axis = 57.91e9 m<br/>
-                - Period = 87.969 days</td>
-            <td>This is a classical solar system test of GR, measuring the anomalous precession of Mercury's orbit (43 arcsec/century), which Schwarzschild metric predicts exactly, validated by observations since 1915 and refined with modern radar ranging (SOTA accuracy: <0.1% deviation from GR, per Cassini mission PPN tests).</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_mercury_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Gravitational Lensing (Light Deflection)</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> ESA Gaia DR3 astrometry<br/>
-                <strong>Source:</strong> <a href="https://www.cosmos.esa.int/web/gaia/data-release-3" target="_blank">Gaia DR3 Catalog</a><br/>
-                <strong>Accuracy:</strong> 10 μas for bright stars</td>
-            <td><strong>Code:</strong> <code>test_light_deflection.py</code><br/>
-                <strong>Data:</strong> <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a><br/>
-                - R_sun = 6.96e8 m<br/>
-                - Expected deflection = 1.75 arcsec<br/>
-                - Impact parameter = R_sun</td>
-            <td>Deflection of starlight by Sun (1.75 arcsec at limb) tests Schwarzschild's weak-field limit; SOTA from VLBI/Gaia (accuracy <0.01 mas, confirming GR to 10^{-5}).</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_light_deflection_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Black Hole Shadow Size</strong></td>
-            <td>Kerr</td>
-            <td><strong>Dataset:</strong> EHT M87* observations<br/>
-                <strong>Source:</strong> <a href="https://eventhorizontelescope.org/data" target="_blank">Event Horizon Telescope</a><br/>
-                <strong>Measurement:</strong> 42±3 μas diameter (ApJL 875:L1, 2019)</td>
-            <td><strong>Code:</strong> <code>test_black_hole_shadow.py</code><br/>
-                <strong>Data:</strong> Hardcoded in test<br/>
-                - M_bh = 6.5e9 M_sun<br/>
-                - Distance = 16.8 Mpc<br/>
-                - Expected = 42 μas</td>
-            <td>EHT image of M87* shadow (diameter ~42 μas) tests Kerr predictions; SOTA from EHT 2022 (accuracy ~10%, consistent with Kerr to ~20% deviations).</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_photon_sphere_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Nonlinear Stability/Particle Chaos</strong></td>
-            <td>Kerr-Newman</td>
-            <td><strong>Dataset:</strong> LIGO/Virgo GW waveforms<br/>
-                <strong>Source:</strong> <a href="https://gwosc.org/" target="_blank">GWOSC Open Data</a><br/>
-                <strong>Analysis:</strong> arXiv:1410.6626 (Kerr-Newman review)</td>
-            <td><strong>Code:</strong> <code>test_particle_chaos.py</code><br/>
-                <strong>Data:</strong> Theory-based calculation<br/>
-                - M_bh = 10 M_sun<br/>
-                - Expected λ ~ 1/(4πM)<br/>
-                - MSS chaos bound</td>
-            <td>Simulations of charged particle motion in KN fields test chaos bounds; SOTA from 2022 JHEP paper on violation in AdS (Lyapunov exponent λ~1/M, consistent with KN to ~10^{-3}).</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_circular_orbit_period()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Quantum Gravity Lab Tests (Entanglement)</strong></td>
-            <td>Quantum Gravity</td>
-            <td><strong>Dataset:</strong> Bose-Marletto-Vedral proposal simulations<br/>
-                <strong>Source:</strong> <a href="https://link.aps.org/doi/10.1103/RevModPhys.97.015006" target="_blank">Rev. Mod. Phys. 97, 015006 (2025)</a><br/>
-                <strong>Precision:</strong> Phase shifts ~10^{-3} rad</td>
-            <td><strong>Code:</strong> <code>test_quantum_entanglement.py</code><br/>
-                <strong>Data:</strong> Experimental proposal<br/>
-                - M_source = 1e-14 kg<br/>
-                - Separation = 250 μm<br/>
-                - Expected ~ 10^-3 rad</td>
-            <td>SOTA lab proposals test gravity's quantum nature via entanglement (e.g., Bose-Marletto-Vedral experiment); 2024 Phys Rev Lett confirms no classical channel, accuracy ~10^{-3} in phase shifts.</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_quantum_interferometry()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Pulsar Timing (Shapiro Delay)</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> NANOGrav PSR J0740+6620<br/>
-                <strong>Source:</strong> <a href="https://doi.org/10.3847/2041-8213/ac03b8" target="_blank">Fonseca et al. 2021, ApJL</a><br/>
-                <strong>Precision:</strong> M_c = 2.08±0.004 M☉, rms 0.18 μs</td>
-            <td><strong>Code:</strong> <code>geodesic_integrator.py</code><br/>
-                <strong>Function:</strong> <code>validator_psr_j0740()</code><br/>
-                <strong>Data:</strong> Hardcoded in function<br/>
-                - Lines 527-539: All parameters<br/>
-                - <code>/data/</code>: NANOGrav 15yr data</td>
-            <td>Binary pulsar Shapiro delays test GR in strong-field regime; PSR J0740+6620 provides highest-precision neutron star mass measurement, constraining deviations at 10^{-5} level.</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_ppn_comparison()</code></td>
-        </tr>
-        <tr>
-            <td><strong>Pulsar Timing Array</strong></td>
-            <td>Schwarzschild</td>
-            <td><strong>Dataset:</strong> NANOGrav 15-year data<br/>
-                <strong>Source:</strong> <a href="https://data.nanograv.org/" target="_blank">NANOGrav Data Portal</a><br/>
-                <strong>Precision:</strong> ≤ 1 μs timing residuals</td>
-            <td><strong>Code:</strong> <code>test_pulsar_timing.py</code><br/>
-                <strong>Data Source:</strong> dataloader://nanograv_15yr<br/>
-                <strong>File:</strong> v1p1_all_dict.json<br/>
-                <strong>Contains:</strong> Full 15yr CW analysis parameters</td>
-            <td>Millisecond pulsar timing tests GR via Shapiro delays and gravitational wave backgrounds; NANOGrav 15yr data provides nHz GW sensitivity.</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_gravitational_wave_inspiral()</code></td>
-        </tr>
-        <tr>
-            <td><strong>CMB Power Spectrum</strong></td>
-            <td>Cosmological models</td>
-            <td><strong>Dataset:</strong> Planck 2018 TT power spectrum<br/>
-                <strong>Source:</strong> <a href="https://pla.esac.esa.int/pla/" target="_blank">Planck Legacy Archive</a><br/>
-                <strong>Multipoles:</strong> l=2-2508, cosmic variance limited</td>
-            <td><strong>Code:</strong> <code>test_cmb_power_spectrum.py</code><br/>
-                <strong>Data Source:</strong> dataloader://planck_cmb_2018<br/>
-                <strong>File:</strong> COM_PowerSpect_CMB-TT-binned_R3.01.txt<br/>
-                <strong>Format:</strong> l, D_l, +error, -error<br/>
-                <strong>Test loads:</strong> All multipoles l=2-2508</td>
-            <td>CMB temperature anisotropies test early universe physics and quantum gravity effects; Planck data constrains primordial power spectrum to 0.1% precision.</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_cmb_power_spectrum()</code></td>
-        </tr>
-        <tr>
-            <td><strong>BICEP/Keck Tensor Modes</strong></td>
-            <td>Inflationary models</td>
-            <td><strong>Dataset:</strong> BICEP/Keck 2021 BK18 constraints<br/>
-                <strong>Source:</strong> <a href="http://bicepkeck.org/" target="_blank">BICEP/Keck Collaboration</a><br/>
-                <strong>Constraint:</strong> r < 0.036 (95% CL)</td>
-            <td><strong>Code:</strong> <code>test_bicep_keck.py</code><br/>
-                <strong>Data Source:</strong> dataloader://bicep_keck_2021<br/>
-                <strong>File:</strong> BK18_r_likelihood.txt<br/>
-                <strong>Format:</strong> r, -2ln(L)<br/>
-                <strong>Contains:</strong> Tensor-to-scalar ratio likelihood</td>
-            <td>Primordial gravitational wave constraints test inflationary predictions; BICEP/Keck 2021 limits tensor-to-scalar ratio r < 0.036, testing quantum gravity suppression of tensor modes.</td>
-            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
-                Function: <code>test_bicep_keck_primordial_gws()</code></td>
-        </tr>
-    </tbody>
-</table>
-
-
-<p>This summary outlines the development of a PyTorch-based geodesic integrator system designed to simulate particle and light trajectories in various gravitational spacetimes, with extensions for testing unified theories. The tool was built to facilitate novel predictions required for unification, such as modified dispersion relations and quantum corrections to cosmological observables. It emphasizes modularity, empirical validation, and safeguards against overfitting or circularity in simulations.</p>
-
-<p>The implementation was inspired by background research into numerical geodesic solving, particularly the foundational work from Aalto University on geodesic integrators for curved spacetimes. The Aalto approach initially formulated the problem in full 8D phase space (4 positions + 4 momenta), which we recognized could be reduced for practical implementation. We streamlined this to a 6D state-space approach (3 spatial coordinates + 3 velocities, with time as the integration parameter) for general non-symmetric spacetimes, and further optimized to 4D (2 coordinates + 2 velocities) for symmetric cases by exploiting conserved quantities. This dimensional reduction maintains full physical accuracy while significantly improving computational efficiency. More critically, the core theoretical motivation draws from Partanen and Tulkki's 2025 paper, "Gravity generated by four one-dimensional unitary gauge symmetries and the Standard Model" (Reports on Progress in Physics, DOI: <a href="https://doi.org/10.1088/1361-6633/adc82e">10.1088/1361-6633/adc82e</a>), which provided the mathematical framework for UGM—a renormalizable gauge theory unifying gravity with the Standard Model via four compact U(1) symmetries. We referenced this paper extensively for incorporating tetrads, gauge fields, and quantum loop corrections into our solvers.</p>
-
-<h2>Table of Improvements</h2>
-
-<p>The following table lists every key improvement made during development, including references to inspirational sources, the rationale (why it was made), and its impact on the system. Improvements were iterative, driven by competitive analysis, integrity reviews, and empirical grounding. The table culminates in a summary of the built system, how we proved avoidance of circularity, and documentation for replication.</p>
-
-<table>
-    <thead>
-        <tr>
-            <th>Improvement</th>
-            <th>Reference/Source</th>
-            <th>Why It Was Made</th>
-            <th>Impact</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><strong>6D State-Space Solver</strong></td>
-            <td>
-                <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/geodesic_integrator.py#L296" class="code-reference">GeneralGeodesicRK4Solver</a>
-                <span class="author-note">(by Pim de Witte)</span>
-                <button class="show-code-btn" onclick="toggleCodePreview('general-geodesic-preview')">Show code</button>
-                <div id="general-geodesic-preview" class="code-preview">
-                    <pre><code>class GeneralGeodesicRK4Solver:
-    """
-    RK4 integrator for general geodesic equations.
-    Numerically integrates the geodesic equations for a given metric.
-    Uses 6D state space: [t, r, phi, u^t, u^r, u^phi]
-    
-    &lt;reason&gt;chain: General solver for arbitrary metrics without symmetry assumptions&lt;/reason&gt;
-    """
-    
-    def __init__(self, model: GravitationalTheory, M_phys: Tensor = None, c: float = C_SI, G: float = G_SI, M: Tensor = None, **kwargs):
-        self.model = model
-        # Backward compatibility: accept M or M_phys
-        if M_phys is None and M is not None:
-            M_phys = M
-        elif M_phys is None:
-            raise ValueError("Must provide either M_phys or M parameter")
-        self.M_phys = M_phys
-        self.c = c
-        self.G = G
-        self.kwargs = kwargs
-        self.metric_func = get_metric_wrapper(model.get_metric)</code></pre>
-                </div>
-            </td>
-            <td>To handle arbitrary spacetimes (e.g., non-symmetric like rotating black holes) efficiently, reducing full 8D phase space while enabling quantum extensions.</td>
-            <td>Core engine: Enables classical/quantum geodesic computation; auto-detects symmetry for optimization. (Class: GeneralGeodesicRK4Solver; Test: Run validator_psr_j0740(kappa=0.0) to verify GR match.)</td>
-        </tr>
-        <tr>
-            <td><strong>Symmetric 4D Reduction</strong></td>
-            <td>FANTASY (arXiv:2010.02237) for conserved quantities; Geomstats (arXiv:2004.04667) for manifold efficiency.</td>
-            <td>To optimize for static/axisymmetric cases (e.g., Schwarzschild), leveraging E/Lz conservation for faster simulations without loss of accuracy.</td>
-            <td>Performance boost: 4D state for classical GR tests; avoids unnecessary computation in unified models. (Class: GeodesicRK4Solver; Test: Set force_6dof_solver=False and run symmetry auto-detection in is_symmetric property.)</td>
-        </tr>
-        <tr>
-            <td><strong>Charged/Null Extensions</strong></td>
-            <td>GRay2 (arXiv:1706.07062) for null rays; Partanen & Tulkki (2025) for EM unification.</td>
-            <td>To support SM-like interactions (Lorentz force) and photons, essential for unification predictions like modified dispersion in quantum regimes.</td>
-            <td>Versatility: Handles quantum vs. classical by parameterizing (e.g., impact parameter for null). (Classes: ChargedGeodesicRK4Solver, NullGeodesicRK4Solver; Test: Initialize with q>0 for charged, run compute_time_of_flight_numeric with null solver.)</td>
-        </tr>
-        <tr>
-            <td><strong>UGM-Specific Solver</strong></td>
-            <td>Partanen & Tulkki (2025) directly for tetrads/gauge fields; SageManifolds (sagemath.org) for symbolic torsion.</td>
-            <td>To test UGM's four U(1) symmetries, including renormalizable quantum corrections, against our LSL theory.</td>
-            <td>Unification focus: Enables novel predictions like GW tilts; optional loop corrections for Planck-scale effects. (Class: UGMGeodesicRK4Solver; Test: Enable quantum corrections and validate renormalizability via det_g check in get_metric_tensor.)</td>
-        </tr>
-        <tr>
-            <td><strong>Quantum Lagrangians/Predictions</strong></td>
-            <td>Per-theory basis from UGM paper; generalized via Mixin for QFT terms (e.g., Dirac/Yang-Mills).</td>
-            <td>To generate unification-required predictions (e.g., vacuum energy, info paradox resolution) from Lagrangians, allowing per-model customization.</td>
-            <td>Depth: Each theory has tailored quantum components; enables loss scoring in validators. (Mixin: QuantumUnifiedMixin; Test: Call validate_lagrangian_completeness() and run novel_predictions() for outputs.)</td>
-        </tr>
-        <tr>
-            <td><strong>Pulsar Validator</strong></td>
-            <td>Fonseca et al. (2021, ApJL, DOI: 10.3847/2041-8213/ac03b8) for data; conversation on avoiding overfitting.</td>
-            <td>To ground simulations in real data (Shapiro delays), preventing solver-internal biases via analytic-numeric asserts and Monte Carlo uncertainties.</td>
-            <td>Integrity: Proves no circularity by external anchoring; documentation below for replication. (Function: validator_psr_j0740; Test: Run python geodesic_integrator.py to execute __main__ tests at κ=0 and κ=1e-10.)</td>
-        </tr>
-        <tr>
-            <td><strong>Cosmological Predictor/Validator</strong></td>
-            <td>Generalized from pulsar approach; Planck CMB data for loss scoring; UGM paper for vacuum energy.</td>
-            <td>To score theories uniformly on cosmological observables (e.g., CMB suppression), mirroring pulsar method for unification benchmarks.</td>
-            <td>Objectivity: Centralized loss computation (χ² vs. data) across theories; avoids per-theory silos. (Class: CosmologicalPredictor; Test: Initialize with theory, run predict_cmb_power_suppression(l=10) and compare to Planck data manually.)</td>
-        </tr>
-    </tbody>
-</table>
-
-<h3>System Summary</h3>
-<p>We've built a hybrid classical-quantum geodesic simulation system that integrates per-theory customizations (e.g., Lagrangians for UGM/LSL) with generalized validators for fair, data-driven scoring. The core uses RK4 in 6D/4D spaces, extended for quantum effects via path integrals and corrections. We proved avoidance of circularity by separating analytic baselines (independent formulas/data) from numeric solver outputs, asserting equivalence at baseline (κ=0) and using Monte Carlo to inject real uncertainties—ensuring matches reflect physics, not artifacts. Overfitting is mitigated by empirical bounds (e.g., pulsar rms) and external cross-checks (e.g., SageManifolds symbolic).</p>
-
-<h3>Documentation for Proving Avoidance of Circularity</h3>
-<p>To replicate our proof:</p>
-<ol>
-    <li><strong>Setup</strong>: Clone repo; install dependencies (Torch, SymPy, NumPy). Use PSR J0740+6620 data (Fonseca et al., 2021) or CMB datasets (Planck 2018).</li>
-    <li><strong>Analytic Baseline</strong>: Compute delays/predictions via formulas (e.g., Shapiro: -2 (GM/c³) ln(1 - sin i)). Run: <code>python -c "from geodesic_integrator import compute_shapiro_delay_analytic; print(compute_shapiro_delay_analytic(M_c=..., a=..., i=...))"</code>.</li>
-    <li><strong>Numeric Run</strong>: Integrate with solver; assert |analytic - numeric| < tolerance + σ (from Monte Carlo). Run: <code>python geodesic_integrator.py</code> (executes validator_psr_j0740 at κ=0).</li>
-    <li><strong>Monte Carlo</strong>: Sample params (e.g., M_c ±0.004 M_sun) N=100 times; compute mean/std. Integrated in validator; adjust mc_samples=100.</li>
-    <li><strong>Loss Scoring</strong>: In CosmologicalValidator, χ² = Σ (pred_i - obs_i)² / σ_i²; minimize across theories. Example: Initialize predictor, run predict_cmb_power_suppression, compare to Planck TT spectrum data (download from ESA site).</li>
-    <li><strong>Cross-Check</strong>: Use SageManifolds/Geomstats for symbolic/numeric verification (install separately; e.g., <code>sage -c "from sage.manifolds.all import *; ..."</code> for metric validation).</li>
-</ol>
-<p>This method ensures external grounding; share code/outputs for peer review. Commands assume file named <code>geodesic_integrator.py</code>; adjust as needed.</p>
-
-
-
-<h2>🧪 Comprehensive Validation Pipeline</h2>
-
-<div class="static-diagram">
-    <h3 class="text-2xl font-semibold mb-8 text-center">Test-Driven Physics: 21 Validators in Action</h3>
-    
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 2rem 0;">
-        <!-- Classical Tests -->
-        <div style="background-color: #e8f5e9; border: 2px solid #4caf50; border-radius: 12px; padding: 1.5rem;">
-            <h4 style="color: #2e7d32; font-weight: bold; margin-bottom: 1rem;">Classical Tests (10)</h4>
-            <ul style="list-style: none; padding: 0; font-size: 0.875rem;">
-                <li>✓ Mercury Precession</li>
-                <li>✓ Light Deflection</li>
-                <li>✓ Shapiro Time Delay</li>
-                <li>✓ Frame Dragging (GP-B)</li>
-                <li>✓ Photon Sphere</li>
-                <li>✓ Black Hole Shadow</li>
-                <li>✓ Binary Pulsar (PSR J0740)</li>
-                <li>✓ Conservation Laws</li>
-                <li>✓ Metric Properties</li>
-                <li>✓ PPN Parameters</li>
-            </ul>
-        </div>
-        
-        <!-- Quantum Tests -->
-        <div style="background-color: #f3e5f5; border: 2px solid #9c27b0; border-radius: 12px; padding: 1.5rem;">
-            <h4 style="color: #6a1b9a; font-weight: bold; margin-bottom: 1rem;">Quantum Tests (5)</h4>
-            <ul style="list-style: none; padding: 0; font-size: 0.875rem;">
-                <li>✓ COW Interferometry</li>
-                <li>✓ Atom Interferometry</li>
-                <li>✓ Quantum Clocks</li>
-                <li>✓ Decoherence Bounds</li>
-                <li>✓ Lagrangian Grounding</li>
-            </ul>
-        </div>
-        
-        <!-- Cosmological Tests -->
-        <div style="background-color: #e3f2fd; border: 2px solid #2196f3; border-radius: 12px; padding: 1.5rem;">
-            <h4 style="color: #1565c0; font-weight: bold; margin-bottom: 1rem;">Cosmological Tests (6)</h4>
-            <ul style="list-style: none; padding: 0; font-size: 0.875rem;">
-                <li>✓ CMB Power Spectrum</li>
-                <li>✓ PTA GW Background</li>
-                <li>✓ Primordial GWs</li>
-                <li>✓ Hawking Radiation</li>
-                <li>✓ Cosmological Evolution</li>
-                <li>✓ Unification Scale</li>
-            </ul>
-        </div>
-    </div>
-    
-    <div style="background-color: #fff8e1; border: 2px solid #f57c00; border-radius: 12px; padding: 2rem; margin: 2rem 0;">
-        <h4 style="color: #e65100; font-weight: bold; margin-bottom: 1rem; text-align: center;">Validation Execution Flow</h4>
-        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-            <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <strong>1. Load Theory</strong><br/>
-                <span style="font-size: 0.75rem;">g<sub>μν</sub> + parameters</span>
-            </div>
-            <span style="font-size: 1.5rem;">→</span>
-            <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <strong>2. Run Trajectory</strong><br/>
-                <span style="font-size: 0.75rem;">10K-1M steps</span>
-            </div>
-            <span style="font-size: 1.5rem;">→</span>
-            <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <strong>3. Parallel Tests</strong><br/>
-                <span style="font-size: 0.75rem;">All 21 validators</span>
-            </div>
-            <span style="font-size: 1.5rem;">→</span>
-            <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <strong>4. Compute χ²</strong><br/>
-                <span style="font-size: 0.75rem;">vs. observations</span>
-            </div>
-            <span style="font-size: 1.5rem;">→</span>
-            <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <strong>5. Score Theory</strong><br/>
-                <span style="font-size: 0.75rem;">AIC, BIC, Bayes</span>
-            </div>
-        </div>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem;">
-        <div style="background-color: #e8f8e8; padding: 1rem; border-radius: 8px;">
-            <strong style="color: #2e7d32;">✅ Pass Criteria</strong>
-            <ul style="font-size: 0.875rem; margin-top: 0.5rem;">
-                <li>χ²/dof < 1.5 for all tests</li>
-                <li>Reduces to GR when parameters → 0</li>
-                <li>Conserves energy to 10⁻⁸</li>
-                <li>Matches known precision</li>
-            </ul>
-        </div>
-        <div style="background-color: #ffebee; padding: 1rem; border-radius: 8px;">
-            <strong style="color: #c62828;">❌ Fail Reasons</strong>
-            <ul style="font-size: 0.875rem; margin-top: 0.5rem;">
-                <li>Violates experimental bounds</li>
-                <li>Numerical instabilities</li>
-                <li>Unphysical metrics</li>
-                <li>Missing quantum limit</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<h2>Precise Handling of Quantum vs. Classical Geodesics</h2>
-
-<p>The system handles quantum vs. classical geodesics through a hybrid approach: classical paths use deterministic RK4 integration in 6D/4D space, while quantum effects are layered as perturbative corrections or path integral simulations when enabled.</p>
-
-<p><strong>Classical Geodesics</strong>: Treated as point-particle trajectories in curved spacetime. For timelike (massive particles), normalize 4-velocity to g_μν u^μ u^ν = -c². Null (light) uses reparameterized equations with impact parameter b=Lz/E. Computation: Metric components (g_tt etc.) &rarr; Christoffel symbols via autograd &rarr; Accelerations a^k = -Γ^k_ij u^i u^j &rarr; RK4 steps. Symmetric cases reduce dimensions using conserved E/Lz for efficiency. Charged adds classical Lorentz: a^μ += (q/m) F^μ_ν u^ν.</p>
-
-<p><strong>Quantum Geodesics</strong>: When `enable_quantum_corrections=True` (e.g., in UGM solver), classical paths are modified perturbatively. Extract vacuum energy from Lagrangian zero-point (∫ dk ħω(k)), adding to effective potential. Dispersion: E² = p²c² + m²c⁴ + corr (from one-loop via symbolic integration). Path integrals (WKB approx.): Amplitude ∫ D[x] exp(iS/ħ) computes fluctuation suppression, e.g., decoherence factor 1 - |amp|² applied to classical probability. For unification, gauge/matter terms yield EM-like interactions at quantum scales. Handling: If quantum, perturb metric (e.g., g_rr *= 1 + α_g/(π r²)); re-compute path. Lossless classical limit: At ħ&rarr;0 or corr=0, reduces to GR.</p>
-
-<p>This precise separation—classical as base, quantum as optional layer—allows testing unification without altering core determinism, with validators ensuring no quantum artifacts overfit classical data.</p>
 
 <h2>🔬 Solver Tests - Albert Physics Agent</h2>
 
@@ -735,6 +320,486 @@
 </ul>
 
 <p>Despite the overhead factors appearing large, the absolute times remain extremely fast. This validates our design choice of prioritizing correctness, modularity, and comprehensive validation while maintaining excellent performance.</p>
+
+<h3>📊 Detailed Test Specifications with Datasets</h3>
+
+<p>The following tests validate our geodesic integrator implementation against state-of-the-art (SOTA) experimental results. Each test targets a specific aspect of gravitational physics, from classical solar system dynamics to quantum gravity effects. <strong>All test implementations are now consolidated in the single file <code>test_geodesic_validator_comparison.py</code></strong> for easier maintenance and to ensure consistency across all validations.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 15%">Test</th>
+            <th style="width: 10%">Theory</th>
+            <th style="width: 20%">Dataset/Source</th>
+            <th style="width: 15%">Dataset Locator</th>
+            <th style="width: 25%">Why Correct</th>
+            <th style="width: 15%">Code</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Mercury Perihelion Precession</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> JPL Horizons ephemeris data<br/>
+                <strong>Source:</strong> <a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank">NASA JPL Horizons</a><br/>
+                <strong>Accuracy:</strong> 0.004"/century (Pitjeva & Pitjev 2013)</td>
+            <td><strong>Code:</strong> <code>test_mercury_precession.py</code><br/>
+                <strong>Data:</strong> <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a><br/>
+                - r_perihelion = 46.00e9 m<br/>
+                - Semi-major axis = 57.91e9 m<br/>
+                - Period = 87.969 days</td>
+            <td>This is a classical solar system test of GR, measuring the anomalous precession of Mercury's orbit (43 arcsec/century), which Schwarzschild metric predicts exactly, validated by observations since 1915 and refined with modern radar ranging (SOTA accuracy: <0.1% deviation from GR, per Cassini mission PPN tests).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_mercury_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Gravitational Lensing (Light Deflection)</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> ESA Gaia DR3 astrometry<br/>
+                <strong>Source:</strong> <a href="https://www.cosmos.esa.int/web/gaia/data-release-3" target="_blank">Gaia DR3 Catalog</a><br/>
+                <strong>Accuracy:</strong> 10 μas for bright stars</td>
+            <td><strong>Code:</strong> <code>test_light_deflection.py</code><br/>
+                <strong>Data:</strong> <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/constants.py"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a><br/>
+                - R_sun = 6.96e8 m<br/>
+                - Expected deflection = 1.75 arcsec<br/>
+                - Impact parameter = R_sun</td>
+            <td>Deflection of starlight by Sun (1.75 arcsec at limb) tests Schwarzschild's weak-field limit; SOTA from VLBI/Gaia (accuracy <0.01 mas, confirming GR to 10^{-5}).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_light_deflection_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Black Hole Shadow Size</strong></td>
+            <td>Kerr</td>
+            <td><strong>Dataset:</strong> EHT M87* observations<br/>
+                <strong>Source:</strong> <a href="https://eventhorizontelescope.org/data" target="_blank">Event Horizon Telescope</a><br/>
+                <strong>Measurement:</strong> 42±3 μas diameter (ApJL 875:L1, 2019)</td>
+            <td><strong>Code:</strong> <code>test_black_hole_shadow.py</code><br/>
+                <strong>Data:</strong> Hardcoded in test<br/>
+                - M_bh = 6.5e9 M_sun<br/>
+                - Distance = 16.8 Mpc<br/>
+                - Expected = 42 μas</td>
+            <td>EHT image of M87* shadow (diameter ~42 μas) tests Kerr predictions; SOTA from EHT 2022 (accuracy ~10%, consistent with Kerr to ~20% deviations).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_photon_sphere_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Nonlinear Stability/Particle Chaos</strong></td>
+            <td>Kerr-Newman</td>
+            <td><strong>Dataset:</strong> LIGO/Virgo GW waveforms<br/>
+                <strong>Source:</strong> <a href="https://gwosc.org/" target="_blank">GWOSC Open Data</a><br/>
+                <strong>Analysis:</strong> arXiv:1410.6626 (Kerr-Newman review)</td>
+            <td><strong>Code:</strong> <code>test_particle_chaos.py</code><br/>
+                <strong>Data:</strong> Theory-based calculation<br/>
+                - M_bh = 10 M_sun<br/>
+                - Expected λ ~ 1/(4πM)<br/>
+                - MSS chaos bound</td>
+            <td>Simulations of charged particle motion in KN fields test chaos bounds; SOTA from 2022 JHEP paper on violation in AdS (Lyapunov exponent λ~1/M, consistent with KN to ~10^{-3}).</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_circular_orbit_period()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Quantum Gravity Lab Tests (Entanglement)</strong></td>
+            <td>Quantum Gravity</td>
+            <td><strong>Dataset:</strong> Bose-Marletto-Vedral proposal simulations<br/>
+                <strong>Source:</strong> <a href="https://link.aps.org/doi/10.1103/RevModPhys.97.015006" target="_blank">Rev. Mod. Phys. 97, 015006 (2025)</a><br/>
+                <strong>Precision:</strong> Phase shifts ~10^{-3} rad</td>
+            <td><strong>Code:</strong> <code>test_quantum_entanglement.py</code><br/>
+                <strong>Data:</strong> Experimental proposal<br/>
+                - M_source = 1e-14 kg<br/>
+                - Separation = 250 μm<br/>
+                - Expected ~ 10^-3 rad</td>
+            <td>SOTA lab proposals test gravity's quantum nature via entanglement (e.g., Bose-Marletto-Vedral experiment); 2024 Phys Rev Lett confirms no classical channel, accuracy ~10^{-3} in phase shifts.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_quantum_interferometry()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Pulsar Timing (Shapiro Delay)</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> NANOGrav PSR J0740+6620<br/>
+                <strong>Source:</strong> <a href="https://doi.org/10.3847/2041-8213/ac03b8" target="_blank">Fonseca et al. 2021, ApJL</a><br/>
+                <strong>Precision:</strong> M_c = 2.08±0.004 M☉, rms 0.18 μs</td>
+            <td><strong>Code:</strong> <code>geodesic_integrator.py</code><br/>
+                <strong>Function:</strong> <code>validator_psr_j0740()</code><br/>
+                <strong>Data:</strong> Hardcoded in function<br/>
+                - Lines 527-539: All parameters<br/>
+                - <code>/data/</code>: NANOGrav 15yr data</td>
+            <td>Binary pulsar Shapiro delays test GR in strong-field regime; PSR J0740+6620 provides highest-precision neutron star mass measurement, constraining deviations at 10^{-5} level.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_ppn_comparison()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Pulsar Timing Array</strong></td>
+            <td>Schwarzschild</td>
+            <td><strong>Dataset:</strong> NANOGrav 15-year data<br/>
+                <strong>Source:</strong> <a href="https://data.nanograv.org/" target="_blank">NANOGrav Data Portal</a><br/>
+                <strong>Precision:</strong> ≤ 1 μs timing residuals</td>
+            <td><strong>Code:</strong> <code>test_pulsar_timing.py</code><br/>
+                <strong>Data Source:</strong> dataloader://nanograv_15yr<br/>
+                <strong>File:</strong> v1p1_all_dict.json<br/>
+                <strong>Contains:</strong> Full 15yr CW analysis parameters</td>
+            <td>Millisecond pulsar timing tests GR via Shapiro delays and gravitational wave backgrounds; NANOGrav 15yr data provides nHz GW sensitivity.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_gravitational_wave_inspiral()</code></td>
+        </tr>
+        <tr>
+            <td><strong>CMB Power Spectrum</strong></td>
+            <td>Cosmological models</td>
+            <td><strong>Dataset:</strong> Planck 2018 TT power spectrum<br/>
+                <strong>Source:</strong> <a href="https://pla.esac.esa.int/pla/" target="_blank">Planck Legacy Archive</a><br/>
+                <strong>Multipoles:</strong> l=2-2508, cosmic variance limited</td>
+            <td><strong>Code:</strong> <code>test_cmb_power_spectrum.py</code><br/>
+                <strong>Data Source:</strong> dataloader://planck_cmb_2018<br/>
+                <strong>File:</strong> COM_PowerSpect_CMB-TT-binned_R3.01.txt<br/>
+                <strong>Format:</strong> l, D_l, +error, -error<br/>
+                <strong>Test loads:</strong> All multipoles l=2-2508</td>
+            <td>CMB temperature anisotropies test early universe physics and quantum gravity effects; Planck data constrains primordial power spectrum to 0.1% precision.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_cmb_power_spectrum()</code></td>
+        </tr>
+        <tr>
+            <td><strong>BICEP/Keck Tensor Modes</strong></td>
+            <td>Inflationary models</td>
+            <td><strong>Dataset:</strong> BICEP/Keck 2021 BK18 constraints<br/>
+                <strong>Source:</strong> <a href="http://bicepkeck.org/" target="_blank">BICEP/Keck Collaboration</a><br/>
+                <strong>Constraint:</strong> r < 0.036 (95% CL)</td>
+            <td><strong>Code:</strong> <code>test_bicep_keck.py</code><br/>
+                <strong>Data Source:</strong> dataloader://bicep_keck_2021<br/>
+                <strong>File:</strong> BK18_r_likelihood.txt<br/>
+                <strong>Format:</strong> r, -2ln(L)<br/>
+                <strong>Contains:</strong> Tensor-to-scalar ratio likelihood</td>
+            <td>Primordial gravitational wave constraints test inflationary predictions; BICEP/Keck 2021 limits tensor-to-scalar ratio r < 0.036, testing quantum gravity suppression of tensor modes.</td>
+            <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/solver_tests/test_geodesic_validator_comparison.py">test_geodesic_validator_comparison.py</a><br/>
+                Function: <code>test_bicep_keck_primordial_gws()</code></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>This summary outlines the development of a PyTorch-based geodesic integrator system designed to simulate particle and light trajectories in various gravitational spacetimes, with extensions for testing unified theories. The tool was built to facilitate novel predictions required for unification, such as modified dispersion relations and quantum corrections to cosmological observables. It emphasizes modularity, empirical validation, and safeguards against overfitting or circularity in simulations.</p>
+
+<p>The implementation was inspired by background research into numerical geodesic solving, particularly the foundational work from Aalto University on geodesic integrators for curved spacetimes. The Aalto approach initially formulated the problem in full 8D phase space (4 positions + 4 momenta), which we recognized could be reduced for practical implementation. We streamlined this to a 6D state-space approach (3 spatial coordinates + 3 velocities, with time as the integration parameter) for general non-symmetric spacetimes, and further optimized to 4D (2 coordinates + 2 velocities) for symmetric cases by exploiting conserved quantities. This dimensional reduction maintains full physical accuracy while significantly improving computational efficiency. More critically, the core theoretical motivation draws from Partanen and Tulkki's 2025 paper, "Gravity generated by four one-dimensional unitary gauge symmetries and the Standard Model" (Reports on Progress in Physics, DOI: <a href="https://doi.org/10.1088/1361-6633/adc82e">10.1088/1361-6633/adc82e</a>), which provided the mathematical framework for UGM—a renormalizable gauge theory unifying gravity with the Standard Model via four compact U(1) symmetries. We referenced this paper extensively for incorporating tetrads, gauge fields, and quantum loop corrections into our solvers.</p>
+
+<h2>Table of Improvements</h2>
+
+<div style="background-color: #f0f8ff; border: 1px solid #4682b4; border-radius: 8px; padding: 15px; margin: 20px 0; cursor: pointer;" onclick="toggleImprovements()">
+    <p id="improvements-summary" style="margin: 0; color: #1a5490; font-weight: bold;">
+        Click to view 7 key improvements (6D solver, 4D optimization, charged/null extensions, UGM solver, quantum predictions, validation framework)
+    </p>
+</div>
+
+<div id="improvements-table" style="display: none;">
+<p>The following table lists every key improvement made during development, including references to inspirational sources, the rationale (why it was made), and its impact on the system. Improvements were iterative, driven by competitive analysis, integrity reviews, and empirical grounding. The table culminates in a summary of the built system, how we proved avoidance of circularity, and documentation for replication.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Improvement</th>
+            <th>Reference/Source</th>
+            <th>Why It Was Made</th>
+            <th>Impact</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>6D State-Space Solver</strong></td>
+            <td>
+                <a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/geodesic_integrator.py#L296" class="code-reference">GeneralGeodesicRK4Solver</a>
+                <span class="author-note">(by Pim de Witte)</span>
+                <button class="show-code-btn" onclick="toggleCodePreview('general-geodesic-preview')">Show code</button>
+                <div id="general-geodesic-preview" class="code-preview">
+                    <pre><code>class GeneralGeodesicRK4Solver:
+    """
+    RK4 integrator for general geodesic equations.
+    Numerically integrates the geodesic equations for a given metric.
+    Uses 6D state space: [t, r, phi, u^t, u^r, u^phi]
+    
+    &lt;reason&gt;chain: General solver for arbitrary metrics without symmetry assumptions&lt;/reason&gt;
+    """
+    
+    def __init__(self, model: GravitationalTheory, M_phys: Tensor = None, c: float = C_SI, G: float = G_SI, M: Tensor = None, **kwargs):
+        self.model = model
+        # Backward compatibility: accept M or M_phys
+        if M_phys is None and M is not None:
+            M_phys = M
+        elif M_phys is None:
+            raise ValueError("Must provide either M_phys or M parameter")
+        self.M_phys = M_phys
+        self.c = c
+        self.G = G
+        self.kwargs = kwargs
+        self.metric_func = get_metric_wrapper(model.get_metric)</code></pre>
+                </div>
+            </td>
+            <td>To handle arbitrary spacetimes (e.g., non-symmetric like rotating black holes) efficiently, reducing full 8D phase space while enabling quantum extensions.</td>
+            <td>Core engine: Enables classical/quantum geodesic computation; auto-detects symmetry for optimization. (Class: GeneralGeodesicRK4Solver; Test: Run validator_psr_j0740(kappa=0.0) to verify GR match.)</td>
+        </tr>
+        <tr>
+            <td><strong>Symmetric 4D Reduction</strong></td>
+            <td>FANTASY (arXiv:2010.02237) for conserved quantities; Geomstats (arXiv:2004.04667) for manifold efficiency.</td>
+            <td>To optimize for static/axisymmetric cases (e.g., Schwarzschild), leveraging E/Lz conservation for faster simulations without loss of accuracy.</td>
+            <td>Performance boost: 4D state for classical GR tests; avoids unnecessary computation in unified models. (Class: GeodesicRK4Solver; Test: Set force_6dof_solver=False and run symmetry auto-detection in is_symmetric property.)</td>
+        </tr>
+        <tr>
+            <td><strong>Charged/Null Extensions</strong></td>
+            <td>GRay2 (arXiv:1706.07062) for null rays; Partanen & Tulkki (2025) for EM unification.</td>
+            <td>To support SM-like interactions (Lorentz force) and photons, essential for unification predictions like modified dispersion in quantum regimes.</td>
+            <td>Versatility: Handles quantum vs. classical by parameterizing (e.g., impact parameter for null). (Classes: ChargedGeodesicRK4Solver, NullGeodesicRK4Solver; Test: Initialize with q>0 for charged, run compute_time_of_flight_numeric with null solver.)</td>
+        </tr>
+        <tr>
+            <td><strong>UGM-Specific Solver</strong></td>
+            <td>Partanen & Tulkki (2025) directly for tetrads/gauge fields; SageManifolds (sagemath.org) for symbolic torsion.</td>
+            <td>To test UGM's four U(1) symmetries, including renormalizable quantum corrections, against our LSL theory.</td>
+            <td>Unification focus: Enables novel predictions like GW tilts; optional loop corrections for Planck-scale effects. (Class: UGMGeodesicRK4Solver; Test: Enable quantum corrections and validate renormalizability via det_g check in get_metric_tensor.)</td>
+        </tr>
+        <tr>
+            <td><strong>Quantum Lagrangians/Predictions</strong></td>
+            <td>Per-theory basis from UGM paper; generalized via Mixin for QFT terms (e.g., Dirac/Yang-Mills).</td>
+            <td>To generate unification-required predictions (e.g., vacuum energy, info paradox resolution) from Lagrangians, allowing per-model customization.</td>
+            <td>Depth: Each theory has tailored quantum components; enables loss scoring in validators. (Mixin: QuantumUnifiedMixin; Test: Call validate_lagrangian_completeness() and run novel_predictions() for outputs.)</td>
+        </tr>
+        <tr>
+            <td><strong>Pulsar Validator</strong></td>
+            <td>Fonseca et al. (2021, ApJL, DOI: 10.3847/2041-8213/ac03b8) for data; conversation on avoiding overfitting.</td>
+            <td>To ground simulations in real data (Shapiro delays), preventing solver-internal biases via analytic-numeric asserts and Monte Carlo uncertainties.</td>
+            <td>Integrity: Proves no circularity by external anchoring; documentation below for replication. (Function: validator_psr_j0740; Test: Run python geodesic_integrator.py to execute __main__ tests at κ=0 and κ=1e-10.)</td>
+        </tr>
+        <tr>
+            <td><strong>Cosmological Predictor/Validator</strong></td>
+            <td>Generalized from pulsar approach; Planck CMB data for loss scoring; UGM paper for vacuum energy.</td>
+            <td>To score theories uniformly on cosmological observables (e.g., CMB suppression), mirroring pulsar method for unification benchmarks.</td>
+            <td>Objectivity: Centralized loss computation (χ² vs. data) across theories; avoids per-theory silos. (Class: CosmologicalPredictor; Test: Initialize with theory, run predict_cmb_power_suppression(l=10) and compare to Planck data manually.)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>System Summary</h3>
+<p>We've built a hybrid classical-quantum geodesic simulation system that integrates per-theory customizations (e.g., Lagrangians for UGM/LSL) with generalized validators for fair, data-driven scoring. The core uses RK4 in 6D/4D spaces, extended for quantum effects via path integrals and corrections. We proved avoidance of circularity by separating analytic baselines (independent formulas/data) from numeric solver outputs, asserting equivalence at baseline (κ=0) and using Monte Carlo to inject real uncertainties—ensuring matches reflect physics, not artifacts. Overfitting is mitigated by empirical bounds (e.g., pulsar rms) and external cross-checks (e.g., SageManifolds symbolic).</p>
+
+<h3>Documentation for Proving Avoidance of Circularity</h3>
+<p>To replicate our proof:</p>
+<ol>
+    <li><strong>Setup</strong>: Clone repo; install dependencies (Torch, SymPy, NumPy). Use PSR J0740+6620 data (Fonseca et al., 2021) or CMB datasets (Planck 2018).</li>
+    <li><strong>Analytic Baseline</strong>: Compute delays/predictions via formulas (e.g., Shapiro: -2 (GM/c³) ln(1 - sin i)). Run: <code>python -c "from geodesic_integrator import compute_shapiro_delay_analytic; print(compute_shapiro_delay_analytic(M_c=..., a=..., i=...))"</code>.</li>
+    <li><strong>Numeric Run</strong>: Integrate with solver; assert |analytic - numeric| < tolerance + σ (from Monte Carlo). Run: <code>python geodesic_integrator.py</code> (executes validator_psr_j0740 at κ=0).</li>
+    <li><strong>Monte Carlo</strong>: Sample params (e.g., M_c ±0.004 M_sun) N=100 times; compute mean/std. Integrated in validator; adjust mc_samples=100.</li>
+    <li><strong>Loss Scoring</strong>: In CosmologicalValidator, χ² = Σ (pred_i - obs_i)² / σ_i²; minimize across theories. Example: Initialize predictor, run predict_cmb_power_suppression, compare to Planck TT spectrum data (download from ESA site).</li>
+    <li><strong>Cross-Check</strong>: Use SageManifolds/Geomstats for symbolic/numeric verification (install separately; e.g., <code>sage -c "from sage.manifolds.all import *; ..."</code> for metric validation).</li>
+</ol>
+<p>This method ensures external grounding; share code/outputs for peer review. Commands assume file named <code>geodesic_integrator.py</code>; adjust as needed.</p>
+</div>
+
+
+
+<h2>🧪 Comprehensive Validation Pipeline</h2>
+
+<p>The following table shows all 21 validation tests used to verify each gravitational theory against experimental data. Each test is color-coded by category and includes precision requirements.</p>
+
+<table style="background-color: #f0fff0; border: 2px solid #4caf50;">
+    <thead>
+        <tr style="background-color: #e8f5e9;">
+            <th style="width: 20%; color: #1b5e20;">Test Category</th>
+            <th style="width: 25%; color: #1b5e20;">Test Name</th>
+            <th style="width: 30%; color: #1b5e20;">What It Tests</th>
+            <th style="width: 25%; color: #1b5e20;">Required Precision</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background-color: #e8f5e9;">
+            <td rowspan="10" style="font-weight: bold; color: #2e7d32; vertical-align: middle;">Classical Tests (10)</td>
+            <td>Mercury Precession</td>
+            <td>Perihelion advance (43"/century)</td>
+            <td>&lt; 0.1% error</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Light Deflection</td>
+            <td>Solar deflection (1.75")</td>
+            <td>&lt; 0.01 mas precision</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Shapiro Time Delay</td>
+            <td>Signal delay near Sun</td>
+            <td>&lt; 10 ns accuracy</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Frame Dragging (GP-B)</td>
+            <td>Lense-Thirring effect</td>
+            <td>&lt; 0.3 mas/year</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Photon Sphere</td>
+            <td>r = 3M for Schwarzschild</td>
+            <td>Exact match</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Black Hole Shadow</td>
+            <td>M87* shadow (42 μas)</td>
+            <td>&lt; 10% error</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Binary Pulsar (PSR J0740)</td>
+            <td>Orbital decay & masses</td>
+            <td>&lt; 0.2% error</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Conservation Laws</td>
+            <td>Energy, momentum, ang. momentum</td>
+            <td>&lt; 10⁻⁸ relative</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>Metric Properties</td>
+            <td>Signature, determinant, limits</td>
+            <td>Exact validation</td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+            <td>PPN Parameters</td>
+            <td>γ = 1.000021±0.000023</td>
+            <td>Within error bars</td>
+        </tr>
+        <tr style="background-color: #f3e5f5;">
+            <td rowspan="5" style="font-weight: bold; color: #6a1b9a; vertical-align: middle;">Quantum Tests (5)</td>
+            <td>COW Interferometry</td>
+            <td>Gravitational phase shift</td>
+            <td>&lt; 1% of 2.7 rad</td>
+        </tr>
+        <tr style="background-color: #f3e5f5;">
+            <td>Atom Interferometry</td>
+            <td>Quantum superposition in gravity</td>
+            <td>&lt; 10⁻³ phase</td>
+        </tr>
+        <tr style="background-color: #f3e5f5;">
+            <td>Quantum Clocks</td>
+            <td>Gravitational redshift</td>
+            <td>&lt; 10⁻¹⁸ fractional</td>
+        </tr>
+        <tr style="background-color: #f3e5f5;">
+            <td>Decoherence Bounds</td>
+            <td>Gravity-induced decoherence</td>
+            <td>&lt; experimental limits</td>
+        </tr>
+        <tr style="background-color: #f3e5f5;">
+            <td>Lagrangian Grounding</td>
+            <td>QFT consistency</td>
+            <td>Renormalizable</td>
+        </tr>
+        <tr style="background-color: #e3f2fd;">
+            <td rowspan="6" style="font-weight: bold; color: #1565c0; vertical-align: middle;">Cosmological Tests (6)</td>
+            <td>CMB Power Spectrum</td>
+            <td>Planck TT spectrum</td>
+            <td>χ²/dof &lt; 1.1</td>
+        </tr>
+        <tr style="background-color: #e3f2fd;">
+            <td>PTA GW Background</td>
+            <td>NANOGrav 15yr signal</td>
+            <td>Within 2σ bounds</td>
+        </tr>
+        <tr style="background-color: #e3f2fd;">
+            <td>Primordial GWs</td>
+            <td>BICEP/Keck r &lt; 0.036</td>
+            <td>95% CL constraint</td>
+        </tr>
+        <tr style="background-color: #e3f2fd;">
+            <td>Hawking Radiation</td>
+            <td>Black hole thermodynamics</td>
+            <td>T_H = ħc³/8πGMk_B</td>
+        </tr>
+        <tr style="background-color: #e3f2fd;">
+            <td>Cosmological Evolution</td>
+            <td>H(z), Ω_m, Ω_Λ</td>
+            <td>&lt; 5% error</td>
+        </tr>
+        <tr style="background-color: #e3f2fd;">
+            <td>Unification Scale</td>
+            <td>Quantum gravity regime</td>
+            <td>E &gt; 10¹⁶ GeV</td>
+        </tr>
+    </tbody>
+</table>
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem;">
+    <div style="background-color: #e8f8e8; padding: 1rem; border-radius: 8px;">
+        <strong style="color: #2e7d32;">✅ Pass Criteria</strong>
+        <ul style="font-size: 0.875rem; margin-top: 0.5rem;">
+            <li>χ²/dof < 1.5 for all tests</li>
+            <li>Reduces to GR when parameters → 0</li>
+            <li>Conserves energy to 10⁻⁸</li>
+            <li>Matches known precision</li>
+        </ul>
+    </div>
+    <div style="background-color: #ffebee; padding: 1rem; border-radius: 8px;">
+        <strong style="color: #c62828;">❌ Fail Reasons</strong>
+        <ul style="font-size: 0.875rem; margin-top: 0.5rem;">
+            <li>Violates experimental bounds</li>
+            <li>Numerical instabilities</li>
+            <li>Unphysical metrics</li>
+            <li>Missing quantum limit</li>
+        </ul>
+    </div>
+</div>
+
+<h2>Precise Handling of Quantum vs. Classical Geodesics</h2>
+
+<p>The system handles quantum vs. classical geodesics through a hybrid approach: classical paths use deterministic RK4 integration in 6D/4D space, while quantum effects are layered as perturbative corrections or path integral simulations when enabled.</p>
+
+<p><strong>Classical Geodesics</strong>: Treated as point-particle trajectories in curved spacetime. For timelike (massive particles), normalize 4-velocity to g_μν u^μ u^ν = -c². Null (light) uses reparameterized equations with impact parameter b=Lz/E. Computation: Metric components (g_tt etc.) &rarr; Christoffel symbols via autograd &rarr; Accelerations a^k = -Γ^k_ij u^i u^j &rarr; RK4 steps. Symmetric cases reduce dimensions using conserved E/Lz for efficiency. Charged adds classical Lorentz: a^μ += (q/m) F^μ_ν u^ν.</p>
+
+<p><strong>Quantum Geodesics</strong>: When `enable_quantum_corrections=True` (e.g., in UGM solver), classical paths are modified perturbatively. Extract vacuum energy from Lagrangian zero-point (∫ dk ħω(k)), adding to effective potential. Dispersion: E² = p²c² + m²c⁴ + corr (from one-loop via symbolic integration). Path integrals (WKB approx.): Amplitude ∫ D[x] exp(iS/ħ) computes fluctuation suppression, e.g., decoherence factor 1 - |amp|² applied to classical probability. For unification, gauge/matter terms yield EM-like interactions at quantum scales. Handling: If quantum, perturb metric (e.g., g_rr *= 1 + α_g/(π r²)); re-compute path. Lossless classical limit: At ħ&rarr;0 or corr=0, reduces to GR.</p>
+
+<p>This precise separation—classical as base, quantum as optional layer—allows testing unification without altering core determinism, with validators ensuring no quantum artifacts overfit classical data.</p>
+
+<div class="flowchart-container">
+    <div class="flowchart-title">How Albert's Geodesic Solver Works</div>
+    <div class="mermaid">
+    flowchart TD
+        Start["🎯 THEORY SPECIFICATION<br/>Define metric g_μν(r,θ,φ)<br/>+ theory parameters"]
+        
+        Start --> Validate["🧪 VALIDATION SUITE<br/>21 Tests Available:<br/>Classical + Quantum + Cosmology"]
+        
+        Validate --> Engine["⚙️ THEORY ENGINE<br/>TheoryEngine.run_trajectory()<br/>Auto-detects symmetries"]
+        
+        Engine --> SolverChoice{"🔍 SOLVER SELECTION<br/>Based on spacetime properties"}
+        
+        SolverChoice -->|"Static/Spherical"| Solver4D["📐 4D SOLVER<br/>Fast symmetric solver<br/>Uses conserved E, Lz"]
+        
+        SolverChoice -->|"Rotating/General"| Solver6D["📊 6D SOLVER<br/>General metric solver<br/>No symmetry assumptions"]
+        
+        SolverChoice -->|"Charged particles"| SolverCharged["⚡ CHARGED SOLVER<br/>Includes Lorentz force<br/>EM interactions"]
+        
+        SolverChoice -->|"Quantum effects"| SolverQuantum["🌌 QUANTUM SOLVER<br/>Path integrals + corrections<br/>Unification features"]
+        
+        Solver4D --> Integrate["🔄 INTEGRATION<br/>RK4 numerical integration<br/>PyTorch GPU acceleration"]
+        Solver6D --> Integrate
+        SolverCharged --> Integrate
+        SolverQuantum --> Integrate
+        
+        Integrate --> RunTests["✅ RUN ALL TESTS<br/>Mercury • Pulsars • Light<br/>Quantum • Cosmology • GWs"]
+        
+        RunTests --> Results{"📊 COMPARE TO DATA<br/>Match observations?"}
+        
+        Results -->|"Yes ✅"| Predictions["✨ NOVEL PREDICTIONS<br/>CMB modifications<br/>Quantum gravity effects<br/>New phenomena"]
+        
+        Results -->|"No ❌"| Reject["❌ THEORY REJECTED<br/>Document failures<br/>Learn for next iteration"]
+        
+        Predictions --> Score["🏆 SCORING<br/>χ²/dof • AIC • BIC<br/>Statistical comparison"]
+        
+        Score --> Leaderboard["📈 LEADERBOARD<br/>Rank all theories<br/>Track best performers"]
+        
+        Reject --> Feedback["🔄 AI FEEDBACK<br/>Refine theory space<br/>Improve next generation"]
+        
+        Feedback --> ALBERT["🤖 ALBERT AI<br/>500+ instances<br/>Generating new theories"]
+        
+        ALBERT --> Start
+        Leaderboard --> ALBERT
+        
+        style Start fill:#90EE90,stroke:#006400,stroke-width:3px
+        style Validate fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
+        style RunTests fill:#FFE4B5,stroke:#FF8C00,stroke-width:3px
+        style SolverChoice fill:#87CEEB,stroke:#4682B4,stroke-width:2px
+        style Results fill:#87CEEB,stroke:#4682B4,stroke-width:2px
+        style Predictions fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
+        style Score fill:#FFB6C1,stroke:#DC143C,stroke-width:3px
+        style ALBERT fill:#DDA0DD,stroke:#8B008B,stroke-width:3px
+    </div>
+</div>
 
 </body>
 </html>

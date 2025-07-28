@@ -1,0 +1,24 @@
+Deterministic mode enabled: seeds set, non-deterministic optimizations disabled
+Running on device: cpu, with dtype: torch.float64
+Quantum field content for quantum theories: all
+
+============================================================
+Running solver calibration...
+============================================================
+
+
+✅ Solver calibration passed!
+
+📋 Calibration Certificate ID: 10035d54fe27ea09
+   Status: VALID | Health: 100%
+
+--- Loading Theories ---
+Discovered 32 theory classes total
+Loaded 30 theory instances
+Loading baseline theories for comparison...
+  Loaded baseline: Kerr (a=0.00) (pure gravity)
+  Failed to load baselines: KerrNewmanTheory.__init__() got an unexpected keyword argument 'q_e'
+
+--- Simulating Baseline Theories ---
+Run directory: runs/run_20250727_161957_float64
+Running: Kerr (a=0.50)

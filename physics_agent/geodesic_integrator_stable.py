@@ -244,21 +244,35 @@ class QuantumGeodesicSolver:
         self.G = G
         self.kwargs = kwargs
         
+        # <reason>chain: Add classical solver for finding stationary paths</reason>
+        # Use classical solver to find the path of stationary action
+        # Choose appropriate solver based on theory properties
+        if hasattr(model, 'is_symmetric') and model.is_symmetric:
+            # Use 4D solver for symmetric spacetimes
+            self.classical_solver = GeodesicRK4Solver(model, M_phys, c, G, **kwargs)
+        else:
+            # Use 6D solver for general spacetimes
+            self.classical_solver = GeneralGeodesicRK4Solver(model, M_phys, c, G, **kwargs)
+        
         # Create quantum path integrator
         self.quantum_integrator = QuantumPathIntegrator(model, enable_quantum=True)
+        
+        # <reason>chain: Pass classical solver to quantum integrator for proper geodesic computation</reason>
+        # The quantum path integrator needs to compute classical geodesics for the WKB approximation
+        self.quantum_integrator._geodesic_solver = self.classical_solver
         
         # Default method for path integral computation
         self.method = kwargs.get('quantum_method', 'wkb')  # 'wkb' or 'monte_carlo'
         self.num_samples = kwargs.get('num_samples', 100)
         self.num_points = kwargs.get('num_points', 20)
         
-        # <reason>chain: Add classical solver for finding stationary paths</reason>
-        # Use classical solver to find the path of stationary action
-        self.classical_solver = GeneralGeodesicRK4Solver(model, M_phys, c, G, **kwargs)
-        
         # <reason>chain: QED parameters for quantum corrections</reason>
         self.alpha_qed = kwargs.get('alpha_qed', 1.0/137.035999084)  # Fine structure constant
         self.enable_qed_corrections = kwargs.get('enable_qed_corrections', True)
+        
+        # <reason>chain: Default conserved quantities (will be set by user)</reason>
+        self.E = 1.0  # Energy per unit mass (geometric)
+        self.Lz = 0.0  # Angular momentum per unit mass (geometric)
     
     def to_geometric_length(self, r_phys: Tensor) -> Tensor:
         """Convert physical length (m) to geometric units"""
@@ -423,8 +437,8 @@ class QuantumGeodesicSolver:
                 # Add small quantum fluctuations
                 quantum_point = list(classical_point)
                 if i > 0 and i < len(classical_traj) - 1:  # Don't modify endpoints
-                    quantum_point[1] += np.random.normal(0, uncertainty * 0.1)  # Small r fluctuation
-                    quantum_point[3] += np.random.normal(0, uncertainty * 0.01 / classical_point[1])  # Small angle fluctuation
+                    quantum_point[1] += torch.randn(1, device=device, dtype=DTYPE) * uncertainty * 0.1  # Small r fluctuation
+                    quantum_point[3] += torch.randn(1, device=device, dtype=DTYPE) * uncertainty * 0.01 / classical_point[1]  # Small angle fluctuation
                 
                 best_path.append(tuple(quantum_point))
                 
@@ -506,30 +520,21 @@ class QuantumGeodesicSolver:
         """
         <reason>chain: Compatibility method - compute single quantum step</reason>
         
-        For quantum theories, this doesn't use RK4 but instead computes
-        the most probable next state using path integrals.
+        For quantum theories, we delegate to the classical solver since
+        quantum mechanics requires full path information, not step-by-step.
+        The quantum corrections are applied at the trajectory level.
         """
-        # Current state
-        current = y
-        
-        # Estimate next state classically
-        t_next = y[0] + h
-        # Simple linear extrapolation for position
-        if len(y) >= 4 and len(y) == 4:
-            dr_dtau = y[3]
-            r_next = y[1] + h * dr_dtau
-            phi_next = y[2]  # Assume constant for small step
-            next_state = torch.tensor([t_next, r_next, phi_next, dr_dtau])
-        else:
-            # Just advance time for general state
-            next_state = y.clone()
-            next_state[0] = t_next
+        # <reason>chain: Pass conserved quantities to classical solver if needed</reason>
+        # Make sure classical solver has the conserved quantities
+        if hasattr(self, 'E') and hasattr(self.classical_solver, 'E'):
+            self.classical_solver.E = self.E
+        if hasattr(self, 'Lz') and hasattr(self.classical_solver, 'Lz'):
+            self.classical_solver.Lz = self.Lz
             
-        # Compute quantum trajectory for this step
-        trajectory = self.compute_quantum_trajectory(current, next_state, steps=2)
-        
-        # Return the end state
-        return trajectory[-1] if len(trajectory) > 1 else None
+        # Use classical solver for individual steps
+        # Quantum corrections are applied when computing full trajectories
+        # via path integrals in compute_quantum_trajectory
+        return self.classical_solver.rk4_step(y, h, **kwargs)
 
 
 class GeodesicRK4Solver:

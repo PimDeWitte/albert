@@ -6,6 +6,9 @@ from __future__ import annotations
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+from scipy.constants import G as const_G, c as const_c
+from matplotlib.lines import Line2D
+import matplotlib.gridspec as gridspec
 
 # Conditional import for sympy for displaying Lagrangian
 try:
@@ -13,7 +16,7 @@ try:
 except ImportError:
     HAS_SYMPY = False
 
-from physics_agent.base_theory import GravitationalTheory, Tensor
+from physics_agent.base_theory import GravitationalTheory, Tensor, QuantumMixin
 
 class TheoryVisualizer:
     """
@@ -44,8 +47,8 @@ class TheoryVisualizer:
         # Use dark background for better contrast
         plt.style.use('dark_background')
         
-        # Create figure with 3D axes
-        fig = plt.figure(figsize=(14, 10))
+        # <reason>chain: Create larger figure for better visibility
+        fig = plt.figure(figsize=(18, 14))
         ax = fig.add_subplot(111, projection='3d')
         
         # Convert main theory trajectory - CONVERT TO GEOMETRIC UNITS
@@ -53,59 +56,72 @@ class TheoryVisualizer:
         r = self._to_numpy(hist[:, 1]) / self.engine.length_scale
         phi = self._to_numpy(hist[:, 2])
         
-        # <reason>chain: Ensure we have meaningful trajectory data before plotting</reason>
+        # Smooth the end of the trajectory to avoid abrupt overlaps
+        if len(t) > 2:
+            # Interpolate last segment if points overlap
+            if np.linalg.norm([r[-1] - r[-2], phi[-1] - phi[-2], t[-1] - t[-2]]) < 1e-2:
+                t_interp = np.linspace(t[-2], t[-1], 5)
+                r_interp = np.interp(t_interp, t[-2:], r[-2:])
+                phi_interp = np.interp(t_interp, t[-2:], phi[-2:])
+                t = np.concatenate([t[:-2], t_interp])
+                r = np.concatenate([r[:-2], r_interp])
+                phi = np.concatenate([phi[:-2], phi_interp])
+        
+        # <reason>chain: Ensure we have meaningful trajectory data before plotting
         if len(t) < 2:
             print(f"  Warning: Trajectory too short ({len(t)} points), skipping visualization")
             return
         
-        # <reason>chain: Check if r is changing - if not, the trajectory has issues</reason>
+        # <reason>chain: Check if r is changing - if not, the trajectory has issues
         if np.std(r) < 1e-10:  # If r doesn't change at all
             print(f"  WARNING: Trajectory has no radial motion! r_mean={np.mean(r):.3f}, r_std={np.std(r):.3e}")
             print(f"    Initial r={r[0]:.3f}, final r={r[-1]:.3f}")
             print(f"    This suggests a problem with the geodesic solver or initial conditions")
         
-        # <reason>chain: Check if this is a quantum theory and add uncertainty visualization</reason>
+        # <reason>chain: Check if this is a quantum theory and add uncertainty visualization
         theory_category = getattr(model, 'category', 'unknown')
         is_quantum = theory_category == 'quantum' and hasattr(model, 'quantum_integrator')
         
-        if is_quantum and model.quantum_integrator is not None:
-            # <reason>chain: Visualize quantum uncertainty around the trajectory</reason>
-            self._add_quantum_uncertainty_cloud(ax, r, phi, t, model)
-        
-        # <reason>chain: Auto-calculate proper marker intervals based on trajectory length</reason>
-        # If we have a full trajectory, ensure we show markers that end nicely at the end
-        total_steps = len(t)
-        desired_markers = 50  # Target number of markers
-        
-        # Calculate step interval to get close to desired markers AND end at the last point
-        step_interval = max(1, (total_steps - 1) // desired_markers)
-        # Adjust to ensure we include the last point
-        if (total_steps - 1) % step_interval != 0:
-            # Find the closest interval that divides evenly
-            best_interval = step_interval
-            min_remainder = (total_steps - 1) % step_interval
-            
-            # Check nearby intervals
-            for test_interval in range(max(1, step_interval - 5), step_interval + 6):
-                remainder = (total_steps - 1) % test_interval
-                if remainder < min_remainder or (remainder == 0 and min_remainder > 0):
-                    best_interval = test_interval
-                    min_remainder = remainder
-                    if remainder == 0:
-                        break
-            
-            step_interval = best_interval
-            
-        print(f"  Trajectory has {total_steps} points, using step interval {step_interval} for markers")
-        print(f"  Trajectory range: r=[{r.min():.3f}, {r.max():.3f}], phi=[{phi.min():.3f}, {phi.max():.3f}]")
-            
         # Convert to Cartesian coordinates
         x = r * np.cos(phi)
         y = r * np.sin(phi)
         z = t  # Use time as z-axis
         
-        # <reason>chain: Plot main theory trajectory with bright red color and thicker line</reason>
-        # Make the main trajectory more visible - lower zorder for proper depth
+        # <reason>chain: Collect all trajectory data for proper bounds calculation
+        all_x = [x]
+        all_y = [y]
+        all_z = [z]
+        all_r = [r]
+        
+        # <reason>chain: Calculate average quantum uncertainty to display in the legend, instead of plotting the cloud.
+        avg_uncertainty_radius = None
+        if is_quantum and hasattr(model, '_get_average_quantum_uncertainty'):
+            avg_uncertainty_radius = model._get_average_quantum_uncertainty(r, phi, t, self.engine)
+        
+        # <reason>chain: Auto-calculate proper marker intervals based on trajectory length
+        # If we have a full trajectory, ensure we show markers that end nicely at the end
+        total_steps = len(t)
+        desired_markers = 30  # Reduced from 50 for cleaner look
+        
+        # Calculate step interval to get close to desired markers AND end at the last point
+        step_interval = max(1, (total_steps - 1) // desired_markers)
+            
+        print(f"  Trajectory has {total_steps} points, using step interval {step_interval} for markers")
+        print(f"  Trajectory range: r=[{r.min():.3f}, {r.max():.3f}], phi=[{phi.min():.3f}, {phi.max():.3f}]")
+        
+        # <reason>chain: Warn about problematic trajectories
+        r_range = r.max() - r.min()
+        phi_range = phi.max() - phi.min()
+        if r_range < 1e-6 and phi_range < 1e-6:
+            print(f"  WARNING: Theory '{model.name}' produces no motion (stationary trajectory)")
+            print(f"           This may indicate a problem with the theory's equations of motion")
+        elif r_range < 1e-6:
+            print(f"  WARNING: Theory '{model.name}' has no radial motion (circular orbit)")
+        elif phi_range < 1e-6:
+            print(f"  WARNING: Theory '{model.name}' has no angular motion (radial plunge)")
+        
+        # <reason>chain: Plot main theory trajectory with thinner line for better cloud visibility
+        # Make the main trajectory thinner - reduced from 4 to 2
         main_particle_name = "Primary Particle"
         if particle_info and particle_info.get('particle'):
             particle = particle_info['particle']
@@ -115,9 +131,9 @@ class TheoryVisualizer:
             label_parts = [f"{particle.name.capitalize()} ({model.name})"]
             
             # Add solver type to label - always include "Solver" and 4D/6D designation
-            # <reason>chain: Check for UGM and quantum theories first before defaulting to symmetric/general</reason>
+            # <reason>chain: Check for UGM and quantum theories first before defaulting to symmetric/general
             if 'ugm' in solver_tag:
-                # <reason>chain: UGM theories use special UGM solver that handles gauge fields</reason>
+                # <reason>chain: UGM theories use special UGM solver that handles gauge fields
                 label_parts.append("[UGM Solver (6D)]")
             elif 'quantum_unified' in solver_tag or 'quantum' in solver_tag:
                 label_parts.append("[Quantum Path Integral (6D)]")
@@ -133,7 +149,7 @@ class TheoryVisualizer:
             elif 'general' in solver_tag:
                 label_parts.append("[General Geodesic Solver (6D)]")
             else:
-                # <reason>chain: Add explicit UGM and quantum theory check for proper labeling</reason>
+                # <reason>chain: Add explicit UGM and quantum theory check for proper labeling
                 # Check if this is a UGM theory
                 is_ugm = (hasattr(model, 'use_ugm_solver') and model.use_ugm_solver) or \
                          model.__class__.__name__ == 'UnifiedGaugeModel' or \
@@ -145,7 +161,7 @@ class TheoryVisualizer:
                     # Infer from theory properties and particle
                     theory_category = getattr(model, 'category', 'unknown')
                     if theory_category == 'quantum':
-                        # <reason>chain: Quantum theories now use proper path integral solver</reason>
+                        # <reason>chain: Quantum theories now use proper path integral solver
                         # with classical geodesics as the stationary path
                         label_parts.append("[Quantum Path Integral (6D)]")
                     elif particle and particle.particle_type == 'massless':
@@ -164,104 +180,40 @@ class TheoryVisualizer:
                             label_parts.append("[Geodesic Solver (6D)]")
             
             main_particle_name = " ".join(label_parts)
-        ax.plot(x, y, z, color='red', linewidth=4, alpha=0.9, label=main_particle_name, zorder=5)
         
-        # Add step markers along the main trajectory
+        # <reason>chain: Reduced line width from 4 to 2 for better cloud visibility
+        # <reason>chain: Use a dotted line style for the main theory as requested.
+        ax.plot(x, y, z, color='red', linestyle=':', linewidth=2, alpha=0.9, label=main_particle_name, zorder=10)
+        
+        # Add step markers along the main trajectory - make them smaller
         marker_indices = list(range(0, total_steps, step_interval))
         # Ensure the last point is included
         if marker_indices[-1] != total_steps - 1:
             marker_indices.append(total_steps - 1)
             
         for i in marker_indices:
-            # <reason>chain: Make step markers smaller and less prominent</reason>
-            ax.scatter(x[i], y[i], z[i], c='white', s=10, 
-                      edgecolors='red', linewidth=0.5, alpha=0.6, zorder=6)
-            # Show step numbers at regular intervals
-            # Show every 2nd marker instead of every 4th for better visibility
-            if i == 0 or i == total_steps - 1 or (i // step_interval) % 2 == 0:
-                ax.text(x[i], y[i], z[i], f'{i}', fontsize=6, color='white',
-                       bbox=dict(boxstyle='round,pad=0.1', facecolor='black', alpha=0.5),
-                       zorder=7)
+            # <reason>chain: Make step markers smaller and less prominent
+            # <reason>chain: Marker style now depends on particle charge for dynamic visualization.
+            is_particle_charged = particle_info.get('particle') and particle_info['particle'].charge != 0
+            marker_style = '+' if is_particle_charged else 'o'
+            
+            ax.scatter(x[i], y[i], z[i], c='white', s=15, marker=marker_style,
+                      edgecolors='red', linewidth=0.5, alpha=0.7, zorder=11)
         
-        # <reason>chain: Initialize list to store z values for axis limits</reason>
+        # <reason>chain: Initialize list to store z values for axis limits
         all_z = [z]
         
-        # <reason>chain: Plot additional charged/uncharged particle trajectories if available</reason>
-        if particle_info:
-            # Get main particle name for comparison
-            main_particle_name = particle_info.get('particle', {}).name if particle_info.get('particle') else None
-            
-            # Plot charged particle trajectory if different from main
-            charged_info = particle_info.get('charged_particle')
-            if charged_info and charged_info.get('trajectory') is not None:
-                charged_hist = charged_info['trajectory']
-                charged_particle = charged_info['particle']
-                
-                # Skip if this is the same as the main trajectory
-                if charged_info['name'] != main_particle_name:
-                    t_charged = self._to_numpy(charged_hist[:, 0]) / self.engine.time_scale
-                    r_charged = self._to_numpy(charged_hist[:, 1]) / self.engine.length_scale
-                    phi_charged = self._to_numpy(charged_hist[:, 2])
-                    
-                    x_charged = r_charged * np.cos(phi_charged)
-                    y_charged = r_charged * np.sin(phi_charged)
-                    z_charged = t_charged
-                    
-                    all_z.append(z_charged)
-                    
-                    # Build label with particle name, charge, and solver type
-                    charge_label_parts = [f"{charged_particle.name.capitalize()}"]
-                    charge_label_parts.append(f"(q={charged_particle.charge:.1e}C)")
-                    # Charged particles always use charged particle solver
-                    charge_label_parts.append("[Charged Particle Solver]")
-                    charge_label = " ".join(charge_label_parts)
-                    ax.plot(x_charged, y_charged, z_charged, color='blue', linewidth=3, alpha=0.8, 
-                           label=charge_label, zorder=5)
-            
-            # Plot uncharged particle trajectory if different from main
-            uncharged_info = particle_info.get('uncharged_particle')
-            if uncharged_info and uncharged_info.get('trajectory') is not None:
-                uncharged_hist = uncharged_info['trajectory']
-                uncharged_particle = uncharged_info['particle']
-                
-                # Skip if this is the same as the main trajectory
-                if uncharged_info['name'] != main_particle_name:
-                    t_uncharged = self._to_numpy(uncharged_hist[:, 0]) / self.engine.time_scale
-                    r_uncharged = self._to_numpy(uncharged_hist[:, 1]) / self.engine.length_scale
-                    phi_uncharged = self._to_numpy(uncharged_hist[:, 2])
-                    
-                    x_uncharged = r_uncharged * np.cos(phi_uncharged)
-                    y_uncharged = r_uncharged * np.sin(phi_uncharged)
-                    z_uncharged = t_uncharged
-                    
-                    all_z.append(z_uncharged)
-                    
-                    # Build label with particle name and solver type
-                    neutral_label_parts = [f"{uncharged_particle.name.capitalize()} (neutral)"]
-                    # Determine solver type for neutral particle with 4D/6D designation
-                    if uncharged_particle.particle_type == 'massless':
-                        neutral_label_parts.append("[Null Geodesic Solver (4D)]")
-                    else:
-                        # Massive neutral particles - check model symmetry
-                        if hasattr(model, 'is_symmetric') and model.is_symmetric:
-                            neutral_label_parts.append("[Symmetric Spacetime Solver (4D)]")
-                        else:
-                            neutral_label_parts.append("[General Geodesic Solver (6D)]")
-                    neutral_label = " ".join(neutral_label_parts)
-                    ax.plot(x_uncharged, y_uncharged, z_uncharged, color='orange', linewidth=3, alpha=0.8,
-                           label=neutral_label, zorder=5)
+        # <reason>chain: Dynamically build a list of legend elements for baselines that are actually plotted.
+        baseline_legend_elements = []
         
-        # <reason>chain: Define baseline colors for all baselines</reason>
+        # <reason>chain: Define a monochrome color palette for all baselines for visual consistency.
         baseline_colors = {
-            'Schwarzschild': ('gray', '--'),
-            'General Relativity': ('gray', '--'),
-            'Reissner-Nordström': ('cyan', '-.'),
-            'Kerr': ('yellow', ':'),      # Yellow for Kerr
-            'Kerr-Newman': ('green', '--'), # Green for Kerr-Newman  
-            'DilatonGravity_GHS': ('orange', '-.')
+            'Schwarzschild': '#A9A9A9',
+            'Kerr': '#D3D3D3',
+            'Kerr-Newman': '#FFFFFF',
         }
         
-        # <reason>chain: Process baselines and add checkpoints</reason>
+        # <reason>chain: Process baselines and add checkpoints
         print(f"    Processing {len(baseline_results)} baselines for checkpoints...")
         for baseline_name, baseline_hist in baseline_results.items():
             print(f"      Baseline: {baseline_name}")
@@ -269,16 +221,41 @@ class TheoryVisualizer:
                 print(f"        Skipping - no data or too short")
                 continue
                 
+            # <reason>chain: Skip baseline if it's the same as the main theory
+            # Don't plot the main theory as its own baseline
+            if baseline_name == model.name or (baseline_name in model.name) or (model.name in baseline_name):
+                print(f"        Skipping - same as main theory")
+                continue
+                
             # Convert baseline trajectory to geometric units
             t_b = self._to_numpy(baseline_hist[:, 0]) / self.engine.time_scale
             r_b = self._to_numpy(baseline_hist[:, 1]) / self.engine.length_scale
             phi_b = self._to_numpy(baseline_hist[:, 2])
             
+            # <reason>chain: Fix baselines 'falling off' the plot by ensuring time is monotonic
+            # Find the first point where time decreases and truncate the baseline there.
+            if len(t_b) > 1:
+                monotonic_time_mask = np.concatenate(([True], t_b[1:] >= t_b[:-1]))
+                if not np.all(monotonic_time_mask):
+                    first_non_monotonic_idx = np.where(~monotonic_time_mask)[0][0]
+                    if first_non_monotonic_idx > 0:
+                        print(f"        WARNING: Baseline '{baseline_name}' has non-monotonic time at index {first_non_monotonic_idx}. Truncating.")
+                        t_b = t_b[:first_non_monotonic_idx]
+                        r_b = r_b[:first_non_monotonic_idx]
+                        phi_b = phi_b[:first_non_monotonic_idx]
+            
+            # Clip baseline to match main trajectory time range
+            max_t = np.max(t)
+            time_mask = t_b <= max_t
+            t_b = t_b[time_mask]
+            r_b = r_b[time_mask]
+            phi_b = phi_b[time_mask]
+            
             # Skip if invalid data
             if not np.isfinite(r_b).all() or r_b.max() > 1e10:
                 continue
                 
-            # <reason>chain: Check if baseline has meaningful motion</reason>
+            # <reason>chain: Check if baseline has meaningful motion
             if np.std(r_b) < 1e-10 and np.std(phi_b) < 1e-10:
                 print(f"        WARNING: Baseline {baseline_name} has no motion!")
                 continue
@@ -288,7 +265,7 @@ class TheoryVisualizer:
             y_b = r_b * np.sin(phi_b)
             z_b = t_b
             
-            # <reason>chain: Limit z values to prevent baselines from going too high</reason>
+            # <reason>chain: Limit z values to prevent baselines from going too high
             # Truncate baseline at main trajectory's max time
             max_z_main = z.max() if len(z) > 0 else 100.0
             z_b_truncated = z_b[z_b <= max_z_main * 1.1]  # Allow 10% extra
@@ -296,58 +273,80 @@ class TheoryVisualizer:
                 x_b = x_b[:len(z_b_truncated)]
                 y_b = y_b[:len(z_b_truncated)]
                 z_b = z_b_truncated
+                # <reason>chain: Add baseline data to bounds calculation
+                all_x.append(x_b)
+                all_y.append(y_b)
                 all_z.append(z_b)
+                all_r.append(r_b[:len(z_b_truncated)])
             
-            # Find the right style
-            style_info = None
-            for key, (color, linestyle) in baseline_colors.items():
-                if key in baseline_name:
-                    style_info = (color, linestyle)
+            # <reason>chain: Retrieve the baseline theory object to inspect its properties for styling.
+            baseline_theory = None
+            for theory_name, theory_obj in baseline_theories.items():
+                if theory_name in baseline_name:
+                    baseline_theory = theory_obj
                     break
+                    
+            if not baseline_theory:
+                print(f"        WARNING: Could not find baseline theory object for '{baseline_name}'. Skipping.")
+                continue
             
-            if not style_info:
-                style_info = ('gray', '--')
+            # <reason>chain: Determine the baseline color from the monochrome palette.
+            color = 'gray' # default
+            if 'Kerr-Newman' in baseline_name:
+                color = baseline_colors['Kerr-Newman']
+            elif 'Kerr' in baseline_name:
+                color = baseline_colors['Kerr']
+            elif 'Schwarzschild' in baseline_name:
+                color = baseline_colors['Schwarzschild']
             
-            color, linestyle = style_info
+            # <reason>chain: Plot baselines with styles based on whether the black hole is charged.
+            # A baseline is considered charged if its class name includes "Newman" or "Reissner".
+            is_charged_baseline = 'Newman' in baseline_theory.__class__.__name__ or 'Reissner' in baseline_theory.__class__.__name__
+
+            if is_charged_baseline:
+                # Use '+' markers for charged baselines to represent '++' style.
+                ax.plot(x_b, y_b, z_b, color=color, linestyle='None', marker='+', markersize=5,
+                       alpha=0.6, label=baseline_name, zorder=3)
+            else:
+                # Use '--' for uncharged baselines.
+                ax.plot(x_b, y_b, z_b, color=color, linestyle='--', 
+                       linewidth=1, alpha=0.4, label=baseline_name, zorder=3)
             
-            # <reason>chain: Plot all baselines with labels</reason>
-            # Plot baseline trajectory with lower alpha and dashed/dotted line - lower zorder
-            ax.plot(x_b, y_b, z_b, color=color, linestyle=linestyle, 
-                   linewidth=2, alpha=0.4, label=baseline_name, zorder=3)
+            # <reason>chain: Dynamically add legend entry for the plotted baseline to ensure accuracy
+            # The legend now indicates whether the baseline theory describes a charged black hole.
+            if 'Schwarzschild' in baseline_name:
+                baseline_legend_elements.append(Line2D([0], [0], color=color, lw=2, linestyle='--', 
+                                            label='-- Schwarzschild (uncharged)', alpha=0.7))
+            elif 'Kerr' in baseline_name and 'Newman' not in baseline_name:
+                baseline_legend_elements.append(Line2D([0], [0], color=color, lw=2, linestyle='--', 
+                                            label='-- Kerr (uncharged, rotating)', alpha=0.7))
+            elif 'Kerr-Newman' in baseline_name:
+                baseline_legend_elements.append(Line2D([0], [0], color=color, lw=0, marker='+', markersize=8,
+                                            label='+++ Kerr-Newman (charged, rotating)', alpha=0.7))
             
-            # <reason>chain: Add checkpoints only for Kerr and Kerr-Newman</reason>
-            if 'Kerr' in baseline_name or 'Kerr-Newman' in baseline_name:
-                print(f"        Adding checkpoints for {baseline_name}")
-                
-                # <reason>chain: Calculate checkpoint positions based on percentage of trajectory</reason>
-                # Kerr: every 10% (10%, 20%, 30%, ..., 100%)
-                # Kerr-Newman: every 5% but skip 10% marks (5%, 15%, 25%, ..., 95%)
-                checkpoint_indices = []
-                trajectory_length = len(t_b)
-                
-                if 'Kerr-Newman' in baseline_name:
-                    # Kerr-Newman: 5%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85%, 95%
-                    percentages = [5, 15, 25, 35, 45, 55, 65, 75, 85, 95]
-                else:
-                    # Kerr (not Kerr-Newman): 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%
-                    percentages = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-                
-                for pct in percentages:
-                    idx = int((pct / 100.0) * (trajectory_length - 1))
-                    if idx < len(t_b):  # Make sure index is valid
-                        checkpoint_indices.append((idx, pct))
-                
-                print(f"        Checkpoint percentages: {[pct for _, pct in checkpoint_indices]}")
+            # <reason>chain: Add checkpoint markers at percentage points
+            # Add checkpoint markers at 10%, 20%, ..., 100% of trajectory
+            checkpoint_indices = []
+            total_points = len(x_b)
+            for pct in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
+                idx = int(total_points * pct / 100)
+                if idx < total_points:
+                    checkpoint_indices.append((idx, pct))
+            
+            if checkpoint_indices and len(x_b) > 0:
+                print(f"        Adding {len(checkpoint_indices)} checkpoints for {baseline_name}")
                 
                 for i, pct in checkpoint_indices:
                     # Skip if beyond array length
                     if i >= len(x_b) or i >= len(y_b) or i >= len(z_b):
                         continue
                         
-                    # <reason>chain: Create smaller checkpoint ring at baseline position</reason>
-                    # Ring parameters - smaller radius for better visual clarity
-                    ring_radius = 2.0  # Smaller radius (was 5.0)
-                    tube_radius = 0.2  # Thinner tube (was 0.5)
+                    # <reason>chain: Scale checkpoint rings based on local position
+                    # Ring parameters - scale based on local radius
+                    local_radius = np.sqrt(x_b[i]**2 + y_b[i]**2)  # Current position radius
+                    ring_radius = 0.03 * local_radius  # 3% of local orbital radius
+                    ring_radius = max(0.05, min(ring_radius, 1.0))  # Clamp between 0.05 and 1.0
+                    tube_radius = ring_radius * 0.1  # 10% of ring radius
                     
                     # Create ring at baseline position
                     u = np.linspace(0, 2 * np.pi, 40)  # More points for smoother ring
@@ -355,9 +354,9 @@ class TheoryVisualizer:
                     # Ring center at baseline position
                     center_x, center_y, center_z = x_b[i], y_b[i], z_b[i]
                     
-                    # <reason>chain: Fix checkpoint z-position to use baseline trajectory time</reason>
+                    # <reason>chain: Fix checkpoint z-position to use baseline trajectory time
                     # Make sure the checkpoint is at the proper time/height
-                    print(f"          Checkpoint at {pct}%: idx={i}, z={center_z:.3f}")
+                    print(f"          Checkpoint at {pct}%: idx={i}, z={center_z:.3f}, ring_radius={ring_radius:.3f}")
                     
                     # Create flat ring in XY plane at given Z height
                     ring_x = center_x + ring_radius * np.cos(u)
@@ -366,140 +365,91 @@ class TheoryVisualizer:
                     
                     # Plot the ring outline with baseline color - higher zorder
                     ring_color = 'yellow' if 'Kerr' in baseline_name and 'Newman' not in baseline_name else 'green'
-                    ax.plot(ring_x, ring_y, ring_z, color=ring_color, linewidth=3, alpha=0.8, zorder=4)
                     
-                    # Add inner and outer ring edges for 3D effect
-                    inner_radius = ring_radius - tube_radius
-                    outer_radius = ring_radius + tube_radius
-                    
-                    # Inner ring
-                    inner_x = center_x + inner_radius * np.cos(u)
-                    inner_y = center_y + inner_radius * np.sin(u)
-                    ax.plot(inner_x, inner_y, ring_z, color=ring_color, linewidth=1.5, alpha=0.5, zorder=4)
-                    
-                    # Outer ring  
-                    outer_x = center_x + outer_radius * np.cos(u)
-                    outer_y = center_y + outer_radius * np.sin(u)
-                    ax.plot(outer_x, outer_y, ring_z, color=ring_color, linewidth=1.5, alpha=0.5, zorder=4)
-                    
-                    # <reason>chain: Calculate loss and miss distance at this checkpoint</reason>
-                    # Find closest point on main trajectory to this baseline point
-                    # Use the same time index for fair comparison
-                    if i < len(x) and i < len(y) and i < len(z):
-                        # Calculate position differences
-                        dx = x[i] - center_x
-                        dy = y[i] - center_y
-                        dz = z[i] - center_z
-                        dr = r[i] - r_b[i]
-                        dphi = phi[i] - phi_b[i]
-                        
-                        # Wrap phi difference to [-pi, pi]
-                        while dphi > np.pi:
-                            dphi -= 2 * np.pi
-                        while dphi < -np.pi:
-                            dphi += 2 * np.pi
-                        
-                        # Calculate various loss metrics
-                        euclidean_loss_2d = np.sqrt(dx**2 + dy**2)
-                        angular_loss = abs(dphi) * r[i]  # Convert to arc length
-                        
-                        # Total loss (weighted combination)
-                        total_loss = euclidean_loss_2d + 0.1 * angular_loss
-                        
-                        # <reason>chain: Position labels away from trajectory lines</reason>
-                        # Position labels at larger distance to avoid overlapping trajectory
-                        
-                        # Single loss label - positioned to the side
-                        label_angle = -0.3  # Slightly offset from right
-                        label_distance = ring_radius + 4.0  # Further away from ring
-                        label_x = center_x + label_distance * np.cos(label_angle)
-                        label_y = center_y + label_distance * np.sin(label_angle)
-                        label_z = center_z + 2.0  # Above the ring plane
-                        
-                        # Format loss value
-                        # <reason>chain: Add explanation that L is loss in Schwarzschild radii</reason>
-                        if total_loss < 0.01:
-                            loss_str = f'L={total_loss:.3e} Rs'
-                        elif total_loss < 1:
-                            loss_str = f'L={total_loss:.3f} Rs'
-                        else:
-                            loss_str = f'L={total_loss:.1f} Rs'
-                        
-                        # Add baseline name to first checkpoint's loss label
-                        if i == checkpoint_indices[0][0]:
-                            loss_str = f'{baseline_name}\n{loss_str}\n(L = Loss in Rs)'
-                        
-                        # Display loss label with baseline color for border
-                        ax.text(label_x, label_y, label_z, loss_str, 
-                               fontsize=6, color='white', weight='normal',
-                               bbox=dict(boxstyle='round,pad=0.1', facecolor='black', 
-                                       edgecolor=ring_color, alpha=0.6, linewidth=1),
-                               zorder=8)
+                    # <reason>chain: Draw single clean ring instead of multiple edges
+                    # Draw just one ring with slightly thicker line for visibility
+                    ax.plot(ring_x, ring_y, ring_z, color=ring_color, linewidth=1.5, alpha=0.7, zorder=4)
         
-        # <reason>chain: Calculate plot bounds in geometric units - zoomed out for better Z-axis visibility</reason>
-        # Focus on the actual trajectory region but zoom out more for visibility
-        max_r = max(30.0, max(r.max() for r in [r] + [self._to_numpy(h[:,1])/self.engine.length_scale for h in baseline_results.values() if h is not None and np.isfinite(h[:,1]).all() and h[:,1].max() < 1e20]))
+        # <reason>chain: Calculate proper bounds including all trajectories
+        # Calculate bounds that include all trajectories
+        x_min = min(arr.min() for arr in all_x if len(arr) > 0)
+        x_max = max(arr.max() for arr in all_x if len(arr) > 0)
+        y_min = min(arr.min() for arr in all_y if len(arr) > 0)
+        y_max = max(arr.max() for arr in all_y if len(arr) > 0)
         
-        # Set reasonable bounds with more margin for Z-axis visibility
-        plot_range = max_r * 1.5  # Increased from 1.2 to 1.5 for better view
-        ax.set_xlim(-plot_range, plot_range)
-        ax.set_ylim(-plot_range, plot_range)
+        # Calculate ranges
+        x_range = x_max - x_min
+        y_range = y_max - y_min
+        
+        # <reason>chain: Handle edge case of stationary trajectories
+        # If main trajectory has no motion, ensure we can still see baselines
+        main_r_range = r.max() - r.min()
+        main_phi_range = phi.max() - phi.min()
+        
+        if main_r_range < 1e-6 and main_phi_range < 1e-6:
+            # Stationary trajectory - ensure we can see baselines
+            min_range = max(20.0, r.mean())  # At least 20 Rs or the stationary radius
+        else:
+            min_range = 10.0  # Normal minimum
+        
+        # <reason>chain: Always include event horizon and origin in view
+        # Ensure we can see from origin (singularity) to the orbit
+        x_abs_max = max(abs(x_min), abs(x_max))
+        y_abs_max = max(abs(y_min), abs(y_max))
+        plot_radius = max(x_abs_max, y_abs_max, 5.0) * 1.2  # At least 5 Rs to show event horizon, 20% padding
+        
+        # Center plot at origin to show black hole
+        ax.set_xlim(-plot_radius, plot_radius)
+        ax.set_ylim(-plot_radius, plot_radius)
         
         # Z-axis (time) bounds with extra margin
         z_min = min(0, min(arr.min() for arr in all_z if len(arr) > 0 and np.isfinite(arr).all()))
         z_max = max(arr.max() for arr in all_z if len(arr) > 0 and np.isfinite(arr).all())
-        if not np.isfinite(z_max) or z_max > 1000:
+        if not np.isfinite(z_max):
             z_max = z[-1] * 1.1  # Use main trajectory's max time
         # Add extra margin to Z-axis for label visibility
         z_range = z_max - z_min
-        ax.set_zlim(z_min - z_range * 0.1, z_max + z_range * 0.2)  # More space at top for Z-label
+        ax.set_zlim(z_min - z_range * 0.05, z_max + z_range * 0.1)
         
-        # <reason>chain: Event Horizon with proper depth ordering - lower zorder</reason>
+        # <reason>chain: Always show event horizon since we center at origin
         # Draw event horizon at r = 2 (2M in geometric units)
-        u_cyl = np.linspace(0, 2 * np.pi, 100)
-        z_cyl_vals = np.linspace(z_min, z_max, 50)
-        u_grid, z_grid = np.meshgrid(u_cyl, z_cyl_vals)
-        x_cyl = 2.0 * np.cos(u_grid)  # r = 2 in geometric units
-        y_cyl = 2.0 * np.sin(u_grid)
+        if True:  # Always show event horizon
+            u_cyl = np.linspace(0, 2 * np.pi, 100)
+            z_cyl_vals = np.linspace(z_min, z_max, 50)
+            u_grid, z_grid = np.meshgrid(u_cyl, z_cyl_vals)
+            x_cyl = 2.0 * np.cos(u_grid)  # r = 2 in geometric units
+            y_cyl = 2.0 * np.sin(u_grid)
+            
+            # Plot cylinder surface with lower zorder for proper depth
+            ax.plot_surface(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.15, linewidth=0, 
+                           antialiased=True, zorder=1)
+            
+            # Add event horizon boundary circles at top and bottom
+            theta = np.linspace(0, 2 * np.pi, 100)
+            ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), np.full_like(theta, z_min), 
+                    'c-', linewidth=2, alpha=0.9, label='Event Horizon (r=2M)', zorder=2)
+            ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), np.full_like(theta, z_max), 
+                    'c-', linewidth=2, alpha=0.9, zorder=2)
         
-        # Plot cylinder surface with lower zorder for proper depth
-        ax.plot_surface(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.3, linewidth=0, 
-                       antialiased=True, zorder=1)
+        # <reason>chain: Always show singularity at origin
+        if True:
+            ax.plot([0, 0], [0, 0], [z_min, z_max], 'y--', linewidth=2, alpha=0.8, 
+                    label='Singularity (r=0)', zorder=2)
         
-        # Add event horizon boundary circles at top and bottom
-        theta = np.linspace(0, 2 * np.pi, 100)
-        ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), np.full_like(theta, z_min), 
-                'c-', linewidth=3, alpha=0.9, label='Event Horizon (r=2M)', zorder=2)
-        ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), np.full_like(theta, z_max), 
-                'c-', linewidth=3, alpha=0.9, zorder=2)
-        
-        # <reason>chain: Singularity with proper depth ordering - cleaner visualization</reason>
-        ax.plot([0, 0], [0, 0], [z_min, z_max], 'y--', linewidth=3, alpha=0.8, 
-                label='Singularity (r=0)', zorder=2)
-        
-        # Add a single central sphere at middle to indicate point singularity - not step counters
-        if z_range > 0:
-            sphere_z_center = z_min + z_range * 0.5  # Center of time range
-            u_sph, v_sph = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
-            sphere_radius = 0.8  # Slightly larger single sphere
-            x_sph = sphere_radius * np.cos(u_sph) * np.sin(v_sph)
-            y_sph = sphere_radius * np.sin(u_sph) * np.sin(v_sph)
-            z_sph = sphere_z_center + sphere_radius * np.cos(v_sph)
-            ax.plot_surface(x_sph, y_sph, z_sph, color='yellow', alpha=0.4, zorder=2)
-        
-        # <reason>chain: Add initial orbit circle for reference</reason>
+        # <reason>chain: Always show initial orbit circle for reference
         # Show initial circular orbit
         r0_orbit = r[0]
-        orbit_theta = np.linspace(0, 2 * np.pi, 100)
-        ax.plot(r0_orbit * np.cos(orbit_theta), r0_orbit * np.sin(orbit_theta), 
-                np.full_like(orbit_theta, z[0]), 
-                'g--', linewidth=1, alpha=0.5, label=f'Initial orbit (r={r0_orbit:.1f}M)', zorder=2)
+        if True:
+            orbit_theta = np.linspace(0, 2 * np.pi, 100)
+            ax.plot(r0_orbit * np.cos(orbit_theta), r0_orbit * np.sin(orbit_theta), 
+                    np.full_like(orbit_theta, z[0]), 
+                    'g--', linewidth=1, alpha=0.5, label=f'Initial orbit (r={r0_orbit:.1f}M)', zorder=2)
         
-        # <reason>chain: Enhanced title with particle information</reason>
+        # <reason>chain: Enhanced title with particle information
         # Build title with particle info if available
         title_parts = [f"Geodesic: {model.name}"]
         
-        # <reason>chain: Add Lagrangian type to title</reason>
+        # <reason>chain: Add Lagrangian type to title
         if hasattr(model, 'complete_lagrangian') and model.complete_lagrangian is not None:
             if hasattr(model, 'enable_quantum') and model.enable_quantum:
                 title_parts.append("[Quantum Lagrangian]")
@@ -527,10 +477,10 @@ class TheoryVisualizer:
             
             # Add solver type with clear 4D/6D designation
             solver_tag = particle_info.get('tag', '')
-            # <reason>chain: Check for UGM and quantum theories first</reason>
+            # <reason>chain: Check for UGM and quantum theories first
             theory_category = getattr(model, 'category', 'unknown')
             if 'ugm' in solver_tag:
-                # <reason>chain: UGM theories use special UGM solver</reason>
+                # <reason>chain: UGM theories use special UGM solver
                 title_parts.append("[UGM Solver (6D)]")
             elif 'quantum_unified' in solver_tag or 'quantum' in solver_tag:
                 title_parts.append("[Quantum Path Integral (6D)]")
@@ -573,92 +523,19 @@ class TheoryVisualizer:
                             title_parts.append("[Geodesic Solver (6D)]")
         
         title = '\n'.join(title_parts)
-        ax.set_title(title, fontsize=16, pad=20, color='white')
+        ax.set_title(title, fontsize=20, pad=25, color='white')
         
-                # Fix axis labels with clear unit descriptions
-        ax.set_xlabel('\nX (Schwarzschild radii)', fontsize=14, color='white')
-        ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=14, color='white')
-        # <reason>chain: Make z-label more visible with better positioning and larger font</reason>
+        # Fix axis labels with clear unit descriptions
+        ax.set_xlabel('\nX (Schwarzschild radii)', fontsize=16, color='white')
+        ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=16, color='white')
+        # <reason>chain: Make z-label more visible with better positioning and larger font
         dtau_value = 0.1  # Default time step in geometric units
-        ax.set_zlabel(f'Time Units\n(Δτ = {dtau_value})', fontsize=16, color='white', labelpad=25)
+        ax.set_zlabel(f'Time Units\n(Δτ = {dtau_value})', fontsize=18, color='white', labelpad=30)
         
-        # <reason>chain: Removed CONSTRAINTS PASSED text - now in legend</reason>
+        # <reason>chain: Removed CONSTRAINTS PASSED text - now in legend
         
-        # <reason>chain: Create clean legend with particle properties</reason>
-        # Add particle property box if available
-        if particle_info and particle_info.get('particle'):
-            particle = particle_info['particle']
-            prop_text = [
-                f"Particle: {particle.name}",
-                f"Type: {particle.particle_type}",
-                f"Mass: {particle.mass:.2e} kg",
-                f"Charge: {particle.charge:.2e} C",
-                f"Spin: {particle.spin}"
-            ]
-            prop_str = '\n'.join(prop_text)
-            ax.text2D(0.98, 0.02, prop_str, transform=ax.transAxes,
-                     fontsize=10, color='white', ha='right', va='bottom',
-                     bbox=dict(boxstyle='round,pad=0.5', facecolor='black', 
-                              edgecolor='white', alpha=0.8))
-        
-        # <reason>chain: Create main legend only - portals already visible on left</reason>
-        # Get existing legend handles and labels for main trajectories
-        handles, labels = ax.get_legend_handles_labels()
-        
-        # Add custom legend entry for step markers
-        from matplotlib.lines import Line2D
-        step_marker = Line2D([0], [0], marker='o', color='w', 
-                           markerfacecolor='white', markeredgecolor='red', 
-                           markeredgewidth=0.5, markersize=8, linestyle='',
-                           label='Step markers')
-        handles.append(step_marker)
-        labels.append('Step markers')
-        
-        # <reason>chain: Add constraints passed indicator to legend if applicable</reason>
-        if validations_dict and 'validations' in validations_dict:
-            constraints_passed = all(
-                res['flags'].get('overall', 'FAIL') == 'PASS' 
-                for res in validations_dict.get('validations', []) if res.get('type') == 'constraint'
-            )
-            if constraints_passed:
-                constraint_marker = Line2D([0], [0], color='lime', linewidth=3, 
-                                         label='✓ CONSTRAINTS PASSED')
-                handles.append(constraint_marker)
-                labels.append('✓ CONSTRAINTS PASSED')
-        
-        # Main legend for trajectories and basic elements
-        main_legend = ax.legend(handles=handles, labels=labels,
-                               loc='upper right', bbox_to_anchor=(0.98, 0.98), 
-                               fontsize=10, frameon=True, fancybox=True, shadow=True,
-                               facecolor='black', edgecolor='white', framealpha=0.9)
-        
-        # Create separate portal legend
-        portal_handles = []
-        portal_labels = []
-        
-        # Add portal indicators (rings) to separate legend
-        yellow_portal = Line2D([0], [0], marker='o', color='w', 
-                              markerfacecolor='none', markeredgecolor='yellow', 
-                              markeredgewidth=3, markersize=12, linestyle='',
-                              label='Kerr Checkpoints')
-        green_portal = Line2D([0], [0], marker='o', color='w', 
-                             markerfacecolor='none', markeredgecolor='green', 
-                             markeredgewidth=3, markersize=12, linestyle='',
-                             label='Kerr-Newman Checkpoints')
-        
-        portal_handles.extend([yellow_portal, green_portal])
-        portal_labels.extend(['Kerr Checkpoints', 'Kerr-Newman Checkpoints'])
-        
-        # Add portal legend in a different location
-        portal_legend = ax.legend(handles=portal_handles, labels=portal_labels,
-                                 loc='upper left', bbox_to_anchor=(0.02, 0.98),
-                                 fontsize=9, frameon=True, fancybox=True,
-                                 facecolor='black', edgecolor='yellow', framealpha=0.8,
-                                 title='Baseline Checkpoints', title_fontsize=10)
-        portal_legend.get_title().set_color('white')
-        
-        # Add main legend back (matplotlib removes previous legend when creating new one)
-        ax.add_artist(main_legend)
+        # <reason>chain: Remove legend from plot - will be added below
+        # Don't add legend to the plot itself
         
         # Set viewing angle for best perspective
         ax.view_init(elev=25, azim=45)
@@ -672,13 +549,99 @@ class TheoryVisualizer:
         ax.zaxis.set_pane_color((0.1, 0.1, 0.1, 0.8))
         
         # Save the figure with proper spacing
-        # <reason>chain: Adjust margins to ensure z-label is fully visible</reason>
-        plt.subplots_adjust(left=0.08, right=0.92, bottom=0.08, top=0.92)
+        # <reason>chain: Adjust margins for cleaner look with simplified legend
+        plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.92)
+        
+        # <reason>chain: Create beautiful, crystal-clear visual legend
+        from matplotlib.patches import Patch, Circle
+        
+        # Create legend elements with perfect visual clarity
+        legend_elements = []
+        
+        # === TRAJECTORIES SECTION ===
+        # Main trajectory with particle name
+        legend_elements.append(Line2D([0], [0], color='red', lw=2, linestyle=':',
+                                    label=f'··· {main_particle_name.capitalize()} trajectory',
+                                    solid_capstyle='round'))
+        
+        # <reason>chain: Add average quantum uncertainty to the legend instead of plotting the cloud.
+        if is_quantum:
+            label_text = 'Quantum Uncertainty'
+            if avg_uncertainty_radius:
+                label_text = f'Avg. Quantum Uncertainty: {avg_uncertainty_radius:.2e} Rs'
+            legend_elements.append(Patch(facecolor='cyan', alpha=0.5, 
+                                       label=f'⬤ {label_text}'))
+        
+        # Add spacing
+        legend_elements.append(Line2D([0], [0], color='none', label=''))
+        
+        # === BASELINE COMPARISONS ===
+        legend_elements.append(Line2D([0], [0], color='none', 
+                                    label='BASELINE THEORIES:'))
+        
+        legend_elements.extend(baseline_legend_elements)
+        
+        # Add spacing
+        legend_elements.append(Line2D([0], [0], color='none', label=''))
+        
+        # === KEY FEATURES ===
+        legend_elements.append(Line2D([0], [0], color='none', 
+                                    label='SPACETIME FEATURES:'))
+        
+        if 2.0 < plot_radius:
+            # Event horizon with cylinder symbol
+            legend_elements.append(Line2D([0], [0], color='cyan', lw=4, alpha=0.5,
+                                        label='▐ Event horizon (r=2M)', 
+                                        solid_capstyle='butt'))
+        
+        # Step markers
+        legend_elements.append(Line2D([0], [0], color='white', lw=0, marker='o', 
+                                    markersize=6, label='• Progress markers (o: uncharged, +: charged)'))
+        
+        # Create the legend with enhanced styling
+        legend = ax.legend(handles=legend_elements, 
+                          loc='upper left', 
+                          bbox_to_anchor=(0.01, 0.99),
+                          fancybox=True, 
+                          shadow=True, 
+                          ncol=1, 
+                          fontsize=11,
+                          facecolor='#0a0a0a',  # Very dark background
+                          edgecolor='#333333',  # Dark gray border
+                          framealpha=0.95,
+                          labelcolor='white',
+                          borderpad=1.0,
+                          columnspacing=1.5,
+                          handlelength=3.0,  # Longer lines for clarity
+                          handletextpad=1.0)  # More space between symbol and text
+        
+        # Style the legend title and text
+        legend.get_frame().set_linewidth(1.5)
+        
+        # Make section headers bold
+        for i, text in enumerate(legend.get_texts()):
+            label = text.get_text()
+            if 'BASELINE THEORIES:' in label or 'SPACETIME FEATURES:' in label:
+                text.set_weight('bold')
+                text.set_color('#88ccff')  # Light blue for headers
+            elif label == '':  # Spacer lines
+                text.set_fontsize(6)
+            else:
+                text.set_weight('normal')
+        
+        # <reason>chain: Add minimal key information below plot
+        # Add quantum scale info if needed
+        if is_quantum:
+            scale_text = "Quantum uncertainty scaled for visibility"
+            fig.text(0.5, 0.02, scale_text, fontsize=10, ha='center', style='italic',
+                    color='cyan', bbox=dict(boxstyle="round,pad=0.3", 
+                    facecolor='black', alpha=0.7))
+        
         plt.savefig(plot_filename, dpi=300, bbox_inches='tight', pad_inches=0.5, facecolor='black', edgecolor='none')
         plt.close(fig)
         
         print(f"  Plot saved to {plot_filename}")
-        
+    
     def generate_all_particles_comparison(self, model: GravitationalTheory, particle_trajectories: dict,
                                          baseline_results: dict, baseline_theories: dict,
                                          plot_filename: str, rs_val: float, validations_dict: dict = None):
@@ -698,7 +661,7 @@ class TheoryVisualizer:
         ax = fig.add_subplot(111, projection='3d')
         
         # Define particle colors
-        # <reason>chain: Use gold for photon for better visibility</reason>
+        # <reason>chain: Use gold for photon for better visibility
         particle_colors = {
             'electron': 'blue',
             'photon': '#FFD700',  # Gold - more visible than yellow
@@ -724,7 +687,7 @@ class TheoryVisualizer:
             r = self._to_numpy(hist[:, 1]) / self.engine.length_scale
             phi = self._to_numpy(hist[:, 2])
             
-            # <reason>chain: Check if trajectory has meaningful motion</reason>
+            # <reason>chain: Check if trajectory has meaningful motion
             if np.std(r) < 1e-10:
                 print(f"    WARNING: {particle_name} has no radial motion! Skipping...")
                 continue
@@ -749,13 +712,13 @@ class TheoryVisualizer:
             if particle.charge != 0:
                 label_parts.append(f'q={particle.charge:.2e}')
             
-            # <reason>chain: Add solver type to clarify which theorem was used</reason>
+            # <reason>chain: Add solver type to clarify which theorem was used
             # Determine and add solver type with clear 4D/6D designation
             solver_tag = particle_data.get('tag', '')
             theory_category = getattr(model, 'category', 'unknown')
             
             if 'ugm' in solver_tag:
-                # <reason>chain: UGM theories use special UGM solver</reason>
+                # <reason>chain: UGM theories use special UGM solver
                 label_parts.append('[UGM Solver (6D)]')
             elif 'quantum_unified' in solver_tag or 'quantum' in solver_tag:
                 label_parts.append('[Quantum Path Integral (6D)]')
@@ -870,9 +833,8 @@ class TheoryVisualizer:
         # Axis labels
         ax.set_xlabel('\nX (Schwarzschild radii)', fontsize=14)
         ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=14)
-        # <reason>chain: Make z-label more visible with better positioning and larger font</reason>
-        dtau_value = 0.1  # Default time step in geometric units
-        ax.set_zlabel(f'Time Units\n(Δτ = {dtau_value})', fontsize=16, labelpad=25)
+        # <reason>chain: Use proper time τ in geometric units for relativistic accuracy
+        ax.set_zlabel('Proper Time (τ)', fontsize=16, labelpad=15)
         
         # Legend
         ax.legend(loc='upper right', bbox_to_anchor=(0.98, 0.98), 
@@ -880,8 +842,35 @@ class TheoryVisualizer:
                  facecolor='black', edgecolor='white', framealpha=0.9)
         
         # Grid and viewing angle
-        ax.grid(True, alpha=0.3)
+        ax.grid(True, alpha=0.3, color='gray')
         ax.view_init(elev=25, azim=45)
+        
+        # Set tick colors to white and ensure labels are visible
+        ax.tick_params(axis='x', colors='white', labelsize=10)
+        ax.tick_params(axis='y', colors='white', labelsize=10)
+        ax.tick_params(axis='z', colors='white', labelsize=10)
+        
+        # Force all axis properties to be white
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.zaxis.label.set_color('white')
+        
+        # Set tick label colors explicitly
+        ax.xaxis.set_tick_params(labelcolor='white')
+        ax.yaxis.set_tick_params(labelcolor='white')
+        ax.zaxis.set_tick_params(labelcolor='white')
+        
+        # Force update the 3D axis info
+        for axis in [ax.xaxis, ax.yaxis, ax.zaxis]:
+            axis._axinfo['tick']['color'] = 'white'
+            axis._axinfo['label']['color'] = 'white'
+            axis._axinfo['grid']['color'] = (0.5, 0.5, 0.5, 0.5)
+            # Explicitly set tick label color
+            axis.set_tick_params(which='both', labelcolor='white')
+            # Force redraw ticks
+            for tick in axis.get_major_ticks():
+                tick.label1.set_color('white')
+                tick.label2.set_color('white')
         
         # Pane colors
         ax.xaxis.set_pane_color((0.1, 0.1, 0.1, 0.8))
@@ -914,7 +903,7 @@ class TheoryVisualizer:
                                    baseline_results: dict, baseline_theories: dict,
                                    plot_filename: str, rs_val: float, validations_dict: dict = None):
         """
-        <reason>chain: Generate a grid visualization showing trajectories for multiple particles</reason>
+        <reason>chain: Generate a grid visualization showing trajectories for multiple particles
         Shows Lagrangian, solver type, and particle info for each subplot.
         """
         print("  Generating multi-particle grid visualization...")
@@ -939,7 +928,7 @@ class TheoryVisualizer:
         fig.suptitle(f'Multi-Particle Trajectories: {model.name}', 
                     fontsize=24, color='white', y=0.98, weight='bold')
         
-        # <reason>chain: First, generate baseline trajectory for each particle type</reason>
+        # <reason>chain: First, generate baseline trajectory for each particle type
         # Get Schwarzschild baseline theory
         baseline_theory = None
         for name, theory in baseline_theories.items():
@@ -1000,7 +989,7 @@ class TheoryVisualizer:
             z = t  # Time as z-axis
             
             # Plot trajectory with particle-specific color
-            # <reason>chain: Use gold for photon for better visibility</reason>
+            # <reason>chain: Use gold for photon for better visibility
             particle_colors = {
                 'electron': 'blue',
                 'photon': '#FFD700',  # Gold - more visible than yellow
@@ -1009,17 +998,17 @@ class TheoryVisualizer:
             }
             color = particle_colors.get(particle_name, 'white')
             
-            # <reason>chain: Extract particle object from result dictionary</reason>
+            # <reason>chain: Extract particle object from result dictionary
             particle = result.get('particle')
             
-            # <reason>chain: Build label with particle name and solver type for clarity</reason>
+            # <reason>chain: Build label with particle name and solver type for clarity
             # Determine solver type for the legend with clear 4D/6D designation
             solver_tag = result.get('tag', '')
             solver_label = ""
             theory_category = getattr(model, 'category', 'unknown')
             
             if 'ugm' in solver_tag:
-                # <reason>chain: UGM theories use special UGM solver</reason>
+                # <reason>chain: UGM theories use special UGM solver
                 solver_label = " [UGM Solver (6D)]"
             elif 'quantum_unified' in solver_tag:
                 solver_label = " [Quantum Path Integral + Classical Solver]"
@@ -1085,7 +1074,7 @@ class TheoryVisualizer:
                 z_b = t_b
                 
                 # Plot baseline with distinctive style
-                # <reason>chain: Use actual baseline name instead of generic "GR Baseline"</reason>
+                # <reason>chain: Use actual baseline name instead of generic "GR Baseline"
                 ax.plot(x_b, y_b, z_b, color='white', linewidth=2, alpha=0.7,
                        linestyle='--', label=baseline_theory.name if hasattr(baseline_theory, 'name') else 'Schwarzschild')
             
@@ -1133,7 +1122,7 @@ class TheoryVisualizer:
             # Add info text box with better formatting
             info_text = []
             
-            # <reason>chain: Clearly indicate if theory uses quantum or classical Lagrangian</reason>
+            # <reason>chain: Clearly indicate if theory uses quantum or classical Lagrangian
             # Add theory Lagrangian type
             if hasattr(model, 'complete_lagrangian') and model.complete_lagrangian is not None:
                 info_text.append('Lagrangian: Quantum')
@@ -1187,7 +1176,7 @@ class TheoryVisualizer:
                 y_b = r_b * np.sin(phi_b)
                 z_b = t_b
                 
-                # <reason>chain: Use actual baseline name from theory</reason>
+                # <reason>chain: Use actual baseline name from theory
                 # Get the baseline theory object
                 baseline_theory_obj = baseline_theories.get('Schwarzschild') or baseline_theories.get('General Relativity')
                 if baseline_theory_obj and hasattr(baseline_theory_obj, 'name'):
@@ -1265,14 +1254,14 @@ class TheoryVisualizer:
         """
         Generate a unified 3D plot with all particle trajectories in one figure.
         
-        <reason>chain: Create a single plot showing all particles for easier comparison</reason>
-        <reason>chain: Use time as z-axis and Cartesian coordinates for clarity</reason>
-        <reason>chain: Add particle-specific labels with properties</reason>
-        <reason>chain: Include solver type in labels</reason>
-        <reason>chain: Add validation status to subtitle</reason>
-        <reason>chain: Use particle-specific colors for distinction</reason>
-        <reason>chain: Add event horizon cylinder</reason>
-        <reason>chain: Add info box with theory details</reason>
+        <reason>chain: Create a single plot showing all particles for easier comparison
+        <reason>chain: Use time as z-axis and Cartesian coordinates for clarity
+        <reason>chain: Add particle-specific labels with properties
+        <reason>chain: Include solver type in labels
+        <reason>chain: Add validation status to subtitle
+        <reason>chain: Use particle-specific colors for distinction
+        <reason>chain: Add event horizon cylinder
+        <reason>chain: Add info box with theory details
         """
         print(f"    Generating unified multi-particle plot for {model.name}...")
         
@@ -1282,7 +1271,7 @@ class TheoryVisualizer:
         ax.set_facecolor('black')
         
         # Define particle colors matching the standard scheme
-        # <reason>chain: Change photon color to gold/orange for better visibility on dark background</reason>
+        # <reason>chain: Change photon color to gold/orange for better visibility on dark background
         particle_colors = {
             'electron': 'blue',      # Negative charge
             'photon': '#FFD700',     # Gold color - more visible than yellow on black
@@ -1296,7 +1285,7 @@ class TheoryVisualizer:
         successful_particles = []
         failed_particles = []
         
-        # <reason>chain: First check what data we have</reason>
+        # <reason>chain: First check what data we have
         print(f"    Particle trajectories available: {list(particle_trajectories.keys())}")
         
         # Process each particle trajectory
@@ -1332,13 +1321,13 @@ class TheoryVisualizer:
             r = self._to_numpy(hist[:, 1]) / self.engine.length_scale
             phi = self._to_numpy(hist[:, 2])
             
-            # <reason>chain: Diagnostic info for troubleshooting</reason>
+            # <reason>chain: Diagnostic info for troubleshooting
             print(f"      {particle_name} trajectory: {len(t)} points")
             print(f"      r range: [{r.min():.3f}, {r.max():.3f}] (geometric units)")
             print(f"      phi range: [{phi.min():.3f}, {phi.max():.3f}] rad")
             print(f"      t range: [{t.min():.3f}, {t.max():.3f}] (geometric units)")
             
-            # <reason>chain: Check if the trajectory has meaningful motion</reason>
+            # <reason>chain: Check if the trajectory has meaningful motion
             if np.std(r) < 1e-6:  # Very small radial variation
                 print(f"      WARNING: {particle_name} has minimal radial motion (std={np.std(r):.3e})")
                 # Still plot it to show the issue
@@ -1373,14 +1362,14 @@ class TheoryVisualizer:
             # Add spin
             label_parts.append(f"s={particle.spin}")
             
-            # <reason>chain: Add solver type to make it clear which theorem was used</reason>
+            # <reason>chain: Add solver type to make it clear which theorem was used
             # Determine and add solver type with clear 4D/6D designation
             solver_tag = particle_data.get('tag', '')
             solver_label = ""
             theory_category = getattr(model, 'category', 'unknown')
             
             if 'ugm' in solver_tag:
-                # <reason>chain: UGM theories use special UGM solver</reason>
+                # <reason>chain: UGM theories use special UGM solver
                 solver_label = " [UGM Solver (6D)]"
             elif 'quantum_unified' in solver_tag:
                 solver_label = " [Quantum Path Integral + Classical Solver]"
@@ -1435,7 +1424,7 @@ class TheoryVisualizer:
             
             print(f"      Successfully plotted {particle_name} trajectory")
         
-        # <reason>chain: Add a reference baseline for comparison</reason>
+        # <reason>chain: Add a reference baseline for comparison
         # Find the Schwarzschild baseline for reference
         schwarzschild_baseline = None
         for baseline_name, baseline_hist in baseline_results.items():
@@ -1462,9 +1451,9 @@ class TheoryVisualizer:
             y_b = r_b * np.sin(phi_b)
             z_b = t_b
             
-            # Plot baseline trajectory more subtly
-            ax.plot(x_b, y_b, z_b, color='gray', linewidth=1.0, alpha=0.4, 
-                   linestyle='--', label=schwarzschild_name, zorder=2)
+            # Plot baseline trajectory with better visibility
+            ax.plot(x_b, y_b, z_b, color='white', linewidth=2.0, alpha=0.6, 
+                   linestyle='--', label='Schwarzschild Baseline', zorder=3)
             
             print(f"    Added {schwarzschild_name} baseline for reference")
         
@@ -1485,30 +1474,36 @@ class TheoryVisualizer:
         if all_z:
             z_min = min(0, min(z_arr.min() for z_arr in all_z if len(z_arr) > 0 and np.isfinite(z_arr).all()))
             z_max = max(z_arr.max() for z_arr in all_z if len(z_arr) > 0 and np.isfinite(z_arr).all())
-            if not np.isfinite(z_max) or z_max > 1000:
-                z_max = 100  # Default max time
+            if not np.isfinite(z_max):
+                z_max = 100  # Default max time if no valid data
             print(f"    Time range across all particles: [{z_min:.3f}, {z_max:.3f}]")
         else:
             z_min, z_max = 0, 100
             print("    WARNING: No valid time data found!")
         
+        # <reason>chain: Ensure proper z-axis range even if time data is constant
+        if abs(z_max - z_min) < 1e-6:  # Essentially the same time
+            print("    WARNING: Time range too small, expanding for visualization")
+            z_max = max(z_min + 10.0, 10.0)  # Expand range
+        
         ax.set_zlim(z_min, z_max)
         
-        # Event Horizon
-        u_cyl = np.linspace(0, 2 * np.pi, 100)
-        z_cyl_vals = np.linspace(z_min, z_max, 50)
+        # Event Horizon - make cylinder more visible
+        u_cyl = np.linspace(0, 2 * np.pi, 50)
+        z_cyl_vals = np.linspace(z_min, z_max, 20)
         u_grid, z_grid = np.meshgrid(u_cyl, z_cyl_vals)
         x_cyl = 2.0 * np.cos(u_grid)  # r = 2M
         y_cyl = 2.0 * np.sin(u_grid)
         
-        ax.plot_surface(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.25, linewidth=0, 
-                       antialiased=True, zorder=1)
+        # Use wireframe for better visibility
+        ax.plot_wireframe(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.5, linewidth=0.5,
+                         rstride=5, cstride=5, zorder=1)
         
-        # Add event horizon boundary circles
+        # Add event horizon boundary circles at top and bottom
         theta = np.linspace(0, 2 * np.pi, 100)
-        ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), np.full_like(theta, z_min), 
+        ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), [z_min]*len(theta), 
                 'c-', linewidth=2, alpha=0.8, zorder=2)
-        ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), np.full_like(theta, z_max), 
+        ax.plot(2.0 * np.cos(theta), 2.0 * np.sin(theta), [z_max]*len(theta), 
                 'c-', linewidth=2, alpha=0.8, zorder=2)
         
         # Singularity - thinner with 3D spheres
@@ -1528,7 +1523,7 @@ class TheoryVisualizer:
         # Title with theory name and particle status
         title_lines = [f'Multi-Particle Geodesics: {model.name}']
         
-        # <reason>chain: Add Lagrangian type to title for clarity</reason>
+        # <reason>chain: Add Lagrangian type to title for clarity
         if hasattr(model, 'complete_lagrangian') and model.complete_lagrangian is not None:
             if hasattr(model, 'enable_quantum') and model.enable_quantum:
                 title_lines.append('[Quantum Lagrangian - Quantum Path Integral Active]')
@@ -1555,9 +1550,8 @@ class TheoryVisualizer:
         # Axis labels
         ax.set_xlabel('\nX (Schwarzschild radii)', fontsize=14, color='white')
         ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=14, color='white')
-        # <reason>chain: Make z-label more visible with better positioning and larger font</reason>
-        dtau_value = 0.1  # Default time step in geometric units
-        ax.set_zlabel(f'Time Units\n(Δτ = {dtau_value})', fontsize=16, color='white', labelpad=25)
+        # <reason>chain: Use proper time τ in geometric units for relativistic accuracy
+        ax.set_zlabel('Proper Time (τ)', fontsize=16, color='white', labelpad=15)
         
         # Custom legend with additional labels
         legend_handles, legend_labels = ax.get_legend_handles_labels()
@@ -1569,12 +1563,19 @@ class TheoryVisualizer:
         if 'Singularity' not in legend_labels:
             legend_handles.append(Line2D([0], [0], color='yellow', linestyle='--', linewidth=2, label='Singularity (r=0)'))
         
-        # <reason>chain: Fix legend to properly match handles and labels</reason>
-        ax.legend(handles=legend_handles, labels=None,
-                 loc='upper left', bbox_to_anchor=(0.02, 0.98), 
-                 fontsize=9, frameon=True, fancybox=True,
-                 facecolor='black', edgecolor='white', framealpha=0.9,
-                 ncol=1)  # Single column for cleaner look
+        # <reason>chain: Fix legend to properly show all trajectories with white text
+        # Get the actual labels from the handles
+        labels_for_handles = [h.get_label() for h in legend_handles]
+        legend = ax.legend(handles=legend_handles, labels=labels_for_handles,
+                          loc='upper left', bbox_to_anchor=(0.02, 0.98), 
+                          fontsize=10, frameon=True, fancybox=True,
+                          facecolor='black', edgecolor='white', framealpha=0.9,
+                          labelcolor='white',  # White text for visibility
+                          ncol=1)  # Single column for cleaner look
+        
+        # Ensure all text is white
+        for text in legend.get_texts():
+            text.set_color('white')
         
         # Add particle summary box with status
         summary_lines = [
@@ -1609,7 +1610,7 @@ class TheoryVisualizer:
         
         print(f"\n  Unified multi-particle plot saved to: {plot_filename}")
         
-        # <reason>chain: Print summary of what was plotted</reason>
+        # <reason>chain: Print summary of what was plotted
         print(f"  Summary: {len(successful_particles)} particles plotted successfully")
         if failed_particles:
             print(f"  Failed particles: {', '.join(failed_particles)}")
@@ -1622,80 +1623,233 @@ class TheoryVisualizer:
         
     def _add_quantum_uncertainty_cloud(self, ax, r, phi, t, model):
         """
-        <reason>chain: Add visualization of quantum uncertainty around trajectory</reason>
-        
         Shows the quantum mechanical position uncertainty as a translucent cloud
-        around the classical path, with size proportional to the de Broglie wavelength.
-        """
-        import matplotlib.patches as patches
-        from mpl_toolkits.mplot3d import art3d
+        around the trajectory, with both scaled visualization and true microscopic scale inset.
         
-        # <reason>chain: Debug logging to diagnose trajectory issues</reason>
+        <reason>chain: Show both a scaled version for visibility and true scale in inset
+        """
+        if not isinstance(model, QuantumMixin):
+            return
+            
         print(f"  DEBUG: Quantum uncertainty cloud - r range: [{r.min():.3f}, {r.max():.3f}]")
         print(f"  DEBUG: Quantum uncertainty cloud - phi range: [{phi.min():.3f}, {phi.max():.3f}]")
         print(f"  DEBUG: Quantum uncertainty cloud - t range: [{t.min():.3f}, {t.max():.3f}]")
         
-        # Get particle properties
-        particle_mass = 9.109e-31  # Default to electron mass
-        if hasattr(model, '_last_particle') and model._last_particle is not None:
-            particle_mass = model._last_particle.mass
-            
-        # <reason>chain: Compute de Broglie wavelength at each point</reason>
-        # λ = h/(mv) where v is the orbital velocity
+        # Physical constants (SI units)
         h = 6.626e-34  # Planck constant
         c = 3e8  # Speed of light
         
-        # Sample points along trajectory for uncertainty visualization
-        num_samples = min(20, len(r))  # Don't oversample
+        # Get particle mass
+        particle_mass = model._last_particle.mass if hasattr(model, '_last_particle') else 9.109e-31  # Electron default
+        
+        # <reason>chain: Use more samples for the cloud on longer trajectories to ensure it follows the path to the end
+        # Use more samples, scaling with trajectory length, to prevent the cloud from stopping short.
+        num_samples = min(max(20, len(r) // 8), 80) # Scale with length, min 20, max 80 samples.
         indices = np.linspace(0, len(r)-1, num_samples, dtype=int)
         
-        for idx in indices:
-            # Estimate velocity from trajectory
-            if idx > 0 and idx < len(r) - 1:
-                dt = (t[idx+1] - t[idx-1]) * self.engine.time_scale
-                dr = (r[idx+1] - r[idx-1]) * self.engine.length_scale
-                dphi = phi[idx+1] - phi[idx-1]
-                
-                # Orbital velocity components
-                v_r = dr / dt if dt > 0 else 0
-                v_phi = r[idx] * self.engine.length_scale * dphi / dt if dt > 0 else 0
-                v = np.sqrt(v_r**2 + v_phi**2)
-                
-                # Clamp velocity to reasonable bounds
-                v = max(v, 0.001 * c)  # At least 0.1% speed of light
-                v = min(v, 0.99 * c)   # Less than speed of light
-            else:
-                v = 0.1 * c  # Default 10% speed of light
-                
-            # de Broglie wavelength
-            lambda_db = h / (particle_mass * v)
+        # Create cloud visualization
+        cloud_points = []
+        cloud_radii_actual = []
+        cloud_radii_scaled = []
+        actual_wavelengths = []
+        
+        # Handle both stationary and moving trajectories
+        r_range = r.max() - r.min()
+        phi_range = phi.max() - phi.min()
+        is_stationary = r_range < 1e-3 and phi_range < 1e-3
+        
+        if is_stationary:
+            print(f"  Trajectory appears stationary - showing quantum uncertainty at fixed position")
+            # For stationary case, create a cloud at the position
+            r_pos = r.mean()
+            phi_pos = phi.mean()
             
-            # <reason>chain: Scale uncertainty for visualization</reason>
-            # In geometric units, typical orbit r ~ 10-100, so scale appropriately
-            uncertainty_radius = lambda_db / self.engine.length_scale * 1e6  # Scale for visibility
-            uncertainty_radius = min(uncertainty_radius, r[idx] * 0.1)  # Cap at 10% of radius
+            # For stationary particle, use thermal de Broglie wavelength
+            T = 300  # Room temperature assumption
+            v_thermal = (3 * 1.381e-23 * T / particle_mass)**0.5
+            lambda_db = h / (particle_mass * v_thermal)
+            actual_wavelengths.append(lambda_db)
             
-            # Convert to Cartesian coordinates
-            x = r[idx] * np.cos(phi[idx])
-            y = r[idx] * np.sin(phi[idx])
-            z = t[idx]
+            # <reason>chain: Calculate actual and scaled uncertainties
+            uncertainty_radius_actual = lambda_db / self.engine.length_scale  # In geometric units
+            uncertainty_radius_scaled = 0.1 * r_pos  # 10% of orbital radius for visibility
             
-            # <reason>chain: Create uncertainty sphere at this point</reason>
-            # Use low-resolution sphere for performance
-            u = np.linspace(0, 2 * np.pi, 10)
+            # For main plot, show scaled version as translucent sphere
+            u = np.linspace(0, 2 * np.pi, 20)
             v = np.linspace(0, np.pi, 10)
-            x_sphere = x + uncertainty_radius * np.outer(np.cos(u), np.sin(v))
-            y_sphere = y + uncertainty_radius * np.outer(np.sin(u), np.sin(v))
-            z_sphere = z + uncertainty_radius * np.outer(np.ones(np.size(u)), np.cos(v))
+            x_sphere = r_pos * np.cos(phi_pos) + uncertainty_radius_scaled * np.outer(np.cos(u), np.sin(v))
+            y_sphere = r_pos * np.sin(phi_pos) + uncertainty_radius_scaled * np.outer(np.sin(u), np.sin(v))
+            z_sphere = t.mean() + uncertainty_radius_scaled * np.outer(np.ones(np.size(u)), np.cos(v))
             
-            # Plot uncertainty cloud
-            ax.plot_surface(x_sphere, y_sphere, z_sphere, 
-                          color='cyan', alpha=0.1, linewidth=0, 
-                          antialiased=False, zorder=1)
-                          
-        # Add legend entry for quantum uncertainty
-        from matplotlib.lines import Line2D
-        uncertainty_legend = Line2D([0], [0], marker='o', color='w', 
-                                  markerfacecolor='cyan', alpha=0.3, 
-                                  markersize=10, label='Quantum Uncertainty')
-        ax.add_artist(uncertainty_legend)
+            ax.plot_surface(x_sphere, y_sphere, z_sphere, color='cyan', alpha=0.2, zorder=6)
+            
+            # Add inset for true scale
+            self._add_uncertainty_inset(ax, r_pos * np.cos(phi_pos), r_pos * np.sin(phi_pos), 
+                                       t.mean(), uncertainty_radius_actual, uncertainty_radius_scaled)
+            
+        else:
+            # Moving trajectories - create translucent tube
+            from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+            
+            for idx in indices:
+                # Estimate velocity from trajectory
+                if idx > 0 and idx < len(r) - 1:
+                    dt = (t[idx+1] - t[idx-1]) * self.engine.time_scale
+                    dr = (r[idx+1] - r[idx-1]) * self.engine.length_scale
+                    dphi = phi[idx+1] - phi[idx-1]
+                    
+                    # Orbital velocity components
+                    v_r = dr / dt if dt > 0 else 0
+                    v_phi = r[idx] * self.engine.length_scale * dphi / dt if dt > 0 else 0
+                    v = np.sqrt(v_r**2 + v_phi**2)
+                    
+                    # Clamp velocity to reasonable bounds
+                    v = max(v, 0.001 * c)  # At least 0.1% speed of light
+                    v = min(v, 0.99 * c)   # Less than speed of light
+                else:
+                    v = 0.1 * c  # Default 10% speed of light
+                    
+                # de Broglie wavelength
+                lambda_db = h / (particle_mass * v)
+                actual_wavelengths.append(lambda_db)
+                
+                # <reason>chain: Calculate both actual and scaled uncertainties
+                uncertainty_radius_actual = (lambda_db / 2) / self.engine.length_scale  # Geometric units
+                # Scale up for visibility - proportional to orbital radius
+                uncertainty_radius_scaled = 0.02 * r[idx]  # 2% of orbital radius
+                
+                # Convert to Cartesian
+                x_pt = r[idx] * np.cos(phi[idx])
+                y_pt = r[idx] * np.sin(phi[idx])
+                z_pt = t[idx]
+                
+                cloud_points.append([x_pt, y_pt, z_pt])
+                cloud_radii_actual.append(uncertainty_radius_actual)
+                cloud_radii_scaled.append(uncertainty_radius_scaled)
+            
+            # <reason>chain: Create translucent tube for scaled quantum uncertainty
+            if len(cloud_points) > 2:
+                verts = []
+                for i in range(len(cloud_points) - 1):
+                    p1 = cloud_points[i]
+                    p2 = cloud_points[i + 1]
+                    r1 = cloud_radii_scaled[i]
+                    r2 = cloud_radii_scaled[i + 1]
+                    
+                    # Create cylinder segment
+                    theta = np.linspace(0, 2 * np.pi, 8)  # 8-sided for performance
+                    
+                    # Bottom circle
+                    x1 = p1[0] + r1 * np.cos(theta)
+                    y1 = p1[1] + r1 * np.sin(theta)
+                    z1 = np.full_like(theta, p1[2])
+                    
+                    # Top circle  
+                    x2 = p2[0] + r2 * np.cos(theta)
+                    y2 = p2[1] + r2 * np.sin(theta)
+                    z2 = np.full_like(theta, p2[2])
+                    
+                    # Create faces
+                    for j in range(len(theta) - 1):
+                        verts.append([
+                            [x1[j], y1[j], z1[j]],
+                            [x1[j+1], y1[j+1], z1[j+1]],
+                            [x2[j+1], y2[j+1], z2[j+1]],
+                            [x2[j], y2[j], z2[j]]
+                        ])
+                
+                # Add the tube
+                tube = Poly3DCollection(verts, alpha=0.2, facecolor='cyan', 
+                                      edgecolor='none', zorder=6)
+                ax.add_collection3d(tube)
+        
+        # Calculate scale factor for display
+        if actual_wavelengths and cloud_radii_scaled:
+            avg_wavelength = np.mean(actual_wavelengths)
+            avg_radius_actual = np.mean(cloud_radii_actual) if cloud_radii_actual else 0
+            avg_radius_scaled = np.mean(cloud_radii_scaled)
+            rs_meters = 2 * const_G * 1.989e30 / const_c**2  # Solar Schwarzschild radius ~3km
+            actual_size_meters = avg_wavelength
+            
+            # Calculate display scale factor
+            if avg_radius_actual > 0:
+                display_scale = avg_radius_scaled / avg_radius_actual
+            else:
+                display_scale = 1e15  # Typical scale factor
+        
+        # Add inset for one representative point to show actual uncertainty scale
+        if cloud_points and cloud_radii_actual:
+            # Choose middle point for inset
+            mid_idx = len(cloud_points) // 2
+            self._add_uncertainty_inset(ax, cloud_points[mid_idx][0], cloud_points[mid_idx][1], 
+                                       cloud_points[mid_idx][2], cloud_radii_actual[mid_idx],
+                                       cloud_radii_scaled[mid_idx])
+        
+        # <reason>chain: Add text to explain the scaling
+        if actual_wavelengths:
+            scale_text = f"Quantum uncertainty scaled {display_scale:.0e}× for visibility"
+            ax.text2D(0.02, 0.98, scale_text, transform=ax.transAxes, 
+                     fontsize=9, color='cyan', alpha=0.8, va='top')
+        
+        print(f"  Added quantum uncertainty visualization with {len(indices)} sample points")
+        if len(cloud_radii_actual) > 0:
+            print(f"  Actual uncertainty radius: ~{np.mean(cloud_radii_actual):.3e} Rs")
+            print(f"  Scaled uncertainty radius: ~{np.mean(cloud_radii_scaled):.3f} Rs")
+            if actual_wavelengths:
+                print(f"  Actual de Broglie wavelength: ~{actual_size_meters:.2e} m")
+                print(f"  Display scale factor: {display_scale:.2e}×")
+    
+    def _add_uncertainty_inset(self, ax, x0, y0, z0, radius_actual, radius_scaled):
+        """
+        Add zoomed-in inset showing actual quantum uncertainty scale.
+        
+        <reason>chain: Creates a small inset axes to visualize the microscopic uncertainty
+        """
+        from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+        
+        # Create 2D inset (matplotlib 3D insets have issues)
+        inset_ax = inset_axes(ax, width="20%", height="20%", 
+                             loc='lower right', borderpad=4,
+                             bbox_to_anchor=(0.95, 0.05, 1, 1),
+                             bbox_transform=ax.transAxes)
+        
+        # Set inset background
+        inset_ax.patch.set_facecolor('#0a0a0a')
+        inset_ax.patch.set_alpha(0.9)
+        
+        # Draw the trajectory point as a red dot
+        inset_ax.scatter(0, 0, c='red', s=50, zorder=10)
+        
+        # Draw the actual uncertainty as a circle
+        circle_actual = plt.Circle((0, 0), radius_actual, 
+                                  color='cyan', fill=False, linewidth=2,
+                                  linestyle='--', label='Actual scale')
+        inset_ax.add_patch(circle_actual)
+        
+        # Set limits to show the actual scale
+        max_range = radius_actual * 5
+        inset_ax.set_xlim(-max_range, max_range)
+        inset_ax.set_ylim(-max_range, max_range)
+        inset_ax.set_aspect('equal')
+        
+        # Remove ticks
+        inset_ax.set_xticks([])
+        inset_ax.set_yticks([])
+        
+        # Add title to inset
+        inset_ax.set_title(f'Actual λ/2 = {radius_actual:.2e} Rs', 
+                          fontsize=8, color='white', pad=5)
+        
+        # Add scale bar if radius is very small
+        if radius_actual < 1e-10:
+            # Add a scale bar showing the size
+            scale_length = radius_actual * 2
+            inset_ax.plot([-scale_length/2, scale_length/2], [-max_range*0.8, -max_range*0.8],
+                         'w-', linewidth=2)
+            inset_ax.text(0, -max_range*0.9, f'{scale_length:.1e} Rs',
+                         ha='center', va='top', fontsize=7, color='white')
+        
+        # Add border to inset
+        for spine in inset_ax.spines.values():
+            spine.set_color('white')
+            spine.set_linewidth(1)

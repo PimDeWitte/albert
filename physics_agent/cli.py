@@ -99,8 +99,10 @@ PARALLELIZATION NOTE:
                    help="Precision for quantum phase calculations (default: 1e-30)")
     
     # Control arguments
-    p.add_argument("--steps", type=int, default=None, 
-                   help="Override the default number of simulation steps for a shorter test run.")
+    p.add_argument("--max-steps", "--steps", type=int, default=None, dest='steps',
+                   help="Maximum number of simulation steps (may terminate early at event horizon). Default: 1000, Final mode: 100000")
+    p.add_argument("-r", "--radius", type=float, default=6.0,
+                   help="Starting radius in Schwarzschild radii (Rs = 2GM/c²). Default: 6.0 Rs. Use larger values (10-20) for longer trajectories before reaching event horizon.")
     p.add_argument("--early-stop", action="store_true", 
                    help="Enable early stopping based on loss convergence (credit: Ben Geist)")
     
@@ -131,6 +133,14 @@ PARALLELIZATION NOTE:
                    help="Enable verbose logging.")
     p.add_argument("--force-baseline-runs", action="store_true",
                    help="Force baseline theories to run full trajectory even if pre-flight checks fail")
+    
+    # Calibration options
+    p.add_argument("--skip-calibration", action="store_true", 
+                   help="Skip solver calibration tests before running theories")
+    p.add_argument("--strict-calibration", action="store_true",
+                   help="Exit if calibration tests fail (default: continue with warning)")
+    p.add_argument("--skip-device-benchmark", action="store_true",
+                   help="Skip device precision benchmarks during calibration (saves ~10s)")
     
     # Candidate mode arguments
     p.add_argument("--candidates", action="store_true",

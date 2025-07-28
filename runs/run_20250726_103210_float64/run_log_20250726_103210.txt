@@ -1,0 +1,2789 @@
+Running: Kerr (a=0.00)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_63cc7df8ff44.pt
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_50__r0-44300.76_steps-100_dt-0.0000_dtype-float64_4ce8cfe8cddf.pt
+
+--- Phase 1: Validating All Theories ---
+============================================================
+  Using preferred values for Regularised Core QG (ε=1.0e-04): {'epsilon': 0.0001}
+
+--- Validating: Regularised Core QG (ε=1.0e-04) ---
+  Running validation trajectory for Regularised Core QG (ε=1.0e-04)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Phase Transition QG (T_c=1.0): {'T_c': 1.1}
+
+--- Validating: Phase Transition QG (T_c=1.1) ---
+  Running validation trajectory for Phase Transition QG (T_c=1.1)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Phase Transition QG (T_c=1.1)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Phase Transition QG (T_c=1.1)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Phase Transition QG (T_c=1.1)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Phase Transition QG (T_c=1.1)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Phase Transition QG (T_c=1.1)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.884 r_s (expected: 1.500 r_s)
+  Shadow diameter: 19.578 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 276.79%
+  Status: FAIL
+
+Generating gravitational waveforms for Phase Transition QG (T_c=1.1)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: Weyl-EM Quantum (ω=0.00) ---
+  Running validation trajectory for Weyl-EM Quantum (ω=0.00)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Weyl-EM Quantum (ω=0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Weyl-EM Quantum (ω=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Weyl-EM Quantum (ω=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Weyl-EM Quantum (ω=0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Weyl-EM Quantum (ω=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Weyl-EM Quantum (ω=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Post-Quantum Gravity (γ=1.00e-02): {'gamma_pqg': 0.01}
+
+--- Validating: Post-Quantum Gravity (γ=1.00e-02) ---
+  Running validation trajectory for Post-Quantum Gravity (γ=1.00e-02)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Post-Quantum Gravity (γ=1.00e-02)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Post-Quantum Gravity (γ=1.00e-02)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Post-Quantum Gravity (γ=1.00e-02)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Post-Quantum Gravity (γ=1.00e-02)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Post-Quantum Gravity (γ=1.00e-02)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Post-Quantum Gravity (γ=1.00e-02)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Einstein Asymmetric (α=0.0e+00): {'alpha': 0.0}
+
+--- Validating: Einstein Asymmetric (α=0.0e+00) ---
+  Running validation trajectory for Einstein Asymmetric (α=0.0e+00)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Einstein Asymmetric (α=0.0e+00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Einstein Asymmetric (α=0.0e+00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Einstein Asymmetric (α=0.0e+00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Einstein Asymmetric (α=0.0e+00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Spinor-Conformal QG (λ=0.00): {'lambda_c': 0.0}
+
+--- Validating: Spinor-Conformal QG (λ=0.00) ---
+  Running validation trajectory for Spinor-Conformal QG (λ=0.00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Alena‑Tensor‑γ=+0.00: {'gamma': 0.0}
+
+--- Validating: Alena‑Tensor‑γ=+0.00 ---
+  Running validation trajectory for Alena‑Tensor‑γ=+0.00...
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Participatory QG (ω=0.00): {'omega': 1e-05}
+
+--- Validating: Participatory QG (ω=0.00) ---
+  Running validation trajectory for Participatory QG (ω=0.00)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Participatory QG (ω=0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 0.00 radians
+  Error: 2.70 radians (100.0%)
+  Status: FAILED
+
+Debug info:
+  g_metric: 0.000000 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: 0.000000e+00
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Participatory QG (ω=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Participatory QG (ω=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: -0.0002 arcsec
+  Error: 1.7514 arcsec (100.01%)
+  Status: FAILED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: -1.000236
+  g_rr at test radius: 0.999999999900
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Participatory QG (ω=0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Participatory QG (ω=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for Participatory QG (ω=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 0.000 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: Quantum Quantum Template (g=1.0) ---
+  Running validation trajectory for Quantum Quantum Template (g=1.0)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Quantum Quantum Template (g=1.0)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 1.94 radians
+  Error: 0.76 radians (28.1%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -7.048203 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -1.568358e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Quantum Quantum Template (g=1.0)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Quantum Quantum Template (g=1.0)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000334815
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Quantum Quantum Template (g=1.0)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Quantum Quantum Template (g=1.0)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for Quantum Quantum Template (g=1.0)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 13.007 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Fractal QG (D=3.000): {'D': 3.1}
+
+--- Validating: Fractal QG (D=3.100) ---
+  Running validation trajectory for Fractal QG (D=3.100)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Fractal QG (D=3.100)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 18.66 radians
+  Error: 15.96 radians (591.2%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -67.741061 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -1.507366e-15
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Fractal QG (D=3.100)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Fractal QG (D=3.100)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000001840678
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Fractal QG (D=3.100)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Fractal QG (D=3.100)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Fractal QG (D=3.100)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 68.482 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Einstein Teleparallel (τ=0.000): {'tau': 0.0}
+
+--- Validating: Einstein Teleparallel (τ=0.000) ---
+  Running validation trajectory for Einstein Teleparallel (τ=0.000)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Einstein Teleparallel (τ=0.000)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Einstein Teleparallel (τ=0.000)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Einstein Teleparallel (τ=0.000)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Einstein Teleparallel (τ=0.000)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Einstein Teleparallel (τ=0.000)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Einstein Teleparallel (τ=0.000)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Log-Corrected QG (γ=0.000): {'gamma': 1e-05}
+
+--- Validating: Log-Corrected QG (γ=0.000) ---
+  Running validation trajectory for Log-Corrected QG (γ=0.000)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Log-Corrected QG (γ=0.000)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Log-Corrected QG (γ=0.000)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Log-Corrected QG (γ=0.000)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424334
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Log-Corrected QG (γ=0.000)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Log-Corrected QG (γ=0.000)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Log-Corrected QG (γ=0.000)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.658 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for String Theory (α'=1.0e-66): {'alpha_prime': 1e-66}
+
+--- Validating: String Theory (α'=1.0e-66) ---
+  Running validation trajectory for String Theory (α'=1.0e-66)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for String Theory (α'=1.0e-66)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for String Theory (α'=1.0e-66)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for String Theory (α'=1.0e-66)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for String Theory (α'=1.0e-66)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for String Theory (α'=1.0e-66)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for String Theory (α'=1.0e-66)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Kaluza-Klein (R_kk=1.0e-32): {'R_kk': 1e-32}
+
+--- Validating: Kaluza-Klein (R_kk=1.0e-32) ---
+  Running validation trajectory for Kaluza-Klein (R_kk=1.0e-32)...
+  Constraint validators using quantum Lagrangian
+  Error running Metric Properties Validator: min() received an invalid combination of arguments - got (float, float), but expected one of:
+ * (Tensor input, *, Tensor out = None)
+ * (Tensor input, Tensor other, *, Tensor out = None)
+ * (Tensor input, int dim, bool keepdim = False, *, tuple of Tensors out = None)
+ * (Tensor input, name dim, bool keepdim = False, *, tuple of Tensors out = None)
+
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 990, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/metric_properties_validator.py", line 35, in validate
+    g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M, self.engine.C_T, self.engine.G_T)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/kaluza_klein/theory.py", line 84, in get_metric
+    Q_eff = torch.min(Q_eff, Q_max)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: min() received an invalid combination of arguments - got (float, float), but expected one of:
+ * (Tensor input, *, Tensor out = None)
+ * (Tensor input, Tensor other, *, Tensor out = None)
+ * (Tensor input, int dim, bool keepdim = False, *, tuple of Tensors out = None)
+ * (Tensor input, name dim, bool keepdim = False, *, tuple of Tensors out = None)
+
+
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Emergent Gravity (η=0.00): {'eta': 0.0}
+
+--- Validating: Emergent Gravity (η=0.00) ---
+  Running validation trajectory for Emergent Gravity (η=0.00)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Emergent Gravity (η=0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 11.00 radians
+  Error: 8.30 radians (307.5%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -39.939816 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -8.887361e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Emergent Gravity (η=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Emergent Gravity (η=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000001415377
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Emergent Gravity (η=0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Emergent Gravity (η=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for Emergent Gravity (η=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 56.591 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Gauge Gravity (κ=0.00): {'kappa': 0.0}
+
+--- Validating: Gauge Gravity (κ=0.00) ---
+  Running validation trajectory for Gauge Gravity (κ=0.00)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Gauge Gravity (κ=0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Gauge Gravity (κ=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Gauge Gravity (κ=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Gauge Gravity (κ=0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Gauge Gravity (κ=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Gauge Gravity (κ=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Asymptotic Safety (Λ_as=1.0e+18 GeV): {'Lambda_as': 1e+18}
+
+--- Validating: Asymptotic Safety (Λ_as=1.0e+18 GeV) ---
+  Running validation trajectory for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Quantum Corrected (α=+0.00): {'alpha': 1e-05}
+
+--- Validating: Quantum Corrected (α=+0.00) ---
+  Running validation trajectory for Quantum Corrected (α=+0.00)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Yukawa (λ=10.00 RS): {'lambda_rs': 1000000.0}
+
+--- Validating: Yukawa (λ=1000000.00 RS) ---
+  Running validation trajectory for Yukawa (λ=1000000.00 RS)...
+  WARNING: Yukawa (λ=1000000.00 RS) is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Yukawa (λ=1000000.00 RS)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Yukawa (λ=1000000.00 RS)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Yukawa (λ=1000000.00 RS)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000404192
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Yukawa (λ=1000000.00 RS)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Yukawa (λ=1000000.00 RS)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for Yukawa (λ=1000000.00 RS)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 13.390 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Stochastic Noise (σ=1.00e-05): {'sigma': 0.0001}
+
+--- Validating: Stochastic Noise (σ=1.00e-04) ---
+  Running validation trajectory for Stochastic Noise (σ=1.00e-04)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Stochastic Noise (σ=1.00e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Stochastic Noise (σ=1.00e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Stochastic Noise (σ=1.00e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Stochastic Noise (σ=1.00e-04)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+
+Calculating photon sphere for Stochastic Noise (σ=1.00e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Stochastic Noise (σ=1.00e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 20
+  Passed: 18
+  Failed: 2
+============================================================
+
+Theories that failed validation:
+  ✗ Spinor-Conformal QG (λ=0.00)
+    → Moved to: runs/run_20250726_103210_float64/fail/Spinor-Conformal_QG_λ_0_00
+  ✗ Kaluza-Klein (R_kk=1.0e-32)
+    → Moved to: runs/run_20250726_103210_float64/fail/Kaluza-Klein_R_kk_1_0e-32
+
+Theories that passed validation:
+  ✓ Regularised Core QG (ε=1.0e-04)
+  ✓ Phase Transition QG (T_c=1.1)
+  ✓ Weyl-EM Quantum (ω=0.00)
+  ✓ Post-Quantum Gravity (γ=1.00e-02)
+  ✓ Einstein Asymmetric (α=0.0e+00)
+  ✓ Alena‑Tensor‑γ=+0.00
+  ✓ Participatory QG (ω=0.00)
+  ✓ Quantum Quantum Template (g=1.0)
+  ✓ Fractal QG (D=3.100)
+  ✓ Einstein Teleparallel (τ=0.000)
+  ✓ Log-Corrected QG (γ=0.000)
+  ✓ String Theory (α'=1.0e-66)
+  ✓ Emergent Gravity (η=0.00)
+  ✓ Gauge Gravity (κ=0.00)
+  ✓ Asymptotic Safety (Λ_as=1.0e+18 GeV)
+  ✓ Quantum Corrected (α=+0.00)
+  ✓ Yukawa (λ=1000000.00 RS)
+  ✓ Stochastic Noise (σ=1.00e-04)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Regularised Core QG (ε=1.0e-04) ---
+
+--- Evaluating: Regularised Core QG (ε=1.0e-04) ---
+
+--- Evaluating: Regularised Core QG (ε=1.0e-04) ---
+  Results will be saved to: runs/run_20250726_103210_float64/Regularised_Core_QG_ε_1_0e-04
+  Running pre-flight checks for Regularised Core QG (ε=1.0e-04)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Regularised Core QG (ε=1.0e-04). Continuing with evaluation.
+  Running trajectory simulation for Regularised Core QG (ε=1.0e-04)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Generating trajectory comparison plot...
+  DEBUG: Quantum uncertainty cloud - r range: [30.000, 30.000]
+  DEBUG: Quantum uncertainty cloud - phi range: [0.000, 0.000]
+  DEBUG: Quantum uncertainty cloud - t range: [0.000, 0.066]
+  Trajectory appears stationary - showing quantum uncertainty at fixed position
+  Added quantum uncertainty visualization with 20 sample points
+  Uncertainty radius range: [3.000, 3.000] Rs
+  Actual de Broglie wavelength: ~1.08e-08 m
+  Display scale factor: 8.21e+11×
+  Trajectory has 101 points, using step interval 3 for markers
+  Trajectory range: r=[30.000, 30.000], phi=[0.000, 0.000]
+  WARNING: Theory 'Regularised Core QG (ε=1.0e-04)' has no radial motion (circular orbit)
+    Processing 2 baselines for checkpoints...
+      Baseline: Kerr (a=0.00)

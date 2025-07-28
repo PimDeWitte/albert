@@ -1,0 +1,4 @@
+Running: Schwarzschild
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_3ce6218204f36085_50000.pt
+Running: Reissner-Nordström (q_e=0.30)
+Running: Kerr (a=0.30)

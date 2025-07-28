@@ -115,28 +115,16 @@
             border: none;
         }
         
-        /* Loading indicator */
+        /* Loading indicator - hidden */
         .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+            display: none;
         }
         
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #1976d2;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Loading text in tabs */
+        .tab .loading-text {
+            font-size: 12px;
+            opacity: 0.7;
+            font-style: italic;
         }
         
         /* Responsive adjustments */
@@ -161,14 +149,14 @@
     <div class="header">
         <h1>Albert Documentation</h1>
         <div class="tabs">
-            <button class="tab">Validators</button>
-            <button class="tab">System Diagram</button>
-            <button class="tab">Solvers</button>
-            <button class="tab">Datasets</button>
-            <button class="tab">Self-Discovery</button>
-            <button class="tab">Scoring</button>
-            <button class="tab">Cache</button>
-            <button class="tab active">Leaderboard</button>
+            <button class="tab" data-tab="validators">Validators <span class="loading-text"></span></button>
+            <button class="tab" data-tab="system-diagram">System Diagram <span class="loading-text"></span></button>
+            <button class="tab" data-tab="solvers">Solvers <span class="loading-text"></span></button>
+            <button class="tab" data-tab="datasets">Datasets <span class="loading-text"></span></button>
+            <button class="tab" data-tab="discovery">Self-Discovery <span class="loading-text"></span></button>
+            <button class="tab" data-tab="scoring">Scoring <span class="loading-text"></span></button>
+            <button class="tab" data-tab="cache">Cache <span class="loading-text"></span></button>
+            <button class="tab active" data-tab="leaderboard">Leaderboard <span class="loading-text"></span></button>
         </div>
     </div>
     
@@ -254,12 +242,9 @@
             tabs.forEach(tab => tab.classList.remove('active'));
             
             // Find the correct tab button
-            const tabIndex = getTabIndex(tabName);
-            if (tabIndex !== -1) {
-                const targetTab = tabs[tabIndex];
-                if (targetTab) {
-                    targetTab.classList.add('active');
-                }
+            const targetTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (targetTab) {
+                targetTab.classList.add('active');
             }
             
             // Update active content
@@ -270,6 +255,12 @@
             // Lazy load iframe if not already loaded
             const iframe = document.querySelector(`#${tabName}-container iframe`);
             if (iframe.hasAttribute('data-src') && !iframe.src) {
+                // Show loading text in tab
+                const loadingSpan = targetTab.querySelector('.loading-text');
+                if (loadingSpan) {
+                    loadingSpan.textContent = '[loading..]';
+                }
+                
                 iframe.src = iframe.getAttribute('data-src');
                 iframe.removeAttribute('data-src');
             }
@@ -285,10 +276,12 @@
         // Handle tab button clicks
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab');
-            tabButtons.forEach((button, index) => {
-                const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
+            tabButtons.forEach((button) => {
                 button.addEventListener('click', function() {
-                    switchTab(tabNames[index]);
+                    const tabName = button.getAttribute('data-tab');
+                    if (tabName) {
+                        switchTab(tabName);
+                    }
                 });
             });
             
@@ -305,13 +298,26 @@
                 url.searchParams.set('tab', 'leaderboard');
                 history.replaceState({ tab: 'leaderboard' }, '', url);
             }
+            
+            // Show loading text for leaderboard since it loads immediately
+            const leaderboardTab = document.querySelector('.tab[data-tab="leaderboard"]');
+            if (leaderboardTab) {
+                const loadingSpan = leaderboardTab.querySelector('.loading-text');
+                if (loadingSpan) {
+                    loadingSpan.textContent = '[loading..]';
+                }
+            }
         });
         
         // Hide loading indicator when iframe loads
         window.hideLoading = function(tabName) {
-            const loading = document.querySelector(`#${tabName}-container .loading`);
-            if (loading) {
-                loading.style.display = 'none';
+            // Clear loading text from tab
+            const tab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (tab) {
+                const loadingSpan = tab.querySelector('.loading-text');
+                if (loadingSpan) {
+                    loadingSpan.textContent = '';
+                }
             }
         }
         
@@ -321,11 +327,6 @@
                 switchTab(event.state.tab, false); // Don't update URL on popstate
             }
         });
-        
-        function getTabIndex(tabName) {
-            const tabNames = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
-            return tabNames.indexOf(tabName);
-        }
         
         // Hide research notice on mobile when scrolling
         let lastScrollTop = 0;

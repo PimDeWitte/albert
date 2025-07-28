@@ -111,6 +111,18 @@ For more information on each command, use: albert <command> --help
         action='store_true',
         help='Run full test suite with more extensive tests'
     )
+    test_parser.add_argument(
+        '--benchmark-devices',
+        action='store_true',
+        default=True,
+        help='Benchmark GPU vs CPU precision and performance (default: True)'
+    )
+    test_parser.add_argument(
+        '--no-benchmark-devices',
+        dest='benchmark_devices',
+        action='store_false',
+        help='Skip device benchmarking'
+    )
     
     # Validate command - validates individual theories
     validate_parser = subparsers.add_parser(
@@ -214,9 +226,10 @@ For more information on each command, use: albert <command> --help
         print("🔬 Running environment/solver tests...\n")
         from physics_agent.run_environment_tests import run_environment_tests
         full_test = args.full if hasattr(args, 'full') else False
+        benchmark_devices = args.benchmark_devices if hasattr(args, 'benchmark_devices') else False
         steps = 1000 if full_test else 100
         
-        if run_environment_tests(steps=steps, full=full_test):
+        if run_environment_tests(steps=steps, full=full_test, benchmark_devices=benchmark_devices):
             print("\n✅ All environment tests passed!")
             sys.exit(0)
         else:

@@ -43,12 +43,15 @@ from .photon_sphere_validator import PhotonSphereValidator
 from .gw_validator import GwValidator
 from .hawking_validator import HawkingValidator
 from .cosmology_validator import CosmologyValidator
+from .psr_j0740_validator import PsrJ0740Validator
 from .precision_tracker import PrecisionTracker
 from .uncertainty_quantifier import UncertaintyQuantifier
 from .reproducibility_framework import ReproducibilityFramework
 from .scientific_report_generator import ScientificReportGenerator
 from .lagrangian_validator import LagrangianValidator
 from .psr_j0740_validator import PsrJ0740Validator
+from .validator_registry import validator_registry
+from .validator_performance_tracker import performance_tracker
 
 __all__ = [
     'ValidationResult',
@@ -82,5 +85,7 @@ __all__ = [
     'ScientificReportGenerator',
     'LagrangianValidator',
     'PsrJ0740Validator',
-    'QEDPrecisionValidator'
+    'QEDPrecisionValidator',
+    'validator_registry',
+    'performance_tracker'
 ] 

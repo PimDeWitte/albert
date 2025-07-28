@@ -2,7 +2,7 @@
 
 ## Active Validators Summary
 
-Currently, **10 validators** are tested and run in the Albert framework:
+Currently, **11 validators** are tested and run in the Albert framework:
 
 ### Phase 1 & 2 (Always Run)
 1. **Conservation Validator** ✅
@@ -13,10 +13,11 @@ Currently, **10 validators** are tested and run in the Albert framework:
 6. **Photon Sphere Validator** ✅
 7. **Gravitational Wave Validator** ✅
 8. **COW Interferometry Validator** ✅ (quantum theories only)
+9. **PSR J0740 Shapiro Delay Validator** ✅
 
 ### Phase 3 (Run After All Theories Complete)
-9. **CMB Power Spectrum Validator** ✅
-10. **Primordial GWs Validator** ✅
+10. **CMB Power Spectrum Validator** ✅
+11. **Primordial GWs Validator** ✅
 
 ### Inactive Validators (Implemented but Not in Standard Runs)
 - Lagrangian Validator ❌
@@ -26,7 +27,7 @@ Currently, **10 validators** are tested and run in the Albert framework:
 - Quantum Lagrangian Grounding Validator ❌
 - Hawking Radiation Validator ❌
 - Cosmology Validator ❌
-- PsrJ0740 Validator ❌
+
 - Renormalizability Validator ❌
 - Unification Scale Validator ❌
 - PTA Stochastic GW Validator ❌

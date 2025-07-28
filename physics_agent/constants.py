@@ -987,7 +987,7 @@ NUMERICAL_THRESHOLDS = {
     'min_step_size': 0.001,  # Minimum integration step size
     'velocity_limit': 100.0,  # Maximum velocity in geometric units
     'radius_min': 0.5,   # Minimum radius in geometric units
-    'radius_max': 1000.0,  # Maximum radius in geometric units
+    'radius_max': 100000.0,  # Maximum radius in geometric units - increased for distant orbits
     'ergo_factor': 1.5,  # Factor for ergosphere boundary
     'early_stopping_steps': 100,  # Steps before early stopping check
 }

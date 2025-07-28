@@ -1,0 +1,161 @@
+Running: Schwarzschild
+Running: Kerr (a=0.50)
+Running: Reissner-Nordström (q_e=0.50)
+Running: Kerr-Newman (a=0.50, q_e=0.50)
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Validating: Schwarzschild ---
+  Running validation trajectory for Schwarzschild...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_r0-17720.30_steps-100_dt-0.0000_dtype-float64_d020b9eb23580dcc.pt
+  Constraint validators using classical Lagrangian
+  Theory category: base
+  Skipping quantum validators for base theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Schwarzschild...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Schwarzschild...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Schwarzschild...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Schwarzschild...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Schwarzschild...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - but continuing with prediction validations
+  Skipping prediction tests - observations failed
+  Prediction tests: SKIPPED (observations failed)
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  → Theory fails critical observational tests (e.g., extreme PPN values, photon sphere)
+  → Skipping expensive trajectory simulation to save computational resources
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 0
+  Failed: 1
+============================================================
+
+Theories that failed validation:
+  ✗ Schwarzschild
+    → Moved to: runs/run_20250727_163420_float64/fail/Schwarzschild
+
+============================================================
+Run complete. All results saved to: runs/run_20250727_163420_float64
+============================================================
+
+Updating homepage with latest trajectory images...
+No trajectory images found in run directory
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (1):
+  ✗ fail (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+No finalist theories passed all validations for prediction testing.
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+No prediction results found. Skipping report update.
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+No scored theories found.
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+📋 CALIBRATION CERTIFICATE
+   ID: 835193600776244f
+   Status: VALID
+   Health Score: 100%
+   Guarantees:
+     ✓ Engine Correctness: GUARANTEED
+     ✓ Solver Accuracy: GUARANTEED
+     ✓ Environment Stability: GUARANTEED
+     ✓ Performance Optimized: GUARANTEED
+
+TOTAL THEORIES TESTED: 1
+PASSED: 0
+FAILED: 1
+
+============================================================
+THEORIES THAT FAILED:
+============================================================
+
+  ✗ Schwarzschild
+    Failure Category: validation failed
+
+============================================================
+FAILURE REASON BREAKDOWN:
+============================================================
+  validation failed: 1 theories
+
+📊 Detailed summary saved to: runs/run_20250727_163420_float64/comprehensive_summary.json

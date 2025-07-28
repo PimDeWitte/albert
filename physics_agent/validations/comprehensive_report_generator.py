@@ -99,7 +99,16 @@ class ComprehensiveReportGenerator:
             },
             # Hawking Radiation Validator removed - not tested
             # Cosmology Validator removed - not tested
-            # PsrJ0740Validator removed - test exists but not in main suite
+            'PSR J0740 Shapiro Delay Validator': {
+                'description': 'Tests Shapiro delay in PSR J0740+6620, one of the most massive known pulsars (2.08 M☉). Measures gravitational time delay of pulsar signals passing near companion star (0.253 M☉). Compares against observed timing precision of 0.28 μs RMS.',
+                'purpose': 'Tests relativistic gravity in binary pulsar systems. Validates spacetime curvature effects on light propagation.',
+                'reference_links': '[Fonseca et al. (2021, ApJL 915, L12)](https://doi.org/10.3847/2041-8213/ac03b8)',
+                'dataset_links': 'N/A (values from published paper)',
+                'sota_value': '0.28 μs timing RMS',
+                'sota_theory': 'General Relativity',
+                'web_reference': '[PSR J0740+6620](https://en.wikipedia.org/wiki/PSR_J0740%2B6620)',
+                'validator_file': 'physics_agent/validations/psr_j0740_validator.py'
+            },
             
             # Quantum Observational Validators (tested)
             'COW Neutron Interferometry Validator': {
@@ -200,15 +209,27 @@ class ComprehensiveReportGenerator:
             '        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }',
             '        h1 { color: #333; text-align: center; }',
             '        h2 { color: #666; margin-top: 30px; }',
-            '        table { border-collapse: collapse; width: 100%; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }',
-            '        th { background-color: #4CAF50; color: white; padding: 12px; text-align: left; position: sticky; top: 0; }',
-            '        td { padding: 12px; border-bottom: 1px solid #ddd; }',
+            '        .table-container { width: 100%; overflow-x: auto; }',
+            '        table { border-collapse: collapse; width: 100%; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); table-layout: fixed; }',
+            '        th { background-color: #4CAF50; color: white; padding: 12px; text-align: left; position: sticky; top: 0; white-space: normal; word-wrap: break-word; }',
+            '        td { padding: 12px; border-bottom: 1px solid #ddd; white-space: normal; word-wrap: break-word; }',
             '        tr:hover { background-color: #f5f5f5; }',
-            '        .code-button { background-color: #008CBA; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; }',
+            '        .code-button { background-color: #008CBA; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; white-space: nowrap; }',
             '        .code-button:hover { background-color: #005f79; }',
             '        .pass { color: green; font-weight: bold; }',
             '        .fail { color: red; font-weight: bold; }',
             '        .na { color: #999; font-style: italic; }',
+            '        /* Column widths to ensure table fits in view */',
+            '        th:nth-child(1), td:nth-child(1) { width: 15%; }  /* Test Name */',
+            '        th:nth-child(2), td:nth-child(2) { width: 8%; }   /* SOTA Score */',
+            '        th:nth-child(3), td:nth-child(3) { width: 10%; }  /* Web Reference */',
+            '        th:nth-child(4), td:nth-child(4) { width: 12%; }  /* Our Score */',
+            '        th:nth-child(5), td:nth-child(5) { width: 15%; }  /* Description */',
+            '        th:nth-child(6), td:nth-child(6) { width: 12%; }  /* Purpose */',
+            '        th:nth-child(7), td:nth-child(7) { width: 8%; }   /* Reference Links */',
+            '        th:nth-child(8), td:nth-child(8) { width: 6%; }   /* Dataset Links */',
+            '        th:nth-child(9), td:nth-child(9) { width: 6%; }   /* SOTA Theory */',
+            '        th:nth-child(10), td:nth-child(10) { width: 8%; } /* Python File */',
             '        .logs { background-color: #1e1e1e; color: #d4d4d4; padding: 20px; font-family: monospace; white-space: pre-wrap; overflow-x: auto; margin-top: 30px; }',
             '        .meta-info { background-color: #e8f4f8; padding: 15px; margin-bottom: 20px; border-radius: 5px; }',
             '        .sota-match { background-color: #c8e6c9; }',
@@ -264,18 +285,19 @@ class ComprehensiveReportGenerator:
         
         html_parts.extend([
             '    </div>',
+            '    <div class="table-container">',
             '    <table>',
             '        <thead>',
             '            <tr>',
             '                <th>Test Name</th>',
+            '                <th>SOTA Score</th>',
+            '                <th>Web Reference for SOTA</th>',
+            '                <th>Our System\'s Score</th>',
             '                <th>Description</th>',
             '                <th>Purpose/What it Tests</th>',
             '                <th>Reference Links</th>',
             '                <th>Dataset Links</th>',
-            '                <th>SOTA Value</th>',
             '                <th>SOTA Theory</th>',
-            '                <th>Web Reference for SOTA</th>',
-            '                <th>Our System\'s Score</th>',
             '                <th>Python File</th>',
             '            </tr>',
             '        </thead>',
@@ -298,21 +320,22 @@ class ComprehensiveReportGenerator:
             html_parts.extend([
                 '            <tr>',
                 f'                <td>{html.escape(validator_name)}</td>',
+                f'                <td>{html.escape(metadata["sota_value"])}</td>',
+                f'                <td>{metadata["web_reference"]}</td>',
+                f'                <td class="{score_class}">{our_score}</td>',
                 f'                <td>{html.escape(metadata["description"])}</td>',
                 f'                <td>{html.escape(metadata["purpose"])}</td>',
                 f'                <td>{metadata["reference_links"]}</td>',
                 f'                <td>{metadata["dataset_links"]}</td>',
-                f'                <td>{html.escape(metadata["sota_value"])}</td>',
                 f'                <td>{html.escape(metadata["sota_theory"])}</td>',
-                f'                <td>{metadata["web_reference"]}</td>',
-                f'                <td class="{score_class}">{our_score}</td>',
                 f'                <td><a href="file://{os.path.abspath(metadata["validator_file"])}" class="code-button">Show Code</a></td>',
                 '            </tr>'
             ])
             
         html_parts.extend([
             '        </tbody>',
-            '    </table>'
+            '    </table>',
+            '    </div>'
         ])
         
         # Add summary statistics

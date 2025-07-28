@@ -9,7 +9,7 @@ import json
 from physics_agent.theory_utils import extract_theory_name_from_dir
 
 
-def generate_comprehensive_summary(main_run_dir: str, validation_results: dict) -> dict:
+def generate_comprehensive_summary(main_run_dir: str, validation_results: dict, calibration_certificate: dict = None) -> dict:
     """
     Generate a comprehensive summary of all theories tested, including pass/fail status,
     failure reasons, errors thrown, and scores.
@@ -17,6 +17,7 @@ def generate_comprehensive_summary(main_run_dir: str, validation_results: dict) 
     Args:
         main_run_dir: The main run directory containing all results
         validation_results: Dictionary of validation results from Phase 1
+        calibration_certificate: Optional calibration certificate for the run
         
     Returns:
         Dictionary containing the complete summary
@@ -25,9 +26,27 @@ def generate_comprehensive_summary(main_run_dir: str, validation_results: dict) 
     print("COMPREHENSIVE VALIDATION SUMMARY")
     print(f"{'='*60}")
     
+    # Display calibration certificate if available
+    if calibration_certificate:
+        print(f"\n📋 CALIBRATION CERTIFICATE")
+        print(f"   ID: {calibration_certificate.get('certificate_id', 'N/A')}")
+        print(f"   Status: {calibration_certificate.get('status', 'N/A')}")
+        print(f"   Health Score: {calibration_certificate.get('health_score', 0):.0f}%")
+        
+        guarantees = calibration_certificate.get('guarantees', {})
+        if guarantees:
+            print("   Guarantees:")
+            for guarantee_type, guarantee in guarantees.items():
+                status = guarantee.get('status', 'UNKNOWN')
+                symbol = '✓' if status == 'GUARANTEED' else '✗' if status == 'NOT_GUARANTEED' else '○'
+                print(f"     {symbol} {guarantee_type.replace('_', ' ').title()}: {status}")
+    else:
+        print(f"\n⚠️  NO CALIBRATION CERTIFICATE - Run integrity not guaranteed")
+    
     summary = {
         'run_directory': main_run_dir,
         'timestamp': os.path.basename(main_run_dir),
+        'calibration_certificate': calibration_certificate,
         'theories_tested': {},
         'passed': [],
         'failed': [],
@@ -241,21 +260,32 @@ def generate_comprehensive_summary(main_run_dir: str, validation_results: dict) 
             if 'failure_category' in theory_data:
                 print(f"    Failure Category: {theory_data['failure_category']}")
             
-            # Print specific failure reasons
-            for failure in theory_data.get('failure_reasons', []):
-                print(f"    - {failure['validator']}: {failure['reason']}")
+            # Print specific failed tests with details
+            if 'failure_reasons' in theory_data and theory_data['failure_reasons']:
+                print(f"    Failed Tests:")
+                for failure in theory_data['failure_reasons']:
+                    validator = failure['validator']
+                    reason = failure['reason']
+                    # Try to extract parameters if available
+                    params = ''
+                    if 'details' in failure and isinstance(failure['details'], dict):
+                        param_list = [f"{k}={v}" for k, v in failure['details'].items() if k != 'error' and k != 'reason']
+                        if param_list:
+                            params = f" ({', '.join(param_list)})"
+                    print(f"      - {validator}{params}: {reason}")
             
             # Print errors
-            for error in theory_data.get('errors', []):
-                print(f"    - ERROR in {error['validator']}: {error['error']}")
+            if 'errors' in theory_data and theory_data['errors']:
+                print(f"    Errors:")
+                for error in theory_data['errors']:
+                    print(f"      - {error['validator']}: {error['error']}")
     
-    # Print failure statistics
+    # Print failure reason breakdown
     if summary['statistics']['failure_reasons']:
         print(f"\n{'='*60}")
         print("FAILURE REASON BREAKDOWN:")
         print(f"{'='*60}")
-        for reason, count in sorted(summary['statistics']['failure_reasons'].items(), 
-                                   key=lambda x: x[1], reverse=True):
+        for reason, count in sorted(summary['statistics']['failure_reasons'].items(), key=lambda x: x[1], reverse=True):
             print(f"  {reason}: {count} theories")
     
     # <reason>chain: Import to_serializable to handle tensor conversions</reason>

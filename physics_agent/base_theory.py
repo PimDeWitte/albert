@@ -316,29 +316,26 @@ class GravitationalTheory:
         Returns:
             True if theory should be skipped, False otherwise
         """
-        # If no filter specified, run all theories
-        if categories_filter is None:
-            return False
-            
         # Check if this theory's category is UGM
         if hasattr(self, 'category') and self.category == 'ugm':
             # UGM requires explicit opt-in due to computational cost
-            if 'ugm' not in categories_filter:
+            # Skip unless explicitly requested via category filter
+            if categories_filter is None or 'ugm' not in categories_filter:
                 print(f"  ⚠️  WARNING: Skipping {self.name} - UGM theories are 8-dimensional and computationally expensive.")
                 print(f"      To run UGM theories, use --category ugm or include 'ugm' in categories list.")
                 return True
+        
+        # If no filter specified, run all non-UGM theories
+        if categories_filter is None:
+            return False
                 
-        # For non-UGM theories, check if their category is in the filter
+        # For non-UGM theories with a filter, check if their category is in the filter
         if hasattr(self, 'category') and self.category not in categories_filter:
             return True
             
         return False
 
-    def get_cache_tag(self, N_STEPS: int, precision_tag: str, r0_tag: int) -> str:
-        """Generate a unique cache tag for this theory configuration."""
-        # Default implementation
-        theory_tag = self.name.replace(' ', '_').replace('(', '').replace(')', '').replace('=', '_')
-        return f"{ theory_tag}_r{r0_tag}_steps-{N_STEPS}_dt-{precision_tag}"
+
 
     def generate_lagrangian(self, include_em_term: bool = False, em_coupling: float = None) -> sp.Expr:
         """

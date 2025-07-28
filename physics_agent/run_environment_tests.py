@@ -235,13 +235,14 @@ def test_numerical_stability(engine, steps=100):
         return False
 
 
-def run_environment_tests(steps=100, full=False):
+def run_environment_tests(steps=100, full=False, benchmark_devices=False):
     """
     Run all environment validation tests.
     
     Args:
         steps: Number of integration steps for each test
         full: If True, run extended test suite
+        benchmark_devices: If True, benchmark GPU vs CPU precision/performance
         
     Returns:
         bool: True if all tests pass, False otherwise
@@ -283,6 +284,26 @@ def run_environment_tests(steps=100, full=False):
             print(f"   ❌ {test_name} failed with unexpected error: {str(e)}")
             all_passed = False
         print()  # Blank line between tests
+    
+    # Run device benchmarks if requested
+    if benchmark_devices:
+        print("\nRunning device precision benchmarks...")
+        print("="*60)
+        
+        try:
+            from physics_agent.solver_tests.device_precision_benchmarker import run_device_precision_benchmark
+            
+            # Run benchmarks with reduced steps for faster results
+            benchmark_results = run_device_precision_benchmark(
+                verbose=True,
+                save_path=None
+            )
+            
+            print("\n" + "="*60)
+            
+        except Exception as e:
+            print(f"❌ Device benchmarking failed: {str(e)}")
+            all_passed = False
     
     # Summary
     print("="*60)

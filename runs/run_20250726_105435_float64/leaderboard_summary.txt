@@ -1,0 +1,48 @@
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 18
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     Quantum Corrected (α=+0.00)        quantum     0.4284  +perfect_conservation    
+2     String Theory (α'=1.0e-66)         quantum     0.4284  +perfect_conservation    
+3     Asymptotic Safety (Λ_as=1.0e+18 Ge quantum     0.4284  +perfect_conservation    
+4     Phase Transition QG (T_c=1.1)      quantum     0.4284  +perfect_conservation    
+5     Post-Quantum Gravity (γ=1.00e-02)  quantum     0.4032  +perfect_conservation    
+6     Log-Corrected QG (γ=0.000)         quantum     0.4032  +perfect_conservation    
+7     Weyl-EM Quantum (ω=0.00)           quantum     0.4032  +perfect_conservation    
+8     Participatory QG (ω=0.00)          quantum     0.4032  +perfect_conservation    
+9     Gauge Gravity (κ=0.00)             quantum     0.4032  +perfect_conservation    
+10    Stochastic Noise (σ=1.00e-04)      quantum     0.4032  +perfect_conservation    
+11    Einstein Asymmetric (α=0.0e+00)    quantum     0.4032  +perfect_conservation    
+12    Emergent Gravity (η=0.00)          quantum     0.4032  +perfect_conservation    
+13    Regularised Core QG (ε=1.0e-04)    quantum     0.4032  +perfect_conservation    
+14    Einstein Teleparallel (τ=0.000)    quantum     0.4032  +perfect_conservation    
+15    Fractal QG (D=3.100)               quantum     0.4032  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      Quantum Corrected (α=+0.00)    (0.000)
+Observational (Quantum Tests)            Quantum Corrected (α=+0.00)    (0.000)
+Predictions (CMB, PTA)                   Quantum Corrected (α=+0.00)    (0.000)
+Trajectory Matching                      Quantum Corrected (α=+0.00)    (0.800)
+Unification Potential                    Quantum Corrected (α=+0.00)    (0.500)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+Quantum      theories:  18 | Avg score: 0.400 | Best: Quantum Corrected (α=+0.00)
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.400
+Std deviation: 0.028
+Score range: 0.328 - 0.428
+
+================================================================================
+Full details saved to: runs/run_20250726_105435_float64/leaderboard.json

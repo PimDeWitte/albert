@@ -24,6 +24,11 @@ from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschil
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
 
+# Import reporting systems
+from physics_agent.solver_tests.solver_test_report_generator import SolverTestReportGenerator
+from physics_agent.validations.validator_registry import validator_registry
+from physics_agent.validations.validator_performance_tracker import performance_tracker
+
 
 # Helper functions moved from geodesic_integrator.py
 def compute_shapiro_delay_analytic(M_c: float, a: float, i: float, e: float = 0.0, 
@@ -914,6 +919,47 @@ def test_psr_j0740_validation():
     return passed
 
 
+@benchmark_test("PSR J0740 Validation")
+def test_psr_j0740_validation():
+    """Test PSR J0740+6620 pulsar validation using Shapiro delay."""
+    print("\n" + "="*60)
+    print("Test 10: PSR J0740+6620 Pulsar Validation")
+    print("="*60)
+    
+    print("Testing PSR J0740+6620 - one of the most massive known pulsars")
+    print("Used for precision tests of GR through Shapiro delay measurements")
+    
+    # Import required validator
+    from physics_agent.validations.psr_j0740_validator import PsrJ0740Validator
+    
+    theory = Schwarzschild()
+    engine = TheoryEngine()
+    
+    try:
+        # Run the validator
+        validator = PsrJ0740Validator(engine)
+        result = validator.validate(theory, verbose=True)
+        
+        print(f"\nValidation results:")
+        print(f"  Loss: {result.get('loss', 'N/A')}")
+        print(f"  Status: {result['flags']['overall']}")
+        if 'details' in result['flags']:
+            print(f"  Details: {result['flags']['details']}")
+        
+        # Test succeeded if status is PASS or WARNING
+        passed = result['flags']['overall'] in ['PASS', 'WARNING']
+        print(f"\n  Status: {'PASSED' if passed else 'FAILED'}")
+        
+    except Exception as e:
+        print(f"\nValidation error: {e}")
+        import traceback
+        traceback.print_exc()
+        passed = False
+        print(f"\n  Status: FAILED")
+    
+    return passed
+
+
 @benchmark_test("Trajectory Cache Performance")
 def test_trajectory_cache_performance():
     """Test trajectory caching performance improvements."""
@@ -1021,6 +1067,12 @@ def main():
     print("\nThese tests validate the geodesic integrator implementation")
     print("by comparing with theoretical predictions and validator results.")
     
+    # Initialize report generator
+    report_generator = SolverTestReportGenerator()
+    
+    # Track which validators are tested
+    tested_validators = set()
+    
     results = {}
     
     # Run tests
@@ -1033,7 +1085,42 @@ def main():
     results['gravitational_wave_inspiral'] = test_gravitational_wave_inspiral()
     results['cmb_power_spectrum'] = test_cmb_power_spectrum()
     results['bicep_keck_primordial_gws'] = test_bicep_keck_primordial_gws()
+    results['psr_j0740_validation'] = test_psr_j0740_validation()
     results['trajectory_cache_performance'] = test_trajectory_cache_performance()
+    
+    # Track which validators were tested
+    validator_test_mapping = {
+        'test_mercury_comparison': 'MercuryPrecessionValidator',
+        'test_light_deflection_comparison': 'LightDeflectionValidator',
+        'test_photon_sphere_comparison': 'PhotonSphereValidator',
+        'test_ppn_comparison': 'PpnValidator',
+        'test_quantum_interferometry': 'COWInterferometryValidator',
+        'test_gravitational_wave_inspiral': 'GwValidator',
+        'test_cmb_power_spectrum': 'CMBPowerSpectrumValidator',
+        'test_bicep_keck_primordial_gws': 'PrimordialGWsValidator',
+        'test_psr_j0740_validation': 'PsrJ0740Validator'
+    }
+    
+    # Add test results to report
+    for test_name, result in results.items():
+        execution_time = timing_results.get(test_name, {}).get('cached', 0)
+        report_generator.add_test_result(test_name, result, execution_time)
+        
+        # Add timing results
+        if test_name in timing_results:
+            report_generator.add_timing_result(
+                test_name,
+                timing_results[test_name]['cached'],
+                timing_results[test_name]['uncached']
+            )
+    
+    # Track validator coverage
+    for test_func, validator_name in validator_test_mapping.items():
+        test_key = test_func.replace('test_', '')
+        tested = test_key in results and results[test_key]
+        report_generator.add_validator_coverage(validator_name, test_func, tested)
+        if tested:
+            tested_validators.add(validator_name)
     
     # Summary
     print("\n" + "="*60)
@@ -1069,6 +1156,34 @@ def main():
     print("-"*70)
     print(f"{'TOTAL':<30} {total_cached:<15.1f} {total_uncached:<15.1f}")
     print(f"\nAverage execution time per test: {total_cached/len(timing_results):.1f} ms (cached)")
+    
+    # Generate reports
+    print("\n" + "="*60)
+    print("GENERATING REPORTS")
+    print("="*60)
+    
+    # Generate solver test report
+    solver_report_path = report_generator.generate_html_report()
+    print(f"Solver test report generated: {solver_report_path}")
+    
+    # Generate validator registry report
+    registry_report = validator_registry.generate_registry_report()
+    print(f"\nValidator Registry Summary:")
+    print(f"  Total validators: {registry_report['total_validators']}")
+    print(f"  Tested validators: {registry_report['tested_validators']}")
+    print(f"  Untested validators: {registry_report['untested_validators']}")
+    print(f"  Validators tested in this run: {len(tested_validators)}")
+    
+    # Generate validator performance report
+    perf_report_path = performance_tracker.generate_html_report()
+    print(f"\nValidator performance report generated: {perf_report_path}")
+    
+    # Save registry report
+    registry_path = os.path.join(report_generator.output_dir, "validator_registry_latest.json")
+    with open(registry_path, 'w') as f:
+        import json
+        json.dump(registry_report, f, indent=2)
+    print(f"\nValidator registry saved: {registry_path}")
     
     return all(results.values())
 

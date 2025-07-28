@@ -6,7 +6,7 @@ Generates a comprehensive leaderboard HTML file that:
 1. Ranks all theories by their unification score
 2. Embeds HTML files for every candidate
 3. Makes all code completely auditable
-4. Creates run_results_unified.html that references everything correctly
+4. Creates leaderboard.html that references everything correctly
 """
 
 import os
@@ -45,17 +45,11 @@ class LeaderboardHTMLGenerator:
         html_content = self._generate_html(theory_results, run_dir)
         
         # Save to file
-        output_path = os.path.join(run_dir, 'run_results_unified.html')
+        output_path = os.path.join(run_dir, 'leaderboard.html')
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
             
-        # Also save leaderboard.html for convenience
-        leaderboard_path = os.path.join(run_dir, 'leaderboard.html')
-        with open(leaderboard_path, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-            
         print(f"Leaderboard generated: {output_path}")
-        print(f"Also saved as: {leaderboard_path}")
         
         return output_path
         

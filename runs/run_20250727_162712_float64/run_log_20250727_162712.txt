@@ -1,0 +1,8 @@
+Running: Schwarzschild
+Running: Kerr (a=0.00)
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Validating: Schwarzschild ---

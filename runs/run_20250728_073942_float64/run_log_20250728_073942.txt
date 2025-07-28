@@ -1,0 +1,118 @@
+Running: Schwarzschild
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_3ce6218204f36085_100.pt
+Running: Reissner-Nordström (q_e=0.50)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Reissner-Nordstr_m__q_e_0_50__aafba74918702b97_100.pt
+Running: Kerr (a=0.50)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_50__0953a5fb01993717_100.pt
+Running: Kerr-Newman (a=0.50, q_e=0.50)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_50__q_e_0_50__45e039843daec9ef_100.pt
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 2 Theories ---
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_50__6a3013f9b41b70af_100.pt
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+--- Validating: Kerr-Newman (a=0.50, q_e=0.30) ---
+  Running validation trajectory for Kerr-Newman (a=0.50, q_e=0.30)...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+============================================================
+Validation Summary:
+  Total theories validated: 2
+  Passed: 0
+  Failed: 2
+============================================================
+
+Theories that failed validation:
+  ✗ Kerr (a=0.50)
+    → Moved to: runs/run_20250728_073942_float64/fail/Kerr_a_0_50
+  ✗ Kerr-Newman (a=0.50, q_e=0.30)
+    → Moved to: runs/run_20250728_073942_float64/fail/Kerr-Newman_a_0_50_q_e_0_30
+
+============================================================
+Run complete. All results saved to: runs/run_20250728_073942_float64
+============================================================
+
+Updating homepage with latest trajectory images...
+No trajectory images found in run directory
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (1):
+  ✗ fail (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+No finalist theories passed all validations for prediction testing.
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+No prediction results found. Skipping report update.
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+No scored theories found.
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+📋 CALIBRATION CERTIFICATE
+   ID: 60d29765145d8fcb
+   Status: VALID
+   Health Score: 100%
+   Guarantees:
+     ✓ Engine Correctness: GUARANTEED
+     ✓ Solver Accuracy: GUARANTEED
+     ✓ Environment Stability: GUARANTEED
+     ✓ Performance Optimized: GUARANTEED
+
+TOTAL THEORIES TESTED: 3
+PASSED: 0
+FAILED: 2
+
+============================================================
+THEORIES THAT FAILED:
+============================================================
+
+  ✗ Kerr (a=0.50)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+
+  ✗ Kerr-Newman (a=0.50.q.e.0.30)
+    Failure Category: validation failed
+
+============================================================
+FAILURE REASON BREAKDOWN:
+============================================================
+  validation failed: 2 theories
+
+📊 Detailed summary saved to: runs/run_20250728_073942_float64/comprehensive_summary.json

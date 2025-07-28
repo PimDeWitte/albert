@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yukawa (λ=1000000.00 RS) - Comprehensive Validation Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #666; margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th { background-color: #4CAF50; color: white; padding: 12px; text-align: left; position: sticky; top: 0; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; }
+        tr:hover { background-color: #f5f5f5; }
+        .code-button { background-color: #008CBA; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; }
+        .code-button:hover { background-color: #005f79; }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        .na { color: #999; font-style: italic; }
+        .logs { background-color: #1e1e1e; color: #d4d4d4; padding: 20px; font-family: monospace; white-space: pre-wrap; overflow-x: auto; margin-top: 30px; }
+        .meta-info { background-color: #e8f4f8; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .sota-match { background-color: #c8e6c9; }
+        .sota-beat { background-color: #81c784; font-weight: bold; }
+        .timestamp { color: #666; font-style: italic; }
+        .viz-container { background-color: white; padding: 20px; margin-top: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .viz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+        .viz-item { text-align: center; }
+        .viz-item img { max-width: 100%; height: auto; border: 1px solid #ddd; max-height: 600px; }
+        .warning { background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .error { background-color: #ffebee; color: #c62828; padding: 2px 6px; border-radius: 3px; }
+        details { margin: 10px 0; }
+        details summary { cursor: pointer; color: #1976d2; font-weight: 500; }
+        details summary:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Validation Results: Yukawa (λ=1000000.00 RS)</h1>
+    <div class="meta-info">
+        <p><strong>Theory:</strong> Yukawa (λ=1000000.00 RS)</p>
+        <p><strong>Generated:</strong> <span class="timestamp">2025-07-25 18:23:05</span></p>
+        <p><strong>Total Validators Run:</strong> 11</p>
+    <h2>Visualizations</h2>
+    <div class="viz-container">
+        <div class="viz-grid">
+            <div class="viz-item">
+                <h3>All Particles Unified</h3>
+                <img src="viz/all_particles_unified.png" alt="all_particles_unified.png">
+            </div>
+            <div class="viz-item">
+                <h3>Multi Particle Grid</h3>
+                <img src="viz/multi_particle_grid.png" alt="multi_particle_grid.png">
+            </div>
+            <div class="viz-item">
+                <h3>Trajectory Comparison</h3>
+                <img src="viz/trajectory_comparison.png" alt="trajectory_comparison.png">
+            </div>
+        </div>
+    </div>
+    <h3>Particle Trajectories</h3>
+    <div class="meta-info">
+        <p><strong>Particles Simulated:</strong> 4</p>
+        <p><strong>Trajectory Steps:</strong> 100001</p>
+        <ul>
+            <li>Electron</li>
+            <li>Neutrino</li>
+            <li>Photon</li>
+            <li>Proton</li>
+        </ul>
+    </div>
+        <p><strong>Theory Implementation:</strong> <code>Yukawa</code> in <a href="code/theory_source.py" class="code-button">Show Theory Code</a> (<a href="code/theory_instance.py">Instance</a>)</p>
+        <p><strong>Command Line:</strong> <code>theory_engine_core.py --steps 100000</code></p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Description</th>
+                <th>Purpose/What it Tests</th>
+                <th>Reference Links</th>
+                <th>Dataset Links</th>
+                <th>SOTA Value</th>
+                <th>SOTA Theory</th>
+                <th>Web Reference for SOTA</th>
+                <th>Our System's Score</th>
+                <th>Python File</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Conservation Validator</td>
+                <td>Checks energy &amp; angular momentum conservation in trajectories over 1000 steps. Tolerances: energy 1e-12, angular momentum 1e-12, constraint 1e-10 (relative).</td>
+                <td>Tests numerical stability and physical conservation laws in simulated orbits/trajectories.</td>
+                <td>[Will (2014) review on numerical GR](https://link.springer.com/article/10.12942/lrr-2014-4)</td>
+                <td>N/A (simulation-based; tolerances from CODATA/numerical standards)</td>
+                <td>Drift &lt; 1e-12 (relative)</td>
+                <td>General Relativity (exact conservation)</td>
+                <td>[Numerical relativity textbook (Baumgarte 2010)](https://global.oup.com/academic/product/numerical-relativity-9780199691531)</td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 5.12e-12</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/conservation_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Metric Properties Validator</td>
+                <td>Verifies metric signature (-+++), positive-definiteness of spatial parts, and asymptotic flatness at large r.</td>
+                <td>Ensures metric is physically valid (Lorentzian, no tachyons, Minkowski limit).</td>
+                <td>[Wald (1984) GR textbook](https://press.uchicago.edu/ucp/books/book/chicago/G/bo5978156.html)</td>
+                <td>N/A (analytical properties)</td>
+                <td>Signature (-,+,+,+), flat at infinity</td>
+                <td>General Relativity (Schwarzschild metric)</td>
+                <td>[Metric properties in GR](https://en.wikipedia.org/wiki/Metric_tensor_(general_relativity))</td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 1.00e-10</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/metric_properties_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Mercury Precession Validator</td>
+                <td>Tests perihelion precession of Mercury. Integrates orbit for one century, measures excess precession vs Newtonian prediction.</td>
+                <td>Classic test of GR in weak field regime. Validates spacetime curvature effects on planetary orbits.</td>
+                <td>[Will (2014) Theory and Experiment in Gravitational Physics](https://doi.org/10.1017/CBO9780511564246)</td>
+                <td>N/A (Mercury orbital elements from NASA JPL)</td>
+                <td>42.98 ± 0.04 arcsec/century</td>
+                <td>General Relativity</td>
+                <td>[Tests of GR - Mercury](https://en.wikipedia.org/wiki/Tests_of_general_relativity#Perihelion_precession_of_Mercury)</td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 42.9889 arcsec/century (Error: 0.0%)</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/mercury_precession_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Light Deflection Validator</td>
+                <td>Calculates deflection of light passing near the Sun. Integrates null geodesics, measures deflection angle at solar limb.</td>
+                <td>Tests spacetime curvature effect on light propagation. Key prediction of GR.</td>
+                <td>[Dyson et al. (1920) Eclipse Expedition](https://doi.org/10.1098/rsta.1920.0009)</td>
+                <td>N/A (solar parameters from IAU)</td>
+                <td>1.7509 ± 0.0003 arcsec</td>
+                <td>General Relativity</td>
+                <td>[1919 Eclipse - light bending](https://en.wikipedia.org/wiki/Eddington_experiment)</td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 1.7508 arcsec (Error: 0.0%)</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/light_deflection_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>PPN Parameter Validator</td>
+                <td>Computes Parameterized Post-Newtonian parameters (γ, β, etc.) and compares to Solar System constraints.</td>
+                <td>Comprehensive weak-field test framework. Tests all deviations from GR systematically.</td>
+                <td>[Will (2018) PPN review](https://link.springer.com/article/10.12942/lrr-2014-4)</td>
+                <td>N/A (Cassini, lunar ranging constraints)</td>
+                <td>γ = 1.000 ± 0.002, β = 1.000 ± 0.003</td>
+                <td>General Relativity (γ=β=1)</td>
+                <td>[PPN formalism](https://en.wikipedia.org/wiki/Parameterized_post-Newtonian_formalism)</td>
+                <td class=""><span class="fail">FAIL</span> - SCORE: 2.06e+34</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/ppn_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Photon Sphere Validator</td>
+                <td>Calculates photon sphere radius and black hole shadow size. Tests strong-field light behavior.</td>
+                <td>Tests extreme gravity regime predictions. Directly observable by Event Horizon Telescope.</td>
+                <td>[EHT Collaboration (2019)](https://doi.org/10.3847/2041-8213/ab0ec7)</td>
+                <td>N/A (M87* and Sgr A* parameters)</td>
+                <td>r_ph = 3GM/c² (Schwarzschild)</td>
+                <td>General Relativity</td>
+                <td>[Black hole shadow](https://en.wikipedia.org/wiki/Black_hole#Photon_sphere)</td>
+                <td class=""><span class="fail">FAIL</span> - SCORE: 1.20e+00</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/photon_sphere_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Gravitational Wave Validator</td>
+                <td>Generates gravitational wave inspiral waveforms and cross-correlates with GR templates.</td>
+                <td>Tests dynamic strong-field gravity. Validates theory against LIGO/Virgo observations.</td>
+                <td>[Abbott et al. (2016) GW150914](https://doi.org/10.1103/PhysRevLett.116.061102)</td>
+                <td>[GWOSC strain data](https://gwosc.org)</td>
+                <td>Correlation &gt; 0.95 with GR</td>
+                <td>General Relativity</td>
+                <td>[LIGO detections](https://en.wikipedia.org/wiki/List_of_gravitational_wave_observations)</td>
+                <td class=""><span class="fail">FAIL</span> - SCORE: 1.00e-01</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/gw_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>COW Neutron Interferometry Validator</td>
+                <td>Measures phase shift in neutron interferometry due to gravitational potential difference. Uses Colella-Overhauser-Werner (COW) experiment setup with neutron wavelength 2.2 Å, enclosed area 0.3 cm², height difference 0.1 m. Compares predicted phase shift against observed 2.70 ± 0.21 radians.</td>
+                <td>Tests quantum effects in gravity, specifically gravitational phase shift in interferometry. Validates semiclassical gravity predictions.</td>
+                <td>[Original COW paper (1975)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.34.1472); [Review on quantum gravity tests (2023)](https://arxiv.org/abs/2305.10478)</td>
+                <td>N/A (theoretical prediction vs. historical measurement; no external dataset file, values hardcoded from paper)</td>
+                <td>2.70 radians</td>
+                <td>General Relativity (semiclassical limit)</td>
+                <td>[COW experiment Wikipedia with references](https://en.wikipedia.org/wiki/Colella%E2%80%93Overhauser%E2%80%93Werner_experiment)</td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 2.6968 radians (Error: 0.1%)</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/cow_interferometry_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>CMB Power Spectrum Prediction Validator</td>
+                <td>Computes χ²/dof for TT spectrum (l=2-30) vs. Planck 2018 data. Compares to ΛCDM SOTA (χ²/dof ~53.08).</td>
+                <td>Tests theory&#x27;s prediction for primordial fluctuations and cosmology.</td>
+                <td>[Planck 2018 results](https://www.aanda.org/articles/aa/abs/2020/09/aa35332-19/aa35332-19.html)</td>
+                <td>[Planck TT spectrum data](https://pla.esac.esa.int/pla/#cosmology) (COM_PowerSpect_CMB-TT-full_R3.01.txt)</td>
+                <td>χ²/dof ≈53.08</td>
+                <td>ΛCDM cosmology</td>
+                <td>[Planck 2018 cosmology paper](https://arxiv.org/abs/1807.06209)</td>
+                <td class=""><span class="na">N/A - Not Run</span></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Primordial GWs Validator</td>
+                <td>Predicts tensor-to-scalar ratio r and tilt n_t vs. standard inflation (r&lt;0.032 upper limit from BICEP/Keck).</td>
+                <td>Tests inflationary predictions and tensor modes.</td>
+                <td>[BICEP/Keck 2023](https://arxiv.org/abs/2310.05224)</td>
+                <td>N/A (upper limits; no full dataset, derived constraints)</td>
+                <td>r &lt; 0.032</td>
+                <td>Single-field slow-roll inflation</td>
+                <td>[BICEP/Keck collaboration paper (2023)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.131.041001)</td>
+                <td class=""><span class="na">N/A - Not Run</span></td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/physics_agent/validations/primordial_gws_validator.py" class="code-button">Show Code</a></td>
+            </tr>
+            <tr>
+                <td>Trajectory Matching</td>
+                <td>Compares simulated trajectories (e.g., orbits) to baselines like Kerr, with visualizations (checkpoints, multi-particle grids). Checks deviation over 1000 steps.</td>
+                <td>Tests geodesic accuracy and stability against known solutions.</td>
+                <td>[Teukolsky (2015) numerical GR review](https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.87.1083)</td>
+                <td>N/A (simulation-based)</td>
+                <td>Deviation &lt;1e-10 (relative)</td>
+                <td>Kerr metric (exact solution)</td>
+                <td>[Kerr metric Wikipedia](https://en.wikipedia.org/wiki/Kerr_metric)</td>
+                <td class="sota-match"><span class="pass">PASS</span> - SCORE: 7.60e-09 (cosine vs Schwarzschild)</td>
+                <td><a href="file:///Users/p/dev/albert/physics_agent/N/A (part of trajectory calculation)" class="code-button">Show Code</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Summary Statistics</h2>
+    <div class="meta-info">
+        <p><strong>Unified Score:</strong> 0.493</p>
+<p><strong>Constraint Score:</strong> 1.000</p>
+<p><strong>Observational Score:</strong> 0.524</p>
+<p><strong>Prediction Score:</strong> 0.000</p>
+<p><strong>Trajectory Score:</strong> 0.800</p>
+<p><strong>Validators Passed:</strong> 6/11</p>
+<p><strong>Beats SOTA:</strong> 0/11</p>
+    </div>
+</body>
+</html>

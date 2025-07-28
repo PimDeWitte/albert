@@ -1,0 +1,1714 @@
+Running: Kerr (a=0.00)
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+
+--- Phase 1: Validating All Theories ---
+============================================================
+  Using preferred values for Quantum Corrected (α=+0.00): {'alpha': 1e-05}
+
+--- Validating: Quantum Corrected (α=+0.00) ---
+  Running validation trajectory for Quantum Corrected (α=+0.00)...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([101, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Error running PPN Parameter Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Error running Photon Sphere Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Error running Gravitational Wave Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  Error running PSR J0740 Shapiro Delay Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 1
+  Failed: 0
+============================================================
+
+Theories that passed validation:
+  ✓ Quantum Corrected (α=+0.00)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Quantum Corrected (α=+0.00) ---
+
+--- Evaluating: Quantum Corrected (α=+0.00) ---
+
+--- Evaluating: Quantum Corrected (α=+0.00) ---
+  Results will be saved to: runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00
+  Running pre-flight checks for Quantum Corrected (α=+0.00)...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([101, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Error running PPN Parameter Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Error running Photon Sphere Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Error running Gravitational Wave Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  Error running PSR J0740 Shapiro Delay Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  ⚠️ Observational validations failed - skipping prediction validations
+  Running trajectory simulation for Quantum Corrected (α=+0.00)...
+  Testing all 4 standard particles for comprehensive visualization
+    Running trajectory for electron...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([501, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+      Stored electron result with tag: quantum_unified_trajectory
+    Running trajectory for photon...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([501, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+      Stored photon result with tag: quantum_unified_trajectory
+    Running trajectory for proton...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([501, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+      Stored proton result with tag: quantum_unified_trajectory
+    Running trajectory for neutrino...
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([501, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+      Stored neutrino result with tag: quantum_unified_trajectory
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Error running PPN Parameter Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Error running Photon Sphere Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Error running Gravitational Wave Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  Error running PSR J0740 Shapiro Delay Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Error running PPN Parameter Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Error running Photon Sphere Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Error running Gravitational Wave Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  Error running PSR J0740 Shapiro Delay Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Error running PPN Parameter Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Error running Photon Sphere Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Error running Gravitational Wave Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  Error running PSR J0740 Shapiro Delay Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for Quantum Corrected (α=+0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+  Error running COWInterferometryValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for Quantum Corrected (α=+0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for Quantum Corrected (α=+0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 79, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for Quantum Corrected (α=+0.00)...
+  Warning: Unrealistic gamma=-2464550456539976501054788337664.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -2058291698584302177586939691008.000000 (68609723286143403085299290875101184.0σ)
+  Combined loss: 20582916985843019542083981734313984.000
+  Status: FAIL
+  Error running PPN Parameter Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for Quantum Corrected (α=+0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+  Error running Photon Sphere Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.00)...
+  Warning: Theory has no GW modifications implemented
+  Error running Gravitational Wave Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  Error running PSR J0740 Shapiro Delay Validator: Object of type Tensor is not JSON serializable
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 97, in end_validator_timing
+    self._save_historical_metrics()
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 50, in _save_historical_metrics
+    json.dump(self.historical_metrics, f, indent=2)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Tensor is not JSON serializable
+
+  ⚠️ Observational validations failed - skipping prediction validations
+  Generating trajectory comparison plot...
+  WARNING: Trajectory has no radial motion! r_mean=30.000, r_std=0.000e+00
+    Initial r=30.000, final r=30.000
+    This suggests a problem with the geodesic solver or initial conditions
+  DEBUG: Quantum uncertainty cloud - r range: [30.000, 30.000]
+  DEBUG: Quantum uncertainty cloud - phi range: [0.000, 0.000]
+  DEBUG: Quantum uncertainty cloud - t range: [0.000, 4.910]
+  Added quantum uncertainty visualization with 20 sample points
+  Uncertainty radius range: [1.500, 1.650] Rs
+  Actual de Broglie wavelength: ~2.18e-09 m
+  Display scale factor: 2.16e+12×
+  Trajectory has 501 points, using step interval 16 for markers
+  Trajectory range: r=[30.000, 30.000], phi=[0.000, 0.000]
+    Processing 2 baselines for checkpoints...
+      Baseline: Kerr (a=0.00)
+        Adding 9 checkpoints for Kerr (a=0.00)
+          Checkpoint at 10%: idx=50, z=0.526, ring_radius=0.500
+          Checkpoint at 20%: idx=100, z=1.052, ring_radius=0.500
+          Checkpoint at 30%: idx=150, z=1.578, ring_radius=0.500
+          Checkpoint at 40%: idx=200, z=2.104, ring_radius=0.500
+          Checkpoint at 50%: idx=250, z=2.630, ring_radius=0.500
+          Checkpoint at 60%: idx=300, z=3.156, ring_radius=0.500
+          Checkpoint at 70%: idx=350, z=3.683, ring_radius=0.500
+          Checkpoint at 80%: idx=400, z=4.209, ring_radius=0.500
+          Checkpoint at 90%: idx=450, z=4.735, ring_radius=0.500
+      Baseline: Kerr-Newman (a=0.00, q_e=0.50)
+        Adding 9 checkpoints for Kerr-Newman (a=0.00, q_e=0.50)
+          Checkpoint at 10%: idx=50, z=0.526, ring_radius=0.500
+          Checkpoint at 20%: idx=100, z=1.052, ring_radius=0.500
+          Checkpoint at 30%: idx=150, z=1.578, ring_radius=0.500
+          Checkpoint at 40%: idx=200, z=2.105, ring_radius=0.500
+          Checkpoint at 50%: idx=250, z=2.631, ring_radius=0.500
+          Checkpoint at 60%: idx=300, z=3.157, ring_radius=0.500
+          Checkpoint at 70%: idx=350, z=3.683, ring_radius=0.500
+          Checkpoint at 80%: idx=400, z=4.209, ring_radius=0.500
+          Checkpoint at 90%: idx=450, z=4.735, ring_radius=0.500
+  Plot saved to runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00/viz/trajectory_comparison.png
+  Generating multi-particle grid visualization...
+    Generating particle-specific baselines...
+    Generated multi-particle grid: runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00/viz/multi_particle_grid.png
+    Generating unified multi-particle plot for Quantum Corrected (α=+0.00)...
+    Particle trajectories available: ['electron', 'photon', 'proton', 'neutrino']
+    Processing electron...
+      electron trajectory: 501 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 4.910] (geometric units)
+      WARNING: electron has minimal radial motion (std=0.000e+00)
+      Successfully plotted electron trajectory
+    Processing photon...
+      photon trajectory: 501 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 4.910] (geometric units)
+      WARNING: photon has minimal radial motion (std=0.000e+00)
+      Successfully plotted photon trajectory
+    Processing proton...
+      proton trajectory: 501 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 4.910] (geometric units)
+      WARNING: proton has minimal radial motion (std=0.000e+00)
+      Successfully plotted proton trajectory
+    Processing neutrino...
+      neutrino trajectory: 501 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 4.910] (geometric units)
+      WARNING: neutrino has minimal radial motion (std=0.000e+00)
+      Successfully plotted neutrino trajectory
+    Radial range across all particles: [30.000, 30.000]
+    Time range across all particles: [0.000, 4.910]
+
+  Unified multi-particle plot saved to: runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00/viz/all_particles_unified.png
+  Summary: 4 particles plotted successfully
+  Generated unified multi-particle plot: runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00/viz/all_particles_unified.png
+  Quantum theory detected: Quantum Corrected (α=+0.00)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+  Quantum results keys: ['amplitude', 'probability', 'method', 'num_samples', 'visualization_paths', 'path_actions', 'quantum_corrections']
+  Classical results keys: ['trajectory', 'solver_type', 'time_steps', 'step_size']
+  Using classical trajectory from unified calculator
+  Classical trajectory shape: torch.Size([101, 4])
+  Quantum results stored for uncertainty visualization
+  Successfully computed trajectory using quantum solver!
+  Returning tag: quantum_unified_trajectory
+  Generated HTML report: runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00/results.html
+  Results saved to: runs/run_20250725_215046_float64/Quantum_Corrected_α_+0_00
+
+============================================================
+Run complete. All results saved to: runs/run_20250725_215046_float64
+============================================================
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (1):
+  ✗ Quantum Corrected (α=+0.00) (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+  Skipping Quantum Corrected (α=+0.00) - failed validations (constraints=True, observations=False)
+No finalist theories passed all validations for prediction testing.
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+No prediction results found. Skipping report update.
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+Leaderboard generated: runs/run_20250725_215046_float64/leaderboard.html
+  HTML leaderboard generated: runs/run_20250725_215046_float64/leaderboard.html
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 1
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     Quantum Corrected (α=+0.00)        quantum     0.4284  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      Quantum Corrected (α=+0.00)    (0.000)
+Observational (Quantum Tests)            Quantum Corrected (α=+0.00)    (0.000)
+Predictions (CMB, PTA)                   Quantum Corrected (α=+0.00)    (0.000)
+Trajectory Matching                      Quantum Corrected (α=+0.00)    (0.800)
+Unification Potential                    Quantum Corrected (α=+0.00)    (0.500)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+Quantum      theories:   1 | Avg score: 0.428 | Best: Quantum Corrected (α=+0.00)
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.428
+Std deviation: 0.000
+Score range: 0.428 - 0.428
+
+================================================================================
+Full details saved to: runs/run_20250725_215046_float64/leaderboard.json
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+TOTAL THEORIES TESTED: 1
+PASSED: 1
+FAILED: 0
+
+============================================================
+THEORIES THAT PASSED ALL VALIDATIONS:
+============================================================
+  ✓ Quantum Corrected (α=+0.00) (Score: 0.4284)
+
+📊 Detailed summary saved to: runs/run_20250725_215046_float64/comprehensive_summary.json

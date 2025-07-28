@@ -1,0 +1,731 @@
+Running: Kerr (a=0.00)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-500_dt-0.0000_dtype-float64_63cc7df8ff44.pt
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_50__r0-44300.76_steps-500_dt-0.0000_dtype-float64_4ce8cfe8cddf.pt
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_50__r0-44300.76_steps-100_dt-0.0000_dtype-float64_b75e8473d789.pt
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Kerr-Newman (a=0.00, q_e=0.00): {'a': 0.0, 'q_e': 0.0}
+
+--- Validating: Kerr-Newman (a=0.00, q_e=0.00) ---
+  Running validation trajectory for Kerr-Newman (a=0.00, q_e=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_050b1bd1d4bd.pt
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: PASSED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 2
+  Passed: 1
+  Failed: 1
+============================================================
+
+Theories that failed validation:
+  ✗ Kerr (a=0.50)
+    → Moved to: runs/run_20250726_000908_float64/fail/Kerr_a_0_50
+
+Theories that passed validation:
+  ✓ Kerr-Newman (a=0.00, q_e=0.00)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Kerr-Newman (a=0.00, q_e=0.00) ---
+
+--- Evaluating: Kerr-Newman (a=0.00, q_e=0.00) ---
+
+--- Evaluating: Kerr-Newman (a=0.00, q_e=0.00) ---
+  Results will be saved to: runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00
+  Running pre-flight checks for Kerr-Newman (a=0.00, q_e=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_00__q_e_0_00__r0-44300.76_steps-100_dt-0.0000_dtype-float64_050b1bd1d4bd.pt
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Kerr-Newman (a=0.00, q_e=0.00). Continuing with evaluation.
+  Running trajectory simulation for Kerr-Newman (a=0.00, q_e=0.00)...
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: classical
+  Skipping quantum validators for classical theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for Kerr-Newman (a=0.00, q_e=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Error running MercuryPrecessionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating light deflection for Kerr-Newman (a=0.00, q_e=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+  Error running LightDeflectionValidator: 'ValidationResult' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1085, in run_all_validations
+    performance_tracker.end_validator_timing(validator_name, theory.name, result)
+  File "/Users/p/dev/albert/physics_agent/validations/validator_performance_tracker.py", line 118, in end_validator_timing
+    'status': result.get('flags', {}).get('overall', 'UNKNOWN'),
+              ^^^^^^^^^^
+AttributeError: 'ValidationResult' object has no attribute 'get'
+
+
+Calculating PPN parameters for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Insufficient weak-field metric deviation detected (<1e-15)
+
+Calculating photon sphere for Kerr-Newman (a=0.00, q_e=0.00)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.257 r_s (expected: 1.500 r_s)
+  Shadow diameter: 13.061 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 151.36%
+  Status: FAIL
+
+Generating gravitational waveforms for Kerr-Newman (a=0.00, q_e=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] Kerr-Newman (a=0.00, q_e=0.00) is not a quantum theory - no quantum validation performed
+  Generating trajectory comparison plot...
+  Trajectory has 501 points, using step interval 16 for markers
+  Trajectory range: r=[29.998, 30.000], phi=[0.000, 0.030]
+    Processing 2 baselines for checkpoints...
+      Baseline: Kerr (a=0.00)
+        Adding 9 checkpoints for Kerr (a=0.00)
+          Checkpoint at 10%: idx=50, z=0.526, ring_radius=0.900
+          Checkpoint at 20%: idx=100, z=1.052, ring_radius=0.900
+          Checkpoint at 30%: idx=150, z=1.578, ring_radius=0.900
+          Checkpoint at 40%: idx=200, z=2.104, ring_radius=0.900
+          Checkpoint at 50%: idx=250, z=2.630, ring_radius=0.900
+          Checkpoint at 60%: idx=300, z=3.156, ring_radius=0.900
+          Checkpoint at 70%: idx=350, z=3.683, ring_radius=0.900
+          Checkpoint at 80%: idx=400, z=4.209, ring_radius=0.900
+          Checkpoint at 90%: idx=450, z=4.735, ring_radius=0.900
+      Baseline: Kerr-Newman (a=0.00, q_e=0.50)
+        Adding 9 checkpoints for Kerr-Newman (a=0.00, q_e=0.50)
+          Checkpoint at 10%: idx=50, z=0.526, ring_radius=0.900
+          Checkpoint at 20%: idx=100, z=1.052, ring_radius=0.900
+          Checkpoint at 30%: idx=150, z=1.578, ring_radius=0.900
+          Checkpoint at 40%: idx=200, z=2.105, ring_radius=0.900
+          Checkpoint at 50%: idx=250, z=2.631, ring_radius=0.900
+          Checkpoint at 60%: idx=300, z=3.157, ring_radius=0.900
+          Checkpoint at 70%: idx=350, z=3.683, ring_radius=0.900
+          Checkpoint at 80%: idx=400, z=4.209, ring_radius=0.900
+          Checkpoint at 90%: idx=450, z=4.735, ring_radius=0.900
+  Plot saved to runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00/viz/trajectory_comparison.png
+  Generating multi-particle grid visualization...
+    Generating particle-specific baselines...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-501_dt-0.0010_dtype-float64_1278dee02519.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-501_dt-0.0010_dtype-float64_06dd5d46dbf0.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-501_dt-0.0010_dtype-float64_57a30b239b91.pt
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_00__r0-44300.76_steps-501_dt-0.0010_dtype-float64_9083ed1a9f02.pt
+    Generated multi-particle grid: runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00/viz/multi_particle_grid.png
+    Generating unified multi-particle plot for Kerr-Newman (a=0.00, q_e=0.00)...
+    Particle trajectories available: ['electron', 'photon', 'proton', 'neutrino']
+    Processing electron...
+      electron trajectory: 501 points
+      r range: [29.998, 30.000] (geometric units)
+      phi range: [0.000, 0.030] rad
+      t range: [0.000, 5.261] (geometric units)
+      Successfully plotted electron trajectory
+    Processing photon...
+      photon trajectory: 501 points
+      r range: [30.000, 34.930] (geometric units)
+      phi range: [0.000, 0.027] rad
+      t range: [0.000, 5.329] (geometric units)
+      Successfully plotted photon trajectory
+    Processing proton...
+      proton trajectory: 501 points
+      r range: [29.998, 30.000] (geometric units)
+      phi range: [0.000, 0.030] rad
+      t range: [0.000, 5.261] (geometric units)
+      Successfully plotted proton trajectory
+    Processing neutrino...
+      neutrino trajectory: 501 points
+      r range: [29.998, 30.000] (geometric units)
+      phi range: [0.000, 0.030] rad
+      t range: [0.000, 5.261] (geometric units)
+      Successfully plotted neutrino trajectory
+    Radial range across all particles: [29.998, 34.930]
+    Time range across all particles: [0.000, 5.329]
+
+  Unified multi-particle plot saved to: runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00/viz/all_particles_unified.png
+  Summary: 4 particles plotted successfully
+  Generated unified multi-particle plot: runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00/viz/all_particles_unified.png
+  Generated HTML report: runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00/results.html
+  Results saved to: runs/run_20250726_000908_float64/Kerr-Newman_a_0_00_q_e_0_00
+
+============================================================
+Run complete. All results saved to: runs/run_20250726_000908_float64
+============================================================
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (2):
+  ✗ Kerr-Newman (a=0.00, q_e=0.00) (no quantum validation)
+  ✗ fail (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+Found 1 finalist theories that passed all validations:
+  - Kerr-Newman (a=0.00, q_e=0.00) (classical)
+Loaded 29 CMB data points from dataset loader
+Loaded BICEP/Keck data from dataloader
+
+Running 2 prediction validators...
+Engine quantum Lagrangian setting will apply to all predictions
+
+--- Kerr-Newman (a=0.00, q_e=0.00) ---
+  Found 32 theories in loader
+  Successfully reconstructed KerrNewman with parameters: {'a': 0.0, 'q_e': 0.0}
+
+Kerr-Newman (a=0.00, q_e=0.00) CMB Prediction Results:
+  Theory χ²/dof: 53.08
+  ΛCDM χ²/dof: 53.08 (SOTA)
+  Improvement: Δχ² = 0.00
+  Beats SOTA: False
+  CMB Power Spectrum Prediction Validator: Does not beat SOTA (improvement: 0.00)
+Kerr-Newman (a=0.00, q_e=0.00) Primordial GWs: r=0.010, n_t=-0.00
+  Primordial GWs Validator: Does not beat SOTA (improvement: 0.00)
+
+Prediction Validation Report
+------------------------------------------------------------
+Run: run_20250726_000908_float64
+Finalists tested: 1
+Total predictions: 1
+
+
+CMB Power Spectrum Prediction Validator
+------------------------------------------------------------
+SOTA: Standard ΛCDM model (53.08198369836476 )
+Theories beating SOTA: 0/1 (0.0%)
+
+Top performers:
+  1. ✗ Kerr-Newman (a=0.00, q_e=0.00) (classical)
+     Improvement: +0.00 chi²/dof
+     Theory: 53.08 vs SOTA: 53.08
+
+Primordial GWs Validator
+------------------------------------------------------------
+SOTA: Standard single-field inflation (-0.0 )
+Theories beating SOTA: 0/1 (0.0%)
+
+Top performers:
+  1. ✗ Kerr-Newman (a=0.00, q_e=0.00) (classical)
+     Improvement: +0.00 tensor-to-scalar ratio r
+     Theory: 0.01 vs SOTA: 0.01
+
+============================================================
+Full details saved to: runs/run_20250726_000908_float64/predictions/predictions_report.json
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+  Updated report for Kerr-Newman (a=0.00, q_e=0.00)
+
+Updated 1 theory reports with prediction results
+============================================================
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+  Skipping Kerr-Newman (a=0.00, q_e=0.00) - category 'classical' not allowed on leaderboard (only quantum/ugm)
+No scored theories found.
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+📋 CALIBRATION CERTIFICATE
+   ID: 2d4352933b6ec287
+   Status: VALID
+   Health Score: 100%
+   Guarantees:
+     ✓ Engine Correctness: GUARANTEED
+     ✓ Solver Accuracy: GUARANTEED
+     ✓ Environment Stability: GUARANTEED
+     ✓ Performance Optimized: GUARANTEED
+
+TOTAL THEORIES TESTED: 3
+PASSED: 1
+FAILED: 1
+
+============================================================
+THEORIES THAT PASSED ALL VALIDATIONS:
+============================================================
+  ✓ Kerr-Newman (a=0.00.q.e.0.00) (Score: 0.2880)
+
+============================================================
+THEORIES THAT FAILED:
+============================================================
+
+  ✗ Kerr (a=0.50)
+    Failure Category: validation failed
+    - Conservation Validator: Failed validation
+
+============================================================
+FAILURE REASON BREAKDOWN:
+============================================================
+  validation failed: 1 theories
+
+📊 Detailed summary saved to: runs/run_20250726_000908_float64/comprehensive_summary.json

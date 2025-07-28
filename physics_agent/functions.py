@@ -66,11 +66,8 @@ def compute_circular_orbit_omega(r: torch.Tensor, g_tp: torch.Tensor,
     """
     if g_tp.abs() < NUMERICAL_THRESHOLDS['gtol']:
         # Schwarzschild-like case
-        if r > NUMERICAL_THRESHOLDS['orbit_stability']:  # Only stable for r > 3M
-            Omega = torch.sqrt(1.0 / r**3) * torch.sqrt(1 - NUMERICAL_THRESHOLDS['orbit_stability']/r)
-        else:
-            # Inside ISCO, use Keplerian approximation
-            Omega = torch.sqrt(1.0 / r**3)
+        # For circular orbits: Omega = sqrt(M/r^3)
+        Omega = torch.sqrt(1.0 / r**3)
     else:
         # Kerr case with frame-dragging
         if a is not None:
@@ -375,6 +372,9 @@ def to_serializable(value):
         return value.tolist()
     elif isinstance(value, (np.integer, np.floating)):
         return value.item()
+    elif isinstance(value, (np.bool_, bool)):
+        # Handle numpy and Python booleans
+        return bool(value)
     elif isinstance(value, complex):
         return {'real': value.real, 'imag': value.imag}
     elif isinstance(value, (list, tuple)):

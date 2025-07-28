@@ -31,18 +31,20 @@ class PhotonSphereValidator(BaseValidation):
             
             g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_test, self.engine.M, self.engine.C_T, self.engine.G_T)
             
-            # <reason>chain: For circular photon orbits, we need d(L²/E²)/dr = 0</reason>
-            # Where L²/E² = r²g_pp/g_tt for equatorial orbits
-            # This gives the photon sphere radius
+            # <reason>chain: For circular photon orbits, we need to find extremum of effective potential</reason>
+            # The photon sphere occurs where the effective potential V_eff ∝ (1-rs/r)/r² has an extremum
+            # This is equivalent to finding where d/dr[(-g_tt)/g_pp] = 0
+            # NOT where d/dr[g_pp/(-g_tt)] = 0, which gives the wrong answer!
             
-            # Compute effective potential ratio
-            potential_ratio = r_test**2 * g_pp / g_tt
+            # Compute the correct quantity: (-g_tt)/g_pp = (1-rs/r)/r²
+            # This has a MAXIMUM at the photon sphere
+            effective_potential = (-g_tt) / g_pp  # = (1-rs/r)/r²
             
             # Find extremum by numerical differentiation
             dr = r_test[1] - r_test[0]
-            d_potential = torch.gradient(potential_ratio, spacing=dr)[0]
+            d_potential = torch.gradient(effective_potential, spacing=dr)[0]
             
-            # Find where derivative is closest to zero
+            # Find where derivative is closest to zero (this will be a maximum)
             min_idx = torch.argmin(torch.abs(d_potential))
             r_photon = r_test[min_idx].item()
             
@@ -54,9 +56,12 @@ class PhotonSphereValidator(BaseValidation):
             # Convert to units of Schwarzschild radii
             r_photon_rs = r_photon / rs.item()
             
-            # <reason>chain: Shadow diameter relates to photon sphere via d = 2√27 * r_ph for Schwarzschild</reason>
-            # This gives approximately 5.196 r_s for Schwarzschild black hole
-            shadow_diameter_rs = 2 * torch.sqrt(torch.tensor(27.0)) * r_photon / rs.item()
+            # <reason>chain: Shadow diameter is related to photon sphere radius via impact parameter</reason>
+            # The critical impact parameter is b_crit = r_ph * sqrt(r_ph/(r_ph - rs))
+            # Shadow diameter = 2 * b_crit
+            # For Schwarzschild (r_ph = 1.5 rs): shadow = 2 * 1.5 * sqrt(1.5/0.5) = 3 * sqrt(3) ≈ 5.196 rs
+            # General formula: shadow_diameter = 2 * sqrt(r_ph³/(r_ph - rs))
+            shadow_diameter_rs = 2 * torch.sqrt(torch.tensor(r_photon_rs**3 / (r_photon_rs - 1)))
             
             # Expected values for Schwarzschild
             expected_r_ph = 1.5  # in units of r_s

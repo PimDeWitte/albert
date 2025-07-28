@@ -16,7 +16,7 @@ import json
 import sys
 
 from physics_agent.base_theory import GravitationalTheory
-from physics_agent.geodesic_integrator import (
+from physics_agent.geodesic_integrator_stable import (
     GeodesicRK4Solver, GeneralGeodesicRK4Solver, 
     ChargedGeodesicRK4Solver, UGMGeodesicRK4Solver
 )
@@ -139,38 +139,76 @@ class UnifiedTrajectoryCalculator:
             
             phi0 = initial_conditions.get('phi', 0.0)
             
+
+            
             if isinstance(self.classical_solver, GeodesicRK4Solver):
                 # 4D state: [t, r, phi, dr/dtau]
-                dr_dtau0 = initial_conditions.get('dr_dtau', 0.0)
-                y0 = torch.tensor([t0, r0_si, phi0, dr_dtau0], dtype=torch.float64)
+                # <reason>chain: GeodesicRK4Solver works in geometric units internally</reason>
+                # Need to convert to geometric units
+                E = initial_conditions['E']
+                Lz = initial_conditions['Lz']
                 
-                # Set conserved quantities
-                self.classical_solver.E = initial_conditions['E']
-                self.classical_solver.Lz = initial_conditions['Lz']
+                # Set conserved quantities first
+                self.classical_solver.E = E
+                self.classical_solver.Lz = Lz
+                
+
+                
+                # <reason>chain: 4D solver already works in geometric units - use r0_geom directly</reason>
+                t0_geom = t0 / self.time_scale
+                # r0_geom is already in geometric units - don't convert again!
+                
+                # Get radial velocity - convert u_r (SI) to dr/dtau (geometric)
+                # u_r is in SI units (m/s), need to convert to geometric units
+                u_r_si = initial_conditions.get('u_r', 0.0)
+                dr_dtau0 = u_r_si * self.time_scale / self.length_scale  # Convert to geometric
+                
+                # Also check if dr_dtau is directly provided
+                dr_dtau0 = initial_conditions.get('dr_dtau', dr_dtau0)
+                
+                y0 = torch.tensor([t0_geom, r0_geom, phi0, dr_dtau0], dtype=torch.float64)
             else:
                 # 6D state: [t, r, phi, u^t, u^r, u^phi]
                 # Note: velocities are already in SI units from the engine
                 u_t = initial_conditions.get('u_t', 1.0)
                 u_r = initial_conditions.get('u_r', 0.0)
                 u_phi = initial_conditions.get('u_phi', 0.0)
+                
+
+                
                 y0 = torch.tensor([t0, r0_si, phi0, u_t, u_r, u_phi], dtype=torch.float64)
                 
         # Integrate trajectory
         trajectory = [y0.detach().numpy()]
         y = y0
         
-        # <reason>chain: Convert step size from geometric to SI units</reason>
-        h_si = torch.tensor(step_size * self.time_scale, dtype=torch.float64)
+        # <reason>chain: Step size handling depends on solver type</reason>
+        if isinstance(self.classical_solver, GeodesicRK4Solver):
+            # GeodesicRK4Solver expects step size in geometric units
+            h = torch.tensor(step_size, dtype=torch.float64)
+        else:
+            # Other solvers expect SI units
+            h = torch.tensor(step_size * self.time_scale, dtype=torch.float64)
         
-        for _ in range(time_steps):
-            y_new = self.classical_solver.rk4_step(y, h_si)
+        for i in range(time_steps):
+            y_new = self.classical_solver.rk4_step(y, h)
             if y_new is None:
                 break
             y = y_new
             trajectory.append(y.detach().numpy())
             
+
+        
+        # <reason>chain: Convert trajectory back to SI units if using geometric solver</reason>
+        trajectory_array = np.array(trajectory)
+        if isinstance(self.classical_solver, GeodesicRK4Solver):
+            # Convert from geometric to SI units
+            trajectory_array[:, 0] *= self.time_scale  # time
+            trajectory_array[:, 1] *= self.length_scale  # radius
+            # phi and dr/dtau stay the same
+            
         return {
-            'trajectory': np.array(trajectory),
+            'trajectory': trajectory_array,
             'solver_type': type(self.classical_solver).__name__,
             'time_steps': len(trajectory),
             'step_size': step_size
@@ -212,7 +250,8 @@ class UnifiedTrajectoryCalculator:
         viz_data = visualize_quantum_paths(
             self.quantum_integrator,
             start_state, end_state,
-            num_paths=min(10, num_samples // 100)
+            num_paths=min(10, num_samples // 100),
+            **kwargs  # Pass particle properties
         )
         
         # Compute quantum corrections
@@ -264,9 +303,15 @@ class UnifiedTrajectoryCalculator:
                     final_point = traj[-1]
                     # Convert to (t, r, theta, phi) format
                     if len(final_point) >= 3:
+                        # <reason>chain: Ensure proper time evolution for quantum paths</reason>
+                        # If time hasn't evolved, use step_size * time_steps
+                        t_final = float(final_point[0])
+                        if abs(t_final) < 1e-10:  # Time hasn't evolved
+                            t_final = kwargs.get('step_size', 0.01) * kwargs.get('time_steps', 1000) * self.time_scale
+                        
                         final_state = (
-                            float(final_point[0]),  # t
-                            float(final_point[1]),  # r
+                            t_final,  # t in SI units
+                            float(final_point[1]),  # r in SI units
                             np.pi/2,  # theta (equatorial)
                             float(final_point[2]) if len(final_point) > 2 else 0.0  # phi
                         )
@@ -274,9 +319,11 @@ class UnifiedTrajectoryCalculator:
         # Quantum trajectory
         if self.enable_quantum and final_state is not None:
             # Extract start state from initial conditions
+            # <reason>chain: Convert r to SI units for quantum calculations</reason>
+            r_si = initial_conditions['r'] * self.length_scale
             start_state = (
                 initial_conditions.get('t', 0.0),
-                initial_conditions['r'],
+                r_si,  # Convert to SI units
                 initial_conditions.get('theta', np.pi/2),
                 initial_conditions.get('phi', 0.0)
             )

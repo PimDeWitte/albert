@@ -1,0 +1,590 @@
+Running: Kerr (a=0.00)
+Running: Kerr-Newman (a=0.00, q_e=0.50)
+
+--- Phase 1: Validating All Theories ---
+============================================================
+  Using preferred values for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01): {'alpha0': 1.0, 'alpha1': 1.0, 'alpha2': 1.0, 'alpha3': 1.0, 'g_coupling': 0.1}
+
+--- Validating: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+  Running validation trajectory for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/UGM_____1_0_1_0_1_0_1_0___g_1_00e-01__r0-44300.76_steps-100_dt-0.0000_dtype-float64_ffdfea1928bb.pt
+  Constraint validators using classical Lagrangian
+  Theory category: ugm
+  Skipping quantum validators for ugm theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 0.999999999971
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Unrealistic gamma=-135168301528860051464257536.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -112887034716742746363658240.000000 (3762901157224757960517030510592.0σ)
+  Combined loss: 1128870347167427360007611482112.000
+  Status: FAIL
+
+Calculating photon sphere for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: PASSED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 1
+  Failed: 0
+============================================================
+
+Theories that passed validation:
+  ✓ UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+
+--- Evaluating: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+
+--- Evaluating: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+  Results will be saved to: runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01
+  Running pre-flight checks for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/UGM_____1_0_1_0_1_0_1_0___g_1_00e-01__r0-44300.76_steps-100_dt-0.0000_dtype-float64_ffdfea1928bb.pt
+  Constraint validators using classical Lagrangian
+  Theory category: ugm
+  Skipping quantum validators for ugm theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 0.999999999971
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Unrealistic gamma=-135168301528860051464257536.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -112887034716742746363658240.000000 (3762901157224757960517030510592.0σ)
+  Combined loss: 1128870347167427360007611482112.000
+  Status: FAIL
+
+Calculating photon sphere for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01). Continuing with evaluation.
+  Running trajectory simulation for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Constraint validators using classical Lagrangian
+  Theory category: ugm
+  Skipping quantum validators for ugm theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 0.999999999971
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Unrealistic gamma=-135168301528860051464257536.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -112887034716742746363658240.000000 (3762901157224757960517030510592.0σ)
+  Combined loss: 1128870347167427360007611482112.000
+  Status: FAIL
+
+Calculating photon sphere for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: ugm
+  Skipping quantum validators for ugm theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 0.999999999971
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Unrealistic gamma=-135168301528860051464257536.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -112887034716742746363658240.000000 (3762901157224757960517030510592.0σ)
+  Combined loss: 1128870347167427360007611482112.000
+  Status: FAIL
+
+Calculating photon sphere for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: ugm
+  Skipping quantum validators for ugm theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 0.999999999971
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Unrealistic gamma=-135168301528860051464257536.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -112887034716742746363658240.000000 (3762901157224757960517030510592.0σ)
+  Combined loss: 1128870347167427360007611482112.000
+  Status: FAIL
+
+Calculating photon sphere for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) is not a quantum theory - no quantum validation performed
+  Constraint validators using classical Lagrangian
+  Theory category: ugm
+  Skipping quantum validators for ugm theory
+  Adding tested classical observational validators...
+
+Calculating Mercury precession for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 0.999999999971
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Unrealistic gamma=-135168301528860051464257536.000000, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -112887034716742746363658240.000000 (3762901157224757960517030510592.0σ)
+  Combined loss: 1128870347167427360007611482112.000
+  Status: FAIL
+
+Calculating photon sphere for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.100 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.432 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 120.01%
+  Status: FAIL
+
+Generating gravitational waveforms for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+  Warning: Theory has no GW modifications implemented
+  ⚠️ Observational validations failed - skipping prediction validations
+  [INFO] UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) is not a quantum theory - no quantum validation performed
+  Generating trajectory comparison plot...
+  Trajectory has 11 points, using step interval 1 for markers
+  Trajectory range: r=[30.000, 30.000], phi=[0.000, 0.000]
+    Processing 2 baselines for checkpoints...
+      Baseline: Kerr (a=0.00)
+        Adding checkpoints for Kerr (a=0.00)
+        Checkpoint percentages: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+      Baseline: Kerr-Newman (a=0.00, q_e=0.50)
+        Adding checkpoints for Kerr-Newman (a=0.00, q_e=0.50)
+        Checkpoint percentages: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95]
+          Checkpoint at 5%: idx=0, z=0.000
+  Plot saved to runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/viz/trajectory_comparison.png
+  Generating multi-particle grid visualization...
+    Generating particle-specific baselines...
+    Generated multi-particle grid: runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/viz/multi_particle_grid.png
+    Generating unified multi-particle plot for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)...
+    Particle trajectories available: ['electron', 'photon', 'proton', 'neutrino']
+    Processing electron...
+      electron trajectory: 11 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 0.007] (geometric units)
+      WARNING: electron has minimal radial motion (std=9.106e-09)
+      Successfully plotted electron trajectory
+    Processing photon...
+      photon trajectory: 11 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 0.007] (geometric units)
+      WARNING: photon has minimal radial motion (std=9.106e-09)
+      Successfully plotted photon trajectory
+    Processing proton...
+      proton trajectory: 11 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 0.007] (geometric units)
+      WARNING: proton has minimal radial motion (std=9.106e-09)
+      Successfully plotted proton trajectory
+    Processing neutrino...
+      neutrino trajectory: 11 points
+      r range: [30.000, 30.000] (geometric units)
+      phi range: [0.000, 0.000] rad
+      t range: [0.000, 0.007] (geometric units)
+      WARNING: neutrino has minimal radial motion (std=9.106e-09)
+      Successfully plotted neutrino trajectory
+    Radial range across all particles: [30.000, 30.000]
+    Time range across all particles: [0.000, 0.007]
+
+  Unified multi-particle plot saved to: runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/viz/all_particles_unified.png
+  Summary: 4 particles plotted successfully
+  Generated unified multi-particle plot: runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/viz/all_particles_unified.png
+  Generated HTML report: runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01/results.html
+  Results saved to: runs/run_20250725_143533_float64/UGM_α_[1_01_01_01_0]_g_1_00e-01
+
+============================================================
+Run complete. All results saved to: runs/run_20250725_143533_float64
+============================================================
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (1):
+  ✗ UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+Found 1 finalist theories that passed all validations:
+  - UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (ugm)
+Loaded 29 CMB data points from dataset loader
+Loaded BICEP/Keck data from dataloader
+
+Running 2 prediction validators...
+Engine quantum Lagrangian setting will apply to all predictions
+
+--- UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+  Found 32 theories in loader
+  Successfully reconstructed UnifiedGaugeModel with parameters: {}
+
+UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) CMB Prediction Results:
+  Theory χ²/dof: 32.72
+  ΛCDM χ²/dof: 53.08 (SOTA)
+  Improvement: Δχ² = 20.36
+  Beats SOTA: True
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/UGM_(α=[1.0,1.0,1.0,1.0],_g=1.00e-01)/
+   📊 Data saved to: runs/predictions/UGM_(α=[1.0,1.0,1.0,1.0],_g=1.00e-01)/data/
+   💻 Code saved to: runs/predictions/UGM_(α=[1.0,1.0,1.0,1.0],_g=1.00e-01)/code/
+   📝 Logs saved to: runs/predictions/UGM_(α=[1.0,1.0,1.0,1.0],_g=1.00e-01)/logs/
+  CMB Power Spectrum Prediction Validator: BEATS SOTA! (improvement: 20.36)
+UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) Primordial GWs: r=0.010, n_t=-0.00
+  Primordial GWs Validator: Does not beat SOTA (improvement: 0.00)
+
+Prediction Validation Report
+------------------------------------------------------------
+Run: run_20250725_143533_float64
+Finalists tested: 1
+Total predictions: 1
+
+
+CMB Power Spectrum Prediction Validator
+------------------------------------------------------------
+SOTA: Standard ΛCDM model (53.08198369836476 )
+Theories beating SOTA: 1/1 (100.0%)
+
+Top performers:
+  1. ✓ UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (ugm)
+     Improvement: +20.36 chi²/dof
+     Theory: 32.72 vs SOTA: 53.08
+
+Primordial GWs Validator
+------------------------------------------------------------
+SOTA: Standard single-field inflation (-0.0 )
+Theories beating SOTA: 0/1 (0.0%)
+
+Top performers:
+  1. ✗ UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (ugm)
+     Improvement: +0.00 tensor-to-scalar ratio r
+     Theory: 0.01 vs SOTA: 0.01
+
+============================================================
+Full details saved to: runs/run_20250725_143533_float64/predictions/predictions_report.json
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+  Updated report for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01)
+
+Updated 1 theory reports with prediction results
+============================================================
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+Leaderboard generated: runs/run_20250725_143533_float64/run_results_unified.html
+Also saved as: runs/run_20250725_143533_float64/leaderboard.html
+  HTML leaderboard generated: runs/run_20250725_143533_float64/run_results_unified.html
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 1
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     UGM (α=[1.0,1.0,1.0,1.0], g=1.00e- ugm         0.4005  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (0.000)
+Observational (Quantum Tests)            UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (0.375)
+Predictions (CMB, PTA)                   UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (0.000)
+Trajectory Matching                      UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (0.800)
+Unification Potential                    UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (0.000)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.400
+Std deviation: 0.000
+Score range: 0.400 - 0.400
+
+================================================================================
+Full details saved to: runs/run_20250725_143533_float64/leaderboard.json
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+TOTAL THEORIES TESTED: 2
+PASSED: 1
+FAILED: 0
+
+============================================================
+THEORIES THAT PASSED ALL VALIDATIONS:
+============================================================
+  ✓ UGM (α=[1.01.01.01.0].g.1.00e-01) (Score: 0.4005)
+
+📊 Detailed summary saved to: runs/run_20250725_143533_float64/comprehensive_summary.json
