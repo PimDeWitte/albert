@@ -38,7 +38,7 @@ class PpnValidator(BaseValidation):
                                    device=self.engine.device, dtype=self.engine.dtype)
         
         try:
-            g_tt, g_rr, g_pp, g_tp = theory.get_metric(sampled_r, self.engine.M, self.engine.C_T, self.engine.G_T)
+            g_tt, g_rr, g_pp, g_tp = theory.get_metric(sampled_r, self.engine.M_si, self.engine.c_si, self.engine.G_si)
             
             # <reason>chain: Compute PPN gamma from weak field expansion</reason>
             # In the weak field, g_rr ≈ 1 + (1 + gamma) * 2GM/(c²r)

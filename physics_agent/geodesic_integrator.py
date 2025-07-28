@@ -264,6 +264,10 @@ class GeodesicRK4Solver:
 
 
 # --- Helper Functions ---
+
+# <reason>chain: Cache the compiled version of compute_christoffel_symbols for performance</reason>
+_compute_christoffel_symbols_compiled = None
+
 def compute_christoffel_symbols(g: Tensor, coords: Tensor) -> Tensor:
     """
     <reason>chain: Compute all Christoffel symbols from full metric tensor using automatic differentiation</reason>
@@ -277,6 +281,23 @@ def compute_christoffel_symbols(g: Tensor, coords: Tensor) -> Tensor:
     Returns:
         4x4x4 tensor of Christoffel symbols Γ^μ_νρ
     """
+    global _compute_christoffel_symbols_compiled
+    
+    # <reason>chain: Use torch.compile for JIT optimization if available</reason>
+    if _compute_christoffel_symbols_compiled is None and torch.__version__ >= '2.0.0':
+        try:
+            _compute_christoffel_symbols_compiled = torch.compile(_compute_christoffel_symbols_impl, mode='reduce-overhead')
+        except:
+            # Fall back to uncompiled version
+            _compute_christoffel_symbols_compiled = _compute_christoffel_symbols_impl
+    elif _compute_christoffel_symbols_compiled is None:
+        _compute_christoffel_symbols_compiled = _compute_christoffel_symbols_impl
+        
+    return _compute_christoffel_symbols_compiled(g, coords)
+
+
+def _compute_christoffel_symbols_impl(g: Tensor, coords: Tensor) -> Tensor:
+    """Implementation of Christoffel symbol computation"""
     device = g.device
     dtype = g.dtype
     
@@ -373,6 +394,20 @@ class GeneralGeodesicRK4Solver:
         self.kwargs = kwargs
         self.metric_func = get_metric_wrapper(model.get_metric)
         
+        # <reason>chain: Set device and dtype from kwargs for optimal performance</reason>
+        self.device = kwargs.get('device', device)
+        self.dtype = kwargs.get('dtype', DTYPE)
+        
+        # <reason>chain: Convert device string to torch.device if needed</reason>
+        if isinstance(self.device, str):
+            self.device = torch.device(self.device)
+            
+        # <reason>chain: Ensure M_phys is on the correct device with correct dtype</reason>
+        if isinstance(self.M_phys, torch.Tensor):
+            self.M_phys = self.M_phys.to(device=self.device, dtype=self.dtype)
+        else:
+            self.M_phys = torch.tensor(self.M_phys, device=self.device, dtype=self.dtype)
+        
         # Default conserved quantities (will be set by user)
         self.E = 1.0  # Energy per unit mass (geometric)
         self.Lz = 0.0  # Angular momentum per unit mass (geometric)
@@ -380,7 +415,12 @@ class GeneralGeodesicRK4Solver:
         # <reason>chain: Cache for Christoffel symbols to avoid recomputation</reason>
         self._christoffel_cache = {}
         self._metric_cache = {}
-        self._cache_size_limit = 100  # Limit cache size to prevent memory issues
+        self._cache_size_limit = kwargs.get('cache_size_limit', 1000)  # Increase default cache size
+        
+        # <reason>chain: Set length scale for unit conversions</reason>
+        M_val = self.M_phys.item() if isinstance(self.M_phys, torch.Tensor) else self.M_phys
+        self.length_scale = G_SI * M_val / C_SI**2
+        self.time_scale = G_SI * M_val / C_SI**3
     
     def to_geometric_state(self, state_phys: Tensor) -> Tensor:
         """Convert physical state to geometric units"""
@@ -504,7 +544,7 @@ class GeneralGeodesicRK4Solver:
             Gamma = self._christoffel_cache[cache_key]
         else:
             # Compute metric and Christoffel symbols
-            coords = torch.tensor([t, r, math.pi/2, phi], requires_grad=True)
+            coords = torch.tensor([t, r, math.pi/2, phi], requires_grad=True, device=self.device, dtype=self.dtype)
             g = self.get_metric_tensor(coords)
             Gamma = compute_christoffel_symbols(g, coords)
             
@@ -517,7 +557,7 @@ class GeneralGeodesicRK4Solver:
                 self._christoffel_cache[cache_key] = Gamma
         
         # 4-velocity vector
-        u = torch.tensor([u_t, u_r, 0.0, u_phi])  # [u^t, u^r, u^theta, u^phi]
+        u = torch.tensor([u_t, u_r, 0.0, u_phi], device=self.device, dtype=self.dtype)  # [u^t, u^r, u^theta, u^phi]
         
         # Compute accelerations using geodesic equation
         # d²x^μ/dτ² = -Γ^μ_νρ u^ν u^ρ
@@ -534,32 +574,25 @@ class GeneralGeodesicRK4Solver:
             # Return 4D derivatives for backward compatibility
             return torch.stack([u_t, u_r, u_phi, accelerations[1]])
     
-    def rk4_step(self, y: Tensor, h: float, tol: float = 1e-3, max_attempts: int = 10) -> Optional[Tensor]:
-        """RK4 step with adaptive step size control."""
-        h_current = h
-        attempts = 0
-        while attempts < max_attempts:
-            # Full step
-            k1 = self.compute_derivatives(y)
-            k2 = self.compute_derivatives(y + h_current * k1 / 2)
-            k3 = self.compute_derivatives(y + h_current * k2 / 2)
-            k4 = self.compute_derivatives(y + h_current * k3)
-            y1 = y + h_current * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
+    def rk4_step(self, y: Tensor, h: float) -> Tensor:
+        """
+        <reason>chain: RK4 integration step that handles both 4D and 6D state vectors</reason>
+        
+        Args:
+            y: Current state (4D or 6D)
+            h: Step size in proper time
             
-            # Two half steps
-            y_mid = y + (h_current/2) * self.compute_derivatives(y)
-            y_mid = y_mid + (h_current/2) * self.compute_derivatives(y_mid)
-            y2 = y_mid + (h_current/2) * self.compute_derivatives(y_mid)
-            y2 = y2 + (h_current/2) * self.compute_derivatives(y2)
-            
-            # Error estimate
-            error = torch.max(torch.abs(y1 - y2))
-            if error < tol:
-                return y1
-            h_current *= 0.5
-            attempts += 1
-        return None  # Failed to converge
-
+        Returns:
+            New state after one RK4 step
+        """
+        # Standard RK4 algorithm
+        k1 = self.compute_derivatives(y)
+        k2 = self.compute_derivatives(y + h * k1 / 2)
+        k3 = self.compute_derivatives(y + h * k2 / 2)
+        k4 = self.compute_derivatives(y + h * k3)
+        
+        return y + h * (k1 + 2*k2 + 2*k3 + k4) / 6
+    
     def rk4_step_simple(self, y: Tensor, h: float) -> Tensor:
         """Simple RK4 step without adaptive step size control - much faster."""
         # <reason>chain: Standard RK4 integration without adaptive control for performance</reason>

@@ -192,12 +192,8 @@ class TheoryVisualizer:
             marker_indices.append(total_steps - 1)
             
         for i in marker_indices:
-            # <reason>chain: Make step markers smaller and less prominent
-            # <reason>chain: Marker style now depends on particle charge for dynamic visualization.
-            is_particle_charged = particle_info.get('particle') and particle_info['particle'].charge != 0
-            marker_style = '+' if is_particle_charged else 'o'
-            
-            ax.scatter(x[i], y[i], z[i], c='white', s=15, marker=marker_style,
+            # <reason>chain: Use consistent marker style regardless of charge
+            ax.scatter(x[i], y[i], z[i], c='white', s=15, marker='o',
                       edgecolors='red', linewidth=0.5, alpha=0.7, zorder=11)
         
         # <reason>chain: Initialize list to store z values for axis limits
@@ -213,10 +209,30 @@ class TheoryVisualizer:
             'Kerr-Newman': '#FFFFFF',
         }
         
-        # <reason>chain: Process baselines and add checkpoints
-        print(f"    Processing {len(baseline_results)} baselines for checkpoints...")
-        for baseline_name, baseline_hist in baseline_results.items():
+        # <reason>chain: Process baselines
+        print(f"    Processing {len(baseline_results)} baselines...")
+        for baseline_name, baseline_data in baseline_results.items():
             print(f"      Baseline: {baseline_name}")
+            
+            # <reason>chain: Handle new structure where baselines contain per-particle trajectories</reason>
+            # Extract the trajectory for the current particle being visualized
+            if isinstance(baseline_data, dict):
+                # New structure: baseline_data is a dict of particle trajectories
+                # Get particle name and normalize case
+                current_particle_name = particle_info.get('particle_properties', {}).get('name', 'electron') if particle_info else 'electron'
+                # <reason>chain: Normalize particle name to lowercase for consistency</reason>
+                current_particle_name_lower = current_particle_name.lower()
+                baseline_hist = baseline_data.get(current_particle_name_lower)
+                if baseline_hist is None:
+                    # Try exact match first
+                    baseline_hist = baseline_data.get(current_particle_name)
+                if baseline_hist is None:
+                    print(f"        Skipping - no data for particle {current_particle_name}")
+                    continue
+            else:
+                # Old structure: baseline_data is the trajectory itself
+                baseline_hist = baseline_data
+            
             if baseline_hist is None or len(baseline_hist) < 2:
                 print(f"        Skipping - no data or too short")
                 continue
@@ -324,51 +340,7 @@ class TheoryVisualizer:
                 baseline_legend_elements.append(Line2D([0], [0], color=color, lw=0, marker='+', markersize=8,
                                             label='+++ Kerr-Newman (charged, rotating)', alpha=0.7))
             
-            # <reason>chain: Add checkpoint markers at percentage points
-            # Add checkpoint markers at 10%, 20%, ..., 100% of trajectory
-            checkpoint_indices = []
-            total_points = len(x_b)
-            for pct in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
-                idx = int(total_points * pct / 100)
-                if idx < total_points:
-                    checkpoint_indices.append((idx, pct))
-            
-            if checkpoint_indices and len(x_b) > 0:
-                print(f"        Adding {len(checkpoint_indices)} checkpoints for {baseline_name}")
-                
-                for i, pct in checkpoint_indices:
-                    # Skip if beyond array length
-                    if i >= len(x_b) or i >= len(y_b) or i >= len(z_b):
-                        continue
-                        
-                    # <reason>chain: Scale checkpoint rings based on local position
-                    # Ring parameters - scale based on local radius
-                    local_radius = np.sqrt(x_b[i]**2 + y_b[i]**2)  # Current position radius
-                    ring_radius = 0.03 * local_radius  # 3% of local orbital radius
-                    ring_radius = max(0.05, min(ring_radius, 1.0))  # Clamp between 0.05 and 1.0
-                    tube_radius = ring_radius * 0.1  # 10% of ring radius
-                    
-                    # Create ring at baseline position
-                    u = np.linspace(0, 2 * np.pi, 40)  # More points for smoother ring
-                    
-                    # Ring center at baseline position
-                    center_x, center_y, center_z = x_b[i], y_b[i], z_b[i]
-                    
-                    # <reason>chain: Fix checkpoint z-position to use baseline trajectory time
-                    # Make sure the checkpoint is at the proper time/height
-                    print(f"          Checkpoint at {pct}%: idx={i}, z={center_z:.3f}, ring_radius={ring_radius:.3f}")
-                    
-                    # Create flat ring in XY plane at given Z height
-                    ring_x = center_x + ring_radius * np.cos(u)
-                    ring_y = center_y + ring_radius * np.sin(u) 
-                    ring_z = np.full_like(u, center_z)
-                    
-                    # Plot the ring outline with baseline color - higher zorder
-                    ring_color = 'yellow' if 'Kerr' in baseline_name and 'Newman' not in baseline_name else 'green'
-                    
-                    # <reason>chain: Draw single clean ring instead of multiple edges
-                    # Draw just one ring with slightly thicker line for visibility
-                    ax.plot(ring_x, ring_y, ring_z, color=ring_color, linewidth=1.5, alpha=0.7, zorder=4)
+
         
         # <reason>chain: Calculate proper bounds including all trajectories
         # Calculate bounds that include all trajectories

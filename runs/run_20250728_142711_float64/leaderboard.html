@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity Compression - Quantum/UGM Theory Leaderboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .header { background-color: #2c3e50; color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 2.5em; }
+        .header p { margin: 10px 0 0 0; font-size: 1.2em; opacity: 0.9; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .summary { background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .summary h2 { margin-top: 0; color: #2c3e50; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .stat-box { background: #ecf0f1; padding: 15px; border-radius: 5px; text-align: center; }
+        .stat-box .value { font-size: 2em; font-weight: bold; color: #3498db; }
+        .stat-box .label { color: #7f8c8d; margin-top: 5px; }
+        .leaderboard { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .leaderboard h2 { margin-top: 0; color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; }
+        td { padding: 12px; border-bottom: 1px solid #ecf0f1; }
+        tr:hover { background-color: #f8f9fa; }
+        .rank-1 { background-color: #ffd700; font-weight: bold; }
+        .rank-2 { background-color: #c0c0c0; }
+        .rank-3 { background-color: #cd7f32; }
+        .rank-1 td, .rank-2 td, .rank-3 td { color: #2c3e50; }
+        .score-bar { background: #ecf0f1; height: 20px; border-radius: 10px; overflow: hidden; position: relative; }
+        .score-fill { background: #3498db; height: 100%; transition: width 0.3s; }
+        .category-quantum { color: #9b59b6; font-weight: bold; }
+        .category-unified { color: #e74c3c; font-weight: bold; }
+        .category-classical { color: #95a5a6; font-weight: bold; }
+        .expandable { cursor: pointer; user-select: none; }
+        .expandable:hover { text-decoration: underline; }
+        .details { display: none; background: #f8f9fa; padding: 20px; margin-top: 10px; border-radius: 5px; }
+        .details.show { display: block; }
+        .btn { background: #3498db; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; display: inline-block; margin: 5px; }
+        .btn:hover { background: #2980b9; }
+        .btn-theory { background: #e74c3c; }
+        .btn-theory:hover { background: #c0392b; }
+        .component-scores { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+        .component-score { text-align: center; padding: 10px; background: white; border-radius: 5px; }
+        .component-score .label { font-size: 0.9em; color: #7f8c8d; }
+        .component-score .value { font-size: 1.5em; font-weight: bold; margin-top: 5px; }
+        .viz-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .viz-preview img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+        iframe { width: 100%; height: 800px; border: 1px solid #ddd; border-radius: 5px; margin-top: 15px; }
+        .timestamp { color: #7f8c8d; font-style: italic; }
+        .loss-good { color: #27ae60; font-weight: bold; }
+        .loss-warning { color: #f39c12; font-weight: bold; }
+        .loss-bad { color: #e74c3c; font-weight: bold; }
+        .loss-na { color: #95a5a6; font-style: italic; }
+    </style>
+    <script>
+        function toggleDetails(id) {
+            const details = document.getElementById(id);
+            details.classList.toggle("show");
+            const button = event.target;
+            button.textContent = details.classList.contains("show") ? "Hide Details ▲" : "Show Details ▼";
+        }
+        function loadTheoryResult(dirName, safeId) {
+            const iframe = document.getElementById("result-iframe-" + safeId);
+            iframe.src = dirName + "/results.html";
+            iframe.style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="./" style="color: white; text-decoration: none;">Run: run_20250728_142711_float64</a></h1>
+        <p>Click to view run directory</p>
+    </div>
+    <div class="container">
+        <div class="summary">
+            <h2>Summary Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="value">1</div>
+                    <div class="label">Total Theories</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">0.396</div>
+                    <div class="label">Best Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">0.396</div>
+                    <div class="label">Average Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">0</div>
+                    <div class="label">Beat SOTA</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">1</div>
+                    <div class="label">Quantum Theories</div>
+                </div>
+            </div>
+        </div>
+        <div class="leaderboard">
+            <h2>Theory Rankings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Theory</th>
+                        <th>Category</th>
+                        <th>Quantum Score</th>
+                        <th>Validators Passed</th>
+                        <th>Beats SOTA</th>
+                        <th title="Electron (charged) trajectory loss vs Kerr">e⁻ Kerr Loss</th>
+                        <th title="Electron (charged) trajectory loss vs Kerr-Newman">e⁻ KN Loss</th>
+                        <th title="Photon (uncharged) trajectory loss vs Kerr">γ Kerr Loss</th>
+                        <th title="Photon (uncharged) trajectory loss vs Kerr-Newman">γ KN Loss</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="rank-1">
+                        <td>1</td>
+                        <td class="expandable" onclick="toggleDetails('details-Quantum_Corrected_α_+0_01')">Quantum Corrected (α=+0.01)</td>
+                        <td class="category-quantum">Quantum</td>
+                        <td>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: 39.6%"></div>
+                            </div>
+                            0.396
+                        </td>
+                        <td>3/9</td>
+                        <td>0</td>
+                        <td><span class="loss-bad">FAIL</span></td>
+                        <td><span class="loss-bad">FAIL</span></td>
+                        <td><span class="loss-bad">FAIL</span></td>
+                        <td><span class="loss-bad">FAIL</span></td>
+                        <td>
+                            <button class="btn expandable" onclick="toggleDetails('details-Quantum_Corrected_α_+0_01')">Show Details ▼</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="11" style="padding: 0;">
+                            <div class="details" id="details-Quantum_Corrected_α_+0_01">
+                                <h3>Component Scores</h3>
+                                <div class="component-scores">
+                                    <div class="component-score">
+                                        <div class="label">Constraints</div>
+                                        <div class="value">1.000</div>
+                                    </div>
+                                    <div class="component-score">
+                                        <div class="label">Observational</div>
+                                        <div class="value">0.137</div>
+                                    </div>
+                                    <div class="component-score">
+                                        <div class="label">Predictions</div>
+                                        <div class="value">0.000</div>
+                                    </div>
+                                    <div class="component-score">
+                                        <div class="label">Trajectory</div>
+                                        <div class="value">0.000</div>
+                                    </div>
+                                    <div class="component-score">
+                                        <div class="label">Unification</div>
+                                        <div class="value">0.400</div>
+                                    </div>
+                                </div>
+                                <h3>Theory Information</h3>
+                                <p>
+                                    <strong>Class:</strong> <code>QuantumCorrected</code><br>
+                                    <strong>Module:</strong> <code>theory_quantum_corrected_theory</code><br>
+                                    <strong>Trajectory Steps:</strong> 1001
+                                </p>
+                                <h3>Visualizations</h3>
+                                <div class="viz-preview">
+                                    <img src="Quantum_Corrected_α_+0_01/viz/trajectory_comparison_neutrino.png" alt="trajectory_comparison_neutrino.png">
+                                    <img src="Quantum_Corrected_α_+0_01/viz/trajectory_comparison_proton.png" alt="trajectory_comparison_proton.png">
+                                    <img src="Quantum_Corrected_α_+0_01/viz/trajectory_comparison_electron.png" alt="trajectory_comparison_electron.png">
+                                    <img src="Quantum_Corrected_α_+0_01/viz/trajectory_comparison_photon.png" alt="trajectory_comparison_photon.png">
+                                </div>
+                                <h3>View Full Results</h3>
+                                <p>
+                                    <a href="Quantum_Corrected_α_+0_01/results.html" target="_blank" class="btn">Open Full Report</a>
+                                    <button class="btn btn-theory" onclick="loadTheoryResult('Quantum_Corrected_α_+0_01', 'Quantum_Corrected_α_+0_01')">Load Below</button>
+                                    <a href="Quantum_Corrected_α_+0_01/code/theory_source.py" class="btn btn-theory">View Theory Code</a>
+                                </p>
+                                <iframe id="result-iframe-Quantum_Corrected_α_+0_01" style="display:none;"></iframe>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="leaderboard" style="margin-top: 30px;">
+            <h2>📝 Full Run Log</h2>
+            <p style="margin-bottom: 15px;">
+                Complete output log from the entire run, including all theory evaluations, validator outputs, and debugging information.
+                <a href="run_log_20250728_142711.txt" target="_blank" class="btn" style="margin-left: 10px;">Open in New Tab</a>
+            </p>
+            <iframe src="run_log_20250728_142711.txt" style="width: 100%; height: 600px; border: 1px solid #ddd; background: #1e1e1e; color: #d4d4d4;"></iframe>
+        </div>
+        <div class="summary" style="margin-top: 30px;">
+            <h2>Scoring Methodology</h2>
+            <p>The Quantum Score ranks only quantum and UGM (Unified Gravity Model) theories. Classical theories are excluded from the leaderboard.</p>
+            <p>The score is calculated as a weighted sum of component scores, adjusted by multipliers:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Weight</th>
+                        <th>Brief Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Constraints</td><td>0.20</td><td>Theoretical consistency checks</td></tr>
+                    <tr><td>Observational</td><td>0.25</td><td>Matches to quantum experiments</td></tr>
+                    <tr><td>Predictions</td><td>0.30</td><td>Novel predictions beating SOTA</td></tr>
+                    <tr><td>Trajectory</td><td>0.05</td><td>Particle trajectory matching</td></tr>
+                    <tr><td>Unification</td><td>0.20</td><td>Unification potential</td></tr>
+                </tbody>
+            </table>
+            <p>Bonuses/Penalties applied as multipliers. Final score capped at 1.0.</p>
+        </div>
+    </div>
+</body>
+</html>

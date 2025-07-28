@@ -32,7 +32,7 @@ class MetricPropertiesValidator(BaseValidation):
         sampled_radii = hist[sample_indices, 1]
 
         # --- Lorentzian Signature Check ---
-        g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M, self.engine.C_T, self.engine.G_T)
+        g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M_si, self.engine.c_si, self.engine.G_si)
         
         signature_loss = torch.mean(
             torch.relu(g_tt) +      # Should be < 0
@@ -44,7 +44,7 @@ class MetricPropertiesValidator(BaseValidation):
 
         # --- Asymptotic Flatness Check ---
         large_r = self.engine.RS * 1e6
-        g_tt_flat, g_rr_flat, _, g_tp_flat = theory.get_metric(large_r, self.engine.M, self.engine.C_T, self.engine.G_T)
+        g_tt_flat, g_rr_flat, _, g_tp_flat = theory.get_metric(large_r, self.engine.M_si, self.engine.c_si, self.engine.G_si)
         
         flatness_loss = (
             torch.abs(g_tt_flat + 1.0) +

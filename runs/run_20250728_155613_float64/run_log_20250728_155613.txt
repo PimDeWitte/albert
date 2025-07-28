@@ -1,0 +1,7 @@
+Computing 4 baselines in parallel (up to 2 at a time)...
+
+  Found longer trajectory: 1000000 steps (requested 10000)
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_3ce6218204f36085_steps_1000000.pt
+  Truncating trajectory from 17222 to 10000 steps
+
+Error in baseline Kerr-Newman (a=0.50, q_e=0.50): The size of tensor a (6) must match the size of tensor b (4) at non-singleton dimension 0

@@ -46,4 +46,8 @@ class ParticleLoader:
         if particle is None:
             print(f"Warning: Particle '{name}' not found. Using default massive neutral particle.")
             return Particle('default', 'massive', 1.0, 0.0, 0.0)
-        return particle 
+        return particle
+    
+    def get_available_particles(self) -> list:
+        """Return a list of all available particle names"""
+        return sorted(list(self.particles.keys())) 

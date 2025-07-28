@@ -460,46 +460,108 @@ class TheoryEngine:
     def run_multi_particle_trajectories(self, model: GravitationalTheory, r0_si: float, N_STEPS: int, DTau_si: float, 
                                        theory_category: str = 'unknown', **kwargs) -> dict:
         """
-        <reason>chain: Run trajectories for multiple particles based on theory category</reason>
-        For quantum/unified theories: only electrons and photons (QED)
-        For classical theories: all particles (electrons, photons, protons, neutrinos)
+        <reason>chain: Run trajectories for all available particles from defaults directory</reason>
+        Dynamically loads all particles defined in physics_agent/particles/defaults/
         """
         particle_results = {}
         
         # Determine which particles to test based on theory category
-        # Force all particles to be tested for comprehensive visualization
-        # if theory_category in ['quantum', 'unified']:
-        #     # Only test QED particles (electrons and photons) for quantum theories
-        #     particle_names = ['electron', 'photon']
-        #     print(f"  Testing QED particles only for {theory_category} theory")
-        # else:
-        #     # Test all particles for classical theories
-        particle_names = ['electron', 'photon', 'proton', 'neutrino']
+        # <reason>chain: Load all available particles from defaults directory dynamically</reason>
+        particle_names = self.particle_loader.get_available_particles()
         if self.verbose:
-            if self.verbose:
-                print(f"  Testing all 4 standard particles for comprehensive visualization")
+            print(f"  Testing all {len(particle_names)} available particles: {', '.join(particle_names)}")
         
-        for particle_name in particle_names:
-            if self.verbose:
-                if self.verbose:
-                    print(f"    Running trajectory for {particle_name}...")
-            
+        # <reason>chain: Create progress bars for each particle with dedicated positions</reason>
+        particle_pbars = {}
+        for idx, particle_name in enumerate(particle_names):
+            particle_pbars[particle_name] = tqdm(
+                total=N_STEPS,
+                desc=f"    {particle_name}",
+                unit=" steps",
+                position=idx,  # Start from position 0
+                leave=True,  # <reason>chain: Keep progress bars visible after completion for debugging</reason>
+                ncols=100,
+                bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
+            )
+        
+        # <reason>chain: Use ThreadPoolExecutor for parallel particle computation</reason>
+        import concurrent.futures
+        import threading
+        
+        # Create a lock for thread-safe operations
+        results_lock = threading.Lock()
+        
+        def compute_particle_trajectory(particle_name, pbar):
+            """Compute trajectory for a single particle"""
             # Load particle properties
             particle = self.particle_loader.get_particle(particle_name)
             
-            # Run trajectory with particle properties
-            hist, tag, kicks = self.run_trajectory(
-                model, r0_si, N_STEPS, DTau_si,
-                particle_name=particle_name,
-                particle_mass=particle.mass,
-                particle_charge=particle.charge,
-                particle_spin=particle.spin,
-                particle_type=particle.particle_type,
-                **kwargs
-            )
+            # <reason>chain: Debug particle properties</reason>
+            if self.verbose:
+                print(f"\n    Starting {particle_name}: type={particle.particle_type}, mass={particle.mass}, charge={particle.charge}")
             
-            # Store results
-            particle_results[particle_name] = {
+            # <reason>chain: Create progress callback with proper closure for this particle</reason>
+            def make_progress_callback(progress_bar):
+                def callback(current_step, total_steps):
+                    try:
+                        with results_lock:
+                            # <reason>chain: Calculate the delta to update progress bar correctly</reason>
+                            delta = current_step - progress_bar.n
+                            if delta > 0:
+                                progress_bar.update(delta)
+                                progress_bar.refresh()  # <reason>chain: Force display refresh for thread safety</reason>
+                    except Exception as e:
+                        # <reason>chain: Log errors for debugging but don't break computation</reason>
+                        if self.verbose:
+                            print(f"      Progress bar update error for {particle_name}: {e}")
+                        pass
+                return callback
+            
+            particle_progress_callback = make_progress_callback(pbar)
+            
+            # <reason>chain: Filter out show_pbar and progress_callback from kwargs to avoid duplicates</reason>
+            filtered_kwargs = {k: v for k, v in kwargs.items() 
+                             if k not in ['show_pbar', 'progress_callback', 'callback_interval']}
+            
+            # Run trajectory with particle properties
+            try:
+                # <reason>chain: Debug print to understand trajectory computation</reason>
+                print(f"\n    Starting trajectory computation for {particle_name}...")
+                # <reason>chain: Debug callback interval calculation</reason>
+                callback_interval = max(1, N_STEPS // 100)
+                if self.verbose:
+                    print(f"      Callback interval for {particle_name}: {callback_interval} (N_STEPS={N_STEPS})")
+                
+                hist, tag, kicks = self.run_trajectory(
+                    model, r0_si, N_STEPS, DTau_si,
+                    particle_name=particle_name,
+                    particle_mass=particle.mass,
+                    particle_charge=particle.charge,
+                    particle_spin=particle.spin,
+                    particle_type=particle.particle_type,
+                    progress_callback=particle_progress_callback,
+                    callback_interval=callback_interval,
+                    show_pbar=False,  # <reason>chain: Disable inner progress bar to avoid conflicts with outer progress bars</reason>
+                    **filtered_kwargs
+                )
+                print(f"    Completed {particle_name}: tag={tag}, hist_shape={hist.shape if hist is not None else None}")
+            except Exception as e:
+                # <reason>chain: Always log particle-specific errors for debugging</reason>
+                import traceback
+                print(f"\n      Error computing {particle_name} trajectory: {str(e)}")
+                if self.verbose:
+                    print(f"      Traceback:\n{traceback.format_exc()}")
+                hist, tag, kicks = None, f"error: {str(e)}", []
+            finally:
+                # <reason>chain: Ensure progress bar is updated to 100% on completion</reason>
+                with results_lock:
+                    if pbar.n < pbar.total:
+                        pbar.update(pbar.total - pbar.n)
+                    pbar.refresh()
+                    # Don't close here, let the main thread handle it
+            
+            # Return results
+            return particle_name, {
                 'trajectory': hist,
                 'tag': tag,
                 'kicks': kicks,
@@ -512,14 +574,39 @@ class TheoryEngine:
                     'spin': particle.spin
                 }
             }
+        
+        # <reason>chain: Run particle computations in parallel</reason>
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(particle_names)) as executor:
+            futures = []
+            for particle_name in particle_names:
+                pbar = particle_pbars[particle_name]
+                future = executor.submit(compute_particle_trajectory, particle_name, pbar)
+                futures.append(future)
             
-            if self.verbose:
-                print(f"      Stored {particle_name} result with tag: {tag}")
-            
-            if hist is None:
-                if self.verbose:
-                    if self.verbose:
-                        print(f"      Warning: Could not compute trajectory for {particle_name}")
+            # Collect results
+            for future in concurrent.futures.as_completed(futures):
+                particle_name, result = future.result()
+                particle_results[particle_name] = result
+                
+                if self.verbose and result['trajectory'] is not None:
+                    print(f"      Stored {particle_name} result with tag: {result['tag']}")
+                elif self.verbose and result['trajectory'] is None:
+                    print(f"      Warning: Could not compute trajectory for {particle_name}")
+        
+        # <reason>chain: Ensure all progress bars are properly finalized and closed</reason>
+        import time
+        time.sleep(0.1)  # <reason>chain: Brief delay to ensure all updates are flushed</reason>
+        
+        for pbar in particle_pbars.values():
+            if not pbar.disable:
+                # <reason>chain: Ensure bar shows 100% before closing</reason>
+                if pbar.n < pbar.total:
+                    pbar.update(pbar.total - pbar.n)
+                pbar.refresh()
+                pbar.close()
+        
+        # <reason>chain: Clear progress bar positions to prevent display issues</reason>
+        print()  # Add newline to separate from progress bars
         
         return particle_results
 
@@ -528,6 +615,18 @@ class TheoryEngine:
         <reason>chain: Run trajectory integration in geometric units (c=G=M=1)</reason>
         This is the core trajectory integration logic adapted for geometric units.
         """
+        # <reason>chain: Apply GPU optimizations before running trajectory</reason>
+        try:
+            from physics_agent.gpu_optimization_config import (
+                optimize_tensor_operations, 
+                create_optimized_solver_kwargs
+            )
+            # <reason>chain: Pass dtype to ensure precision requirements are met</reason>
+            optimize_tensor_operations(str(self.device), self.dtype)
+            optimization_kwargs = create_optimized_solver_kwargs(str(self.device), self.dtype)
+        except ImportError:
+            optimization_kwargs = {}
+            
         # Extract optional parameters
         quantum_interval = kwargs.get('quantum_interval', 0)
         quantum_beta = kwargs.get('quantum_beta', 0.0)
@@ -637,14 +736,15 @@ class TheoryEngine:
             if self.verbose:
                 print(f"  Attempting to use UnifiedTrajectoryCalculator for quantum theory")
             try:
-                # <reason>chain: Pass unit conversion parameters to UnifiedTrajectoryCalculator</reason>
+                # <reason>chain: Pass unit conversion parameters and cache to UnifiedTrajectoryCalculator</reason>
                 calculator = UnifiedTrajectoryCalculator(
                     model, 
                     enable_quantum=True, 
                     enable_classical=True,
                     M=self.M_si,  # Central mass in kg
                     c=self.c_si,  # Speed of light in m/s
-                    G=self.G_si   # Gravitational constant
+                    G=self.G_si,  # Gravitational constant
+                    cache=self.cache  # <reason>chain: Pass cache instance for trajectory caching</reason>
                 )
                 
                 # Calculate E and Lz for symmetric spacetimes
@@ -847,7 +947,8 @@ class TheoryEngine:
             else:
                 solver = GeodesicRK4Solver(model, 
                                          torch.tensor(1.0, device=self.device, dtype=self.dtype),
-                                         1.0, 1.0)
+                                         1.0, 1.0,
+                                         **optimization_kwargs)
                 tag = "symmetric_solver_run"
                 
             solver.E = E_geom.item()
@@ -875,7 +976,8 @@ class TheoryEngine:
                 # so we need to use general solver with massless initial conditions
                 solver = GeneralGeodesicRK4Solver(model,
                                                 torch.tensor(1.0, device=self.device, dtype=self.dtype),
-                                                1.0, 1.0)
+                                                1.0, 1.0,
+                                                **optimization_kwargs)
                 tag = "general_null_solver_run"
             elif particle and particle.charge != 0:
                 # Use charged particle solver for all charged particles
@@ -885,13 +987,24 @@ class TheoryEngine:
                                                 torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                                 1.0, 1.0,
                                                 q=charge_geom,
-                                                m=mass_geom)
+                                                m=mass_geom,
+                                                **optimization_kwargs)
                 tag = "charged_solver_run"
             else:
-                solver = GeneralGeodesicRK4Solver(model,
-                                                torch.tensor(1.0, device=self.device, dtype=self.dtype),
-                                                1.0, 1.0)
-                tag = "general_solver_run"
+                # <reason>chain: Use factory function to get optimized solvers when available</reason>
+                from physics_agent.geodesic_integrator_stable import create_geodesic_solver
+                solver = create_geodesic_solver(
+                    model,
+                    self.M_si,
+                    self.c_si,
+                    self.G_si,
+                    **optimization_kwargs
+                )
+                # Determine tag based on solver type
+                if solver.__class__.__name__ == 'OptimizedKerrGeodesicSolver':
+                    tag = "optimized_kerr_solver_run"
+                else:
+                    tag = "general_solver_run"
             
             # Initialize history with 6D state (only storing t,r,phi,dr/dtau)
             hist = torch.zeros((N_STEPS + 1, 4), device=self.device, dtype=self.dtype)
@@ -970,11 +1083,8 @@ class TheoryEngine:
                 # <reason>chain: Use simple RK4 step if available for performance, otherwise use higher tolerance</reason>
                 if hasattr(solver, 'rk4_step_simple') and not adaptive_stepping:
                     y_new = solver.rk4_step_simple(y, h_current)
-                elif solver.__class__.__name__ == 'GeneralGeodesicRK4Solver':
-                    # Use higher tolerance for better performance with GeneralGeodesicRK4Solver
-                    y_new = solver.rk4_step(y, h_current, tol=1e-2)
                 else:
-                    # Standard call for other solvers
+                    # Standard call for all solvers
                     y_new = solver.rk4_step(y, h_current)
                 
                 if y_new is None or torch.any(~torch.isfinite(y_new)):
@@ -3928,7 +4038,14 @@ def main():
     
     # --- Simulate Baselines First ---
     baseline_results = {}
-    print("\n--- Simulating Baseline Theories ---")
+    
+    # <reason>chain: Allow skipping baselines to save memory</reason>
+    if args.no_baselines:
+        print("\n--- Skipping Baseline Theories (--no-baselines specified) ---")
+        baseline_results = {}
+        engine.baseline_trajectories = {}
+    else:
+        print("\n--- Simulating Baseline Theories ---")
     
     # Create a single run directory for this entire execution
     timestamp = time.strftime("%Y%m%d_%H%M%S")
@@ -3969,97 +4086,93 @@ def main():
     from functools import partial
     
     def run_baseline_with_progress(name_model_dir_pos, engine, r0_val, effective_steps, effective_dtau, no_cache):
-        """Run a single baseline with its own progress bar"""
+        """Run a single baseline theory for all particles"""
         name, model, theory_dir, position = name_model_dir_pos
         
-        # <reason>chain: Use the pre-assigned position for consistent output</reason>
-        # Create per-theory progress bar with dedicated position
-        pbar = tqdm(total=effective_steps,
-                   desc=f"{name}",
-                   unit=" steps",
-                   position=position,
-                   leave=True,
-                   ncols=100,
-                   bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]')
+        print(f"\n  Computing baseline: {name}")
         
-        # Define progress callback for this theory
-        def baseline_progress_callback(current_step, total_steps):
-            pbar.update(current_step - pbar.n)  # Update to current position
-            # <reason>chain: Check if we've reached the event horizon early</reason>
-            if current_step < total_steps and hasattr(engine, '_last_trajectory_terminated_early'):
-                if engine._last_trajectory_terminated_early:
-                    pbar.set_description(f"{name} - Event Horizon Reached")
-                    pbar.update(total_steps - current_step)  # Fill to 100%
+        # <reason>chain: Suppress unwanted output during baseline computation</reason>
+        import sys
+        from io import StringIO
         
         try:
-            hist, _, _ = engine.run_trajectory(
-                model, r0_val * engine.length_scale, effective_steps, effective_dtau.item() * engine.time_scale,
-                quantum_interval=0, quantum_beta=0.0,
-                no_cache=no_cache,
-                progress_callback=baseline_progress_callback,
-                callback_interval=max(1, effective_steps // 100),  # Update every 1%
-                show_pbar=False  # Disable internal progress bar
-            )
+            # Run multi-particle trajectories for this baseline
+            old_stdout = sys.stdout
+            sys.stdout = StringIO()  # Capture output to prevent interference
             
-            pbar.close()
+            try:
+                particle_results = engine.run_multi_particle_trajectories(
+                    model, r0_val * engine.length_scale, effective_steps, effective_dtau.item() * engine.time_scale,
+                    theory_category='classical',  # All baselines are classical
+                    quantum_interval=0,
+                    quantum_beta=0.0,
+                    no_cache=no_cache,
+                    verbose=False
+                )
+            finally:
+                sys.stdout = old_stdout  # Restore stdout
             
-            if hist is not None and hist.shape[0] > 1:
-                # Save baseline trajectory
-                torch.save(hist.to(dtype=engine.dtype), os.path.join(theory_dir, "trajectory.pt"))
-                return name, hist, True
+            # Store results for each particle
+            baseline_particle_results = {}
+            success_count = 0
+            
+            for particle_name, result in particle_results.items():
+                if result['trajectory'] is not None and result['trajectory'].shape[0] > 1:
+                    baseline_particle_results[particle_name] = result['trajectory']
+                    success_count += 1
+                    # Save individual particle trajectory
+                    particle_file = os.path.join(theory_dir, f"trajectory_{particle_name}.pt")
+                    torch.save(result['trajectory'].to(dtype=engine.dtype), particle_file)
+            
+            print(f"    ✓ Computed {success_count}/4 particle trajectories")
+            
+            if success_count > 0:
+                return name, baseline_particle_results, True
             else:
                 return name, None, False
                 
         except Exception as e:
-            pbar.close()
             print(f"\nError in baseline {name}: {e}")
             return name, None, False
     
-    # Prepare baseline data with pre-assigned positions
-    baseline_tasks = []
-    # <reason>chain: Assign positions 1,2,3,... to each baseline for consistent output</reason>
-    for idx, (name, model) in enumerate(baseline_theories.items()):
-        theory_dir = os.path.join(main_run_dir, f"baseline_{name.replace(' ', '_').replace('(', '').replace(')', '')}")
-        os.makedirs(theory_dir, exist_ok=True)
-        position = idx + 1  # Positions start from 1
-        baseline_tasks.append((name, model, theory_dir, position))
-    
-    # <reason>chain: Use ThreadPoolExecutor for parallel baseline computation</reason>
-    # Using threads instead of processes to share memory and avoid serialization issues
-    max_workers = min(len(baseline_tasks), 4)  # Limit to 4 parallel baselines
-    
-    print(f"Computing {len(baseline_tasks)} baselines in parallel (up to {max_workers} at a time)...")
-    print("")  # Add spacing for progress bars
-    
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all baseline computations
-        future_to_baseline = {
-            executor.submit(
-                run_baseline_with_progress,
+    # <reason>chain: Only compute baselines if not skipped</reason>
+    if not args.no_baselines:
+        # Prepare baseline data with pre-assigned positions
+        baseline_tasks = []
+        # <reason>chain: Assign positions 1,2,3,... to each baseline for consistent output</reason>
+        for idx, (name, model) in enumerate(baseline_theories.items()):
+            theory_dir = os.path.join(main_run_dir, f"baseline_{name.replace(' ', '_').replace('(', '').replace(')', '')}")
+            os.makedirs(theory_dir, exist_ok=True)
+            position = idx + 1  # Positions start from 1
+            baseline_tasks.append((name, model, theory_dir, position))
+        
+        # <reason>chain: Process baselines sequentially for clean output</reason>
+        print(f"Computing {len(baseline_tasks)} baselines sequentially...")
+        
+        # Process baselines one by one without executor to avoid resource leaks
+        for task in baseline_tasks:
+            name, particle_results, success = run_baseline_with_progress(
                 task,
                 engine,
                 r0_val,
                 effective_steps,
                 effective_dtau,
                 args.no_cache
-            ): task[0]  # Store name for reference
-            for task in baseline_tasks
-        }
-        
-        # Collect results as they complete
-        for future in concurrent.futures.as_completed(future_to_baseline):
-            name, hist, success = future.result()
+            )
+            
             if success:
-                baseline_results[name] = hist
-                # <reason>chain: Also store in engine for unification scoring</reason>
-                engine.baseline_trajectories[name] = hist
+                # <reason>chain: Store particle-specific baseline results</reason>
+                baseline_results[name] = particle_results
+                # For backward compatibility, also store electron trajectory as default
+                if 'electron' in particle_results:
+                    engine.baseline_trajectories[name] = particle_results['electron']
             else:
-                if verbose:
+                if engine.verbose:
                     print(f"\nWarning: Baseline simulation failed for {name}")
-    
-    # Clear progress bar positions - use actual number of baselines, not max_workers
-    print("\n" * len(baseline_tasks))  # Move cursor below all progress bars
-    print(f"Completed {len(baseline_results)}/{len(baseline_theories)} baseline simulations")
+        
+        # <reason>chain: Clear progress bars properly</reason>
+        print("")  # Extra newline
+        print(f"Completed {len(baseline_results)}/{len(baseline_theories)} baseline simulations")
     
     # --- First Phase: Validate All Theories ---
     print("\n--- Phase 1: Validating All Theories ---")
@@ -4177,41 +4290,53 @@ def main():
                     for work_item in work_items
                 }
                 
-                # Process completed tasks
-                for i, future in enumerate(as_completed(future_to_combo)):
-                    combo = future_to_combo[future]
-                    try:
-                        result = future.result()
-                        sweep_results.append(result)
-                        param_str = ", ".join(f"{k}={v}" for k, v in combo.items())
-                        print(f"\n--- Completed sweep variant {i+1}/{len(param_combinations)}: {param_str} ---")
-                        
-                        if result.get('status') == 'error':
-                            print(f"  [ERROR] {result.get('error', 'Unknown error')}")
-                            # <reason>chain: Display worker log on error for debugging</reason>
-                            if 'worker_log' in result and os.path.exists(result['worker_log']):
-                                print(f"  [WORKER LOG] Reading from: {result['worker_log']}")
-                                with open(result['worker_log'], 'r') as log_f:
-                                    log_contents = log_f.read()
-                                    print("  === Worker Log Contents ===")
-                                    for line in log_contents.splitlines():
-                                        print(f"  {line}")
-                                    print("  === End Worker Log ===")
-                            if 'traceback' in result:
-                                print(f"  [TRACEBACK]\n{result['traceback']}")
-                    except Exception as e:
-                        error_msg = f"Failed to process combination: {e}"
-                        print(f"  [ERROR] {error_msg}")
-                        # <reason>chain: Try to get more details about process termination</reason>
-                        import signal
-                        if hasattr(e, '__cause__') and isinstance(e.__cause__, signal.Signals):
-                            print(f"  [SIGNAL] Process terminated by signal: {e.__cause__.name}")
-                        sweep_results.append({
-                            "status": "error",
-                            "error": error_msg,
-                            "exception_type": type(e).__name__,
-                            "sweep_params": combo
-                        })
+                # <reason>chain: Ensure proper cleanup of futures to prevent semaphore leaks</reason>
+                try:
+                    # Process completed tasks
+                    for i, future in enumerate(as_completed(future_to_combo)):
+                        combo = future_to_combo[future]
+                        try:
+                            result = future.result()
+                            sweep_results.append(result)
+                            param_str = ", ".join(f"{k}={v}" for k, v in combo.items())
+                            print(f"\n--- Completed sweep variant {i+1}/{len(param_combinations)}: {param_str} ---")
+                            
+                            if result.get('status') == 'error':
+                                print(f"  [ERROR] {result.get('error', 'Unknown error')}")
+                                # <reason>chain: Display worker log on error for debugging</reason>
+                                if 'worker_log' in result and os.path.exists(result['worker_log']):
+                                    print(f"  [WORKER LOG] Reading from: {result['worker_log']}")
+                                    with open(result['worker_log'], 'r') as log_f:
+                                        log_contents = log_f.read()
+                                        print("  === Worker Log Contents ===")
+                                        for line in log_contents.splitlines():
+                                            print(f"  {line}")
+                                        print("  === End Worker Log ===")
+                                if 'traceback' in result:
+                                    print(f"  [TRACEBACK]\n{result['traceback']}")
+                        except Exception as e:
+                            error_msg = f"Failed to process combination: {e}"
+                            print(f"  [ERROR] {error_msg}")
+                            # <reason>chain: Try to get more details about process termination</reason>
+                            import signal
+                            if hasattr(e, '__cause__') and isinstance(e.__cause__, signal.Signals):
+                                signal_name = e.__cause__.name
+                                print(f"  [TERMINATED] Process was terminated with signal: {signal_name}")
+                            sweep_results.append({
+                                'model_name': model_prototype.name,
+                                'sweep_params': combo,
+                                'status': 'error',
+                                'error': error_msg,
+                                'traceback': traceback.format_exc()
+                            })
+                finally:
+                    # <reason>chain: Cancel remaining futures to prevent resource leaks</reason>
+                    for future in future_to_combo:
+                        if not future.done():
+                            future.cancel()
+                    
+                    # <reason>chain: Explicitly shutdown and wait for cleanup</reason>
+                    executor.shutdown(wait=True, cancel_futures=True)
                 
             # <reason>chain: Save consolidated sweep results</reason>
             sweep_summary_file = os.path.join(main_run_dir, f"{model_prototype.name.replace(' ', '_')}_sweep_summary.json")

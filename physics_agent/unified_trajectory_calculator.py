@@ -16,6 +16,7 @@ import json
 import sys
 
 from physics_agent.base_theory import GravitationalTheory
+from physics_agent.cache import TrajectoryCache
 from physics_agent.geodesic_integrator_stable import (
     GeodesicRK4Solver, GeneralGeodesicRK4Solver, 
     ChargedGeodesicRK4Solver, UGMGeodesicRK4Solver
@@ -33,7 +34,7 @@ class UnifiedTrajectoryCalculator:
     
     def __init__(self, theory: GravitationalTheory, enable_quantum: bool = True,
                  enable_classical: bool = True, M: float = None, c: float = None, 
-                 G: float = None):
+                 G: float = None, cache: 'TrajectoryCache' = None):
         """
         Initialize unified calculator.
         
@@ -44,10 +45,12 @@ class UnifiedTrajectoryCalculator:
             M: Central mass in kg (for unit conversion)
             c: Speed of light in m/s
             G: Gravitational constant in SI units
+            cache: Optional TrajectoryCache instance for caching trajectories
         """
         self.theory = theory
         self.enable_quantum = enable_quantum and theory.enable_quantum
         self.enable_classical = enable_classical
+        self._cache = cache  # <reason>chain: Store cache instance for trajectory caching</reason>
         
         # Store unit conversion parameters
         self.M = M if M is not None else 1.989e30  # Solar mass
@@ -182,6 +185,9 @@ class UnifiedTrajectoryCalculator:
         trajectory = [y0.detach().numpy()]
         y = y0
         
+        # <reason>chain: Debug which solver is being used</reason>
+        print(f"    Using solver: {type(self.classical_solver).__name__}")
+        
         # <reason>chain: Step size handling depends on solver type</reason>
         if isinstance(self.classical_solver, GeodesicRK4Solver):
             # GeodesicRK4Solver expects step size in geometric units
@@ -193,6 +199,7 @@ class UnifiedTrajectoryCalculator:
         for i in range(time_steps):
             y_new = self.classical_solver.rk4_step(y, h)
             if y_new is None:
+                print(f"    WARNING: Solver returned None at step {i}")
                 break
             y = y_new
             trajectory.append(y.detach().numpy())
@@ -287,6 +294,11 @@ class UnifiedTrajectoryCalculator:
         
         # Classical trajectory
         if self.enable_classical:
+            # <reason>chain: Debug output to understand quantum trajectory computation</reason>
+            print(f"\n  UnifiedTrajectoryCalculator: Computing classical trajectory for {self.theory.name}")
+            print(f"    Initial conditions: r={initial_conditions.get('r', 'N/A')}, E={initial_conditions.get('E', 'N/A')}, Lz={initial_conditions.get('Lz', 'N/A')}")
+            print(f"    Time steps: {kwargs.get('time_steps', 'N/A')}, Step size: {kwargs.get('step_size', 'N/A')}")
+            
             # Extract classical-specific kwargs - only pass what compute_classical_trajectory expects
             allowed_classical_kwargs = {'time_steps', 'step_size'}
             classical_kwargs = {k: v for k, v in kwargs.items() 
@@ -295,6 +307,8 @@ class UnifiedTrajectoryCalculator:
                 initial_conditions, **classical_kwargs
             )
             results['classical'] = classical_results
+            
+            print(f"    Classical trajectory computed: {len(classical_results.get('trajectory', [])) if 'trajectory' in classical_results else 0} points")
             
             # Use classical endpoint for quantum if not specified
             if final_state is None and 'trajectory' in classical_results:

@@ -145,12 +145,17 @@ class LeaderboardHTMLGenerator:
                             baselines = electron_losses[loss_type]
                             if isinstance(baselines, dict):
                                 for baseline_name, loss_val in baselines.items():
-                                    # <reason>chain: Only use finite values, skip infinity</reason>
-                                    if loss_val != float('inf'):
-                                        if 'Kerr' in baseline_name and 'Newman' not in baseline_name:
-                                            charged_kerr_loss = min(charged_kerr_loss, loss_val)
-                                        elif 'Kerr-Newman' in baseline_name or 'Kerr Newman' in baseline_name:
-                                            charged_kn_loss = min(charged_kn_loss, loss_val)
+                                    # <reason>chain: Only use finite numeric values, skip infinity and strings</reason>
+                                    try:
+                                        loss_val_float = float(loss_val)
+                                        if loss_val_float != float('inf'):
+                                            if 'Kerr' in baseline_name and 'Newman' not in baseline_name:
+                                                charged_kerr_loss = min(charged_kerr_loss, loss_val_float)
+                                            elif 'Kerr-Newman' in baseline_name or 'Kerr Newman' in baseline_name:
+                                                charged_kn_loss = min(charged_kn_loss, loss_val_float)
+                                    except (ValueError, TypeError):
+                                        # Skip non-numeric values
+                                        continue
                                 # <reason>chain: Stop at first loss type with valid values</reason>
                                 if charged_kerr_loss != float('inf') or charged_kn_loss != float('inf'):
                                     break
@@ -167,12 +172,17 @@ class LeaderboardHTMLGenerator:
                             baselines = photon_losses[loss_type]
                             if isinstance(baselines, dict):
                                 for baseline_name, loss_val in baselines.items():
-                                    # <reason>chain: Only use finite values, skip infinity</reason>
-                                    if loss_val != float('inf'):
-                                        if 'Kerr' in baseline_name and 'Newman' not in baseline_name:
-                                            uncharged_kerr_loss = min(uncharged_kerr_loss, loss_val)
-                                        elif 'Kerr-Newman' in baseline_name or 'Kerr Newman' in baseline_name:
-                                            uncharged_kn_loss = min(uncharged_kn_loss, loss_val)
+                                    # <reason>chain: Only use finite numeric values, skip infinity and strings</reason>
+                                    try:
+                                        loss_val_float = float(loss_val)
+                                        if loss_val_float != float('inf'):
+                                            if 'Kerr' in baseline_name and 'Newman' not in baseline_name:
+                                                uncharged_kerr_loss = min(uncharged_kerr_loss, loss_val_float)
+                                            elif 'Kerr-Newman' in baseline_name or 'Kerr Newman' in baseline_name:
+                                                uncharged_kn_loss = min(uncharged_kn_loss, loss_val_float)
+                                    except (ValueError, TypeError):
+                                        # Skip non-numeric values
+                                        continue
                                 # <reason>chain: Stop at first loss type with valid values</reason>
                                 if uncharged_kerr_loss != float('inf') or uncharged_kn_loss != float('inf'):
                                     break

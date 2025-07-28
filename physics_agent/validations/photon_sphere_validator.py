@@ -29,7 +29,7 @@ class PhotonSphereValidator(BaseValidation):
             # Search range: 1.1 to 5 Schwarzschild radii
             r_test = torch.linspace(1.1, 5.0, 200, device=self.engine.device, dtype=self.engine.dtype) * rs
             
-            g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_test, self.engine.M, self.engine.C_T, self.engine.G_T)
+            g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_test, self.engine.M_si, self.engine.c_si, self.engine.G_si)
             
             # <reason>chain: For circular photon orbits, we need to find extremum of effective potential</reason>
             # The photon sphere occurs where the effective potential V_eff ∝ (1-rs/r)/r² has an extremum

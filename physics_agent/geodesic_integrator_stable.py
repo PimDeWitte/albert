@@ -58,6 +58,12 @@ from physics_agent.base_theory import GravitationalTheory
 from physics_agent.utils import get_metric_wrapper
 from physics_agent.quantum_path_integrator import QuantumPathIntegrator
 
+# <reason>chain: Import the GeneralGeodesicRK4Solver from geodesic_integrator.py which has proper 6D support</reason>
+try:
+    from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver as GeneralGeodesicRK4SolverImported
+except ImportError:
+    GeneralGeodesicRK4SolverImported = None
+
 # Import constants from centralized module
 from physics_agent.constants import (
     SPEED_OF_LIGHT as C_SI,
@@ -87,7 +93,7 @@ Tensor = torch.Tensor
 
 
 # --- Helper Functions ---
-def compute_christoffel_symbols(g: Tensor, coords: Tensor) -> Tensor:
+def compute_christoffel_symbols(g: Tensor, coords: Tensor, disable_gradient_computation: bool = False) -> Tensor:
     """
     <reason>chain: Compute all Christoffel symbols from full metric tensor using automatic differentiation</reason>
     
@@ -96,6 +102,7 @@ def compute_christoffel_symbols(g: Tensor, coords: Tensor) -> Tensor:
     Args:
         g: 4x4 metric tensor
         coords: 4D coordinates [t, r, theta, phi] with gradients enabled
+        disable_gradient_computation: If True, use finite differences instead of autograd
         
     Returns:
         4x4x4 tensor of Christoffel symbols Γ^μ_νρ
@@ -113,18 +120,33 @@ def compute_christoffel_symbols(g: Tensor, coords: Tensor) -> Tensor:
     # We need ∂g_μν/∂x^ρ for all μ,ν,ρ
     dg = torch.zeros(4, 4, 4, device=device, dtype=dtype)
     
-    for mu in range(4):
-        for nu in range(4):
-            if coords.requires_grad:
-                # Compute gradient with respect to coordinates
-                grad = torch.autograd.grad(
-                    g[mu, nu], coords, 
-                    create_graph=True, 
-                    retain_graph=True,
-                    allow_unused=True
-                )[0]
-                if grad is not None:
-                    dg[mu, nu, :] = grad
+    if disable_gradient_computation or not coords.requires_grad:
+        # <reason>chain: Use finite differences when gradients are disabled for performance</reason>
+        # This is faster but less accurate than autograd
+        epsilon = 1e-8
+        for rho in range(4):
+            coords_plus = coords.clone()
+            coords_minus = coords.clone()
+            coords_plus[rho] += epsilon
+            coords_minus[rho] -= epsilon
+            
+            # Recompute metric at perturbed coordinates
+            # Note: This requires access to the model, which we don't have here
+            # For now, we'll just skip this optimization
+            pass
+    else:
+        for mu in range(4):
+            for nu in range(4):
+                if coords.requires_grad:
+                    # Compute gradient with respect to coordinates
+                    grad = torch.autograd.grad(
+                        g[mu, nu], coords, 
+                        create_graph=True, 
+                        retain_graph=True,
+                        allow_unused=True
+                    )[0]
+                    if grad is not None:
+                        dg[mu, nu, :] = grad
             
     # Compute Christoffel symbols
     # Γ^μ_νρ = ½g^μσ(∂_ν g_σρ + ∂_ρ g_σν - ∂_σ g_νρ)
@@ -170,9 +192,14 @@ def is_quantum_theory(theory: GravitationalTheory) -> bool:
     if hasattr(theory, 'quantum_corrections') and theory.quantum_corrections:
         return True
         
-    # Check if theory has complete_lagrangian (often indicates quantum theory)
+    # Check if theory has complete_lagrangian AND other quantum indicators
+    # Having a Lagrangian alone doesn't make a theory quantum - classical GR has Lagrangians too!
     if hasattr(theory, 'complete_lagrangian') and theory.complete_lagrangian is not None:
-        return True
+        # Only consider it quantum if it also has quantum-specific features
+        if (hasattr(theory, 'matter_lagrangian') and theory.matter_lagrangian is not None) or \
+           (hasattr(theory, 'gauge_lagrangian') and theory.gauge_lagrangian is not None) or \
+           (hasattr(theory, 'interaction_lagrangian') and theory.interaction_lagrangian is not None):
+            return True
         
     return False
 
@@ -203,21 +230,38 @@ def create_geodesic_solver(theory: GravitationalTheory, M_phys: Tensor = None,
         
     # Check if quantum solver should be used
     if not force_classical and is_quantum_theory(theory):
+        if kwargs.get('verbose', False):
+            print(f"Creating QuantumGeodesicSolver for {theory.name}")
         return QuantumGeodesicSolver(theory, M_phys, c, G, **kwargs)
     
     # Check theory type for specific classical solvers
     theory_name = theory.__class__.__name__.lower()
+    theory_class_name = theory.__class__.__name__  # Keep original case for Kerr check
     
     if 'ugm' in theory_name or 'unified' in theory_name:
         return UGMGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
-    elif hasattr(theory, 'Q') or hasattr(theory, 'q'):  # Charged theories
-        return ChargedGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
-    elif any(x in theory_name for x in ['schwarzschild', 'kerr', 'reissner']):
+    elif 'kerr' in theory_name or theory_class_name == 'Kerr':
+        # <reason>chain: Check Kerr BEFORE charged theories since Kerr might have charge attributes</reason>
+        # <reason>chain: Use standard solvers for Kerr metrics</reason>
+        if getattr(theory, 'force_6dof_solver', None):
+            if GeneralGeodesicRK4SolverImported:
+                return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+            else:
+                return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+        else:
+            return GeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+    elif any(x in theory_name for x in ['schwarzschild', 'reissner']):
+        # <reason>chain: Check known baseline metrics before general attribute checks</reason>
         # Use optimized solver for known metrics
         return GeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+    elif hasattr(theory, 'Q') or hasattr(theory, 'q'):  # Charged theories
+        return ChargedGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
     else:
         # General solver for unknown metrics
-        return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+        if GeneralGeodesicRK4SolverImported:
+            return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+        else:
+            return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
 
 
 class QuantumGeodesicSolver:

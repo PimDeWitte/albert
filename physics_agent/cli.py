@@ -105,6 +105,8 @@ PARALLELIZATION NOTE:
                    help="Starting radius in Schwarzschild radii (Rs = 2GM/c²). Default: 6.0 Rs. Use larger values (10-20) for longer trajectories before reaching event horizon.")
     p.add_argument("--early-stop", action="store_true", 
                    help="Enable early stopping based on loss convergence (credit: Ben Geist)")
+    p.add_argument("--no-baselines", action="store_true",
+                   help="Skip baseline theory calculations (saves memory)")
     
     # Filtering arguments
     p.add_argument("--theory-filter", type=str, default=None, 

@@ -92,7 +92,10 @@ class ConservationValidator(BaseValidation):
         G_geom = 1.0
         
         # Get metric components
-        g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_geom, M_geom, c_geom, G_geom)
+        # <reason>chain: Use SI units for all parameters to match theory expectations</reason>
+        r_si = r_geom * self.engine.length_scale
+        M_si = self.engine.M_si
+        g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_si, M_si, self.engine.c_si, self.engine.G_si)
         
         # <reason>chain: For rotating spacetimes, finite differences don't give accurate velocities</reason>
         # <reason>chain: Use initial conditions if available, otherwise reconstruct from constraint</reason>

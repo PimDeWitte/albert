@@ -1,0 +1,34 @@
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 1
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     Quantum Corrected (α=+0.01)        quantum     0.3528  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      Quantum Corrected (α=+0.01)    (0.000)
+Observational (Quantum Tests)            Quantum Corrected (α=+0.01)    (0.000)
+Predictions (CMB, PTA)                   Quantum Corrected (α=+0.01)    (0.000)
+Trajectory Matching                      Quantum Corrected (α=+0.01)    (0.000)
+Unification Potential                    Quantum Corrected (α=+0.01)    (0.400)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+Quantum      theories:   1 | Avg score: 0.353 | Best: Quantum Corrected (α=+0.01)
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.353
+Std deviation: 0.000
+Score range: 0.353 - 0.353
+
+================================================================================
+Full details saved to: runs/run_20250728_144308_float64/leaderboard.json

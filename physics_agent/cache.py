@@ -79,7 +79,8 @@ class TrajectoryCache:
             'dtype': dtype_str
         }
         for key in ['run_to_horizon', 'horizon_threshold', 'particle_name', 
-                    'quantum_interval', 'quantum_beta', 'y0_general', 'singularity_threshold']:
+            'particle_mass', 'particle_charge', 'particle_spin', 'particle_type',
+            'quantum_interval', 'quantum_beta', 'y0_general', 'singularity_threshold']:
             if key in kwargs and kwargs[key] is not None:
                 if key == 'y0_general' and isinstance(kwargs[key], torch.Tensor):
                     # <reason>chain: Handle tensor parameters by converting to hashable format</reason>
