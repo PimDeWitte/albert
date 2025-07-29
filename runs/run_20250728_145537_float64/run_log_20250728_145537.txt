@@ -1,3 +1,0 @@
-Computing 4 baselines in parallel (up to 2 at a time)...
-
-Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_3ce6218204f36085_steps_1000000.pt

@@ -28,8 +28,8 @@ def test_basic_trajectory(engine, steps=100):
         
         # Set up parameters
         rs_phys = 2 * GRAVITATIONAL_CONSTANT * SOLAR_MASS / SPEED_OF_LIGHT**2
-        r0 = torch.tensor(10 * rs_phys, dtype=engine.dtype, device=engine.device)  # 10 Schwarzschild radii
-        dtau = torch.tensor(0.1, dtype=engine.dtype, device=engine.device)
+        r0 = 10 * rs_phys  # 10 Schwarzschild radii (as float, not tensor)
+        dtau = 0.1  # Time step in seconds (as float, not tensor)
         
         # Run trajectory
         hist, tag, _ = engine.run_trajectory(
@@ -78,8 +78,8 @@ def test_conservation_laws(engine, steps=100):
     try:
         theory = Schwarzschild()
         rs_phys = 2 * GRAVITATIONAL_CONSTANT * SOLAR_MASS / SPEED_OF_LIGHT**2
-        r0 = torch.tensor(15 * rs_phys, dtype=engine.dtype, device=engine.device)
-        dtau = torch.tensor(0.1, dtype=engine.dtype, device=engine.device)
+        r0 = 15 * rs_phys  # as float, not tensor
+        dtau = 0.1  # as float, not tensor
         
         # Run trajectory
         hist, _, _ = engine.run_trajectory(
@@ -199,8 +199,8 @@ def test_numerical_stability(engine, steps=100):
         rs_phys = 2 * GRAVITATIONAL_CONSTANT * SOLAR_MASS / SPEED_OF_LIGHT**2
         
         # Test very close to event horizon
-        r0_close = torch.tensor(2.1 * rs_phys, dtype=engine.dtype, device=engine.device)
-        dtau = torch.tensor(0.01, dtype=engine.dtype, device=engine.device)
+        r0_close = 2.1 * rs_phys  # as float, not tensor
+        dtau = 0.01  # as float, not tensor
         
         hist_close, _, _ = engine.run_trajectory(
             theory, r0_close, min(steps, 50), dtau,
@@ -214,7 +214,7 @@ def test_numerical_stability(engine, steps=100):
             return False
             
         # Test far from black hole
-        r0_far = torch.tensor(1000 * rs_phys, dtype=engine.dtype, device=engine.device)
+        r0_far = 1000 * rs_phys  # as float, not tensor
         
         hist_far, _, _ = engine.run_trajectory(
             theory, r0_far, min(steps, 50), dtau,

@@ -80,8 +80,9 @@ class KaluzaKleinTheory(GravitationalTheory, QuantumMixin):
         
         # <reason>chain: Add safety check to prevent numerical issues</reason>
         # Ensure Q² < M² to avoid naked singularities
-        Q_max = 0.99 * M_param  # Maximum allowed charge
-        Q_eff = torch.min(Q_eff, Q_max)
+        Q_max = torch.tensor(0.99, device=r.device, dtype=r.dtype) * M_param  # Maximum allowed charge
+        Q_eff_tensor = torch.tensor(Q_eff, device=r.device, dtype=r.dtype)
+        Q_eff = torch.min(Q_eff_tensor, Q_max).item()
         
         # Reissner-Nordström metric with the effective charge
         rq2 = G_param * Q_eff**2 / C_param**4

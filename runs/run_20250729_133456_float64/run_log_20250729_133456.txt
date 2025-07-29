@@ -1,0 +1,426 @@
+Computing 1 baselines sequentially...
+
+  Computing baseline: Kerr (a=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 1/1 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 31 Theories ---
+
+--- Validating: Newtonian Limit ---
+  Running validation trajectory for Newtonian Limit...
+  [WARNING] Could not compute validation trajectory for Newtonian Limit
+  Using preferred values for Regularised Core QG (ε=1.0e-04): {'epsilon': 0.0001}
+
+--- Validating: Regularised Core QG (ε=1.0e-04) ---
+  Running validation trajectory for Regularised Core QG (ε=1.0e-04)...
+  [WARNING] Could not compute validation trajectory for Regularised Core QG (ε=1.0e-04)
+  Using preferred values for Phase Transition QG (T_c=1.0): {'T_c': 1.1}
+
+--- Validating: Phase Transition QG (T_c=1.1) ---
+  Running validation trajectory for Phase Transition QG (T_c=1.1)...
+  [WARNING] Could not compute validation trajectory for Phase Transition QG (T_c=1.1)
+
+--- Validating: Weyl-EM Quantum (ω=0.00) ---
+  Running validation trajectory for Weyl-EM Quantum (ω=0.00)...
+  [WARNING] Could not compute validation trajectory for Weyl-EM Quantum (ω=0.00)
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Post-Quantum Gravity (γ=1.00e-02): {'gamma_pqg': 0.01}
+
+--- Validating: Post-Quantum Gravity (γ=1.00e-02) ---
+  Running validation trajectory for Post-Quantum Gravity (γ=1.00e-02)...
+  [WARNING] Could not compute validation trajectory for Post-Quantum Gravity (γ=1.00e-02)
+  Using preferred values for Einstein Asymmetric (α=0.0e+00): {'alpha': 0.0}
+
+--- Validating: Einstein Asymmetric (α=0.0e+00) ---
+  Running validation trajectory for Einstein Asymmetric (α=0.0e+00)...
+  [WARNING] Could not compute validation trajectory for Einstein Asymmetric (α=0.0e+00)
+  Using preferred values for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01): {'alpha0': 1.0, 'alpha1': 1.0, 'alpha2': 1.0, 'alpha3': 1.0, 'g_coupling': 0.1}
+
+--- Validating: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+  ⚠️  WARNING: Skipping UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) - UGM theories are 8-dimensional and computationally expensive.
+      To run UGM theories, use --category ugm or include 'ugm' in categories list.
+  → Skipped: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (UGM theories require explicit opt-in with --category ugm)
+  Using preferred values for Spinor-Conformal QG (λ=0.00): {'lambda_c': 0.0}
+
+--- Validating: Spinor-Conformal QG (λ=0.00) ---
+  Running validation trajectory for Spinor-Conformal QG (λ=0.00)...
+  [WARNING] Could not compute validation trajectory for Spinor-Conformal QG (λ=0.00)
+  Using preferred values for Alena‑Tensor‑γ=+0.00: {'gamma': 0.0}
+
+--- Validating: Alena‑Tensor‑γ=+0.00 ---
+  Running validation trajectory for Alena‑Tensor‑γ=+0.00...
+  [WARNING] Could not compute validation trajectory for Alena‑Tensor‑γ=+0.00
+
+--- Validating: TestDivergent-α=1.00e-03 ---
+  Running validation trajectory for TestDivergent-α=1.00e-03...
+  [WARNING] Could not compute validation trajectory for TestDivergent-α=1.00e-03
+  Using preferred values for Variable G (δ=+0.00): {'delta': 0.0}
+
+--- Validating: Variable G (δ=+0.00) ---
+  Running validation trajectory for Variable G (δ=+0.00)...
+  [WARNING] Could not compute validation trajectory for Variable G (δ=+0.00)
+  Using preferred values for Participatory QG (ω=0.00): {'omega': 1e-05}
+
+--- Validating: Participatory QG (ω=0.00) ---
+  Running validation trajectory for Participatory QG (ω=0.00)...
+  [WARNING] Could not compute validation trajectory for Participatory QG (ω=0.00)
+
+--- Validating: MyTheory (p=1.0) ---
+  Running validation trajectory for MyTheory (p=1.0)...
+  [WARNING] Could not compute validation trajectory for MyTheory (p=1.0)
+
+--- Validating: Quantum Quantum Template (g=1.0) ---
+  Running validation trajectory for Quantum Quantum Template (g=1.0)...
+  [WARNING] Could not compute validation trajectory for Quantum Quantum Template (g=1.0)
+  Using preferred values for Fractal QG (D=3.000): {'D': 3.1}
+
+--- Validating: Fractal QG (D=3.100) ---
+  Running validation trajectory for Fractal QG (D=3.100)...
+  [WARNING] Could not compute validation trajectory for Fractal QG (D=3.100)
+  Using preferred values for Einstein Teleparallel (τ=0.000): {'tau': 0.0}
+
+--- Validating: Einstein Teleparallel (τ=0.000) ---
+  Running validation trajectory for Einstein Teleparallel (τ=0.000)...
+  [WARNING] Could not compute validation trajectory for Einstein Teleparallel (τ=0.000)
+
+--- Validating: Kerr-Newman (a=0.50, q_e=0.30) ---
+  Running validation trajectory for Kerr-Newman (a=0.50, q_e=0.30)...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Log-Corrected QG (γ=0.000): {'gamma': 1e-05}
+
+--- Validating: Log-Corrected QG (γ=0.000) ---
+  Running validation trajectory for Log-Corrected QG (γ=0.000)...
+  [WARNING] Could not compute validation trajectory for Log-Corrected QG (γ=0.000)
+
+--- Validating: Entropic‑Λσβ ---
+  Running validation trajectory for Entropic‑Λσβ...
+  [WARNING] Could not compute validation trajectory for Entropic‑Λσβ
+  Using preferred values for Surfaceology‑ε=+0.00: {'epsilon': 0.0}
+
+--- Validating: Surfaceology‑ε=+0.00 ---
+  Running validation trajectory for Surfaceology‑ε=+0.00...
+  [WARNING] Could not compute validation trajectory for Surfaceology‑ε=+0.00
+  Using preferred values for String Theory (α'=1.0e-66): {'alpha_prime': 1e-66}
+
+--- Validating: String Theory (α'=1.0e-66) ---
+  Running validation trajectory for String Theory (α'=1.0e-66)...
+  [WARNING] Could not compute validation trajectory for String Theory (α'=1.0e-66)
+  Using preferred values for Kaluza-Klein (R_kk=1.0e-32): {'R_kk': 1e-32}
+
+--- Validating: Kaluza-Klein (R_kk=1.0e-32) ---
+  Running validation trajectory for Kaluza-Klein (R_kk=1.0e-32)...
+  [WARNING] Could not compute validation trajectory for Kaluza-Klein (R_kk=1.0e-32)
+  Using preferred values for Emergent Gravity (η=0.00): {'eta': 0.0}
+
+--- Validating: Emergent Gravity (η=0.00) ---
+  Running validation trajectory for Emergent Gravity (η=0.00)...
+  [WARNING] Could not compute validation trajectory for Emergent Gravity (η=0.00)
+  Using preferred values for Gauge Gravity (κ=0.00): {'kappa': 0.0}
+
+--- Validating: Gauge Gravity (κ=0.00) ---
+  Running validation trajectory for Gauge Gravity (κ=0.00)...
+  [WARNING] Could not compute validation trajectory for Gauge Gravity (κ=0.00)
+  Using preferred values for Asymptotic Safety (Λ_as=1.0e+18 GeV): {'Lambda_as': 1e+18}
+
+--- Validating: Asymptotic Safety (Λ_as=1.0e+18 GeV) ---
+  Running validation trajectory for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  [WARNING] Could not compute validation trajectory for Asymptotic Safety (Λ_as=1.0e+18 GeV)
+  Using preferred values for Quantum Corrected (α=+0.01): {'alpha': 0.01}
+
+--- Validating: Quantum Corrected (α=+0.01) ---
+  Running validation trajectory for Quantum Corrected (α=+0.01)...
+  [WARNING] Could not compute validation trajectory for Quantum Corrected (α=+0.01)
+  Using preferred values for Yukawa (λ=10.00 RS): {'lambda_rs': 1000000.0}
+
+--- Validating: Yukawa (λ=1000000.00 RS) ---
+  Running validation trajectory for Yukawa (λ=1000000.00 RS)...
+  [WARNING] Could not compute validation trajectory for Yukawa (λ=1000000.00 RS)
+  Using preferred values for Stochastic Noise (σ=1.00e-05): {'sigma': 0.0001}
+
+--- Validating: Stochastic Noise (σ=1.00e-04) ---
+  Running validation trajectory for Stochastic Noise (σ=1.00e-04)...
+  [WARNING] Could not compute validation trajectory for Stochastic Noise (σ=1.00e-04)
+
+--- Validating: Schwarzschild ---
+  Running validation trajectory for Schwarzschild...
+  [WARNING] Could not compute validation trajectory for Schwarzschild
+
+--- Validating: Reissner-Nordström (q_e=0.30) ---
+  Running validation trajectory for Reissner-Nordström (q_e=0.30)...
+  [WARNING] Could not compute validation trajectory for Reissner-Nordström (q_e=0.30)
+
+============================================================
+Validation Summary:
+  Total theories validated: 31
+  Passed: 0
+  Failed: 30
+============================================================
+
+Theories that failed validation:
+  ✗ Newtonian Limit
+    → Moved to: runs/run_20250729_133456_float64/fail/Newtonian_Limit
+  ✗ Regularised Core QG (ε=1.0e-04)
+    → Moved to: runs/run_20250729_133456_float64/fail/Regularised_Core_QG_ε_1_0e-04
+  ✗ Phase Transition QG (T_c=1.1)
+    → Moved to: runs/run_20250729_133456_float64/fail/Phase_Transition_QG_T_c_1_1
+  ✗ Weyl-EM Quantum (ω=0.00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Weyl-EM_Quantum_ω_0_00
+  ✗ Kerr (a=0.50)
+    → Moved to: runs/run_20250729_133456_float64/fail/Kerr_a_0_50
+  ✗ Post-Quantum Gravity (γ=1.00e-02)
+    → Moved to: runs/run_20250729_133456_float64/fail/Post-Quantum_Gravity_γ_1_00e-02
+  ✗ Einstein Asymmetric (α=0.0e+00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Einstein_Asymmetric_α_0_0e+00
+  ✗ Spinor-Conformal QG (λ=0.00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Spinor-Conformal_QG_λ_0_00
+  ✗ Alena‑Tensor‑γ=+0.00
+    → Moved to: runs/run_20250729_133456_float64/fail/Alena‑Tensor‑γ_+0_00
+  ✗ TestDivergent-α=1.00e-03
+    → Moved to: runs/run_20250729_133456_float64/fail/TestDivergent-α_1_00e-03
+  ✗ Variable G (δ=+0.00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Variable_G_δ_+0_00
+  ✗ Participatory QG (ω=0.00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Participatory_QG_ω_0_00
+  ✗ MyTheory (p=1.0)
+    → Moved to: runs/run_20250729_133456_float64/fail/MyTheory_p_1_0
+  ✗ Quantum Quantum Template (g=1.0)
+    → Moved to: runs/run_20250729_133456_float64/fail/Quantum_Quantum_Template_g_1_0
+  ✗ Fractal QG (D=3.100)
+    → Moved to: runs/run_20250729_133456_float64/fail/Fractal_QG_D_3_100
+  ✗ Einstein Teleparallel (τ=0.000)
+    → Moved to: runs/run_20250729_133456_float64/fail/Einstein_Teleparallel_τ_0_000
+  ✗ Kerr-Newman (a=0.50, q_e=0.30)
+    → Moved to: runs/run_20250729_133456_float64/fail/Kerr-Newman_a_0_50_q_e_0_30
+  ✗ Log-Corrected QG (γ=0.000)
+    → Moved to: runs/run_20250729_133456_float64/fail/Log-Corrected_QG_γ_0_000
+  ✗ Entropic‑Λσβ
+    → Moved to: runs/run_20250729_133456_float64/fail/Entropic‑Λσβ
+  ✗ Surfaceology‑ε=+0.00
+    → Moved to: runs/run_20250729_133456_float64/fail/Surfaceology‑ε_+0_00
+  ✗ String Theory (α'=1.0e-66)
+    → Moved to: runs/run_20250729_133456_float64/fail/String_Theory_α'_1_0e-66
+  ✗ Kaluza-Klein (R_kk=1.0e-32)
+    → Moved to: runs/run_20250729_133456_float64/fail/Kaluza-Klein_R_kk_1_0e-32
+  ✗ Emergent Gravity (η=0.00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Emergent_Gravity_η_0_00
+  ✗ Gauge Gravity (κ=0.00)
+    → Moved to: runs/run_20250729_133456_float64/fail/Gauge_Gravity_κ_0_00
+  ✗ Asymptotic Safety (Λ_as=1.0e+18 GeV)
+    → Moved to: runs/run_20250729_133456_float64/fail/Asymptotic_Safety_Λ_as_1_0e+18_GeV
+  ✗ Quantum Corrected (α=+0.01)
+    → Moved to: runs/run_20250729_133456_float64/fail/Quantum_Corrected_α_+0_01
+  ✗ Yukawa (λ=1000000.00 RS)
+    → Moved to: runs/run_20250729_133456_float64/fail/Yukawa_λ_1000000_00_RS
+  ✗ Stochastic Noise (σ=1.00e-04)
+    → Moved to: runs/run_20250729_133456_float64/fail/Stochastic_Noise_σ_1_00e-04
+  ✗ Schwarzschild
+    → Moved to: runs/run_20250729_133456_float64/fail/Schwarzschild
+  ✗ Reissner-Nordström (q_e=0.30)
+    → Moved to: runs/run_20250729_133456_float64/fail/Reissner-Nordström_q_e_0_30
+
+============================================================
+Run complete. All results saved to: runs/run_20250729_133456_float64
+============================================================
+
+Updating homepage with latest trajectory images...
+No trajectory images found in run directory
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (1):
+  ✗ fail (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+No finalist theories passed all validations for prediction testing.
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+No prediction results found. Skipping report update.
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+No scored theories found.
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+📋 CALIBRATION CERTIFICATE
+   ID: 075866cc53590a72
+   Status: WARNING
+   Health Score: 83%
+   Guarantees:
+     ✗ Engine Correctness: NOT_GUARANTEED
+     ✓ Solver Accuracy: GUARANTEED
+     ✓ Environment Stability: GUARANTEED
+     ✓ Performance Optimized: GUARANTEED
+
+TOTAL THEORIES TESTED: 44
+PASSED: 0
+FAILED: 30
+
+============================================================
+THEORIES THAT FAILED:
+============================================================
+
+  ✗ Alena‑Tensor‑γ +0 00
+    Failure Category: validation failed
+
+  ✗ Asymptotic Safety Λ as 1 0e+18 GeV
+    Failure Category: validation failed
+
+  ✗ Einstein Asymmetric (α=0.0e+00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Einstein Teleparallel (τ=0.000)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Emergent Gravity (η=0.00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Entropic‑Λσβ
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Fractal QG D 3 100
+    Failure Category: validation failed
+
+  ✗ Gauge Gravity (κ=0.00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Kaluza-Klein R kk 1 0e-32
+    Failure Category: validation failed
+
+  ✗ Kerr (a=0.50)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Kerr-Newman (a=0.50.q.e.0.30)
+    Failure Category: validation failed
+
+  ✗ Log-Corrected QG (γ=0.000)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ MyTheory p 1 0
+    Failure Category: validation failed
+
+  ✗ Newtonian Limit
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Participatory QG (ω=0.00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Phase Transition QG T c 1 1
+    Failure Category: validation failed
+
+  ✗ Post-Quantum Gravity (γ=1.00e-02)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Quantum Corrected (α=+0.01)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Quantum Quantum Template g 1 0
+    Failure Category: validation failed
+
+  ✗ Regularised Core QG (ε=1.0e-04)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Reissner-Nordström q e 0 30
+    Failure Category: validation failed
+
+  ✗ Schwarzschild
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Spinor-Conformal QG (λ=0.00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Stochastic Noise (σ=1.00e-04)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ String Theory α' 1 0e-66
+    Failure Category: validation failed
+
+  ✗ Surfaceology‑ε +0 00
+    Failure Category: validation failed
+
+  ✗ TestDivergent-α 1 00e-03
+    Failure Category: validation failed
+
+  ✗ Variable G (δ=+0.00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Weyl-EM Quantum (ω=0.00)
+    Failure Category: validation failed
+    Errors:
+      - Trajectory Computation: Trajectory computation failed - no data to validate
+
+  ✗ Yukawa (λ=1000000.00.RS)
+    Failure Category: validation failed
+
+============================================================
+FAILURE REASON BREAKDOWN:
+============================================================
+  validation failed: 30 theories
+
+📊 Detailed summary saved to: runs/run_20250729_133456_float64/comprehensive_summary.json

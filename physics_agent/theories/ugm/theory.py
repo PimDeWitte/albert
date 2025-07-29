@@ -139,8 +139,9 @@ class UnifiedGaugeModel(GravitationalTheory):
         
         <reason>chain: Standard Abelian field strength for each U(1) sector</reason>
         """
-        # <reason>chain: Use autograd to compute derivatives</reason>
-        coords.requires_grad_(True)
+        # <reason>chain: Only enable gradients if not already in a no_grad context</reason>
+        if torch.is_grad_enabled():
+            coords.requires_grad_(True)
         
         F = torch.zeros((4, 4, 4) + coords.shape[1:], device=H.device, dtype=H.dtype)
         

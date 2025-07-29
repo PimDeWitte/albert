@@ -13,13 +13,19 @@ This directory contains comprehensive tests for the geodesic solvers and traject
 
 ### Overview
 
-The trajectory caching system provides **dramatic performance improvements** for gravitational physics simulations:
+The trajectory caching system provides **significant performance improvements** for gravitational physics simulations:
 
+**Current Performance (Optimized Engine):**
+- **10,000 steps**: 3.3x speedup (4.0ms → 1.2ms)
+- **100,000 steps**: 6.6x speedup (23.4ms → 3.5ms)
+- **1,000,000 steps**: 6.8x speedup (54.6ms → 8.1ms)
+
+**Historical Performance (Original Implementation):**
 - **10,000 steps**: 1,109.9x speedup (2.75s → 2.5ms)
 - **100,000 steps**: 10,673.7x speedup (25.80s → 2.4ms)
 - **1,000,000 steps**: 29,323.3x speedup (4m 12.7s → 8.6ms)
 
-**Average speedup: 13,702.3x** 🚀
+**Note:** The engine has been significantly optimized since the original benchmarks. While the relative speedup is lower, the absolute performance is ~1000x better.
 
 ### How It Works
 

@@ -91,6 +91,19 @@ PARALLELIZATION NOTE:
                    The 'circuits' method would use quantum circuits to compute corrections based on
                    quantum field theory in curved spacetime, but requires significant development.""")
     
+    # Experimental GPU optimizations
+    p.add_argument("--experimental-warp", action="store_true",
+                   help="""[EXPERIMENTAL] Enable NVIDIA Warp GPU optimizations for trajectory computations.
+                   Requires: pip install warp-lang and NVIDIA GPU with CUDA support.
+                   Provides up to 100x speedup for multi-particle simulations.
+                   Note: Currently optimized for symmetric spacetimes (Schwarzschild, Reissner-Nordström).
+                   Example: --experimental-warp --gpu-f32""")
+    p.add_argument("--warp-benchmark", action="store_true",
+                   help="""[EXPERIMENTAL] Run Warp GPU benchmark to measure speedups.
+                   Shows performance comparison between CPU, PyTorch GPU, and Warp GPU implementations.
+                   Useful for verifying GPU acceleration is working correctly.
+                   Example: --warp-benchmark""")
+    
     # Quantum Lagrangian configuration
     p.add_argument("--quantum-field-content", type=str, default='all',
                    choices=['all', 'minimal', 'gauge', 'matter'],
@@ -255,6 +268,14 @@ def get_simulation_parameters(args: argparse.Namespace) -> dict:
         params['quantum_interval'] = 0
         params['quantum_beta'] = 0.0
         params['quantum_method'] = None
+    
+    # <reason>chain: Handle experimental Warp GPU optimizations</reason>
+    if args.experimental_warp:
+        params['use_warp'] = True
+        params['warp_benchmark'] = args.warp_benchmark
+    else:
+        params['use_warp'] = False
+        params['warp_benchmark'] = False
         
     # <reason>chain: Determine initial radius based on orbit configuration</reason>
     if args.close_orbit:

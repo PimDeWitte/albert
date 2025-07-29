@@ -103,7 +103,7 @@ from physics_agent.theory_utils import get_preferred_values
 from physics_agent.ui.leaderboard_html_generator import LeaderboardHTMLGenerator
 from physics_agent.run_logger import RunLogger
 # <reason>chain: Import new modules for better separation of concerns</reason>
-from physics_agent.cli import get_cli_parser, setup_execution_mode, handle_special_modes, determine_device_and_dtype
+from physics_agent.cli import get_cli_parser, setup_execution_mode, handle_special_modes, determine_device_and_dtype, get_simulation_parameters
 from physics_agent.cache import TrajectoryCache
 from physics_agent.loss_calculator import LossCalculator
 
@@ -226,6 +226,12 @@ class TheoryEngine:
         # <reason>chain: Use vacuum permittivity from constants module</reason>
         self.epsilon_0 = epsilon_0
 
+        # <reason>chain: Add solver cache to prevent memory leaks from repeated solver creation</reason>
+        self._solver_cache = {}
+        
+        # <reason>chain: Track last trajectory termination state for debugging</reason>
+        self._last_trajectory_terminated_early = False
+
     def get_trajectory_cache_path(self, theory_name: str, r0: Tensor or float, n_steps: int, dtau: Tensor or float, dtype_str: str, **kwargs) -> str:
         """
         Generates a unique path for a cached trajectory.
@@ -270,12 +276,14 @@ class TheoryEngine:
 
     def get_initial_conditions(self, model: GravitationalTheory, r0_geom: Tensor, **kwargs) -> tuple[Tensor, Tensor, Tensor]:
         """ r0_geom is r in units of M """  
-        r = r0_geom.clone().requires_grad_(True)
+        # <reason>chain: Disable gradient tracking to prevent memory leaks during integration</reason>
+        r = r0_geom.clone().detach()
         
         # <reason>chain: Extract particle properties for particle-specific initial conditions</reason>
         particle_name = kwargs.get('particle_name', 'electron')
         particle_type = kwargs.get('particle_type', 'fermion')
-        particle_mass = kwargs.get('particle_mass', 9.109e-31)  # kg
+        from physics_agent.constants import ELECTRON_MASS
+        particle_mass = kwargs.get('particle_mass', ELECTRON_MASS)  # kg
         particle_charge = kwargs.get('particle_charge', 0.0)  # C
         
         # Get metric in geometric units (c=1, G=1, M=1)
@@ -368,9 +376,10 @@ class TheoryEngine:
                     radial_factor = -0.4
                     photon_sphere_factor = 0.8
                 
-                u_t = 1.0 / torch.sqrt(-norm_factor) * photon_sphere_factor
+                # <reason>chain: Use .clone() instead of torch.tensor() for existing tensors</reason>
+                u_t = 1.0 / torch.sqrt((-norm_factor).clone() if torch.is_tensor(norm_factor) else torch.tensor(-norm_factor, dtype=self.dtype, device=self.device)) * photon_sphere_factor
                 u_phi = Omega * u_t * angular_factor
-                u_r = radial_factor * torch.sqrt(1.0 / r0_geom)
+                u_r = radial_factor * torch.sqrt(torch.tensor(1.0, dtype=self.dtype, device=self.device) / r0_geom)
         else:
             # <reason>chain: Massive particles follow timelike geodesics</reason>
             # Norm factor in geometric units (g_mu nu u^mu u^nu = -1)
@@ -382,10 +391,10 @@ class TheoryEngine:
                 # If positive or zero, set to small negative value
                 norm_factor = -epsilon
                 if self.verbose:
-                    if self.verbose:
-                        print(f"  Warning: norm_factor was non-negative ({norm_factor + epsilon}), set to -epsilon")
+                    print(f"  Warning: norm_factor was non-negative ({norm_factor + epsilon}), set to -epsilon")
             
-            u_t = 1.0 / torch.sqrt(-norm_factor)
+            # <reason>chain: Use .clone() instead of torch.tensor() for existing tensors</reason>
+            u_t = 1.0 / torch.sqrt((-norm_factor).clone() if torch.is_tensor(norm_factor) else torch.tensor(-norm_factor, dtype=self.dtype, device=self.device))
             u_phi = Omega * u_t
             u_r = torch.zeros_like(r0_geom)
             
@@ -398,7 +407,7 @@ class TheoryEngine:
                 
                 # Radial velocity from configuration
                 radial_factor = orbital_params.get('radial_velocity_factor', 0.0)
-                u_r = radial_factor * torch.sqrt(1.0 / r0_geom)
+                u_r = radial_factor * torch.sqrt(torch.tensor(1.0, dtype=self.dtype, device=self.device) / r0_geom)
                 
                 if self.verbose:
                     print(f"  Using orbital parameters for {particle_name}:")
@@ -447,6 +456,15 @@ class TheoryEngine:
         # Convert to geometric units
         r0_geom = r0_si / self.length_scale
         dtau_geom = DTau_si / self.time_scale
+        
+        if self.verbose:
+            print(f"  DEBUG: Unit conversions:")
+            print(f"    r0_si = {r0_si:.3e} m")
+            print(f"    r0_geom = {r0_geom:.3f}")
+            print(f"    DTau_si = {DTau_si:.3e} s")
+            print(f"    dtau_geom = {dtau_geom:.6f}")
+            print(f"    time_scale = {self.time_scale:.3e} s")
+            print(f"    length_scale = {self.length_scale:.3e} m")
         
         y0_sym, y0_gen, _ = self.get_initial_conditions(model, torch.tensor([r0_geom], dtype=self.dtype, device=self.device).squeeze(), **kwargs)
         hist_geom, tag, kicks = self._run_trajectory_geometric(model, r0_geom, N_STEPS, dtau_geom, y0_gen, **kwargs)
@@ -803,7 +821,8 @@ class TheoryEngine:
                     'quantum_method': kwargs.get('quantum_method', 'monte_carlo'),
                     'quantum_samples': kwargs.get('quantum_samples', 100),
                     # <reason>chain: Pass particle properties for particle-specific quantum paths</reason>
-                    'particle_mass': particle.mass if particle else kwargs.get('particle_mass', 9.109e-31),
+                    # Import ELECTRON_MASS from already imported constants module
+                    'particle_mass': particle.mass if particle else kwargs.get('particle_mass', 9.1093837015e-31),  # Default to electron mass in kg
                     'particle_charge': particle.charge if particle else kwargs.get('particle_charge', 0.0),
                     'particle_spin': particle.spin if particle else kwargs.get('particle_spin', 0.5),
                     'particle_type': particle.particle_type if particle else kwargs.get('particle_type', 'fermion'),
@@ -845,12 +864,17 @@ class TheoryEngine:
                             print(f"  Warning: Classical trajectory too short ({hist_geom.shape[0]} points, expected {N_STEPS})")
                             print(f"  Falling through to standard classical solver...")
                         # Fall through to classical solver
+                        # <reason>chain: Set flag to indicate we should use classical solver</reason>
+                        use_quantum_trajectories = False
                     else:
-                        # Convert back to geometric units
-                        hist_geom[:,0] /= self.time_scale
-                        hist_geom[:,1] /= self.length_scale
+                        # <reason>chain: UnifiedTrajectoryCalculator returns trajectory in SI units</reason>
+                        # Convert from SI to geometric units to match function expectation
+                        hist_geom[:,0] /= self.time_scale     # t: SI seconds to geometric time
+                        hist_geom[:,1] /= self.length_scale   # r: SI meters to geometric length
+                        # phi is already dimensionless
                         if hist_geom.shape[1] > 3:
-                            hist_geom[:,3] *= self.time_scale / self.velocity_scale
+                            # dr/dtau: convert from m/s to geometric units
+                            hist_geom[:,3] /= (self.length_scale / self.time_scale)
                         
                         # Tag indicates quantum theory using unified calculator
                         tag = "quantum_unified_trajectory"
@@ -866,14 +890,35 @@ class TheoryEngine:
                     if self.verbose:
                         print(f"  Warning: Quantum trajectory calculator returned no classical trajectory")
                     # Fall through to classical solver
+                    # <reason>chain: Set flag to indicate we should use classical solver</reason>
+                    use_quantum_trajectories = False
             except Exception as e:
                 if self.verbose:
                     print(f"  Warning: Failed to use quantum trajectory calculator: {e}")
                     import traceback
                     traceback.print_exc()
                 # Fall through to classical solver
+                # <reason>chain: Set flag to indicate we should use classical solver</reason>
+                use_quantum_trajectories = False
+        
+        # <reason>chain: Only proceed with classical solver if we haven't already returned from quantum</reason>
+        if use_quantum_trajectories:
+            # We should have already returned if quantum worked
+            # This is a safety check
+            if self.verbose:
+                print(f"  ERROR: Quantum trajectories enabled but didn't return - using classical solver")
+            use_quantum_trajectories = False
         
         # Select appropriate solver
+        if self.verbose:
+            print(f"  DEBUG: About to select solver, is_symmetric={model.is_symmetric}")
+        
+        # <reason>chain: Initialize variables that will be used in integration loop</reason>
+        hist = None
+        y = None
+        solver = None
+        tag = "undefined"
+        
         if model.is_symmetric:
             # <reason>chain: Use 4D solver for symmetric spacetimes with conserved E, Lz</reason>
             # Extract E and Lz from initial conditions
@@ -914,7 +959,13 @@ class TheoryEngine:
             # Create 4D initial state: [t, r, phi, dr/dtau]
             # <reason>chain: Use 4D state for symmetric spacetimes where theta=π/2 is fixed</reason>
             # <reason>chain: This reduces computational cost while preserving equatorial plane motion</reason>
-            y0_4d = torch.tensor([y0_gen[0], y0_gen[1], y0_gen[2], y0_gen[4]], 
+            # <reason>chain: y0_gen contains mixed units - t,r,phi in geometric, velocities in SI</reason>
+            t_geom = y0_gen[0]  # Already 0.0 in geometric units
+            r_geom = y0_gen[1]  # Already r0_geom from get_initial_conditions
+            phi_geom = y0_gen[2]  # phi is dimensionless
+            dr_dtau_geom = y0_gen[4] * self.time_scale / self.length_scale  # Convert u_r from SI to geometric
+            
+            y0_4d = torch.tensor([t_geom, r_geom, phi_geom, dr_dtau_geom], 
                                 device=self.device, dtype=self.dtype)
             
             # <reason>chain: Check if this is a UGM theory first</reason>
@@ -999,14 +1050,28 @@ class TheoryEngine:
                 tag = "charged_solver_run"
             else:
                 # <reason>chain: Use factory function to get optimized solvers when available</reason>
-                from physics_agent.geodesic_integrator_stable import create_geodesic_solver
-                solver = create_geodesic_solver(
-                    model,
-                    self.M_si,
-                    self.c_si,
-                    self.G_si,
-                    **optimization_kwargs
+                # <reason>chain: Cache solvers to prevent memory leaks from repeated instantiation</reason>
+                solver_cache_key = (
+                    model.__class__.__name__,
+                    id(model),  # Include model instance ID to handle parameter changes
+                    self.dtype,
+                    str(self.device)
                 )
+                
+                if solver_cache_key in self._solver_cache:
+                    solver = self._solver_cache[solver_cache_key]
+                else:
+                    from physics_agent.geodesic_integrator_stable import create_geodesic_solver
+                    solver = create_geodesic_solver(
+                        model,
+                        self.M_si,
+                        self.c_si,
+                        self.G_si,
+                        **optimization_kwargs
+                    )
+                    # Cache the solver for reuse
+                    self._solver_cache[solver_cache_key] = solver
+                    
                 # Determine tag based on solver type
                 if solver.__class__.__name__ == 'OptimizedKerrGeodesicSolver':
                     tag = "optimized_kerr_solver_run"
@@ -1026,22 +1091,28 @@ class TheoryEngine:
             y = torch.tensor([y0_gen[0], y0_gen[1], y0_gen[2], u_t_geom, u_r_geom, u_phi_geom], 
                            device=self.device, dtype=self.dtype)
         
+                # <reason>chain: Debug reaching integration section</reason>
+        if self.verbose:
+            print(f"  DEBUG: Reached integration section")
+            print(f"    About to store initial state in hist")
+            print(f"    y shape: {y.shape if hasattr(y, 'shape') else 'not a tensor'}")
+            
         # Store initial state
         hist[0] = torch.tensor([y[0], y[1], y[2], y[4] if len(y) > 4 else y[3]], 
-                             device=self.device, dtype=self.dtype)
+                              device=self.device, dtype=self.dtype)
         
         # Integration loop
         quantum_kicks_indices = []
         h = torch.tensor(dtau_geom, device=self.device, dtype=self.dtype) if not isinstance(dtau_geom, torch.Tensor) else dtau_geom.clone()
         
-        # <reason>chain: Adaptive timestep for Kerr and other complex metrics</reason>
+        # <reason>chain: Adaptive timestep for complex metrics</reason>
         adaptive_stepping = False
         if 'Kerr' in model.name and not model.is_symmetric:
-            # Kerr metrics need smaller timesteps for stability
-            h = h * INTEGRATION_STEP_FACTORS['aggressive_reduction']
+            # <reason>chain: Use adaptive stepping for Kerr but with standard reduction factor</reason>
+            # Don't use aggressive reduction - just enable adaptive mode for stability
             adaptive_stepping = True
             if verbose:
-                    print("  Using aggressive timestep reduction for Kerr metric")
+                    print("  Using adaptive timestep for Kerr metric")
         elif hasattr(model, 'sigma') and model.sigma > 0:  # Stochastic theories
             adaptive_stepping = True
             if verbose:
@@ -1062,19 +1133,56 @@ class TheoryEngine:
         # <reason>chain: Allow override of progress bar display from kwargs</reason>
         show_pbar = kwargs.get('show_pbar', verbose or N_STEPS > 10000)
         
-        # <reason>chain: Initialize flag for early termination tracking</reason>
+                # <reason>chain: Initialize flag for early termination tracking</reason>
         self._last_trajectory_terminated_early = False
         
-        # Create progress bar with time estimates
-        pbar = tqdm(range(N_STEPS), 
-                   desc=pbar_desc,
-                   unit=' steps',
-                   disable=not show_pbar,
-                   leave=False,  # Don't leave the bar after completion
-                   ncols=100,    # Fixed width for consistency
-                   bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]')
+        # <reason>chain: Debug Kerr integration issues</reason>
+        if verbose and 'Kerr' in model.name:
+            print(f"  DEBUG: Starting integration loop for {model.name}")
+            print(f"  Initial state shape: {y.shape}")
+            print(f"  Adaptive stepping: {adaptive_stepping}")
         
-        for i in pbar:
+        # Create progress bar with time estimates
+        # <reason>chain: Use simple range when progress bar is disabled to avoid iterator issues</reason>
+        if show_pbar:
+            pbar = tqdm(range(N_STEPS), 
+                       desc=pbar_desc,
+                       unit=' steps',
+                       disable=False,
+                       leave=False,  # Don't leave the bar after completion
+                       ncols=100,    # Fixed width for consistency
+                       bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]')
+            iterator = pbar
+        else:
+            pbar = None
+            iterator = range(N_STEPS)
+        
+        # <reason>chain: Disable gradient tracking during integration to prevent memory leaks</reason>
+        # <reason>chain: Track loop completion for debugging</reason>
+        completed_iterations = 0
+        
+        # <reason>chain: Debug check before integration</reason>
+        if self.verbose:
+            print(f"  DEBUG: Before integration loop:")
+            print(f"    hist initialized: {hist is not None}")
+            print(f"    y initialized: {y is not None}")
+            print(f"    solver initialized: {solver is not None}")
+            if hist is None or y is None:
+                print(f"  ERROR: Cannot start integration - variables not initialized!")
+                return None, "error: integration variables not initialized", []
+        
+        for i in iterator:
+            # <reason>chain: Track iterations at the beginning</reason>
+            completed_iterations += 1
+            
+            # <reason>chain: Debug first iteration</reason>
+            if self.verbose and i == 0:
+                print(f"  DEBUG: Starting integration loop iteration {i}")
+            
+            # <reason>chain: Debug Kerr integration loop iterations</reason>
+            if verbose and 'Kerr' in model.name and i < 5:
+                print(f"  Starting loop iteration {i}/{N_STEPS}")
+            
             # Progress callback (for backward compatibility)
             if progress_callback and (i + 1) % callback_interval == 0:
                 progress_callback(i + 1, N_STEPS)
@@ -1083,170 +1191,230 @@ class TheoryEngine:
             step_successful = False
             h_current = h.clone()
             
+            # <reason>chain: Debug RK4 step</reason>
+            if self.verbose and i == 0:
+                print(f"  DEBUG: About to call solver.rk4_step")
+                print(f"    solver type: {type(solver).__name__ if solver else 'None'}")
+                print(f"    y: {y}")
+                print(f"    h_current: {h_current}")
+            
             # <reason>chain: Track time per step to identify slow steps</reason>
             step_start_time = time.time()
             
-            for retry in range(5):  # Max 5 retries with smaller steps
-                # <reason>chain: Use simple RK4 step if available for performance, otherwise use higher tolerance</reason>
-                if hasattr(solver, 'rk4_step_simple') and not adaptive_stepping:
-                    y_new = solver.rk4_step_simple(y, h_current)
-                else:
-                    # Standard call for all solvers
-                    # <reason>chain: Pass particle properties for quantum solvers if they accept kwargs</reason>
-                    if isinstance(solver, QuantumGeodesicSolver) and particle:
-                        # Quantum solver accepts particle properties
-                        y_new = solver.rk4_step(y, h_current, 
-                                              particle_mass=particle.mass,
-                                              particle_charge=particle.charge,
-                                              particle_spin=particle.spin)
+            # <reason>chain: Wrap RK4 steps in no_grad to prevent gradient accumulation</reason>
+            with torch.no_grad():
+                for retry in range(5):  # Max 5 retries with smaller steps
+                    # <reason>chain: Use simple RK4 step if available for performance, otherwise use higher tolerance</reason>
+                    if hasattr(solver, 'rk4_step_simple') and not adaptive_stepping:
+                        y_new = solver.rk4_step_simple(y, h_current)
                     else:
-                        # Classical solvers don't accept extra kwargs
-                        y_new = solver.rk4_step(y, h_current)
-                
-                if y_new is None or torch.any(~torch.isfinite(y_new)):
-                    if adaptive_stepping:
-                        h_current = h_current * INTEGRATION_STEP_FACTORS['standard_reduction']
-                        if verbose and retry == 0:
-                            print(f"  Step {i} failed, reducing timestep to {h_current.item():.6f}")
-                        continue
-                    else:
-                        break
-                
-                # <reason>chain: Additional stability checks for extreme values</reason>
-                r_new = y_new[1]
-                
-                # For Kerr, check if we're near ergosphere
-                if 'Kerr' in model.name and hasattr(model, 'a'):
-                    r_ergo = 2.0  # r+ = M + sqrt(M^2 - a^2) in geometric units, approx 2M
-                    if r_new < NUMERICAL_THRESHOLDS['ergo_factor'] * r_ergo and r_new > NUMERICAL_THRESHOLDS['radius_min']:
-                        # Near ergosphere, use very small steps
-                        if h_current > INTEGRATION_STEP_FACTORS['ergo_sphere_limit']:
-                            h_current = torch.tensor(INTEGRATION_STEP_FACTORS['ergo_sphere_limit'], device=self.device, dtype=self.dtype)
+                        # Standard call for all solvers
+                        # <reason>chain: Pass particle properties for quantum solvers if they accept kwargs</reason>
+                        if isinstance(solver, QuantumGeodesicSolver) and particle:
+                            # Quantum solver accepts particle properties
+                            y_new = solver.rk4_step(y, h_current, 
+                                                  particle_mass=particle.mass,
+                                                  particle_charge=particle.charge,
+                                                  particle_spin=particle.spin)
+                        else:
+                            # Classical solvers don't accept extra kwargs
+                            y_new = solver.rk4_step(y, h_current)
+                    
+                    if y_new is None or torch.any(~torch.isfinite(y_new)):
+                        if adaptive_stepping:
+                            h_current = h_current * INTEGRATION_STEP_FACTORS['standard_reduction']
+                            if verbose and retry == 0:
+                                print(f"  Step {i} failed, reducing timestep to {h_current.item():.6f}")
+                            continue
+                        else:
+                            # <reason>chain: Debug why non-adaptive Kerr integration is failing</reason>
                             if verbose:
-                                    print(f"  Near ergosphere at r={r_new:.3f}, using tiny timestep")
+                                if y_new is None:
+                                    print(f"  Step {i}: RK4 returned None (non-adaptive mode)")
+                                else:
+                                    print(f"  Step {i}: RK4 returned non-finite values (non-adaptive mode)")
+                            break
+                    
+                    # <reason>chain: Additional stability checks for extreme values</reason>
+                    r_new = y_new[1]
+                    
+                    # For Kerr, check if we're near ergosphere
+                    if 'Kerr' in model.name and hasattr(model, 'a'):
+                        r_ergo = 2.0  # r+ = M + sqrt(M^2 - a^2) in geometric units, approx 2M
+                        # <reason>chain: Use scalar value for ergosphere comparison</reason>
+                        r_new_val = r_new.item() if torch.is_tensor(r_new) else r_new
+                        if r_new_val < NUMERICAL_THRESHOLDS['ergo_factor'] * r_ergo and r_new_val > NUMERICAL_THRESHOLDS['radius_min']:
+                            # Near ergosphere, use very small steps
+                            if h_current > INTEGRATION_STEP_FACTORS['ergo_sphere_limit']:
+                                h_current = torch.tensor(INTEGRATION_STEP_FACTORS['ergo_sphere_limit'], device=self.device, dtype=self.dtype)
+                                if verbose:
+                                        print(f"  Near ergosphere at r={r_new_val:.3f}, using tiny timestep")
                 
-                if r_new < NUMERICAL_THRESHOLDS['radius_min'] or r_new > NUMERICAL_THRESHOLDS['radius_max']:  # In geometric units
-                    if adaptive_stepping and retry < 4:
-                        h_current = h_current * INTEGRATION_STEP_FACTORS['standard_reduction']
-                        continue
-                    else:
-                        if verbose:
-                                print(f"  Trajectory escaped reasonable bounds at step {i}: r={r_new:.3f}")
-                        hist = hist[:i+1]
-                        break
-                
-                # <reason>chain: Check for runaway velocities in general solver</reason>
-                if not model.is_symmetric and len(y_new) >= 6:
-                    u_t = y_new[3]
-                    u_r = y_new[4]
-                    u_phi = y_new[5]
-                    velocity_mag = torch.sqrt(u_t**2 + u_r**2 + u_phi**2)
-                    if velocity_mag > NUMERICAL_THRESHOLDS['velocity_limit']:  # Lower threshold for geometric units
+                    # <reason>chain: Extract scalar value from tensor for comparison</reason>
+                    r_new_val = r_new.item() if torch.is_tensor(r_new) else r_new
+                    if r_new_val < NUMERICAL_THRESHOLDS['radius_min'] or r_new_val > NUMERICAL_THRESHOLDS['radius_max']:  # In geometric units
                         if adaptive_stepping and retry < 4:
                             h_current = h_current * INTEGRATION_STEP_FACTORS['standard_reduction']
-                            if verbose:
-                                    print(f"  High velocity {velocity_mag:.1f} at step {i}, reducing timestep")
                             continue
                         else:
                             if verbose:
-                                    print(f"  Runaway velocity detected at step {i}: |u|={velocity_mag:.3f}")
+                                    print(f"  Trajectory escaped reasonable bounds at step {i}: r={r_new_val:.3f}")
                             hist = hist[:i+1]
                             break
-                
-                # Step succeeded
-                step_successful = True
-                y = y_new
-                
-                # <reason>chain: Update progress bar with slow step info if needed</reason>
-                step_time = time.time() - step_start_time
-                if step_time > 0.1:  # If step took more than 100ms
-                    pbar.set_postfix_str(f"r={r_new:.2f}, slow step: {step_time:.2f}s", refresh=True)
-                elif i % 100 == 0:  # Regular updates every 100 steps
-                    pbar.set_postfix_str(f"r={y[1]:.2f}, h={h_current:.4f}", refresh=False)
-                
-                # If we had to reduce timestep, keep it reduced for a while
-                if h_current < h:
-                    h = h_current
-                elif adaptive_stepping and h_current == h and retry == 0:
-                    # Try to increase timestep if things are stable
-                    h = torch.min(h * 1.1, torch.tensor(dtau_geom, device=self.device, dtype=self.dtype) if not isinstance(dtau_geom, torch.Tensor) else dtau_geom)
-                break
-                
-            if not step_successful:
-                failed_steps += 1
-                if failed_steps > max_failed_steps:
-                    if verbose:
-                            print(f"Too many failed steps ({failed_steps}), terminating integration")
-                    hist = hist[:i+1]
+                    
+                    # <reason>chain: Check for runaway velocities in general solver</reason>
+                    if not model.is_symmetric and len(y_new) >= 6:
+                        u_t = y_new[3]
+                        u_r = y_new[4]
+                        u_phi = y_new[5]
+                        velocity_mag = torch.sqrt(u_t**2 + u_r**2 + u_phi**2)
+                        if velocity_mag > NUMERICAL_THRESHOLDS['velocity_limit']:  # Lower threshold for geometric units
+                            if adaptive_stepping and retry < 4:
+                                h_current = h_current * INTEGRATION_STEP_FACTORS['standard_reduction']
+                                if verbose:
+                                        print(f"  High velocity {velocity_mag:.1f} at step {i}, reducing timestep")
+                                continue
+                            else:
+                                if verbose:
+                                        print(f"  Runaway velocity detected at step {i}: |u|={velocity_mag:.3f}")
+                                hist = hist[:i+1]
+                                break
+                    
+                    # Step succeeded
+                    step_successful = True
+                    y = y_new
+                    # <reason>chain: Debug why Kerr only gets one successful step</reason>
+                    if verbose and 'Kerr' in model.name and i < 3:
+                        print(f"    Updated y after step {i}: shape={y.shape}, r={y[1]:.3f}")
+                    
+                    # <reason>chain: Update progress bar with slow step info if needed</reason>
+                    step_time = time.time() - step_start_time
+                    # <reason>chain: Extract scalar values for progress bar formatting</reason>
+                    r_val = y[1].item() if torch.is_tensor(y[1]) else y[1]
+                    h_val = h_current.item() if torch.is_tensor(h_current) else h_current
+                    if pbar is not None:
+                        if step_time > 0.1:  # If step took more than 100ms
+                            pbar.set_postfix_str(f"r={r_val:.2f}, slow step: {step_time:.2f}s", refresh=True)
+                        elif i % 100 == 0:  # Regular updates every 100 steps
+                            pbar.set_postfix_str(f"r={r_val:.2f}, h={h_val:.4f}", refresh=False)
+                    
+                    # If we had to reduce timestep, keep it reduced for a while
+                    # <reason>chain: Compare scalar values to avoid tensor comparison issues</reason>
+                    h_current_val = h_current.item() if torch.is_tensor(h_current) else h_current
+                    h_val = h.item() if torch.is_tensor(h) else h
+                    if h_current_val < h_val:
+                        h = h_current
+                    elif adaptive_stepping and torch.equal(h_current, h) and retry == 0:
+                        # Try to increase timestep if things are stable
+                        h = torch.min(h * 1.1, torch.tensor(dtau_geom, device=self.device, dtype=self.dtype) if not isinstance(dtau_geom, torch.Tensor) else dtau_geom)
                     break
-                continue
-            else:
-                failed_steps = 0  # Reset counter on success
-            
-            # Store state (t, r, phi, dr/dtau)
-            if model.is_symmetric:
-                hist[i+1] = torch.tensor([y[0], y[1], y[2], y[3]], device=self.device, dtype=self.dtype)
-            else:
-                hist[i+1] = torch.tensor([y[0], y[1], y[2], y[4]], device=self.device, dtype=self.dtype)
-            
-            # Check for singularity approach (not just horizon crossing)
-            r_current = y[1]
-            # <reason>chain: Stop at event horizon for cleaner physics visualization</reason>
-            # For quantum theories, we stop at the horizon since quantum effects dominate inside
-            if run_to_horizon and r_current < singularity_threshold:
-                if verbose:
-                    if singularity_threshold > 1.5:  # Stopping at event horizon
-                        # <reason>chain: Update progress bar to show event horizon reached</reason>
-                        pbar.set_description(f"{pbar_desc} - Event Horizon Reached")
-                        pbar.update(N_STEPS - i)  # Fill to 100%
-                        pbar.close()
-                        
-                        print(f"\n🌑 Event Horizon Reached at step {i+1}/{N_STEPS} ({100*i/N_STEPS:.1f}%)")
-                        print(f"   Final radius: r = {r_current.item():.3f} Rs (event horizon at r = 2.0 Rs)")
-                        print(f"   💡 Tip: Use --radius 10-20 for longer trajectories before reaching the event horizon")
-                        # <reason>chain: Set flag for parallel baseline progress bars</reason>
-                        self._last_trajectory_terminated_early = True
-                    else:  # Going past horizon for specific tests
-                        print(f"Approaching singularity at step {i+1}, r = {r_current.item():.6f} (r/M = {r_current.item():.3f})")
-                        print(f"  Note: Event horizon is at r = 2M, singularity threshold is {singularity_threshold:.3f}M")
-                hist = hist[:i+2]
-                break
-            
-            # Quantum kicks (experimental)
-            if quantum_interval > 0 and (i + 1) % quantum_interval == 0:
-                quantum_kicks_indices.append(i + 1)
-                if model.is_symmetric:
-                    # Apply kick to dr/dtau
-                    y[3] += quantum_beta * torch.randn(1, device=self.device, dtype=self.dtype).squeeze()
+                
+                if not step_successful:
+                    failed_steps += 1
+                    if failed_steps > max_failed_steps:
+                        if verbose:
+                                print(f"Too many failed steps ({failed_steps}), terminating integration")
+                        hist = hist[:i+1]
+                        break
+                    # <reason>chain: Debug why Kerr integration fails</reason>
+                    if verbose and 'Kerr' in model.name:
+                        print(f"  Step {i} failed (attempt {failed_steps}/{max_failed_steps})")
+                    continue
                 else:
-                    # Apply kicks to 4-velocity components
-                    y[3:6] += quantum_beta * torch.randn(3, device=self.device, dtype=self.dtype)
+                    failed_steps = 0  # Reset counter on success
+                    # <reason>chain: Debug successful steps for Kerr</reason>
+                    if verbose and 'Kerr' in model.name and i < 5:
+                        print(f"  Step {i} succeeded, continuing...")
+                
+                # Store state (t, r, phi, dr/dtau)
+                if model.is_symmetric:
+                    hist[i+1] = torch.tensor([y[0], y[1], y[2], y[3]], device=self.device, dtype=self.dtype)
+                else:
+                    hist[i+1] = torch.tensor([y[0], y[1], y[2], y[4]], device=self.device, dtype=self.dtype)
+                
+                # <reason>chain: Debug where Kerr loop exits</reason>
+                if verbose and 'Kerr' in model.name and i < 3:
+                    print(f"    Stored hist[{i+1}] = {hist[i+1]}")
+                
+                # Check for singularity approach (not just horizon crossing)
+                r_current = y[1]
+                # <reason>chain: Extract scalar value for comparison</reason>
+                r_current_val = r_current.item() if torch.is_tensor(r_current) else r_current
+                # <reason>chain: Stop at event horizon for cleaner physics visualization</reason>
+                # For quantum theories, we stop at the horizon since quantum effects dominate inside
+                if run_to_horizon and r_current_val < singularity_threshold:
+                    if verbose:
+                        if singularity_threshold > 1.5:  # Stopping at event horizon
+                            # <reason>chain: Update progress bar to show event horizon reached</reason>
+                            if pbar is not None:
+                                pbar.set_description(f"{pbar_desc} - Event Horizon Reached")
+                                pbar.update(N_STEPS - i)  # Fill to 100%
+                                pbar.close()
+                            
+                            print(f"\n🌑 Event Horizon Reached at step {i+1}/{N_STEPS} ({100*i/N_STEPS:.1f}%)")
+                            print(f"   Final radius: r = {r_current_val:.3f} Rs (event horizon at r = 2.0 Rs)")
+                            print(f"   💡 Tip: Use --radius 10-20 for longer trajectories before reaching the event horizon")
+                            # <reason>chain: Set flag for parallel baseline progress bars</reason>
+                            self._last_trajectory_terminated_early = True
+                        else:  # Going past horizon for specific tests
+                            print(f"Approaching singularity at step {i+1}, r = {r_current_val:.6f} (r/M = {r_current_val:.3f})")
+                            print(f"  Note: Event horizon is at r = 2M, singularity threshold is {singularity_threshold:.3f}M")
+                    hist = hist[:i+2]
+                    # <reason>chain: Debug if singularity check causes early exit</reason>
+                    if verbose and 'Kerr' in model.name:
+                        print(f"    Breaking due to singularity approach at r={r_current_val:.3f}")
+                    break
+                
+                # Quantum kicks (experimental)
+                if quantum_interval > 0 and (i + 1) % quantum_interval == 0:
+                    quantum_kicks_indices.append(i + 1)
+                    if model.is_symmetric:
+                        # Apply kick to dr/dtau
+                        y[3] += quantum_beta * torch.randn(1, device=self.device, dtype=self.dtype).squeeze()
+                    else:
+                        # Apply kicks to 4-velocity components
+                        y[3:6] += quantum_beta * torch.randn(3, device=self.device, dtype=self.dtype)
+                
+                # Early stopping based on baseline comparison
+                if early_stopping and baseline_results and i > NUMERICAL_THRESHOLDS['early_stopping_steps']:
+                    # Compare trajectory divergence
+                    # TODO: Implement divergence check
+                    pass
+                
+                # <reason>chain: Debug end of loop iteration</reason>
+                if verbose and 'Kerr' in model.name and i < 3:
+                    print(f"    Completed loop iteration {i}, continuing to next...")
+                
+                # <reason>chain: Debug absolute end of loop iteration</reason>
+                if verbose and 'Kerr' in model.name and i < 3:
+                    print(f"    About to start next iteration (i={i}, next would be {i+1})...")
             
-            # Early stopping based on baseline comparison
-            if early_stopping and baseline_results and i > NUMERICAL_THRESHOLDS['early_stopping_steps']:
-                # Compare trajectory divergence
-                # TODO: Implement divergence check
-                pass
+            # <reason>chain: Debug how many iterations completed</reason>
+            if self.verbose or (verbose and 'Kerr' in model.name):
+                print(f"  DEBUG: Loop exited after {completed_iterations} iterations (expected {N_STEPS})")
+            
+            # <reason>chain: Close progress bar and show final summary</reason>
+            if pbar is not None:
+                pbar.close()
+            # <reason>chain: Handle case where pbar might not have start_t attribute</reason>
+            if verbose and show_pbar and hasattr(pbar, 'start_t'):
+                total_time = time.time() - pbar.start_t
+                avg_time_per_step = total_time / (i + 1) if i > 0 else 0
+                print(f"  Integration completed: {i+1}/{N_STEPS} steps in {total_time:.1f}s ({avg_time_per_step*1000:.2f}ms/step)")
+            
+            # Save to cache if not in test mode
+            if not no_cache and not test_mode:
+                # Convert to SI units before caching
+                hist_si = hist.clone()
+                hist_si[:,0] *= self.time_scale
+                hist_si[:,1] *= self.length_scale
+                if hist.shape[1] > 3:
+                    hist_si[:,3] *= self.velocity_scale / self.time_scale
+                torch.save(hist_si, cache_path)
+                if verbose:
+                        print(f"Trajectory cached to: {cache_path}")
         
-        # <reason>chain: Close progress bar and show final summary</reason>
-        pbar.close()
-        if verbose and show_pbar:
-            total_time = time.time() - pbar.start_time
-            avg_time_per_step = total_time / (i + 1) if i > 0 else 0
-            print(f"  Integration completed: {i+1}/{N_STEPS} steps in {total_time:.1f}s ({avg_time_per_step*1000:.2f}ms/step)")
-        
-        # Save to cache if not in test mode
-        if not no_cache and not test_mode:
-            # Convert to SI units before caching
-            hist_si = hist.clone()
-            hist_si[:,0] *= self.time_scale
-            hist_si[:,1] *= self.length_scale
-            if hist.shape[1] > 3:
-                hist_si[:,3] *= self.velocity_scale / self.time_scale
-            torch.save(hist_si, cache_path)
-            if verbose:
-                    print(f"Trajectory cached to: {cache_path}")
-        
+        # <reason>chain: Return the computed trajectory after the integration loop completes</reason>
         return hist, tag, quantum_kicks_indices
 
     def run_all_validations(self, theory: GravitationalTheory, hist: torch.Tensor, y0_general: torch.Tensor, categories: list[str] | None = None) -> dict:
@@ -1989,6 +2157,18 @@ class TheoryEngine:
             'category_multiplier': category_multiplier,
             'category': category
         }
+    
+    def cleanup(self):
+        """
+        <reason>chain: Clean up cached resources to prevent memory leaks</reason>
+        """
+        # Clear solver cache
+        if hasattr(self, '_solver_cache'):
+            self._solver_cache.clear()
+            
+        # Clear any cached trajectories in the cache object
+        if hasattr(self, 'cache') and hasattr(self.cache, 'clear'):
+            self.cache.clear()
 
 def validate_theory_only(
     model: "GravitationalTheory",
@@ -2069,9 +2249,12 @@ def validate_theory_only(
     
     # Run a short trajectory for validation
     print(f"  Running validation trajectory for {model.name}...")
-    validation_r0_val = 6.0 * engine.rs  # Changed from 15.0 to 6.0 Rs
+    # <reason>chain: Use RS (SI units) not rs (geometric units) for validation radius</reason>
+    validation_r0_val = 6.0 * engine.RS.item()  # 6 Rs in SI units
     validation_r0 = torch.tensor([validation_r0_val], device=engine.device, dtype=engine.dtype)
-    validation_dtau_si = 0.1 * engine.time_scale
+    # <reason>chain: Use reasonable step size based on orbital period at 6 Rs</reason>
+    # Orbital period at 6 Rs is about 1.3 ms, so use 1/1000 of that
+    validation_dtau_si = 1e-6  # 1 microsecond is reasonable for black hole physics
     validation_steps = 100
     
     # <reason>chain: Enable quantum effects for quantum theories during validation</reason>
@@ -2098,7 +2281,7 @@ def validate_theory_only(
         validation_quantum_beta = 0.0
     
     validation_hist, _, _ = engine.run_trajectory(
-        model, validation_r0_val * engine.length_scale, validation_steps, validation_dtau_si,
+        model, validation_r0_val, validation_steps, validation_dtau_si,
         quantum_interval=validation_quantum_interval, quantum_beta=validation_quantum_beta
     )
     
@@ -2390,7 +2573,8 @@ def process_and_evaluate_theory(
     skip_preflight = False
     
     # <reason>chain: Define preflight_r0 before the conditional block to avoid UnboundLocalError</reason>
-    preflight_r0_val = 6.0 * engine.rs  # Changed from 15.0 to 6.0 Rs
+    # <reason>chain: Use RS (SI units) not rs (geometric units) for preflight radius</reason>
+    preflight_r0_val = 6.0 * engine.RS.item()  # 6 Rs in SI units
     preflight_r0 = torch.tensor([preflight_r0_val], device=engine.device, dtype=engine.dtype)
     
     if not skip_preflight:
@@ -2400,7 +2584,7 @@ def process_and_evaluate_theory(
         # Use dtau = 0.01 in geometric units for better numerical accuracy
         preflight_dtau_si = 0.01 * engine.time_scale  # This gives dtau_geom = 0.01
         prefix_hist, _, _ = engine.run_trajectory(
-            model, preflight_r0_val * engine.length_scale, 100, preflight_dtau_si,
+            model, preflight_r0_val, 100, preflight_dtau_si,
             quantum_interval=0, quantum_beta=0.0
         )
         if prefix_hist is not None and prefix_hist.shape[0] > 1:
@@ -3276,9 +3460,7 @@ def run_predictions_on_finalists(engine: TheoryEngine, main_run_dir: str, args: 
     from physics_agent.validations import (
         CMBPowerSpectrumValidator, 
         # PTAStochasticGWValidator, # Not tested
-        PrimordialGWsValidator, 
-        # RenormalizabilityValidator, # Not tested
-        # UnificationScaleValidator # Not tested
+        PrimordialGWsValidator
     )
     
     # <reason>chain: Ensure prediction validators use proper engine configuration</reason>
@@ -3768,970 +3950,168 @@ def process_sweep_combination(combo_data):
         }
 
 def main():
-    """Main execution function"""
-    # Check for updates at startup
-    check_on_startup()
+    # <reason>chain: Use centralized CLI parser from cli module</reason>
+    from physics_agent.cli import get_cli_parser, handle_special_modes, setup_execution_mode, determine_device_and_dtype, get_simulation_parameters
     
     parser = get_cli_parser()
     args = parser.parse_args()
     
-    # <reason>chain: Use CLI module for execution mode setup</reason>
+    # Handle special modes first
+    if handle_special_modes(args):
+        return 0
+    
+    # Setup execution mode
     setup_execution_mode(args)
     
-    # <reason>chain: Handle special modes through CLI module</reason>
-    if handle_special_modes(args):
-        return
-    
-    # <reason>chain: Use CLI module to determine device and dtype</reason>
-    device, dtype = determine_device_and_dtype(args)
-        
-    if device is None:
-        if args.gpu_f32:
-            # <reason>Check for CUDA first (NVIDIA GPUs), then MPS (Apple Silicon), fallback to CPU</reason>
-            if torch.cuda.is_available():
-                device = "cuda"
-            elif torch.backends.mps.is_available():
-                device = "mps"
-            else:
-                if verbose:
-                    print("Warning: GPU requested but neither CUDA nor MPS available. Falling back to CPU.")
-                device = "cpu"
-        elif args.final or args.cpu_f64:
-            device = "cpu"
-        else:
-            device = "cpu"
-            
-    # <reason>chain: Pass quantum configuration and black hole type to TheoryEngine</reason>
-    engine = TheoryEngine(
-        device=device, 
-        dtype=dtype,
-        quantum_field_content=getattr(args, 'quantum_field_content', 'all'),
-        quantum_phase_precision=getattr(args, 'quantum_phase_precision', 1e-30),
-        verbose=args.verbose,
-        black_hole_type=args.black_hole_type
-    )
-    engine.loss_type = 'ricci'  # <reason>chain: Ricci tensor is the only loss type</reason>
-    print(f"Running on device: {engine.device}, with dtype: {engine.dtype}")
-    
-    # <reason>chain: Print quantum configuration for clarity</reason>
-    print(f"Quantum field content for quantum theories: {engine.quantum_field_content}")
-    print(f"Black hole type for mass/radius scaling: {engine.black_hole_type}")
-    
-    # --- Run Solver Calibration ---
-    # <reason>chain: Calibrate solvers before running theories to ensure environment is properly configured</reason>
-    if not args.skip_calibration:
+    # <reason>chain: Handle Warp benchmark mode early</reason>
+    if hasattr(args, 'warp_benchmark') and args.warp_benchmark:
         print("\n" + "="*60)
-        print("Running solver calibration...")
-        print("="*60 + "\n")
-        
+        print("NVIDIA Warp GPU Benchmark")
+        print("="*60)
         try:
-            from physics_agent.solver_tests.quick_solver_calibration import run_quick_calibration
+            from physics_agent.warp_simple_demo import benchmark_simple_warp, benchmark_trajectory_comparison
+            print("\nRunning Warp optimization benchmarks...")
+            if benchmark_simple_warp is not None:
+                speedup = benchmark_simple_warp()
+            benchmark_trajectory_comparison()
+            print("\nBenchmark complete!")
+            return 0
+        except ImportError as e:
+            print(f"Error: Could not import Warp benchmark tools: {e}")
+            print("Make sure warp_simple_demo.py is available")
+            return 1
+    
+    # Determine device and dtype
+    device, dtype = determine_device_and_dtype(args)
+    
+    # Get simulation parameters
+    sim_params = get_simulation_parameters(args)
+    
+    # <reason>chain: Enable Warp optimizations if requested</reason>
+    if sim_params.get('use_warp', False):
+        try:
+            print("\nEnabling NVIDIA Warp GPU optimizations...")
+            from physics_agent.theory_engine_warp_integration import inject_warp_optimizations
+            import physics_agent.theory_engine_core as tec
+            inject_warp_optimizations(tec)
+            print("✓ Warp optimizations enabled")
             
-            # Run calibration with reduced verbosity if not in verbose mode
-            # Device benchmarking is included by default unless explicitly disabled
-            include_benchmarks = not args.skip_device_benchmark if hasattr(args, 'skip_device_benchmark') else True
-            calibration_success = run_quick_calibration(
-                verbose=args.verbose, 
-                include_device_benchmark=include_benchmarks
-            )
-            
-            if not calibration_success:
-                print("\n⚠️  WARNING: Some calibration tests failed!")
-                print("This may affect the accuracy of theory simulations.")
-                print("Consider running 'albert test' to diagnose issues.")
-                
-                if args.strict_calibration:
-                    print("\n❌ Exiting due to calibration failure (--strict-calibration enabled)")
-                    sys.exit(1)
-                else:
-                    print("\nContinuing anyway... (use --strict-calibration to enforce)")
-                    time.sleep(2)  # Give user time to see the warning
-            else:
-                print("\n✅ Solver calibration passed!")
-                
-            # Load and display calibration certificate
-            from physics_agent.solver_tests.calibration_certificate import get_current_certificate
-            certificate = get_current_certificate()
-            if certificate:
-                print(f"\n📋 Calibration Certificate ID: {certificate['certificate_id']}")
-                print(f"   Status: {certificate['status']} | Health: {certificate['health_score']:.0f}%")
-        except Exception as e:
-            print(f"\n⚠️  WARNING: Could not run solver calibration: {e}")
-            if args.strict_calibration:
-                print("❌ Exiting due to calibration error (--strict-calibration enabled)")
-                sys.exit(1)
-    else:
-        print("\n⚠️  Skipping solver calibration (--skip-calibration specified)")
+            # Suggest GPU usage if not already enabled
+            if device == 'cpu' and not args.cpu_f64:
+                print("\nTip: Use --gpu-f32 with --experimental-warp for maximum performance")
+        except ImportError as e:
+            print(f"\nWarning: Could not enable Warp optimizations: {e}")
+            print("Install with: pip install warp-lang")
+            print("Continuing without Warp optimizations...\n")
     
-    # Store calibration info for later inclusion in reports
-    calibration_info = None
-    try:
-        from physics_agent.solver_tests.calibration_certificate import get_current_certificate
-        calibration_info = get_current_certificate()
-    except:
-        pass
+    # Initialize the engine
+    print(f"Initializing TheoryEngine on device: {device}, dtype: {dtype}")
+    engine = TheoryEngine(device=device, dtype=dtype)
     
-    print()  # Add spacing
-    
-    # --- Theory Loading using TheoryLoader ---
-    theories_dir = os.path.join(os.path.dirname(__file__), "theories")
-    
-    # <reason>chain: In candidates mode, discover theories from both regular and candidates directories</reason>
-    if args.candidates:
-        print("Running in candidates mode - loading all theories including candidates...")
-        # First load regular theories
-        loader = TheoryLoader(theories_base_dir=theories_dir)
-        discovered_theories = loader.discover_theories()
-        
-        # Then discover candidates
-        candidates_dir = os.path.join(theories_dir, "candidates")
-        if os.path.exists(candidates_dir):
-            # Create a second loader for candidates
-            candidate_loader = TheoryLoader(theories_base_dir=candidates_dir)
-            candidate_theories = candidate_loader.discover_theories()
-            
-            # Merge candidates into main theory list with "candidate/" prefix
-            for key, value in candidate_theories.items():
-                # Add candidate prefix to distinguish them
-                candidate_key = f"candidate/{key}"
-                value['is_candidate'] = True
-                discovered_theories[candidate_key] = value
-            
-            print(f"Discovered {len(candidate_theories)} candidate theories")
-    else:
-        loader = TheoryLoader(theories_base_dir=theories_dir)
-        discovered_theories = loader.discover_theories()
-    
-    print(f"--- Loading Theories ---")
-    print(f"Discovered {len(discovered_theories)} theory classes total")
-    
-    # Apply filters if specified
-    filtered_theories = discovered_theories
-    if args.theory_filter:
-        filtered_theories = {k: v for k, v in filtered_theories.items() 
-                           if args.theory_filter.lower() in k.lower()}
-        print(f"Filtered to {len(filtered_theories)} theories matching '{args.theory_filter}'")
-    
-    # <reason>chain: Apply category filter to run theories by category (e.g., ugm, quantum, classical)</reason>
-    if hasattr(args, 'category') and args.category:
-        # For UGM category, we need to check the theory name since it's a special unified theory
-        if args.category.lower() == 'ugm':
-            # Filter from the already filtered theories (which might have theory_filter applied)
-            filtered_theories = {k: v for k, v in filtered_theories.items() 
-                               if 'ugm' in k.lower()}
-            if len(filtered_theories) == 0:
-                # If no matches found, show available theories for debugging
-                print("No UGM theories found. Available theory keys:")
-                for k in discovered_theories.keys():
-                    if 'ugm' in k.lower():
-                        print(f"  - {k} (contains 'ugm')")
-            print(f"Filtered to {len(filtered_theories)} theories in UGM (Unified Gravity Model) category")
-        else:
-            # For other categories, use the category attribute
-            filtered_theories = {k: v for k, v in filtered_theories.items() 
-                               if v.get('category', '').lower() == args.category.lower()}
-            print(f"Filtered to {len(filtered_theories)} theories in category '{args.category}'")
-    
-    # Get default instances
-    theories_to_run = {}
-    for theory_key, theory_info in filtered_theories.items():
-        # Special handling for baseline theories that need parameters
-        kwargs = {}
-        
-        # <reason>chain: Handle new sweepable_fields by adding them to kwargs</reason>
-        if hasattr(theory_info.get('class'), 'sweepable_fields'):
-            for field, field_info in theory_info.get('class').sweepable_fields.items():
-                kwargs[field] = field_info.get('default', 0.0)
-        
-        # <reason>chain: Use the appropriate loader for candidate theories</reason>
-        if theory_info.get('is_candidate', False) and args.candidates:
-            # Remove the "candidate/" prefix for the candidate loader
-            candidate_key = theory_key.replace('candidate/', '')
-            instance = candidate_loader.instantiate_theory(candidate_key, **kwargs)
-        else:
-            instance = loader.instantiate_theory(theory_key, **kwargs)
-        if instance:
-            theories_to_run[instance.name] = instance
-            if args.verbose:
-                print(f"  Loaded: {instance.name} [{theory_info.get('category', 'N/A')}]")
-    
-    if not theories_to_run:
-        print("No theories were found to run. Exiting.")
-        return
-    
-    print(f"Loaded {len(theories_to_run)} theory instances")
-
-    # --- Trajectory Setup ---
-    if args.final:
-        N_STEPS = 500000
-        CALLBACK_INTERVAL = 30000
-    else:
-        N_STEPS = 20000
-        CALLBACK_INTERVAL = 5000
-        
-    # Override with user-specified step count if provided
-    if args.steps is not None:
-        N_STEPS = args.steps
-        CALLBACK_INTERVAL = max(1, N_STEPS // 4) if getattr(args, 'self_monitor', False) else N_STEPS + 1
-    
-    # <reason>chain: Use standard timestep of 0.01 for accurate energy conservation</reason>
-    DTau = torch.tensor(0.01, device=engine.device, dtype=engine.dtype)
-    if args.close_orbit:
-        r0_val = 6.0 * engine.rs
-    else:
-        # <reason>chain: Use user-specified radius or default to 6.0 Rs</reason>
-        r0_val = args.radius * engine.rs  # User-specified radius in Schwarzschild radii
-    r0 = torch.tensor([r0_val], device=engine.device, dtype=engine.dtype)
-    
-    print(f"Starting radius: {args.radius:.1f} Rs = {r0_val:.1f} m")
-    
-    # <reason>chain: Removed sample rate functionality - using direct values instead</reason>
-    effective_dtau = DTau
-    effective_steps = N_STEPS
-    
-    # --- Separate Theories and Baselines ---
-    # Use the discovered_theories info to determine which are baselines
-    baseline_theories = {}
-    custom_theories = {}
-    
-    # <reason>chain: First collect any baselines that were in theories_to_run</reason>
-    for name, model in theories_to_run.items():
-        # Find the theory key for this instance
-        theory_key = None
-        for key, info in discovered_theories.items():
-            # Match class name from the key
-            class_name_from_key = key.split('/')[-1]
-            if class_name_from_key == model.__class__.__name__:
-                theory_key = key
-                break
-        
-        if theory_key and 'baselines' in discovered_theories.get(theory_key, {}).get('path', ''):
-            # Skip baselines from theories_to_run - we'll load them explicitly below
-            pass
-        else:
-            custom_theories[name] = model
-    
-    # <reason>chain: Always load all baselines exactly once for visualization</reason>
-    # Clear baseline_theories to avoid duplicates and load fresh instances
-    baseline_theories = {}
-    
-    print("Loading baseline theories for comparison...")
-    # Import baseline theories directly
-    try:
-        from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
-        from physics_agent.theories.defaults.baselines.reissner_nordstrom import ReissnerNordstrom
-        from physics_agent.theories.defaults.baselines.kerr import Kerr
-        from physics_agent.theories.defaults.baselines.kerr_newman import KerrNewman
-        
-        # <reason>chain: Determine which baselines to load based on CLI argument</reason>
-        if args.no_baselines:
-            print("  Skipping baseline loading (--no-baselines flag)")
-        else:
-            baselines_to_load = []
-            if args.baselines.lower() == 'all':
-                baselines_to_load = ['schwarzschild', 'reissner_nordstrom', 'kerr', 'kerr_newman']
-            else:
-                # Parse comma-separated list and normalize names
-                baselines_to_load = [b.strip().lower().replace('-', '_') for b in args.baselines.split(',')]
-            
-            # Create instances based on requested baselines
-            for baseline_name in baselines_to_load:
-                if baseline_name == 'schwarzschild':
-                    instance = Schwarzschild()  # Pure Schwarzschild (non-rotating, uncharged)
-                    baseline_theories[instance.name] = instance
-                    print(f"  Loaded baseline: {instance.name} (non-rotating, uncharged)")
-                elif baseline_name == 'reissner_nordstrom':
-                    instance = ReissnerNordstrom(q_e=0.5)  # Reissner-Nordström (non-rotating, charged)
-                    baseline_theories[instance.name] = instance
-                    print(f"  Loaded baseline: {instance.name} (non-rotating, charged)")
-                elif baseline_name == 'kerr':
-                    instance = Kerr(a=0.5)  # Kerr (rotating, uncharged)
-                    baseline_theories[instance.name] = instance
-                    print(f"  Loaded baseline: {instance.name} (rotating, uncharged)")
-                elif baseline_name == 'kerr_newman':
-                    instance = KerrNewman(a=0.5, Q=0.5)  # Kerr-Newman (rotating, charged) - Note: Q not q_e
-                    baseline_theories[instance.name] = instance
-                    print(f"  Loaded baseline: {instance.name} (rotating, charged)")
-                else:
-                    print(f"  Warning: Unknown baseline '{baseline_name}', skipping...")
-                    
-            if len(baseline_theories) == 0:
-                print("  Warning: No valid baselines loaded")
-                
-    except Exception as e:
-        print(f"  Failed to load baselines: {e}")
-    
-    # Handle experimental parameters
-    quantum_interval = getattr(args, 'experimental_quantum_interval', 1000) if getattr(args, 'experimental', False) else 0
-    quantum_beta = getattr(args, 'experimental_quantum_beta', 0.01) if getattr(args, 'experimental', False) else 0.0
-    
-    # Set up progress callback for monitoring
-    progress_callback = None
-    if getattr(args, 'self_monitor', False):
-        def progress_callback(hist_so_far, current_step, total_steps):
-            if current_step % CALLBACK_INTERVAL == 0:
-                print(f"  Progress: {current_step}/{total_steps} steps ({100*current_step/total_steps:.1f}%)")
-    
-    # --- Simulate Baselines First ---
-    baseline_results = {}
-    
-    # <reason>chain: Allow skipping baselines to save memory</reason>
-    if args.no_baselines:
-        print("\n--- Skipping Baseline Theories (--no-baselines specified) ---")
-        baseline_results = {}
-        engine.baseline_trajectories = {}
-    else:
-        print("\n--- Simulating Baseline Theories ---")
-    
-    # Create a single run directory for this entire execution
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
-    dtype_str = str(engine.dtype).split('.')[-1]
-    main_run_dir = os.path.join("runs", f"run_{timestamp}_{dtype_str}")
+    # Create run directory
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_id = f"run_{timestamp}_{engine.dtype}"
+    main_run_dir = os.path.join("runs", run_id)
     os.makedirs(main_run_dir, exist_ok=True)
     
-    # Save run configuration
-    run_config = {
-        "timestamp": timestamp,
-        "device": str(engine.device),
-        "dtype": str(engine.dtype),
-        "n_steps": N_STEPS,
-        "dtau": DTau.item(),
-        "r0": r0_val,
-        "args": vars(args),
-        "theories": list(theories_to_run.keys()),
-        "command_line": ' '.join(sys.argv),  # <reason>chain: Store exact command line for reproducibility</reason>
-        "python_version": sys.version,
-        "working_directory": os.getcwd()
-    }
-    with open(os.path.join(main_run_dir, "run_config.json"), 'w') as f:
-        json.dump(run_config, f, indent=4)
+    # Load theories
+    print("\n--- Loading Theories ---")
+    from physics_agent.theory_loader import TheoryLoader
+    theories_dir = os.path.join(os.path.dirname(__file__), "theories")
+    loader = TheoryLoader(theories_base_dir=theories_dir)
+    discovered_theories = loader.discover_theories()
     
-    print(f"Run directory: {main_run_dir}")
-    
-    # <reason>chain: Start capturing all output to a log file</reason>
-    run_logger = RunLogger(main_run_dir)
-    run_logger.start()
-    
-    # Store log path in run config for later use
-    run_config['log_file'] = run_logger.get_log_path()
-    with open(os.path.join(main_run_dir, "run_config.json"), 'w') as f:
-        json.dump(run_config, f, indent=4)
-    
-    # <reason>chain: Use concurrent.futures for parallel baseline computation</reason>
-    import concurrent.futures
-    from functools import partial
-    
-    def run_baseline_with_progress(name_model_dir_pos, engine, r0_val, effective_steps, effective_dtau, no_cache):
-        """Run a single baseline theory for all particles"""
-        name, model, theory_dir, position = name_model_dir_pos
-        
-        print(f"\n  Computing baseline: {name}")
-        
-        # <reason>chain: Suppress unwanted output during baseline computation</reason>
-        import sys
-        from io import StringIO
-        
-        try:
-            # Run multi-particle trajectories for this baseline
-            old_stdout = sys.stdout
-            sys.stdout = StringIO()  # Capture output to prevent interference
+    # Filter theories based on arguments
+    theories_to_run = []
+    for theory_key, theory_info in discovered_theories.items():
+        # Skip defaults and templates
+        if 'defaults' in theory_info['path'] or 'template' in theory_info['path']:
+            continue
             
-            try:
-                particle_results = engine.run_multi_particle_trajectories(
-                    model, r0_val * engine.length_scale, effective_steps, effective_dtau.item() * engine.time_scale,
-                    theory_category='classical',  # All baselines are classical
-                    quantum_interval=0,
-                    quantum_beta=0.0,
-                    no_cache=no_cache,
-                    verbose=False
-                )
-            finally:
-                sys.stdout = old_stdout  # Restore stdout
+        # Apply theory filter if specified
+        if args.theory_filter and args.theory_filter.lower() not in theory_key.lower():
+            continue
             
-            # Store results for each particle
-            baseline_particle_results = {}
-            success_count = 0
-            
-            for particle_name, result in particle_results.items():
-                if result['trajectory'] is not None and result['trajectory'].shape[0] > 1:
-                    baseline_particle_results[particle_name] = result['trajectory']
-                    success_count += 1
-                    # Save individual particle trajectory
-                    particle_file = os.path.join(theory_dir, f"trajectory_{particle_name}.pt")
-                    torch.save(result['trajectory'].to(dtype=engine.dtype), particle_file)
-            
-            print(f"    ✓ Computed {success_count}/4 particle trajectories")
-            
-            if success_count > 0:
-                return name, baseline_particle_results, True
-            else:
-                return name, None, False
-                
-        except Exception as e:
-            print(f"\nError in baseline {name}: {e}")
-            return name, None, False
-    
-    # <reason>chain: Only compute baselines if not skipped</reason>
-    if not args.no_baselines:
-        # Prepare baseline data with pre-assigned positions
-        baseline_tasks = []
-        # <reason>chain: Assign positions 1,2,3,... to each baseline for consistent output</reason>
-        for idx, (name, model) in enumerate(baseline_theories.items()):
-            theory_dir = os.path.join(main_run_dir, f"baseline_{name.replace(' ', '_').replace('(', '').replace(')', '')}")
-            os.makedirs(theory_dir, exist_ok=True)
-            position = idx + 1  # Positions start from 1
-            baseline_tasks.append((name, model, theory_dir, position))
-        
-        # <reason>chain: Process baselines sequentially for clean output</reason>
-        print(f"Computing {len(baseline_tasks)} baselines sequentially...")
-        
-        # Process baselines one by one without executor to avoid resource leaks
-        for task in baseline_tasks:
-            name, particle_results, success = run_baseline_with_progress(
-                task,
-                engine,
-                r0_val,
-                effective_steps,
-                effective_dtau,
-                args.no_cache
-            )
-            
-            if success:
-                # <reason>chain: Store particle-specific baseline results</reason>
-                baseline_results[name] = particle_results
-                # For backward compatibility, also store electron trajectory as default
-                if 'electron' in particle_results:
-                    engine.baseline_trajectories[name] = particle_results['electron']
-            else:
-                if engine.verbose:
-                    print(f"\nWarning: Baseline simulation failed for {name}")
-        
-        # <reason>chain: Clear progress bars properly</reason>
-        print("")  # Extra newline
-        print(f"Completed {len(baseline_results)}/{len(baseline_theories)} baseline simulations")
-    
-    # --- First Phase: Validate All Theories ---
-    print("\n--- Phase 1: Validating All Theories ---")
-    print(f"{'='*60}")
-    
-    validation_results = {}
-    theories_that_passed = []
-    theories_that_failed = []
-    
-    # <reason>chain: Create progress bar for theory evaluation</reason>
-    print(f"\n--- Evaluating {len(theories_to_run)} Theories ---")
-    theory_pbar = tqdm(theories_to_run.items(), 
-                      desc="Processing theories",
-                      unit=" theory",
-                      ncols=100,
-                      bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]')
-    
-    for name, model_prototype in theory_pbar:
-        # <reason>chain: Update progress bar with current theory name</reason>
-        theory_pbar.set_description(f"Evaluating {name[:30]}")
-        
-        if hasattr(model_prototype, 'sweep') and model_prototype.sweep and args.enable_sweeps:
-            print(f"  Detected parameter sweep for {model_prototype.name}: {model_prototype.sweep}")
-            
-            param_ranges = model_prototype.sweep
-            param_names = list(param_ranges.keys())
-            # Generate values for each parameter
-            sweep_values = []
-            for param, range_spec in param_ranges.items():
-                min_val = range_spec['min']
-                max_val = range_spec['max']
-                points = range_spec['points']
-                scale = range_spec.get('scale', 'linear')
-                
-                if scale == 'log':
-                    values = np.logspace(np.log10(min_val), np.log10(max_val), points)
-                else:
-                    values = np.linspace(min_val, max_val, points)
-                sweep_values.append(values)
-            
-            param_combinations = list(itertools.product(*sweep_values))
-
-            print(f"  Generated {len(param_combinations)} parameter combinations to test.")
-            
-            # <reason>chain: Use parallel processing for sweeps</reason>
-            # Determine number of workers based on available resources
-            if args.disable_resource_check:
-                # Simple CPU count-based allocation (legacy behavior)
-                if args.sweep_workers:
-                    max_workers = min(args.sweep_workers, len(param_combinations))
-                else:
-                    max_workers = min(multiprocessing.cpu_count(), len(param_combinations), 8)
-                print(f"  Using simple CPU-based allocation: {max_workers} workers (resource checking disabled)")
-            else:
-                # Smart resource-based allocation
-                if args.sweep_workers:
-                    # User specified, but still show resource info
-                    max_workers = args.sweep_workers
-                    resources = get_available_resources()
-                    print(f"  System resources: {resources['cpu_count']} CPUs, {resources['memory_available_gb']:.1f}GB RAM available")
-                    if max_workers > resources['cpu_count']:
-                        if verbose:
-                            print(f"  Warning: Requested {max_workers} workers but only {resources['cpu_count']} CPUs available")
-                else:
-                    # Auto-determine based on resources
-                    max_workers = determine_optimal_workers(
-                        len(param_combinations), 
-                        device=str(engine.device),
-                        estimated_memory_per_worker_gb=args.sweep_memory_per_worker
-                    )
-            
-            print(f"  Using {max_workers} parallel workers for sweep processing.")
-            
-            # Prepare data for parallel processing
-            # <reason>chain: Convert baseline theories to serializable format for multiprocessing</reason>
-            baseline_theories_info = {}
-            for name, theory in baseline_theories.items():
-                # Store class name and parameters for reconstruction
-                baseline_theories_info[name] = {
-                    'class_name': theory.__class__.__name__,
-                    'module': theory.__class__.__module__,
-                    'params': getattr(theory, '_init_params', {})  # Store init params if available
-                }
-            
-            engine_params = {
-                'device': str(engine.device),
-                'dtype': str(engine.dtype).split('.')[-1],
-                'main_run_dir': main_run_dir,
-                'baseline_results': baseline_results,
-                'baseline_theories_info': baseline_theories_info,  # Pass serializable info instead
-                'effective_steps': effective_steps,
-                'effective_dtau': effective_dtau.item(),
-                'r0_val': r0_val,
-                'quantum_interval': quantum_interval,
-                'quantum_beta': quantum_beta,
-                'callback_interval': CALLBACK_INTERVAL
-            }
-            
-            # Convert args to dict for serialization
-            args_dict = vars(args)
-            
-            # Create work items
-            work_items = []
-            for combo in param_combinations:
-                sweep_kwargs = dict(zip(param_names, combo))
-                work_item = (model_prototype.__class__, sweep_kwargs, args_dict, engine_params)
-                work_items.append(work_item)
-            
-            # Process combinations in parallel
-            sweep_results = []
-            with ProcessPoolExecutor(max_workers=max_workers) as executor:
-                # Submit all tasks
-                future_to_combo = {
-                    executor.submit(process_sweep_combination, work_item): work_item[1]
-                    for work_item in work_items
-                }
-                
-                # <reason>chain: Ensure proper cleanup of futures to prevent semaphore leaks</reason>
-                try:
-                    # Process completed tasks
-                    for i, future in enumerate(as_completed(future_to_combo)):
-                        combo = future_to_combo[future]
-                        try:
-                            result = future.result()
-                            sweep_results.append(result)
-                            param_str = ", ".join(f"{k}={v}" for k, v in combo.items())
-                            print(f"\n--- Completed sweep variant {i+1}/{len(param_combinations)}: {param_str} ---")
-                            
-                            if result.get('status') == 'error':
-                                print(f"  [ERROR] {result.get('error', 'Unknown error')}")
-                                # <reason>chain: Display worker log on error for debugging</reason>
-                                if 'worker_log' in result and os.path.exists(result['worker_log']):
-                                    print(f"  [WORKER LOG] Reading from: {result['worker_log']}")
-                                    with open(result['worker_log'], 'r') as log_f:
-                                        log_contents = log_f.read()
-                                        print("  === Worker Log Contents ===")
-                                        for line in log_contents.splitlines():
-                                            print(f"  {line}")
-                                        print("  === End Worker Log ===")
-                                if 'traceback' in result:
-                                    print(f"  [TRACEBACK]\n{result['traceback']}")
-                        except Exception as e:
-                            error_msg = f"Failed to process combination: {e}"
-                            print(f"  [ERROR] {error_msg}")
-                            # <reason>chain: Try to get more details about process termination</reason>
-                            import signal
-                            if hasattr(e, '__cause__') and isinstance(e.__cause__, signal.Signals):
-                                signal_name = e.__cause__.name
-                                print(f"  [TERMINATED] Process was terminated with signal: {signal_name}")
-                            sweep_results.append({
-                                'model_name': model_prototype.name,
-                                'sweep_params': combo,
-                                'status': 'error',
-                                'error': error_msg,
-                                'traceback': traceback.format_exc()
-                            })
-                finally:
-                    # <reason>chain: Cancel remaining futures to prevent resource leaks</reason>
-                    for future in future_to_combo:
-                        if not future.done():
-                            future.cancel()
-                    
-                    # <reason>chain: Explicitly shutdown and wait for cleanup</reason>
-                    executor.shutdown(wait=True, cancel_futures=True)
-                
-            # <reason>chain: Save consolidated sweep results</reason>
-            sweep_summary_file = os.path.join(main_run_dir, f"{model_prototype.name.replace(' ', '_')}_sweep_summary.json")
-            with open(sweep_summary_file, 'w') as f:
-                json.dump(sweep_results, f, indent=2)
-            print(f"\n  Sweep results saved to: {sweep_summary_file}")
-                
-        else: # No sweep or sweeps disabled - use preferred values
-            # Get preferred parameter values
-            preferred_params = get_preferred_values(model_prototype)
-            
-            # If this theory has sweep params but we're not sweeping, use preferred values
-            if hasattr(model_prototype, 'sweep') and model_prototype.sweep and not args.enable_sweeps:
-                print(f"  Using preferred values for {model_prototype.name}: {preferred_params}")
-                try:
-                    # Create instance with preferred parameters
-                    instance = model_prototype.__class__(**preferred_params)
-                except Exception as e:
-                    print(f"  [WARNING] Failed to instantiate with preferred params, using default: {e}")
-                    instance = model_prototype
-            else:
-                instance = model_prototype
-            
-            # Run validation only
-            validation_result = validate_theory_only(
-                instance, engine, main_run_dir, baseline_results, baseline_theories, args,
-                r0, r0_val
-            )
-            
-            validation_results[instance.name] = validation_result
-            
-            # Handle skipped theories separately
-            if validation_result.get('status') == 'skipped':
-                print(f"  → Skipped: {instance.name} ({validation_result.get('reason', 'Unknown reason')})")
-            elif validation_result['passed']:
-                theories_that_passed.append((instance, validation_result['theory_dir']))
-            else:
-                theories_that_failed.append((instance, validation_result['theory_dir']))
-
-    # <reason>chain: Close theory progress bar before summary</reason>
-    theory_pbar.close()
-    
-    # --- Output Validation Results ---
-    print(f"\n{'='*60}")
-    print(f"Validation Summary:")
-    print(f"  Total theories validated: {len(validation_results)}")
-    print(f"  Passed: {len(theories_that_passed)}")
-    print(f"  Failed: {len(theories_that_failed)}")
-    print(f"{'='*60}")
-    
-    if theories_that_failed:
-        print(f"\nTheories that failed validation:")
-        for theory, theory_dir in theories_that_failed:
-            print(f"  ✗ {theory.name}")
-            # Move to fail directory
-            fail_dir = os.path.join(main_run_dir, "fail")
-            os.makedirs(fail_dir, exist_ok=True)
-            try:
-                sanitized_name = os.path.basename(theory_dir)
-                dest_path = os.path.join(fail_dir, sanitized_name)
-                if os.path.exists(dest_path):
-                    timestamp = time.strftime("%H%M%S")
-                    dest_path = os.path.join(fail_dir, f"{sanitized_name}_{timestamp}")
-                shutil.move(theory_dir, dest_path)
-                print(f"    → Moved to: {dest_path}")
-            except Exception as e:
-                print(f"    [ERROR] Could not move directory: {e}")
-    
-    if theories_that_passed:
-        print(f"\nTheories that passed validation:")
-        for theory, theory_dir in theories_that_passed:
-            print(f"  ✓ {theory.name}")
-    
-    # --- Phase 2: Run Trajectories for Validated Theories ---
-    if theories_that_passed:
-        print(f"\n--- Phase 2: Running Full Trajectories for Validated Theories ---")
-        print(f"{'='*60}")
-        
-        for theory, theory_dir in theories_that_passed:
-            success = run_trajectory_and_visualize(
-                theory, engine, theory_dir, baseline_results, baseline_theories, args,
-                effective_steps, effective_dtau, r0, r0_val,
-                quantum_interval, quantum_beta, progress_callback, CALLBACK_INTERVAL
-            )
-            
-            if not success:
-                print(f"  [WARNING] Could not compute trajectory for {theory.name}")
-                # Continue with the theory in the ranking despite computational issues
-    
-    print(f"\n{'='*60}")
-    print(f"Run complete. All results saved to: {main_run_dir}")
-    print(f"{'='*60}")
-    
-    # <reason>chain: Update homepage images with latest run results</reason>
-    try:
-        from physics_agent.update_homepage_images import update_homepage_images
-        print("\nUpdating homepage with latest trajectory images...")
-        update_homepage_images(main_run_dir)
-    except Exception as e:
-        print(f"Warning: Could not update homepage images: {e}")
-    
-    # Summary of quantum theories that passed all tests
-    print(f"\n--- Summary: Quantum Theory Validation Results ---")
-    passed_theories = []
-    failed_theories = []
-    
-    # Get all theory directories in main run dir (excluding fail and baseline dirs)
-    all_theory_dirs = glob.glob(os.path.join(main_run_dir, "*"))
-    for theory_dir in all_theory_dirs:
-        if os.path.isdir(theory_dir):
-            dir_name = os.path.basename(theory_dir)
-            
-            # Skip baseline directories, predictions directory, and other non-theory files
-            if dir_name in ['predictions', 'run_config.json'] or dir_name.startswith('baseline_'):
+        # Apply category filter if specified
+        if args.category:
+            theory_category = theory_info.get('category', 'unknown')
+            if theory_category != args.category:
                 continue
-            
-            # Check if quantum validation passed
-            quantum_val_path = os.path.join(theory_dir, 'quantum_validation.json')
-            theory_info_path = os.path.join(theory_dir, 'theory_info.json')
-
-            # Get theory name from theory_info.json if available
-            theory_name = dir_name.replace("_", " ")
-            if os.path.exists(theory_info_path):
-                with open(theory_info_path, 'r') as f:
-                    info = json.load(f)
-                    theory_name = info.get('name', theory_name)
-
-            if os.path.exists(quantum_val_path):
-                with open(quantum_val_path, 'r') as f:
-                    quantum_data = json.load(f)
-                    # Count quantum validators that passed
-                    all_validators = quantum_data.get('validations', [])
-                    quantum_passed_count = sum(1 for v in all_validators if v['flags']['overall'] == 'PASS')
-                    quantum_total = len(all_validators)
-                    pass_rate = quantum_passed_count / quantum_total if quantum_total > 0 else 0
-                    quantum_passed = pass_rate >= 0.8  # 80% pass rate
-                    if quantum_passed:
-                        passed_theories.append(theory_name)
-                    else:
-                        # This shouldn't happen since failed theories are moved
-                        failed_theories.append(theory_name)
-            else:
-                # No quantum validation means it's not a quantum candidate
-                failed_theories.append(f"{theory_name} (no quantum validation)")
-
-    print(f"\nFinalist theories that passed all quantum tests ({len(passed_theories)}):")
-    for theory in sorted(passed_theories):
-        print(f"  ✓ {theory}")
-
-    if failed_theories:
-        print(f"\nTheories in main directory without quantum validation ({len(failed_theories)}):")
-        for theory in sorted(failed_theories):
-            print(f"  ✗ {theory}")
-
-    print(f"\nAll theories have been evaluated and ranked in the comprehensive report.")
-    print(f"See the leaderboard for complete rankings and detailed analysis.")
-    print(f"{'='*60}")
-    
-    # Run prediction validators on finalists
-    finalists = run_predictions_on_finalists(engine, main_run_dir, args)
-    
-    # Update comprehensive reports with prediction results
-    update_comprehensive_reports_with_predictions(main_run_dir)
-    
-    # Generate comprehensive leaderboard
-    generate_leaderboard(main_run_dir)
-
-    # Generate comprehensive summary of all theories
-    # <reason>chain: Generate final summary with all pass/fail results and errors</reason>
-    # Include calibration certificate for transparency
-    generate_comprehensive_summary(main_run_dir, validation_results, calibration_info)
-
-    # After predictions, auto-sweep top theories if --enable-sweeps
-    # <reason>chain: Implement auto-sweeping of top winners with sweepable_fields</reason>
-    if args.enable_sweeps:
-        print("\n=== Auto-Sweeping Top Theories ===")
-        # Identify top winners: e.g., beat SOTA in >=1 validator
-        top_theories = [f for f in finalists if any(pred.get('beats_sota', False) for pred in f.get('predictions', []))]
-        if not top_theories:
-            print("No top theories to sweep.")
-        else:
-            print(f"Sweeping {len(top_theories)} top theories...")
-            # For now, just print what we would sweep
-            for finalist in top_theories:
-                print(f"  Would sweep: {finalist['info']['name']}")
-            print("Note: Auto-sweep functionality is still under development.")
-    
-    # <reason>chain: Stop capturing output and save the log file</reason>
-    run_logger.stop()
-
-def update_comprehensive_reports_with_predictions(main_run_dir: str):
-    """
-    <reason>chain: Update comprehensive HTML reports after prediction validators have run</reason>
-    <reason>chain: This ensures prediction results are included in the final reports</reason>
-    """
-    print(f"\n{'='*60}")
-    print("Updating comprehensive reports with prediction results")
-    print(f"{'='*60}")
-    
-    # Load prediction results
-    predictions_report_path = os.path.join(main_run_dir, "predictions", "predictions_report.json")
-    if not os.path.exists(predictions_report_path):
-        print("No prediction results found. Skipping report update.")
-        return
         
-    with open(predictions_report_path, 'r') as f:
-        predictions_data = json.load(f)
+        theory_instance = loader.instantiate_theory(theory_key)
+        if theory_instance:
+            theories_to_run.append(theory_instance)
     
-    # Process each theory directory
-    report_generator = ComprehensiveReportGenerator()
-    theories_updated = 0
+    print(f"Found {len(theories_to_run)} theories to evaluate")
     
-    for entry in os.listdir(main_run_dir):
-        theory_dir = os.path.join(main_run_dir, entry)
-        
-        # Skip non-directories and special directories
-        if not os.path.isdir(theory_dir) or entry in ['fail', 'predictions'] or entry.startswith('baseline_'):
-            continue
-            
-        # Load comprehensive scores
-        scores_path = os.path.join(theory_dir, 'comprehensive_scores.json')
-        if not os.path.exists(scores_path):
-            continue
-            
-        with open(scores_path, 'r') as f:
-            theory_scores = json.load(f)
-            
-        theory_name = theory_scores.get('theory_name', 'Unknown')
-        
-        # Add prediction results to theory scores
-        prediction_results_added = False
-        
-        # Look for this theory in prediction results
-        for validator_name, validator_results in predictions_data['results'].items():
-            for theory_result in validator_results['theories']:
-                if theory_result['theory'] == theory_name:
-                    # Add this prediction result to the theory scores
-                    if 'predictions' not in theory_scores:
-                        theory_scores['predictions'] = {}
-                        
-                    # <reason>chain: Handle improvement values that might be infinity or strings</reason>
-                    improvement = theory_result['improvement']
-                    if isinstance(improvement, str):
-                        # Convert string representations back to float
-                        if improvement == 'inf' or improvement == 'Infinity':
-                            improvement = float('inf')
-                        elif improvement == '-inf' or improvement == '-Infinity':
-                            improvement = float('-inf')
-                        else:
-                            try:
-                                improvement = float(improvement)
-                            except ValueError:
-                                improvement = 0.0
-                    
-                    # Store the prediction result
-                    theory_scores['predictions'][validator_name] = {
-                        'loss': 0.0 if theory_result['beats_sota'] else 1.0,
-                        'passed': theory_result['beats_sota'],
-                        'details': {
-                            'beats_sota': theory_result['beats_sota'],
-                            'improvement': improvement,
-                            'theory_value': theory_result.get('theory_value'),
-                            'sota_value': theory_result.get('sota_value'),
-                            'units': theory_result['units']
-                        }
-                    }
-                    prediction_results_added = True
-        
-        if prediction_results_added:
-            # Save updated scores
-            with open(scores_path, 'w') as f:
-                # <reason>chain: Use to_serializable to handle NaN, infinity, and tensor values</reason>
-                json.dump(to_serializable(theory_scores), f, indent=4)
-            
-            # Regenerate HTML report
-            try:
-                # Get logs if available
-                log_content = None
-                log_path = os.path.join(theory_dir, 'execution_log.txt')
-                if os.path.exists(log_path):
-                    with open(log_path, 'r') as f:
-                        log_content = f.read()
-                
-                # Generate updated report
-                report_path = report_generator.generate_theory_report(
-                    theory_name=theory_name,
-                    theory_results=theory_scores,
-                    output_dir=theory_dir,
-                    logs=log_content
-                )
-                
-                theories_updated += 1
-                print(f"  Updated report for {theory_name}")
-                
-            except Exception as e:
-                print(f"  [WARNING] Failed to update report for {theory_name}: {e}")
-                import traceback
-                traceback.print_exc()
+    # Load baseline theories
+    baseline_theories = {}
+    baseline_results = {}
     
-    print(f"\nUpdated {theories_updated} theory reports with prediction results")
-    print(f"{'='*60}")
-
-    def get_theory_parameters(self, theory: GravitationalTheory) -> dict:
-        """
-        <reason>chain: Extract theory parameters consistently for validation and prediction</reason>
-        Get all configurable parameters from a theory instance.
-        This ensures consistent parameter extraction across the framework.
-        """
-        parameters = {}
-        
-        # Get parameters from __init__ signature
-        import inspect
-        if hasattr(theory.__class__, '__init__'):
-            sig = inspect.signature(theory.__class__.__init__)
-            init_params = list(sig.parameters.keys())
-            init_params.remove('self')  # Remove self parameter
-            
-            # Also remove common non-parameter kwargs
-            excluded_params = ['enable_quantum', 'kwargs', 'args']
-            init_params = [p for p in init_params if p not in excluded_params]
-            
-            # Extract values for each parameter
-            for param in init_params:
-                if hasattr(theory, param):
-                    value = getattr(theory, param)
-                    # Only store numeric values or strings without Greek letters
-                    if isinstance(value, (int, float, bool, type(None))):
-                        parameters[param] = value
-                    elif isinstance(value, str) and not any(c in value for c in 'αβγδεζηθικλμνξοπρστυφχψω'):
-                        parameters[param] = value
-                    
-        return parameters
+    if not args.no_baselines:
+        print("\n--- Loading Baseline Theories ---")
+        for theory_key, theory_info in discovered_theories.items():
+            if 'baselines' in theory_info['path'] or 'defaults' in theory_info['path']:
+                instance = loader.instantiate_theory(theory_key)
+                if instance and instance.name in ['Schwarzschild', 'Kerr a=0.00']:
+                    baseline_theories[instance.name] = instance
+                    print(f"  Loaded baseline: {instance.name}")
     
-    def create_theory_with_parameters(self, theory_class, parameters: dict = None):
-        """
-        <reason>chain: Create theory instance with specific parameters for unification testing</reason>
-        Instantiate a theory with given parameters, allowing unification testing.
-        For example: setting a=0 in Kerr should reduce to Schwarzschild.
-        """
-        if parameters is None:
-            parameters = {}
-            
-        # Filter parameters to only those accepted by the theory
-        import inspect
-        sig = inspect.signature(theory_class.__init__)
-        accepted_params = list(sig.parameters.keys())
-        accepted_params.remove('self')
+    # Set up simulation parameters
+    # Calculate r0 based on multiplier
+    r0_multiplier = sim_params.get('r0_multiplier', 12.0)  # Default 12 RS
+    r0_val = r0_multiplier * engine.RS.item()  # Convert to physical units
+    r0 = torch.tensor([r0_val], device=engine.device, dtype=engine.dtype)
+    
+    # Determine steps
+    if sim_params.get('override_steps'):
+        effective_steps = sim_params['override_steps']
+    else:
+        effective_steps = 1000  # Default
+    
+    # Calculate time step - use reasonable value for black hole physics
+    effective_dtau_si = 1e-6  # 1 microsecond
+    effective_dtau = torch.tensor(effective_dtau_si / engine.time_scale, device=engine.device, dtype=engine.dtype)
+    
+    # Run baselines if needed
+    if baseline_theories and not args.no_baselines:
+        print("\n--- Running Baseline Theories ---")
+        for name, theory in baseline_theories.items():
+            print(f"\nRunning baseline: {name}")
+            hist, _, _ = engine.run_trajectory(
+                theory, r0.item() * engine.length_scale, effective_steps, 
+                effective_dtau.item() * engine.time_scale,
+                quantum_interval=sim_params.get('quantum_interval', 0), 
+                quantum_beta=sim_params.get('quantum_beta', 0.0)
+            )
+            if hist is not None:
+                baseline_results[name] = hist
+                print(f"  ✓ Successfully computed trajectory")
+    
+    # Process each theory
+    print(f"\n--- Evaluating {len(theories_to_run)} Theories ---")
+    for i, theory in enumerate(theories_to_run):
+        print(f"\n[{i+1}/{len(theories_to_run)}] Processing: {theory.name}")
         
-        # Only pass parameters that the theory accepts
-        filtered_params = {k: v for k, v in parameters.items() if k in accepted_params}
-        
-        try:
-            # Create instance with filtered parameters
-            return theory_class(**filtered_params)
-        except Exception as e:
-            print(f"  Warning: Failed to instantiate {theory_class.__name__} with params {filtered_params}")
-            print(f"  Error: {e}")
-            # Try with no parameters as fallback
-            return theory_class()
+        # Process and evaluate the theory
+        process_and_evaluate_theory(
+            theory, engine, main_run_dir, baseline_results, baseline_theories, args,
+            effective_steps, effective_dtau, r0, r0_val,
+            sim_params.get('quantum_interval', 0), sim_params.get('quantum_beta', 0.0),
+            None, 100  # progress_callback and callback_interval
+        )
+    
+    # Generate final reports
+    print(f"\n--- Generating Final Reports ---")
+    try:
+        from physics_agent.ui.leaderboard_html_generator import generate_leaderboard_html
+        generate_leaderboard_html(main_run_dir)
+    except Exception as e:
+        print(f"Warning: Could not generate leaderboard: {e}")
+    
+    print(f"\n✅ Run complete! Results saved to: {main_run_dir}")
+    return 0
 
 
 

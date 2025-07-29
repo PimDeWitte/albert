@@ -53,10 +53,15 @@ class UnifiedTrajectoryCalculator:
         self.enable_classical = enable_classical
         self._cache = cache  # <reason>chain: Store cache instance for trajectory caching</reason>
         
+        # Import all needed constants at the top
+        from physics_agent.constants import (
+            SOLAR_MASS, c as SPEED_OF_LIGHT, G as GRAVITATIONAL_CONSTANT
+        )
+        
         # Store unit conversion parameters
-        self.M = M if M is not None else 1.989e30  # Solar mass
-        self.c = c if c is not None else 2.998e8   # Speed of light
-        self.G = G if G is not None else 6.674e-11 # Gravitational constant
+        self.M = M if M is not None else SOLAR_MASS
+        self.c = c if c is not None else SPEED_OF_LIGHT
+        self.G = G if G is not None else GRAVITATIONAL_CONSTANT
         
         # <reason>chain: Calculate conversion factors for geometric units</reason>
         self.length_scale = self.G * self.M / self.c**2  # GM/c^2
@@ -259,7 +264,28 @@ class UnifiedTrajectoryCalculator:
         y = y0
         
         # <reason>chain: Step size handling depends on solver type</reason>
-        if isinstance(actual_solver, GeodesicRK4Solver):
+        # <reason>chain: QuantumGeodesicSolver needs special handling</reason>
+        from physics_agent.geodesic_integrator_stable import QuantumGeodesicSolver
+        
+        if isinstance(actual_solver, QuantumGeodesicSolver):
+            # <reason>chain: QuantumGeodesicSolver needs particle properties for quantum corrections</reason>
+            h = torch.tensor(step_size, dtype=torch.float64)
+            from physics_agent.constants import ELECTRON_MASS, ELEMENTARY_CHARGE
+            particle_mass = initial_conditions.get('particle_mass', ELECTRON_MASS)
+            particle_charge = initial_conditions.get('particle_charge', -ELEMENTARY_CHARGE)
+            particle_spin = initial_conditions.get('particle_spin', 0.5)
+            
+            for i in range(time_steps):
+                y_new = actual_solver.rk4_step(y, h, 
+                                             particle_mass=particle_mass,
+                                             particle_charge=particle_charge,
+                                             particle_spin=particle_spin)
+                if y_new is None:
+                    break
+                y = y_new
+                trajectory.append(y.detach().numpy())
+                
+        elif isinstance(actual_solver, GeodesicRK4Solver):
             # GeodesicRK4Solver expects step size in geometric units as tensor
             h = torch.tensor(step_size, dtype=torch.float64)
             
@@ -284,7 +310,7 @@ class UnifiedTrajectoryCalculator:
         
         # <reason>chain: Convert trajectory back to SI units if using geometric solver</reason>
         trajectory_array = np.array(trajectory)
-        if isinstance(actual_solver, GeodesicRK4Solver):
+        if isinstance(actual_solver, (GeodesicRK4Solver, QuantumGeodesicSolver)):
             # Convert from geometric to SI units
             trajectory_array[:, 0] *= self.time_scale  # time
             trajectory_array[:, 1] *= self.length_scale  # radius

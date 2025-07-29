@@ -56,7 +56,9 @@ class QuantumPathIntegrator:
         self.hbar = HBAR
         
         # <reason>chain: Cache for lambdified Lagrangian functions</reason>
+        # <reason>chain: Limit cache size to prevent memory leaks</reason>
         self._lagrangian_func_cache = {}
+        self._max_cache_size = 10  # Maximum number of cached functions
         
     def _get_lagrangian_function(self, use_complete: bool = False) -> Callable:
         """
@@ -68,6 +70,13 @@ class QuantumPathIntegrator:
         
         if cache_key in self._lagrangian_func_cache:
             return self._lagrangian_func_cache[cache_key]
+            
+        # <reason>chain: Clear cache if it gets too large to prevent memory leaks</reason>
+        if len(self._lagrangian_func_cache) >= self._max_cache_size:
+            # Remove oldest entries (FIFO)
+            keys_to_remove = list(self._lagrangian_func_cache.keys())[:self._max_cache_size // 2]
+            for key in keys_to_remove:
+                del self._lagrangian_func_cache[key]
             
         # Get the appropriate Lagrangian
         if use_complete and hasattr(self.theory, 'complete_lagrangian') and self.theory.complete_lagrangian is not None:

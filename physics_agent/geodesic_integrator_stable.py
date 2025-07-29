@@ -177,6 +177,10 @@ def is_quantum_theory(theory: GravitationalTheory) -> bool:
     if hasattr(theory, 'category') and theory.category == 'quantum':
         return True
     
+    # <reason>chain: Emergent theories like entropic gravity are fundamentally quantum</reason>
+    if hasattr(theory, 'category') and theory.category == 'emergent':
+        return True
+    
     # Check theory name for quantum indicators
     theory_name = theory.__class__.__name__.lower()
     quantum_indicators = [
@@ -198,12 +202,10 @@ def is_quantum_theory(theory: GravitationalTheory) -> bool:
         
     # Check if theory has complete_lagrangian AND other quantum indicators
     # Having a Lagrangian alone doesn't make a theory quantum - classical GR has Lagrangians too!
-    if hasattr(theory, 'complete_lagrangian') and theory.complete_lagrangian is not None:
-        # Only consider it quantum if it also has quantum-specific features
-        if (hasattr(theory, 'matter_lagrangian') and theory.matter_lagrangian is not None) or \
-           (hasattr(theory, 'gauge_lagrangian') and theory.gauge_lagrangian is not None) or \
-           (hasattr(theory, 'interaction_lagrangian') and theory.interaction_lagrangian is not None):
-            return True
+    # <reason>chain: Classical exact solutions like Kerr-Newman also have Lagrangians</reason>
+    # Only check Lagrangians if the theory doesn't explicitly declare itself as classical
+    if hasattr(theory, 'category') and theory.category == 'classical':
+        return False
         
     return False
 
@@ -247,7 +249,8 @@ def create_geodesic_solver(theory: GravitationalTheory, M_phys: Tensor = None,
     elif 'kerr' in theory_name or theory_class_name == 'Kerr':
         # <reason>chain: Check Kerr BEFORE charged theories since Kerr might have charge attributes</reason>
         # <reason>chain: Use standard solvers for Kerr metrics</reason>
-        if getattr(theory, 'force_6dof_solver', None):
+        # <reason>chain: Check if theory is symmetric - Kerr with a≠0 has g_tp≠0 and needs 6D solver</reason>
+        if not theory.is_symmetric:
             if GeneralGeodesicRK4SolverImported:
                 return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
             else:
@@ -261,11 +264,14 @@ def create_geodesic_solver(theory: GravitationalTheory, M_phys: Tensor = None,
     elif hasattr(theory, 'Q') or hasattr(theory, 'q'):  # Charged theories
         return ChargedGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
     else:
-        # General solver for unknown metrics
-        if GeneralGeodesicRK4SolverImported:
-            return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+        # <reason>chain: For unknown theories, check symmetry to determine solver</reason>
+        if theory.is_symmetric:
+            return GeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
         else:
-            return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+            if GeneralGeodesicRK4SolverImported:
+                return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+            else:
+                return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
 
 
 class QuantumGeodesicSolver:
@@ -611,16 +617,43 @@ class QuantumGeodesicSolver:
                 lambda_db = 6.626e-34 / (mass * v_si)  # de Broglie wavelength
                 
                 # Convert uncertainty to geometric units
-                dr_quantum = lambda_db / (self.G * self.M_phys.item() / self.c**2)
+                dr_quantum = lambda_db / (self.G * self.M_phys / self.c**2)
+                
+                # <reason>chain: For gravitational quantum effects, use Planck scale corrections</reason>
+                # The de Broglie wavelength is too small for astrophysical objects
+                # Instead, use quantum corrections that scale with the gravitational field
+                # This gives physically meaningful quantum gravity effects
+                r_current = y[1].item() if torch.is_tensor(y[1]) else y[1]
+                rs = 2.0  # Schwarzschild radius in geometric units
+                
+                # Quantum correction scales with field strength
+                field_strength = rs / r_current if r_current > rs else 1.0
+                
+                # <reason>chain: Quantum fluctuations increase in strong fields</reason>
+                # Scale quantum effects by field strength and a quantum gravity parameter
+                # For r >> rs, corrections are negligible; for r ~ rs, they become important
+                # <reason>chain: Use physically reasonable quantum gravity scale</reason>
+                # Quantum effects should be small perturbations, not dominant
+                # Typical quantum corrections in gravity are O(l_p/r) where l_p is Planck length
+                # In geometric units with M=1, this is roughly 10^-35
+                # We'll use a larger effective scale for visibility but keep it reasonable
+                quantum_gravity_scale = 1e-4  # Effective quantum gravity coupling
+                quantum_scale = quantum_gravity_scale * field_strength
                 
                 # <reason>chain: Apply quantum fluctuations to classical trajectory</reason>
                 quantum_next = classical_next.clone()
                 
                 # Add quantum fluctuations to position (but not time)
                 if len(quantum_next) > 1:
-                    # Small random fluctuation scaled by uncertainty
-                    quantum_next[1] = quantum_next[1] + torch.randn(1, device=y.device, dtype=y.dtype).item() * dr_quantum * 0.1
+                    # Random fluctuation scaled by quantum uncertainty
+                    fluctuation = torch.randn(1, device=y.device, dtype=y.dtype).item()
+                    quantum_next[1] = quantum_next[1] + fluctuation * quantum_scale * r_current
                     
+                    # <reason>chain: Also add quantum corrections to velocity</reason>
+                    if len(quantum_next) > 3:
+                        # Velocity fluctuations correlated with position
+                        quantum_next[3] = quantum_next[3] + fluctuation * quantum_scale / h.item()
+                
                 # <reason>chain: Include QED radiative corrections for charged particles</reason>
                 if self.enable_qed_corrections and kwargs.get('particle_charge', 0.0) != 0:
                     # QED correction factor (leading order)
@@ -906,9 +939,12 @@ class GeneralGeodesicRK4Solver:
         t, r, phi, dr_dtau = y[0], y[1], y[2], y[3]
         if r <= 2.01:
             return torch.full_like(y, float('nan'))
-        coords = torch.tensor([t, r, math.pi/2, phi], requires_grad=True)
-        g = self.get_metric_tensor(coords)
-        Gamma = compute_christoffel_symbols(g, coords)
+        # <reason>chain: Disable gradient tracking to prevent memory leaks</reason>
+        with torch.no_grad():
+            coords = torch.tensor([t, r, math.pi/2, phi])
+            g = self.get_metric_tensor(coords)
+            # For Christoffel symbols, we need finite differences, not autograd
+            Gamma = compute_christoffel_symbols(g, coords, disable_gradient_computation=True)
         
         # Initialize conserved quantities if not set
         if not hasattr(self, 'E'):

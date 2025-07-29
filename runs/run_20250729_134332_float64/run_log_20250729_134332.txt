@@ -1,0 +1,1254 @@
+Computing 1 baselines sequentially...
+
+  Computing baseline: Kerr (a=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 1/1 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 31 Theories ---
+
+--- Validating: Newtonian Limit ---
+  Running validation trajectory for Newtonian Limit...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Regularised Core QG (ε=1.0e-04): {'epsilon': 0.0001}
+
+--- Validating: Regularised Core QG (ε=1.0e-04) ---
+  Running validation trajectory for Regularised Core QG (ε=1.0e-04)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic gamma=1988501379557510121883590197248.000000, defaulting to measurement
+  Warning: Unrealistic beta=-25775331296691613564860007832305337834056428555734752513394475008.000000, using perturbative estimate
+  Warning: Beta still extreme (2.00e+71), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 990000.639
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 5.000 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.180 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 115.17%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Phase Transition QG (T_c=1.0): {'T_c': 1.1}
+
+--- Validating: Phase Transition QG (T_c=1.1) ---
+  Running validation trajectory for Phase Transition QG (T_c=1.1)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: Weyl-EM Quantum (ω=0.00) ---
+  Running validation trajectory for Weyl-EM Quantum (ω=0.00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_50__6a3013f9b41b70af_steps_100.pt
+  Truncating trajectory from 101 to 100 steps
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Post-Quantum Gravity (γ=1.00e-02): {'gamma_pqg': 0.01}
+
+--- Validating: Post-Quantum Gravity (γ=1.00e-02) ---
+  Running validation trajectory for Post-Quantum Gravity (γ=1.00e-02)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Einstein Asymmetric (α=0.0e+00): {'alpha': 0.0}
+
+--- Validating: Einstein Asymmetric (α=0.0e+00) ---
+  Running validation trajectory for Einstein Asymmetric (α=0.0e+00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01): {'alpha0': 1.0, 'alpha1': 1.0, 'alpha2': 1.0, 'alpha3': 1.0, 'g_coupling': 0.1}
+
+--- Validating: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+  ⚠️  WARNING: Skipping UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) - UGM theories are 8-dimensional and computationally expensive.
+      To run UGM theories, use --category ugm or include 'ugm' in categories list.
+  → Skipped: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (UGM theories require explicit opt-in with --category ugm)
+  Using preferred values for Spinor-Conformal QG (λ=0.00): {'lambda_c': 0.0}
+
+--- Validating: Spinor-Conformal QG (λ=0.00) ---
+  Running validation trajectory for Spinor-Conformal QG (λ=0.00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Alena‑Tensor‑γ=+0.00: {'gamma': 0.0}
+
+--- Validating: Alena‑Tensor‑γ=+0.00 ---
+  Running validation trajectory for Alena‑Tensor‑γ=+0.00...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: TestDivergent-α=1.00e-03 ---
+  Running validation trajectory for TestDivergent-α=1.00e-03...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Variable G (δ=+0.00): {'delta': 0.0}
+
+--- Validating: Variable G (δ=+0.00) ---
+  Running validation trajectory for Variable G (δ=+0.00)...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Participatory QG (ω=0.00): {'omega': 1e-05}
+
+--- Validating: Participatory QG (ω=0.00) ---
+  Running validation trajectory for Participatory QG (ω=0.00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: MyTheory (p=1.0) ---
+  Running validation trajectory for MyTheory (p=1.0)...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+--- Validating: Quantum Quantum Template (g=1.0) ---
+  Running validation trajectory for Quantum Quantum Template (g=1.0)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Fractal QG (D=3.000): {'D': 3.1}
+
+--- Validating: Fractal QG (D=3.100) ---
+  Running validation trajectory for Fractal QG (D=3.100)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Einstein Teleparallel (τ=0.000): {'tau': 0.0}
+
+--- Validating: Einstein Teleparallel (τ=0.000) ---
+  Running validation trajectory for Einstein Teleparallel (τ=0.000)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: Kerr-Newman (a=0.50, q_e=0.30) ---
+  Running validation trajectory for Kerr-Newman (a=0.50, q_e=0.30)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr-Newman__a_0_50__q_e_0_30__bad0e2ccac5dda1f_steps_100.pt
+  Truncating trajectory from 101 to 100 steps
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Log-Corrected QG (γ=0.000): {'gamma': 1e-05}
+
+--- Validating: Log-Corrected QG (γ=0.000) ---
+  Running validation trajectory for Log-Corrected QG (γ=0.000)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: Entropic‑Λσβ ---
+  Running validation trajectory for Entropic‑Λσβ...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Surfaceology‑ε=+0.00: {'epsilon': 0.0}
+
+--- Validating: Surfaceology‑ε=+0.00 ---
+  Running validation trajectory for Surfaceology‑ε=+0.00...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for String Theory (α'=1.0e-66): {'alpha_prime': 1e-66}
+
+--- Validating: String Theory (α'=1.0e-66) ---
+  Running validation trajectory for String Theory (α'=1.0e-66)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Kaluza-Klein (R_kk=1.0e-32): {'R_kk': 1e-32}
+
+--- Validating: Kaluza-Klein (R_kk=1.0e-32) ---
+  Running validation trajectory for Kaluza-Klein (R_kk=1.0e-32)...
+  Constraint validators using quantum Lagrangian
+  Error running Conservation Validator: min() received an invalid combination of arguments - got (float, Tensor), but expected one of:
+ * (Tensor input, *, Tensor out = None)
+ * (Tensor input, Tensor other, *, Tensor out = None)
+ * (Tensor input, int dim, bool keepdim = False, *, tuple of Tensors out = None)
+ * (Tensor input, name dim, bool keepdim = False, *, tuple of Tensors out = None)
+
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1468, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/conservation_validator.py", line 98, in validate
+    g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_si, M_si, self.engine.c_si, self.engine.G_si)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/kaluza_klein/theory.py", line 84, in get_metric
+    Q_eff = torch.min(Q_eff, Q_max)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: min() received an invalid combination of arguments - got (float, Tensor), but expected one of:
+ * (Tensor input, *, Tensor out = None)
+ * (Tensor input, Tensor other, *, Tensor out = None)
+ * (Tensor input, int dim, bool keepdim = False, *, tuple of Tensors out = None)
+ * (Tensor input, name dim, bool keepdim = False, *, tuple of Tensors out = None)
+
+
+  Error running Metric Properties Validator: min() received an invalid combination of arguments - got (float, Tensor), but expected one of:
+ * (Tensor input, *, Tensor out = None)
+ * (Tensor input, Tensor other, *, Tensor out = None)
+ * (Tensor input, int dim, bool keepdim = False, *, tuple of Tensors out = None)
+ * (Tensor input, name dim, bool keepdim = False, *, tuple of Tensors out = None)
+
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1468, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/metric_properties_validator.py", line 35, in validate
+    g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M_si, self.engine.c_si, self.engine.G_si)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/kaluza_klein/theory.py", line 84, in get_metric
+    Q_eff = torch.min(Q_eff, Q_max)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: min() received an invalid combination of arguments - got (float, Tensor), but expected one of:
+ * (Tensor input, *, Tensor out = None)
+ * (Tensor input, Tensor other, *, Tensor out = None)
+ * (Tensor input, int dim, bool keepdim = False, *, tuple of Tensors out = None)
+ * (Tensor input, name dim, bool keepdim = False, *, tuple of Tensors out = None)
+
+
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Emergent Gravity (η=0.00): {'eta': 0.0}
+
+--- Validating: Emergent Gravity (η=0.00) ---
+  Running validation trajectory for Emergent Gravity (η=0.00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Gauge Gravity (κ=0.00): {'kappa': 0.0}
+
+--- Validating: Gauge Gravity (κ=0.00) ---
+  Running validation trajectory for Gauge Gravity (κ=0.00)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Asymptotic Safety (Λ_as=1.0e+18 GeV): {'Lambda_as': 1e+18}
+
+--- Validating: Asymptotic Safety (Λ_as=1.0e+18 GeV) ---
+  Running validation trajectory for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Quantum Corrected (α=+0.01): {'alpha': 0.01}
+
+--- Validating: Quantum Corrected (α=+0.01) ---
+  Running validation trajectory for Quantum Corrected (α=+0.01)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Yukawa (λ=10.00 RS): {'lambda_rs': 1000000.0}
+
+--- Validating: Yukawa (λ=1000000.00 RS) ---
+  Running validation trajectory for Yukawa (λ=1000000.00 RS)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Stochastic Noise (σ=1.00e-05): {'sigma': 0.0001}
+
+--- Validating: Stochastic Noise (σ=1.00e-04) ---
+  Running validation trajectory for Stochastic Noise (σ=1.00e-04)...
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+
+--- Validating: Schwarzschild ---
+  Running validation trajectory for Schwarzschild...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+--- Validating: Reissner-Nordström (q_e=0.30) ---
+  Running validation trajectory for Reissner-Nordström (q_e=0.30)...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+============================================================
+Validation Summary:
+  Total theories validated: 31
+  Passed: 1
+  Failed: 29
+============================================================
+
+Theories that failed validation:
+  ✗ Newtonian Limit
+    → Moved to: runs/run_20250729_134332_float64/fail/Newtonian_Limit
+  ✗ Phase Transition QG (T_c=1.1)
+    → Moved to: runs/run_20250729_134332_float64/fail/Phase_Transition_QG_T_c_1_1
+  ✗ Weyl-EM Quantum (ω=0.00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Weyl-EM_Quantum_ω_0_00
+  ✗ Kerr (a=0.50)
+    → Moved to: runs/run_20250729_134332_float64/fail/Kerr_a_0_50
+  ✗ Post-Quantum Gravity (γ=1.00e-02)
+    → Moved to: runs/run_20250729_134332_float64/fail/Post-Quantum_Gravity_γ_1_00e-02
+  ✗ Einstein Asymmetric (α=0.0e+00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Einstein_Asymmetric_α_0_0e+00
+  ✗ Spinor-Conformal QG (λ=0.00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Spinor-Conformal_QG_λ_0_00
+  ✗ Alena‑Tensor‑γ=+0.00
+    → Moved to: runs/run_20250729_134332_float64/fail/Alena‑Tensor‑γ_+0_00
+  ✗ TestDivergent-α=1.00e-03
+    → Moved to: runs/run_20250729_134332_float64/fail/TestDivergent-α_1_00e-03
+  ✗ Variable G (δ=+0.00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Variable_G_δ_+0_00
+  ✗ Participatory QG (ω=0.00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Participatory_QG_ω_0_00
+  ✗ MyTheory (p=1.0)
+    → Moved to: runs/run_20250729_134332_float64/fail/MyTheory_p_1_0
+  ✗ Quantum Quantum Template (g=1.0)
+    → Moved to: runs/run_20250729_134332_float64/fail/Quantum_Quantum_Template_g_1_0
+  ✗ Fractal QG (D=3.100)
+    → Moved to: runs/run_20250729_134332_float64/fail/Fractal_QG_D_3_100
+  ✗ Einstein Teleparallel (τ=0.000)
+    → Moved to: runs/run_20250729_134332_float64/fail/Einstein_Teleparallel_τ_0_000
+  ✗ Kerr-Newman (a=0.50, q_e=0.30)
+    → Moved to: runs/run_20250729_134332_float64/fail/Kerr-Newman_a_0_50_q_e_0_30
+  ✗ Log-Corrected QG (γ=0.000)
+    → Moved to: runs/run_20250729_134332_float64/fail/Log-Corrected_QG_γ_0_000
+  ✗ Entropic‑Λσβ
+    → Moved to: runs/run_20250729_134332_float64/fail/Entropic‑Λσβ
+  ✗ Surfaceology‑ε=+0.00
+    → Moved to: runs/run_20250729_134332_float64/fail/Surfaceology‑ε_+0_00
+  ✗ String Theory (α'=1.0e-66)
+    → Moved to: runs/run_20250729_134332_float64/fail/String_Theory_α'_1_0e-66
+  ✗ Kaluza-Klein (R_kk=1.0e-32)
+    → Moved to: runs/run_20250729_134332_float64/fail/Kaluza-Klein_R_kk_1_0e-32
+  ✗ Emergent Gravity (η=0.00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Emergent_Gravity_η_0_00
+  ✗ Gauge Gravity (κ=0.00)
+    → Moved to: runs/run_20250729_134332_float64/fail/Gauge_Gravity_κ_0_00
+  ✗ Asymptotic Safety (Λ_as=1.0e+18 GeV)
+    → Moved to: runs/run_20250729_134332_float64/fail/Asymptotic_Safety_Λ_as_1_0e+18_GeV
+  ✗ Quantum Corrected (α=+0.01)
+    → Moved to: runs/run_20250729_134332_float64/fail/Quantum_Corrected_α_+0_01
+  ✗ Yukawa (λ=1000000.00 RS)
+    → Moved to: runs/run_20250729_134332_float64/fail/Yukawa_λ_1000000_00_RS
+  ✗ Stochastic Noise (σ=1.00e-04)
+    → Moved to: runs/run_20250729_134332_float64/fail/Stochastic_Noise_σ_1_00e-04
+  ✗ Schwarzschild
+    → Moved to: runs/run_20250729_134332_float64/fail/Schwarzschild
+  ✗ Reissner-Nordström (q_e=0.30)
+    → Moved to: runs/run_20250729_134332_float64/fail/Reissner-Nordström_q_e_0_30
+
+Theories that passed validation:
+  ✓ Regularised Core QG (ε=1.0e-04)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Regularised Core QG (ε=1.0e-04) ---
+
+--- Evaluating: Regularised Core QG (ε=1.0e-04) ---
+
+--- Evaluating: Regularised Core QG (ε=1.0e-04) ---
+  Results will be saved to: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04
+  Running pre-flight checks for Regularised Core QG (ε=1.0e-04)...
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic gamma=1988501379557510121883590197248.000000, defaulting to measurement
+  Warning: Unrealistic beta=-25775331296691613564860007832305337834056428555734752513394475008.000000, using perturbative estimate
+  Warning: Beta still extreme (2.00e+71), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 990000.639
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 5.000 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.180 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 115.17%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Regularised Core QG (ε=1.0e-04). Continuing with evaluation.
+  Running trajectory simulation for Regularised Core QG (ε=1.0e-04)...
+
+    Starting trajectory computation for electron...
+    Starting trajectory computation for neutrino...
+
+    Starting trajectory computation for proton...
+
+    Starting trajectory computation for photon...
+
+    Creating QuantumGeodesicSolver for quantum theory: Regularised Core QG (ε=1.0e-04)
+    Creating QuantumGeodesicSolver for quantum theory: Regularised Core QG (ε=1.0e-04)
+    Creating QuantumGeodesicSolver for quantum theory: Regularised Core QG (ε=1.0e-04)
+    Creating QuantumGeodesicSolver for quantum theory: Regularised Core QG (ε=1.0e-04)
+    Trajectory saved to cache: Regularised_Core_QG____1_0e-04__41718ff48a795fc7_steps_100.pt
+    Trajectory saved to cache: Regularised_Core_QG____1_0e-04__5ec82ae60fbbb6a3_steps_100.pt
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([101, 4])
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([101, 4])
+    Trajectory saved to cache: Regularised_Core_QG____1_0e-04__5b02859836479356_steps_100.pt
+    Completed proton: tag=quantum_unified_trajectory, hist_shape=torch.Size([101, 4])
+    Trajectory saved to cache: Regularised_Core_QG____1_0e-04__ba1dfdfafe51f210_steps_100.pt
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([101, 4])
+
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic gamma=1988501379557510121883590197248.000000, defaulting to measurement
+  Warning: Unrealistic beta=-25775331296691613564860007832305337834056428555734752513394475008.000000, using perturbative estimate
+  Warning: Beta still extreme (2.00e+71), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 990000.639
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 5.000 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.180 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 115.17%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic gamma=1988501379557510121883590197248.000000, defaulting to measurement
+  Warning: Unrealistic beta=-25775331296691613564860007832305337834056428555734752513394475008.000000, using perturbative estimate
+  Warning: Beta still extreme (2.00e+71), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 990000.639
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 5.000 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.180 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 115.17%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic gamma=1988501379557510121883590197248.000000, defaulting to measurement
+  Warning: Unrealistic beta=-25775331296691613564860007832305337834056428555734752513394475008.000000, using perturbative estimate
+  Warning: Beta still extreme (2.00e+71), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 990000.639
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 5.000 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.180 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 115.17%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic gamma=1988501379557510121883590197248.000000, defaulting to measurement
+  Warning: Unrealistic beta=-25775331296691613564860007832305337834056428555734752513394475008.000000, using perturbative estimate
+  Warning: Beta still extreme (2.00e+71), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.03e-41
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 990000.639
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Schwarzschild radius: 1.485e-27 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 5.000 r_s (expected: 1.500 r_s)
+  Shadow diameter: 11.180 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 115.17%
+  Status: FAIL
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Generating trajectory comparison plot...
+  Trajectory has 101 points, using step interval 3 for markers
+  Trajectory range: r=[17720.304, 19901.290], phi=[0.000, 0.000]
+  WARNING: Theory 'Regularised Core QG (ε=1.0e-04)' has no angular motion (radial plunge)
+    Processing 1 baselines...
+      Baseline: Kerr (a=0.50)
+        WARNING: Baseline 'Kerr (a=0.50)' has non-monotonic time at index 2. Truncating.
+  Plot saved to runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_electron.png
+  Generated trajectory comparison for electron: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_electron.png
+  Generating trajectory comparison plot...
+  Trajectory has 101 points, using step interval 3 for markers
+  Trajectory range: r=[17720.304, 19901.293], phi=[0.000, 0.000]
+  WARNING: Theory 'Regularised Core QG (ε=1.0e-04)' has no angular motion (radial plunge)
+    Processing 1 baselines...
+      Baseline: Kerr (a=0.50)
+        WARNING: Baseline 'Kerr (a=0.50)' has non-monotonic time at index 2. Truncating.
+  Plot saved to runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_neutrino.png
+  Generated trajectory comparison for neutrino: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_neutrino.png
+  Generating trajectory comparison plot...
+  Trajectory has 101 points, using step interval 3 for markers
+  Trajectory range: r=[17720.304, 19901.292], phi=[0.000, 0.000]
+  WARNING: Theory 'Regularised Core QG (ε=1.0e-04)' has no angular motion (radial plunge)
+    Processing 1 baselines...
+      Baseline: Kerr (a=0.50)
+        WARNING: Baseline 'Kerr (a=0.50)' has non-monotonic time at index 2. Truncating.
+  Plot saved to runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_proton.png
+  Generated trajectory comparison for proton: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_proton.png
+  Generating trajectory comparison plot...
+  Trajectory has 101 points, using step interval 3 for markers
+  Trajectory range: r=[17720.304, 19901.290], phi=[0.000, 0.000]
+  WARNING: Theory 'Regularised Core QG (ε=1.0e-04)' has no angular motion (radial plunge)
+    Processing 1 baselines...
+      Baseline: Kerr (a=0.50)
+        WARNING: Baseline 'Kerr (a=0.50)' has non-monotonic time at index 2. Truncating.
+  Plot saved to runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_photon.png
+  Generated trajectory comparison for photon: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_photon.png
+    Creating QuantumGeodesicSolver for quantum theory: Regularised Core QG (ε=1.0e-04)
+    Trajectory saved to cache: Regularised_Core_QG____1_0e-04__eaac0e563fd0f6a2_steps_100.pt
+  Generated HTML report: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/results.html
+  Results saved to: runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04
+
+============================================================
+Run complete. All results saved to: runs/run_20250729_134332_float64
+============================================================
+
+Updating homepage with latest trajectory images...
+Updated image for Regularised Core QG: ../runs/run_20250729_134332_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_neutrino.png
+
+Updated 1 images on homepage
+
+--- Summary: Quantum Theory Validation Results ---
+
+Finalist theories that passed all quantum tests (0):
+
+Theories in main directory without quantum validation (2):
+  ✗ Regularised Core QG (ε=1.0e-04) (no quantum validation)
+  ✗ fail (no quantum validation)
+
+All theories have been evaluated and ranked in the comprehensive report.
+See the leaderboard for complete rankings and detailed analysis.
+============================================================
+
+============================================================
+PHASE 3: PREDICTION VALIDATION
+Testing novel predictions against state-of-the-art benchmarks
+============================================================
+
+Engine configuration:
+  Quantum field content: all
+  Quantum theories will use quantum Lagrangian (if available)
+  Skipping Regularised Core QG (ε=1.0e-04) - failed validations (constraints=True, observations=False)
+No finalist theories passed all validations for prediction testing.
+
+============================================================
+Updating comprehensive reports with prediction results
+============================================================
+No prediction results found. Skipping report update.
+
+============================================================
+Generating Comprehensive Leaderboard
+============================================================
+Leaderboard generated: runs/run_20250729_134332_float64/leaderboard.html
+  HTML leaderboard generated: runs/run_20250729_134332_float64/leaderboard.html
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 1
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     Regularised Core QG (ε=1.0e-04)    quantum     0.3528  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      Regularised Core QG (ε=1.0e-04) (0.000)
+Observational (Quantum Tests)            Regularised Core QG (ε=1.0e-04) (0.000)
+Predictions (CMB, PTA)                   Regularised Core QG (ε=1.0e-04) (0.000)
+Trajectory Matching                      Regularised Core QG (ε=1.0e-04) (0.000)
+Unification Potential                    Regularised Core QG (ε=1.0e-04) (0.400)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+Quantum      theories:   1 | Avg score: 0.353 | Best: Regularised Core QG (ε=1.0e-04)
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.353
+Std deviation: 0.000
+Score range: 0.353 - 0.353
+
+================================================================================
+Full details saved to: runs/run_20250729_134332_float64/leaderboard.json
+
+============================================================
+COMPREHENSIVE VALIDATION SUMMARY
+============================================================
+
+📋 CALIBRATION CERTIFICATE
+   ID: 78c62e6edafd824e
+   Status: VALID
+   Health Score: 100%
+   Guarantees:
+     ✓ Engine Correctness: GUARANTEED
+     ✓ Solver Accuracy: GUARANTEED
+     ✓ Environment Stability: GUARANTEED
+     ✓ Performance Optimized: GUARANTEED
+
+TOTAL THEORIES TESTED: 44
+PASSED: 1
+FAILED: 29
+
+============================================================
+THEORIES THAT PASSED ALL VALIDATIONS:
+============================================================
+  ✓ Regularised Core QG (ε=1.0e-04) (Score: 0.3528)
+
+============================================================
+THEORIES THAT FAILED:
+============================================================
+
+  ✗ Alena‑Tensor‑γ +0 00
+    Failure Category: validation failed
+
+  ✗ Asymptotic Safety Λ as 1 0e+18 GeV
+    Failure Category: validation failed
+
+  ✗ Einstein Asymmetric (α=0.0e+00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Einstein Teleparallel (τ=0.000)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Emergent Gravity (η=0.00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Entropic‑Λσβ
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Fractal QG D 3 100
+    Failure Category: validation failed
+
+  ✗ Gauge Gravity (κ=0.00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Kaluza-Klein R kk 1 0e-32
+    Failure Category: validation failed
+
+  ✗ Kerr (a=0.50)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Kerr-Newman (a=0.50.q.e.0.30)
+    Failure Category: validation failed
+
+  ✗ Log-Corrected QG (γ=0.000)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ MyTheory p 1 0
+    Failure Category: validation failed
+
+  ✗ Newtonian Limit
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Participatory QG (ω=0.00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Phase Transition QG T c 1 1
+    Failure Category: validation failed
+
+  ✗ Post-Quantum Gravity (γ=1.00e-02)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Quantum Corrected (α=+0.01)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Quantum Quantum Template g 1 0
+    Failure Category: validation failed
+
+  ✗ Reissner-Nordström q e 0 30
+    Failure Category: validation failed
+
+  ✗ Schwarzschild
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Spinor-Conformal QG (λ=0.00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Stochastic Noise (σ=1.00e-04)
+    Failure Category: validation failed
+    Failed Tests:
+      - Metric Properties Validator: Failed validation
+
+  ✗ String Theory α' 1 0e-66
+    Failure Category: validation failed
+
+  ✗ Surfaceology‑ε +0 00
+    Failure Category: validation failed
+
+  ✗ TestDivergent-α 1 00e-03
+    Failure Category: validation failed
+
+  ✗ Variable G (δ=+0.00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Weyl-EM Quantum (ω=0.00)
+    Failure Category: validation failed
+    Failed Tests:
+      - Conservation Validator: Failed validation
+      - Metric Properties Validator: Failed validation
+
+  ✗ Yukawa (λ=1000000.00.RS)
+    Failure Category: validation failed
+
+============================================================
+FAILURE REASON BREAKDOWN:
+============================================================
+  validation failed: 29 theories
+
+📊 Detailed summary saved to: runs/run_20250729_134332_float64/comprehensive_summary.json

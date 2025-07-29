@@ -1,0 +1,412 @@
+============================================================
+Geodesic Integrator Validation Tests
+============================================================
+
+These tests validate the geodesic integrator implementation
+by comparing with theoretical predictions and validator results.
+
+============================================================
+Test 1: Circular Orbit Period
+============================================================
+Circular orbit at r = 295.3 km (200.0 geometric units)
+Conserved quantities: E = 0.997510, L = 14.25
+
+Theoretical predictions:
+  Newtonian period: 0.087537 s
+  GR period: 0.088201 s
+  GR correction: 0.7585%
+
+Integrating orbit with 10000 steps...
+  Step size h = 1.790634 (geometric units)
+
+Debug: Testing derivatives at initial position
+  Initial state: t=0.000000, r=200.000008, phi=0.000000, dr/dtau=0.000000
+  Derivatives: dt/dtau=1.007585, dr/dtau=0.000000, dphi/dtau=0.000356, d2r/dtau2=-0.000000
+  Step 0: r=200.000008, phi=0.000638 rad
+  Step 100: r=199.997934, phi=0.064427 rad
+  Step 200: r=199.991799, phi=0.128219 rad
+  Step 300: r=199.981629, phi=0.192016 rad
+  Step 400: r=199.967463, phi=0.255820 rad
+  Step 500: r=199.949354, phi=0.319635 rad
+  Step 600: r=199.927373, phi=0.383463 rad
+  Step 700: r=199.901606, phi=0.447306 rad
+  Step 800: r=199.872152, phi=0.511167 rad
+  Step 900: r=199.839126, phi=0.575048 rad
+  Step 1000: r=199.802654, phi=0.638951 rad
+  Step 1100: r=199.762880, phi=0.702878 rad
+  Step 1200: r=199.719958, phi=0.766832 rad
+  Step 1300: r=199.674055, phi=0.830814 rad
+  Step 1400: r=199.625350, phi=0.894827 rad
+  Step 1500: r=199.574034, phi=0.958871 rad
+  Step 1600: r=199.520306, phi=1.022950 rad
+  Step 1700: r=199.464377, phi=1.087063 rad
+  Step 1800: r=199.406468, phi=1.151214 rad
+  Step 1900: r=199.346805, phi=1.215402 rad
+  Step 2000: r=199.285623, phi=1.279629 rad
+  Step 2100: r=199.223164, phi=1.343896 rad
+  Step 2200: r=199.159674, phi=1.408203 rad
+  Step 2300: r=199.095405, phi=1.472552 rad
+  Step 2400: r=199.030612, phi=1.536943 rad
+  Step 2500: r=198.965552, phi=1.601375 rad
+  Step 2600: r=198.900485, phi=1.665850 rad
+  Step 2700: r=198.835669, phi=1.730367 rad
+  Step 2800: r=198.771365, phi=1.794926 rad
+  Step 2900: r=198.707829, phi=1.859526 rad
+  Step 3000: r=198.645317, phi=1.924168 rad
+  Step 3100: r=198.584080, phi=1.988849 rad
+  Step 3200: r=198.524365, phi=2.053570 rad
+  Step 3300: r=198.466412, phi=2.118330 rad
+  Step 3400: r=198.410457, phi=2.183127 rad
+  Step 3500: r=198.356724, phi=2.247959 rad
+  Step 3600: r=198.305434, phi=2.312826 rad
+  Step 3700: r=198.256793, phi=2.377726 rad
+  Step 3800: r=198.211000, phi=2.442656 rad
+  Step 3900: r=198.168241, phi=2.507616 rad
+  Step 4000: r=198.128691, phi=2.572602 rad
+  Step 4100: r=198.092512, phi=2.637614 rad
+  Step 4200: r=198.059851, phi=2.702648 rad
+  Step 4300: r=198.030842, phi=2.767702 rad
+  Step 4400: r=198.005603, phi=2.832774 rad
+  Step 4500: r=197.984240, phi=2.897861 rad
+  Step 4600: r=197.966838, phi=2.962962 rad
+  Step 4700: r=197.953470, phi=3.028072 rad
+  Step 4800: r=197.944190, phi=3.093190 rad
+  Half orbit at t = 0.043329 s
+  Step 4900: r=197.939037, phi=3.158312 rad
+  Step 5000: r=197.938032, phi=3.223437 rad
+  Step 5100: r=197.941179, phi=3.288560 rad
+  Step 5200: r=197.948465, phi=3.353681 rad
+  Step 5300: r=197.959859, phi=3.418795 rad
+  Step 5400: r=197.975316, phi=3.483900 rad
+  Step 5500: r=197.994772, phi=3.548994 rad
+  Step 5600: r=198.018146, phi=3.614074 rad
+  Step 5700: r=198.045344, phi=3.679137 rad
+  Step 5800: r=198.076253, phi=3.744182 rad
+  Step 5900: r=198.110747, phi=3.809204 rad
+  Step 6000: r=198.148685, phi=3.874203 rad
+  Step 6100: r=198.189911, phi=3.939176 rad
+  Step 6200: r=198.234258, phi=4.004121 rad
+  Step 6300: r=198.281544, phi=4.069035 rad
+  Step 6400: r=198.331577, phi=4.133918 rad
+  Step 6500: r=198.384154, phi=4.198768 rad
+  Step 6600: r=198.439061, phi=4.263582 rad
+  Step 6700: r=198.496076, phi=4.328360 rad
+  Step 6800: r=198.554968, phi=4.393100 rad
+  Step 6900: r=198.615499, phi=4.457800 rad
+  Step 7000: r=198.677425, phi=4.522461 rad
+  Step 7100: r=198.740496, phi=4.587082 rad
+  Step 7200: r=198.804461, phi=4.651661 rad
+  Step 7300: r=198.869061, phi=4.716198 rad
+  Step 7400: r=198.934039, phi=4.780693 rad
+  Step 7500: r=198.999135, phi=4.845146 rad
+  Step 7600: r=199.064089, phi=4.909557 rad
+  Step 7700: r=199.128644, phi=4.973926 rad
+  Step 7800: r=199.192542, phi=5.038254 rad
+  Step 7900: r=199.255531, phi=5.102540 rad
+  Step 8000: r=199.317362, phi=5.166786 rad
+  Step 8100: r=199.377790, phi=5.230993 rad
+  Step 8200: r=199.436578, phi=5.295162 rad
+  Step 8300: r=199.493493, phi=5.359293 rad
+  Step 8400: r=199.548313, phi=5.423388 rad
+  Step 8500: r=199.600822, phi=5.487449 rad
+  Step 8600: r=199.650816, phi=5.551477 rad
+  Step 8700: r=199.698099, phi=5.615474 rad
+  Step 8800: r=199.742485, phi=5.679441 rad
+  Step 8900: r=199.783804, phi=5.743381 rad
+  Step 9000: r=199.821892, phi=5.807295 rad
+  Step 9100: r=199.856603, phi=5.871186 rad
+  Step 9200: r=199.887802, phi=5.935057 rad
+  Step 9300: r=199.915367, phi=5.998908 rad
+  Step 9400: r=199.939192, phi=6.062743 rad
+  Step 9500: r=199.959185, phi=6.126564 rad
+  Step 9600: r=199.975267, phi=6.190373 rad
+  Step 9700: r=199.987378, phi=6.254173 rad
+  Full orbit at t = 0.086627 s
+
+Results:
+  Integrated period: 0.086627 s
+  Theoretical GR period: 0.088201 s
+  Error: 1.79%
+  Status: PASSED
+
+  Execution time: 2.465s
+
+============================================================
+Test 2: Mercury Precession Comparison
+============================================================
+Validator result:
+  Predicted: 42.99 arcsec/century
+  Observed: 42.98 arcsec/century
+  Error: 0.02%
+
+Theoretical GR calculation:
+  Δφ per orbit: 5.02e-07 rad
+  Orbits per century: 415.2
+  Precession: 42.98 arcsec/century
+
+Comparison:
+  Validator: 42.99 arcsec/century
+  Theory: 42.98 arcsec/century
+  Difference: 0.007 arcsec/century
+
+Performance:
+  Theoretical calculation: 0.0 ms
+  Validator calculation: 3.7 ms
+  Speedup: 0.0x
+  Status: PASSED
+
+  Execution time: 0.004s
+
+============================================================
+Test 3: Light Deflection Comparison
+============================================================
+Validator result:
+  Predicted: 1.751 arcsec
+  Observed: 1.751 arcsec
+  Error: 0.02%
+
+Theoretical GR calculation:
+  Solar radius: 696.0 Mm
+  Deflection: 8.49e-06 rad
+  Deflection: 1.751 arcsec
+
+Comparison with expected:
+  Calculated: 1.751 arcsec
+  Expected: 1.750 arcsec
+  Error: 0.03%
+
+Performance:
+  Theoretical calculation: 0.00 ms
+  Validator calculation: 0.14 ms
+  Speedup: 142.5x (validator includes more checks)
+  Status: PASSED
+
+  Execution time: 0.000s
+
+============================================================
+Test 4: Photon Sphere Comparison
+============================================================
+Validator result:
+  Loss: 1.1517205238342285
+  Status: FAIL
+
+Theoretical GR calculation:
+  Schwarzschild radius: 3.0 km
+  Photon sphere radius: 4.4 km
+  r_ph/rs ratio: 1.5
+
+Geodesic calculation:
+  Testing circular photon orbit at r = 4.4 km
+  Geometric radius: 3.0000
+
+  Status: PASSED
+
+  Execution time: 0.001s
+
+============================================================
+Test 5: PPN Parameter Comparison
+============================================================
+Validator result:
+  PPN γ: 1.000000
+  PPN β: 100.000000
+  Loss: 990000.6391304348
+  Status: FAIL
+
+Theoretical GR values:
+  PPN γ: 1.000000 (light deflection, Shapiro delay)
+  PPN β: 1.000000 (perihelion advance)
+
+Shapiro delay constraints (Cassini):
+  γ = 1.000021 ± 0.000023
+
+Lunar laser ranging constraints:
+  β = 1.000000 ± 0.000030
+
+  Status: PASSED
+
+  Execution time: 0.002s
+
+============================================================
+Test 6: Quantum Interferometry (COW Experiment)
+============================================================
+Validator result:
+  Predicted phase shift: 2.697 radians
+  Observed phase shift: 2.700 ± 0.210 radians
+  Error: 0.12%
+  Status: PASSED
+
+COW experiment data from dataloader:
+  Phase shift: 2.700 ± 0.210 radians
+  Reference: Colella, Overhauser & Werner (1975), Phys. Rev. Lett. 34, 1472
+
+Note: The validator correctly implements the COW phase calculation
+including metric-derived corrections for gravitational theories.
+
+  Status: PASSED
+
+  Execution time: 0.001s
+
+============================================================
+Test 7: Gravitational Wave Inspiral
+============================================================
+Validator result:
+  Loss: 0.100
+  Status: WARNING
+
+Binary neutron star system:
+  Masses: 1.4 + 1.4 M☉
+  Separation: 1000 km
+  Orbital frequency: 3.1 Hz
+  GW frequency: 6.1 Hz
+  GW power: 2.26e-21 W
+  Inspiral timescale: 1.2e-04 years
+
+  Status: PASSED
+
+  Execution time: 0.001s
+
+============================================================
+Test 8: CMB Power Spectrum
+============================================================
+Note: Schwarzschild metric is a vacuum solution.
+It doesn't make cosmological predictions, so this test
+verifies the validator infrastructure rather than the theory.
+Loaded 29 CMB data points from dataset loader
+
+Schwarzschild CMB Prediction Results:
+  Theory χ²/dof: 53.08
+  ΛCDM χ²/dof: 53.08 (SOTA)
+  Improvement: Δχ² = 0.00
+  Beats SOTA: False
+
+Validator result:
+  Status: FAILED
+  Notes: Δχ² = 0.00 (improvement over ΛCDM). Does not improve on ΛCDM model.
+
+Planck 2018 data from dataloader:
+  File: N/A
+  Multipole range: l = 2-2508
+  Reference: Planck Collaboration 2018
+
+ΛCDM baseline:
+  χ²/dof ~ 53.08 (from validator)
+  This is the state-of-the-art model to beat
+
+  Expected result: Schwarzschild matches ΛCDM (no cosmological improvement)
+
+  Infrastructure test: PASSED
+
+  Execution time: 0.007s
+
+============================================================
+Test 9: BICEP/Keck Primordial GWs
+============================================================
+Note: Testing primordial GWs requires an inflationary cosmology model.
+Schwarzschild is a vacuum solution, so this tests the validator infrastructure.
+Loaded BICEP/Keck data from dataloader
+Schwarzschild Primordial GWs: r=0.010, n_t=-0.00
+
+Validator result:
+  Status: FAILED
+  Notes: Predicted r=0.010 (upper limit 0.032), ΔlnL=-0.50
+
+BICEP/Keck 2021 data from dataloader:
+  Constraint: r < 0.036 at 95% CL
+  Combined with Planck: r < 0.032
+  Reference: BICEP/Keck Collaboration 2021
+
+Theoretical context:
+  Single-field slow-roll inflation: r ~ 0.002-0.01
+  Consistency relation: n_t = -r/8
+  CMB-S4 target sensitivity: σ(r) ~ 0.001
+
+  Expected result: Low r value for non-inflationary Schwarzschild
+
+  Infrastructure test: PASSED
+
+  Execution time: 0.001s
+
+============================================================
+Test 10: PSR J0740+6620 Pulsar Validation
+============================================================
+Testing PSR J0740+6620 - one of the most massive known pulsars
+Used for precision tests of GR through Shapiro delay measurements
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+
+Validation results:
+  Loss: 5.218953006490816
+  Status: WARNING
+  Details: Shapiro delay 18.7 μs exceeds tolerance 3.0 μs
+
+  Status: PASSED
+
+  Execution time: 0.031s
+
+============================================================
+Test 10: Trajectory Cache Performance
+============================================================
+
+Test configuration:
+  Initial radius: 295.3 km (100 Rs)
+  Steps: 100,000
+  Time step: 8.820150e-07 (based on orbital period)
+
+1. First run (computing):
+Integrating Schwarzschild:   0%|                                     | 0/100000 [00:00<?, ? steps/s]                                                                                                       Time: 0.024s
+   Tag: symmetric_solver_run
+
+2. Second run (cached):
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_8c89f8e25edac4a3_steps_100000.pt
+  Truncating trajectory from 100001 to 100000 steps
+   Time: 3.2ms
+   Tag: cached_trajectory
+
+Performance improvement:
+  Speedup: 7.6x
+  Time saved: 0.02s
+  Results match: YES
+  Note: Size adjusted from 100001 to 100000 for comparison
+
+Cache details:
+  Files created: 1
+  - Schwarzschild_8c89f8e25edac4a3_steps_100000.pt... (3.1 MB)
+
+  Status: PASSED
+
+  🚀 Cache provides 8x speedup!
+
+  Execution time: 0.032s
+
+============================================================
+Test 11: NVIDIA Warp GPU Optimization
+============================================================
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/solver_tests/test_geodesic_validator_comparison.py", line 1362, in <module>
+    success = main()
+              ^^^^^^
+  File "/Users/p/dev/albert/physics_agent/solver_tests/test_geodesic_validator_comparison.py", line 1259, in main
+    results['warp_gpu_optimization'] = test_warp_gpu_optimization()
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/solver_tests/test_geodesic_validator_comparison.py", line 175, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/solver_tests/test_geodesic_validator_comparison.py", line 1094, in test_warp_gpu_optimization
+    from physics_agent.warp_optimizations import WARP_AVAILABLE, benchmark_warp_vs_pytorch
+  File "/Users/p/dev/albert/physics_agent/warp_optimizations.py", line 73, in <module>
+    class WarpOptimizedSolver:
+  File "/Users/p/dev/albert/physics_agent/warp_optimizations.py", line 152, in WarpOptimizedSolver
+    particles: wp.array(dtype=wp.vec6),  # [r, phi, dr/dtau, dphi/dtau, E, L]
+                              ^^^^^^^
+AttributeError: module 'warp' has no attribute 'vec6'. Did you mean: 'vec'?

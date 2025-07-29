@@ -544,9 +544,12 @@ class GeneralGeodesicRK4Solver:
             Gamma = self._christoffel_cache[cache_key]
         else:
             # Compute metric and Christoffel symbols
-            coords = torch.tensor([t, r, math.pi/2, phi], requires_grad=True, device=self.device, dtype=self.dtype)
-            g = self.get_metric_tensor(coords)
-            Gamma = compute_christoffel_symbols(g, coords)
+            # <reason>chain: Disable gradient tracking to prevent memory leaks</reason>
+            with torch.no_grad():
+                coords = torch.tensor([t, r, math.pi/2, phi], device=self.device, dtype=self.dtype)
+                g = self.get_metric_tensor(coords)
+                # For Christoffel symbols, we need finite differences, not autograd
+                Gamma = compute_christoffel_symbols(g, coords)
             
             # Cache the result
             if len(self._christoffel_cache) < self._cache_size_limit:
@@ -557,7 +560,8 @@ class GeneralGeodesicRK4Solver:
                 self._christoffel_cache[cache_key] = Gamma
         
         # 4-velocity vector
-        u = torch.tensor([u_t, u_r, 0.0, u_phi], device=self.device, dtype=self.dtype)  # [u^t, u^r, u^theta, u^phi]
+        # <reason>chain: Create tensor without gradient tracking</reason>
+        u = torch.tensor([u_t, u_r, 0.0, u_phi], device=self.device, dtype=self.dtype).detach()  # [u^t, u^r, u^theta, u^phi]
         
         # Compute accelerations using geodesic equation
         # d²x^μ/dτ² = -Γ^μ_νρ u^ν u^ρ
