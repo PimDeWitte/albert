@@ -44,7 +44,7 @@ class TheoryVisualizer:
             'proton': '#f54242',      # Bright red
             'neutrino': '#42f554',    # Bright green
             'theory': '#ffffff',      # White for main theory
-            'kerr': '#ff00ff',        # Magenta for Kerr baseline
+            'kerr': '#00ffff',        # Cyan for Kerr baseline (better visibility)
             'horizon': '#000000',     # Black for event horizon
             'singularity': '#ff0000'  # Red for singularity
         }
@@ -70,23 +70,39 @@ class TheoryVisualizer:
         y = rs * np.outer(np.sin(u), np.sin(v))
         z = rs * np.outer(np.ones(np.size(u)), np.cos(v))
         
-        # Draw semi-transparent black sphere
-        ax.plot_surface(x, y, z, color='black', alpha=alpha, shade=True)
+        # Draw wireframe sphere for better visibility
+        ax.plot_wireframe(x, y, z, color='red', alpha=0.2, linewidth=0.5)
+        
+        # Add a prominent equatorial circle
+        theta_eq = np.linspace(0, 2 * np.pi, 100)
+        x_eq = rs * np.cos(theta_eq)
+        y_eq = rs * np.sin(theta_eq)
+        z_eq = np.zeros_like(theta_eq)
+        ax.plot(x_eq, y_eq, z_eq, color='red', linewidth=2, alpha=0.8, label='Event Horizon')
         
     def _draw_singularity(self, ax):
         """Draw the singularity at the center."""
-        ax.scatter([0], [0], [0], color='red', s=100, marker='*', 
-                  edgecolors='white', linewidth=2, label='Singularity')
+        ax.scatter([0], [0], [0], color='red', s=200, marker='*', 
+                  edgecolors='yellow', linewidth=2, label='Singularity', zorder=1000)
     
-    def _create_3d_trajectory_plot(self, ax, hist, color, label, linewidth=2, alpha=1.0):
-        """Create a 3D trajectory plot from history tensor."""
+    def _create_3d_trajectory_plot(self, ax, hist, color, label, linewidth=2, alpha=1.0, solver_info=None):
+        """Create 3D trajectory plot with solver information and improved labels"""
         hist_np = self._to_numpy(hist)
         
-        # Extract coordinates
+        # Extract coordinates based on solver type
+        # 4D solver: [t, r, phi, dr/dtau]
+        # 6D solver: [t, r, theta, phi, u_t, u_r, u_phi]
         t = hist_np[:, 0]
         r = hist_np[:, 1]
-        theta = hist_np[:, 2] if hist_np.shape[1] > 2 else np.full_like(r, np.pi/2)
-        phi = hist_np[:, 3] if hist_np.shape[1] > 3 else np.zeros_like(r)
+        
+        if hist_np.shape[1] == 4:
+            # 4D symmetric solver output
+            theta = np.full_like(r, np.pi/2)  # Equatorial plane
+            phi = hist_np[:, 2]
+        else:
+            # 6D general solver output
+            theta = hist_np[:, 2] if hist_np.shape[1] > 2 else np.full_like(r, np.pi/2)
+            phi = hist_np[:, 3] if hist_np.shape[1] > 3 else np.zeros_like(r)
         
         # Convert to Cartesian coordinates
         x, y, z = self._cartesian_from_polar(r, theta, phi)
@@ -98,8 +114,70 @@ class TheoryVisualizer:
             ax.plot(x[i:i+2], y[i:i+2], z[i:i+2], 
                    color=color, linewidth=linewidth, alpha=segment_alpha)
         
+        # Add time markers along the trajectory
+        # Only show a few key time markers for maximum legibility
+        if len(t) > 10:  # Only add markers if we have enough points
+            # Show markers at: start (0%), 25%, 50%, 75%, and end (100%)
+            percentages = [0, 0.25, 0.5, 0.75, 1.0]
+            marker_indices = []
+            
+            for pct in percentages:
+                idx = int(pct * (len(t) - 1))
+                marker_indices.append(idx)
+            
+            # Remove duplicates while preserving order
+            seen = set()
+            unique_indices = []
+            for idx in marker_indices:
+                if idx not in seen:
+                    seen.add(idx)
+                    unique_indices.append(idx)
+            
+            for i, idx in enumerate(unique_indices):
+                # Add small sphere at this point
+                ax.scatter(x[idx], y[idx], z[idx], color=color, s=5, alpha=0.6, 
+                          edgecolors='white', linewidth=0.3, zorder=100+i)
+                
+                # Add time label with better formatting and positioning
+                time_val = t[idx]
+                time_label = f"t={time_val:.1f}"
+                
+                # Calculate offset direction based on trajectory direction at this point
+                if idx < len(x) - 1:
+                    # Direction vector to next point
+                    dx = x[idx+1] - x[idx]
+                    dy = y[idx+1] - y[idx] 
+                    dz = z[idx+1] - z[idx]
+                else:
+                    # For last point, use direction from previous
+                    dx = x[idx] - x[idx-1]
+                    dy = y[idx] - y[idx-1]
+                    dz = z[idx] - z[idx-1]
+                
+                # Normalize and create perpendicular offset
+                norm = np.sqrt(dx**2 + dy**2 + dz**2) + 1e-10
+                # Offset perpendicular to trajectory - increased offset distance
+                offset_scale = 0.5 * np.sqrt((x.max()-x.min())**2 + (y.max()-y.min())**2 + (z.max()-z.min())**2)
+                offset_x = -dy/norm * offset_scale
+                offset_y = dx/norm * offset_scale
+                offset_z = 0.2 * offset_scale  # Small z offset
+                
+                # Position for label
+                label_x = x[idx] + offset_x
+                label_y = y[idx] + offset_y
+                label_z = z[idx] + offset_z
+                
+                # Draw connecting line from trajectory to label
+                ax.plot([x[idx], label_x], [y[idx], label_y], [z[idx], label_z],
+                       color='white', linewidth=0.3, alpha=0.3, linestyle=':')
+                
+                # Add the label - much smaller fontsize (10x smaller: 10 -> 1)
+                ax.text(label_x, label_y, label_z, time_label, 
+                       fontsize=1, color='white', alpha=0.7,
+                       ha='center', va='center', zorder=200+i)
+        
         # Add glow effect for the current position
-        ax.scatter(x[-1], y[-1], z[-1], color=color, s=50, alpha=1.0, 
+        ax.scatter(x[-1], y[-1], z[-1], color=color, s=30, alpha=1.0, 
                   edgecolors='white', linewidth=1)
         
         # Return line for legend
@@ -107,7 +185,8 @@ class TheoryVisualizer:
     
     def generate_comparison_plot(self, model: GravitationalTheory, hist: Tensor, baseline_results: dict, 
                                 baseline_theories: dict, plot_filename: str, rs_val: float, 
-                                validations_dict: dict = None, particle_info: dict = None):
+                                validations_dict: dict = None, particle_info: dict = None,
+                                solver_info: dict = None):
         """
         Generate a single particle 3D trajectory comparison plot.
         """
@@ -120,18 +199,18 @@ class TheoryVisualizer:
         
         self.generate_all_particles_comparison(
             model, particle_trajectories, baseline_results, baseline_theories,
-            plot_filename, rs_val, validations_dict
+            plot_filename, rs_val, validations_dict, solver_info=solver_info
         )
     
     def generate_all_particles_comparison(self, model: GravitationalTheory, particle_trajectories: dict,
-                                         baseline_results: dict, baseline_theories: dict,
-                                         plot_filename: str, rs_val: float, validations_dict: dict = None):
+                                             baseline_results: dict, baseline_theories: dict,
+                                             plot_filename: str, rs_val: float, validations_dict: dict = None,
+                                             solver_info: dict = None):
         """
         Generate beautiful 3D comparison plots for all particles.
         Creates one plot per particle showing theory vs Kerr baseline.
         """
         # Set up the figure with dark background for aesthetics
-        plt.style.use('dark_background')
         
         # Filter out None trajectories
         valid_trajectories = {}
@@ -180,13 +259,14 @@ class TheoryVisualizer:
             hist = valid_trajectories[particle_name]
             theory_line = self._create_3d_trajectory_plot(
                 ax, hist, particle_color, f'{model.name} - {particle_name.capitalize()}',
-                linewidth=3, alpha=0.9
+                linewidth=3, alpha=0.9, solver_info=solver_info
             )
             
             # Plot Kerr baseline if available
             kerr_line = None
             for baseline_name, baseline_hist in baseline_results.items():
-                if 'kerr' in baseline_name.lower() and 'newman' not in baseline_name.lower():
+                # Look for Kerr baseline for this specific particle
+                if 'kerr' in baseline_name.lower() and 'newman' not in baseline_name.lower() and particle_name in baseline_name.lower():
                     kerr_line = self._create_3d_trajectory_plot(
                         ax, baseline_hist, self.colors['kerr'], f'Kerr - {particle_name.capitalize()}',
                         linewidth=2, alpha=0.6
@@ -203,58 +283,112 @@ class TheoryVisualizer:
             # Set viewing angle for best perspective
             ax.view_init(elev=20, azim=45)
             
-            # Set axis limits
+            # Set axis limits dynamically to focus on the trajectory
             hist_np = self._to_numpy(hist)
-            r_max = np.max(hist_np[:, 1]) * 1.2
-            lim = max(r_max, 10 * rs_val)
-            ax.set_xlim([-lim, lim])
-            ax.set_ylim([-lim, lim])
-            ax.set_zlim([-lim, lim])
+            
+            # Extract coordinates based on solver type
+            if hist_np.shape[1] == 4:
+                # 4D symmetric solver output
+                theta_vals = np.pi/2
+                phi_vals = hist_np[:, 2]
+            else:
+                # 6D general solver output
+                theta_vals = hist_np[:, 2] if hist_np.shape[1] > 2 else np.pi/2
+                phi_vals = hist_np[:, 3] if hist_np.shape[1] > 3 else 0
+                
+            r_vals = hist_np[:, 1]
+            x, y, z = self._cartesian_from_polar(r_vals, theta_vals, phi_vals)
+            
+            # Set limits
+            x_range = max(abs(x.max()), abs(x.min()))
+            y_range = max(abs(y.max()), abs(y.min()))
+            z_range = max(abs(z.max()), abs(z.min()))
+            max_range = max(x_range, y_range, z_range, 3 * rs_val) * 1.2
+            
+            ax.set_xlim([-max_range, max_range])
+            ax.set_ylim([-max_range, max_range])
+            ax.set_zlim([-max_range, max_range])
             
             # Grid styling
             ax.grid(True, alpha=0.2, linestyle='--')
             ax.xaxis.pane.fill = False
             ax.yaxis.pane.fill = False
             ax.zaxis.pane.fill = False
-            ax.xaxis.pane.set_edgecolor('#333333')
-            ax.yaxis.pane.set_edgecolor('#333333')
-            ax.zaxis.pane.set_edgecolor('#333333')
             
-            # Add legend
-            legend_elements = []
-            if theory_line:
-                legend_elements.append(theory_line)
-            if kerr_line:
-                legend_elements.append(kerr_line)
-            legend_elements.append(Line2D([0], [0], marker='o', color='w', 
-                                        markerfacecolor='black', markersize=10,
-                                        label='Event Horizon', alpha=0.5))
-            legend_elements.append(Line2D([0], [0], marker='*', color='w',
-                                        markerfacecolor='red', markersize=15,
-                                        label='Singularity'))
+            # Legend with computational methods in first subplot
+            if idx == 0:
+                legend_elements = []
+                if theory_line:
+                    legend_elements.append(theory_line)
+                if kerr_line:
+                    legend_elements.append(kerr_line)
+                # Add event horizon and singularity to legend
+                legend_elements.extend([
+                    Line2D([0], [0], color='none', marker='o', markersize=8, 
+                          markerfacecolor='none', markeredgecolor='cyan', label='Event Horizon'),
+                    Line2D([0], [0], color='none', marker='*', markersize=10, 
+                          markerfacecolor='red', markeredgecolor='yellow', label='Singularity')
+                ])
+                
+                ax.legend(handles=legend_elements, loc='upper right', fontsize=10,
+                         frameon=True, fancybox=True, shadow=True,
+                         facecolor='#1a1a1a', edgecolor='white')
+                
+                # Add computational methods box
+                methods_text = "Computational Methods:\n"
+                if hasattr(model, 'theory_type'):
+                    methods_text += f"Theory Solver:\n"
+                    if 'quantum' in model.theory_type.lower():
+                        methods_text += "• Quantum Geodesic Solver\n"
+                        methods_text += "• Path integral formulation\n"
+                        methods_text += "• WKB/Semiclassical approx.\n"
+                        methods_text += "• QED corrections enabled\n"
+                    else:
+                        if model.is_symmetric:
+                            methods_text += "• 4D symmetric spacetime\n"
+                            methods_text += "• Conserved: E, L_z\n"
+                        else:
+                            methods_text += "• 6D general spacetime\n"
+                
+                methods_text += "\nKerr Baseline:\n"
+                methods_text += "• Kerr Geodesic Solver\n"
+                methods_text += "• Boyer-Lindquist coords\n"
+                methods_text += "• Spin parameter a=0.50\n"
+                
+                # Add solver info if provided
+                if solver_info:
+                    if 'solver_type' in solver_info:
+                        methods_text += f"\nActive: {solver_info['solver_type']}"
+                    if 'integration_method' in solver_info:
+                        methods_text += f"\nMethod: {solver_info['integration_method']}"
+                
+                # Position the methods box in the lower left
+                ax.text2D(0.02, 0.02, methods_text, transform=ax.transAxes,
+                         fontsize=8, color='white', alpha=0.8,
+                         bbox=dict(boxstyle='round,pad=0.5', facecolor='#1a1a1a', 
+                                  edgecolor='white', alpha=0.7),
+                         verticalalignment='bottom', horizontalalignment='left',
+                         family='monospace')
             
-            ax.legend(handles=legend_elements, loc='upper right', fontsize=10,
-                     facecolor='#1a1a1a', edgecolor='white', framealpha=0.8)
-            
-            # Add particle properties text
-            props_text = f"Type: {particle.particle_type}\\n"
-            props_text += f"Orbit: {particle.orbital_parameters.get('orbit_type', 'unknown')}"
-            ax.text2D(0.02, 0.98, props_text, transform=ax.transAxes,
-                     fontsize=10, verticalalignment='top',
-                     bbox=dict(boxstyle='round', facecolor='#1a1a1a', 
-                              edgecolor='white', alpha=0.8))
+            # Particle type label
+            if hasattr(particle, 'particle_type'):
+                type_label = f"Type: {particle.particle_type}"
+                if particle.particle_type == 'massless':
+                    type_label += "\nOrbit: circular_fast"
+                ax.text2D(0.02, 0.98, type_label, transform=ax.transAxes,
+                         fontsize=8, color='white', alpha=0.7,
+                         verticalalignment='top', horizontalalignment='left',
+                         bbox=dict(boxstyle='round,pad=0.3', facecolor='#1a1a1a', 
+                                  edgecolor=particle_color, alpha=0.5))
         
         # Add main title
-        fig.suptitle(f'{model.name} - Particle Trajectories Near Black Hole',
-                    fontsize=24, y=0.98, color='white')
+        main_title = f"{model.name} - Particle Trajectories Near Black Hole"
+        fig.suptitle(main_title, fontsize=20, color='white', y=0.98)
         
-        # Add theory information
-        theory_text = f"Theory: {model.name}\\n"
-        if hasattr(model, 'get_parameters'):
-            params = model.get_parameters()
-            if params:
-                param_str = ', '.join([f"{k}={v:.3g}" for k, v in params.items()])
-                theory_text += f"Parameters: {param_str}"
+        # Add theory description at bottom
+        theory_text = f"Theory: {model.name}"
+        if hasattr(model, 'short_description'):
+            theory_text += f"\n{model.short_description}"
         
         fig.text(0.5, 0.02, theory_text, ha='center', fontsize=12,
                 bbox=dict(boxstyle='round', facecolor='#1a1a1a', 
@@ -335,15 +469,56 @@ class TheoryVisualizer:
         ax.view_init(elev=25, azim=45)
         
         # Set axis limits based on all trajectories
-        all_r = []
+        all_x, all_y, all_z = [], [], []
         for hist in particle_trajectories.values():
-            hist_np = self._to_numpy(hist)
-            all_r.extend(hist_np[:, 1])
-        r_max = max(all_r) * 1.2
-        lim = max(r_max, 10 * rs_val)
-        ax.set_xlim([-lim, lim])
-        ax.set_ylim([-lim, lim])
-        ax.set_zlim([-lim, lim])
+            if hist is not None and len(hist) > 0:
+                hist_np = self._to_numpy(hist)
+                r = hist_np[:, 1]
+                
+                # Extract coordinates based on solver type
+                if hist_np.shape[1] == 4:
+                    # 4D symmetric solver output
+                    theta = np.full_like(r, np.pi/2)
+                    phi = hist_np[:, 2]
+                else:
+                    # 6D general solver output
+                    theta = hist_np[:, 2] if hist_np.shape[1] > 2 else np.full_like(r, np.pi/2)
+                    phi = hist_np[:, 3] if hist_np.shape[1] > 3 else np.zeros_like(r)
+                
+                x, y, z = self._cartesian_from_polar(r, theta, phi)
+                all_x.extend(x)
+                all_y.extend(y)
+                all_z.extend(z)
+
+        if not all_x: # If no valid trajectories
+            lim = 10 * rs_val
+            center_x, center_y, center_z = 0, 0, 0
+        else:
+            all_x, all_y, all_z = np.array(all_x), np.array(all_y), np.array(all_z)
+            # Set limits to include all trajectories and ensure origin/horizon are visible
+            if all_x:
+                x_range = max(all_x) - min(all_x)
+                y_range = max(all_y) - min(all_y)
+                z_range = max(all_z) - min(all_z)
+                max_range = max(x_range, y_range, z_range) / 2
+                
+                center_x = (max(all_x) + min(all_x)) / 2
+                center_y = (max(all_y) + min(all_y)) / 2
+                center_z = (max(all_z) + min(all_z)) / 2
+                
+                buffer = max_range * 0.2
+                
+                # Always include the origin (singularity) and event horizon
+                lim = max(max_range + buffer,
+                         abs(center_x) + max_range + buffer,
+                         abs(center_y) + max_range + buffer,
+                         abs(center_z) + max_range + buffer,
+                         3 * rs_val)
+                
+                # Center view on origin
+                ax.set_xlim([-lim, lim])
+                ax.set_ylim([-lim, lim])
+                ax.set_zlim([-lim, lim])
         
         # Grid styling
         ax.grid(True, alpha=0.2, linestyle='--')

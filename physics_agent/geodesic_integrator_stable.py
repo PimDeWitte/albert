@@ -248,15 +248,35 @@ def create_geodesic_solver(theory: GravitationalTheory, M_phys: Tensor = None,
         return UGMGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
     elif 'kerr' in theory_name or theory_class_name == 'Kerr':
         # <reason>chain: Check Kerr BEFORE charged theories since Kerr might have charge attributes</reason>
-        # <reason>chain: Use standard solvers for Kerr metrics</reason>
-        # <reason>chain: Check if theory is symmetric - Kerr with a≠0 has g_tp≠0 and needs 6D solver</reason>
-        if not theory.is_symmetric:
-            if GeneralGeodesicRK4SolverImported:
-                return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+        # <reason>chain: Use specialized Kerr solver that properly handles off-diagonal g_tp terms</reason>
+        # Import the Kerr solver
+        try:
+            from physics_agent.geodesic_integrator import KerrGeodesicRK4Solver
+            return KerrGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+        except ImportError:
+            # Fallback if not available
+            if not theory.is_symmetric:
+                if GeneralGeodesicRK4SolverImported:
+                    return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+                else:
+                    return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
             else:
-                return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
-        else:
-            return GeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+                return GeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+    elif 'kerr-newman' in theory_name or theory_class_name == 'KerrNewman':
+        # <reason>chain: Kerr-Newman has same metric structure as Kerr, just with charge</reason>
+        # Use the same specialized solver
+        try:
+            from physics_agent.geodesic_integrator import KerrGeodesicRK4Solver
+            return KerrGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+        except ImportError:
+            # Fallback if not available
+            if not theory.is_symmetric:
+                if GeneralGeodesicRK4SolverImported:
+                    return GeneralGeodesicRK4SolverImported(theory, M_phys, c, G, **kwargs)
+                else:
+                    return GeneralGeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
+            else:
+                return GeodesicRK4Solver(theory, M_phys, c, G, **kwargs)
     elif any(x in theory_name for x in ['schwarzschild', 'reissner']):
         # <reason>chain: Check known baseline metrics before general attribute checks</reason>
         # Use optimized solver for known metrics

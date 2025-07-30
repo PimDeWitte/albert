@@ -1327,10 +1327,12 @@ class TheoryEngine:
                         print(f"  Step {i} succeeded, continuing...")
                 
                 # Store state (t, r, phi, dr/dtau)
+                # <reason>chain: Compute proper time from step number</reason>
+                proper_time = dtau_geom * (i + 1)
                 if model.is_symmetric:
-                    hist[i+1] = torch.tensor([y[0], y[1], y[2], y[3]], device=self.device, dtype=self.dtype)
+                    hist[i+1] = torch.tensor([proper_time, y[1], y[2], y[3]], device=self.device, dtype=self.dtype)
                 else:
-                    hist[i+1] = torch.tensor([y[0], y[1], y[2], y[4]], device=self.device, dtype=self.dtype)
+                    hist[i+1] = torch.tensor([proper_time, y[1], y[2], y[4]], device=self.device, dtype=self.dtype)
                 
                 # <reason>chain: Debug where Kerr loop exits</reason>
                 if verbose and 'Kerr' in model.name and i < 3:
@@ -2589,8 +2591,9 @@ def process_and_evaluate_theory(
         )
         if prefix_hist is not None and prefix_hist.shape[0] > 1:
             y0_sym, y0_gen, _ = engine.get_initial_conditions(model, preflight_r0)
-            # <reason>chain: Run all validation categories, not just constraints</reason>
-            validation_results = engine.run_all_validations(model, prefix_hist, y0_gen, categories=["constraint", "observational", "prediction"])
+            # <reason>chain: Only run constraint validators for pre-flight checks</reason>
+            # Observational and prediction validators will run once at the end
+            validation_results = engine.run_all_validations(model, prefix_hist, y0_gen, categories=["constraint"])
             
             # Log validation results to theory directory
             validation_json_path = os.path.join(theory_dir, 'pre_run_validation.json')
@@ -2895,11 +2898,37 @@ def process_and_evaluate_theory(
                     'particle_properties': particle_result['particle_properties']
                 }
                 
+                # Create solver info based on tag
+                solver_info = {}
+                tag = particle_result['tag']
+                if 'quantum_unified' in tag:
+                    solver_info['solver_type'] = 'QuantumGeodesicSolver'
+                    solver_info['integration_method'] = 'Path Integral (WKB)'
+                elif 'optimized_kerr' in tag:
+                    solver_info['solver_type'] = 'OptimizedKerrGeodesicSolver'
+                    solver_info['integration_method'] = 'RK4 (Boyer-Lindquist)'
+                elif 'charged_solver' in tag:
+                    solver_info['solver_type'] = 'ChargedGeodesicRK4Solver'
+                    solver_info['integration_method'] = 'RK4 (Lorentz force)'
+                elif 'general_solver' in tag:
+                    solver_info['solver_type'] = 'GeneralGeodesicRK4Solver'
+                    solver_info['integration_method'] = 'RK4 (6D phase space)'
+                elif 'symmetric_solver' in tag:
+                    solver_info['solver_type'] = 'GeodesicRK4Solver'
+                    solver_info['integration_method'] = 'RK4 (4D symmetric)'
+                elif 'cached' in tag:
+                    solver_info['solver_type'] = 'Cached Result'
+                    solver_info['integration_method'] = 'Previously computed'
+                else:
+                    solver_info['solver_type'] = 'Unknown'
+                    solver_info['integration_method'] = tag
+                
                 engine.visualizer.generate_comparison_plot(
                     model, particle_result['trajectory'], baseline_results, baseline_theories,
                     particle_plot_filename, engine.rs, 
                     final_validation_results,
-                    particle_info=specific_particle_info
+                    particle_info=specific_particle_info,
+                    solver_info=solver_info
                 )
                 print(f"  Generated trajectory comparison for {particle_name}: {particle_plot_filename}")
         
@@ -2921,6 +2950,10 @@ def process_and_evaluate_theory(
                     particle_losses[particle_name][loss_type] = {}
                     
                     for baseline_name, baseline_hist in baseline_results.items():
+                        # Only compare with baselines for the same particle type
+                        if particle_name not in baseline_name:
+                            continue
+                            
                         if baseline_hist is None:
                             particle_losses[particle_name][loss_type][baseline_name] = float('inf')
                             continue
@@ -4039,7 +4072,15 @@ def main():
             if theory_category != args.category:
                 continue
         
-        theory_instance = loader.instantiate_theory(theory_key)
+        # <reason>chain: Use preferred_params when sweeps are disabled</reason>
+        theory_class = loader.loaded_theories.get(theory_key)
+        if theory_class and not args.enable_sweeps:
+            # Check if theory has preferred_params
+            preferred_params = getattr(theory_class, 'preferred_params', {})
+            theory_instance = loader.instantiate_theory(theory_key, **preferred_params)
+        else:
+            theory_instance = loader.instantiate_theory(theory_key)
+        
         if theory_instance:
             theories_to_run.append(theory_instance)
     
@@ -4053,10 +4094,19 @@ def main():
         print("\n--- Loading Baseline Theories ---")
         for theory_key, theory_info in discovered_theories.items():
             if 'baselines' in theory_info['path'] or 'defaults' in theory_info['path']:
-                instance = loader.instantiate_theory(theory_key)
-                if instance and instance.name in ['Schwarzschild', 'Kerr a=0.00']:
-                    baseline_theories[instance.name] = instance
-                    print(f"  Loaded baseline: {instance.name}")
+                # <reason>chain: Use preferred_params for baselines when sweeps are disabled</reason>
+                theory_class = loader.loaded_theories.get(theory_key)
+                if theory_class and not args.enable_sweeps:
+                    preferred_params = getattr(theory_class, 'preferred_params', {})
+                    instance = loader.instantiate_theory(theory_key, **preferred_params)
+                else:
+                    instance = loader.instantiate_theory(theory_key)
+                    
+                if instance:
+                    # Load both Schwarzschild and Kerr baselines
+                    if 'Schwarzschild' in instance.name or ('Kerr' in instance.name and 'Newman' not in instance.name):
+                        baseline_theories[instance.name] = instance
+                        print(f"  Loaded baseline: {instance.name}")
     
     # Set up simulation parameters
     # Calculate r0 based on multiplier
@@ -4079,37 +4129,65 @@ def main():
         print("\n--- Running Baseline Theories ---")
         for name, theory in baseline_theories.items():
             print(f"\nRunning baseline: {name}")
-            hist, _, _ = engine.run_trajectory(
+            # Run multi-particle trajectories for baselines to get results for all particles
+            baseline_particle_results = engine.run_multi_particle_trajectories(
                 theory, r0.item() * engine.length_scale, effective_steps, 
                 effective_dtau.item() * engine.time_scale,
+                theory_category=getattr(theory, 'category', 'unknown'),
                 quantum_interval=sim_params.get('quantum_interval', 0), 
-                quantum_beta=sim_params.get('quantum_beta', 0.0)
+                quantum_beta=sim_params.get('quantum_beta', 0.0),
+                no_cache=args.no_cache,
+                verbose=args.verbose
             )
-            if hist is not None:
-                baseline_results[name] = hist
-                print(f"  ✓ Successfully computed trajectory")
+            
+            # Store each particle's trajectory separately
+            for particle_name, particle_result in baseline_particle_results.items():
+                if particle_result['trajectory'] is not None:
+                    baseline_key = f"{name}_{particle_name}"
+                    baseline_results[baseline_key] = particle_result['trajectory']
+                    print(f"  ✓ Successfully computed {particle_name} trajectory")
+                else:
+                    print(f"  ✗ Failed to compute {particle_name} trajectory")
     
-    # Process each theory
+    # Process theories (parallel or sequential)
     print(f"\n--- Evaluating {len(theories_to_run)} Theories ---")
-    for i, theory in enumerate(theories_to_run):
-        print(f"\n[{i+1}/{len(theories_to_run)}] Processing: {theory.name}")
-        
-        # Process and evaluate the theory
-        process_and_evaluate_theory(
-            theory, engine, main_run_dir, baseline_results, baseline_theories, args,
-            effective_steps, effective_dtau, r0, r0_val,
-            sim_params.get('quantum_interval', 0), sim_params.get('quantum_beta', 0.0),
-            None, 100  # progress_callback and callback_interval
-        )
     
-    # Generate final reports
-    print(f"\n--- Generating Final Reports ---")
-    try:
-        from physics_agent.ui.leaderboard_html_generator import generate_leaderboard_html
-        generate_leaderboard_html(main_run_dir)
-    except Exception as e:
-        print(f"Warning: Could not generate leaderboard: {e}")
-    
+    # Parallel or sequential execution
+    if args.parallel:
+        print("\n--- Running Theories in Parallel ---")
+        num_workers = multiprocessing.cpu_count()
+        print(f"Using {num_workers} parallel workers.")
+
+        with ProcessPoolExecutor(max_workers=num_workers) as executor:
+            futures = [executor.submit(process_and_evaluate_theory, theory, engine, main_run_dir, baseline_results, baseline_theories, args, effective_steps, effective_dtau, r0, r0_val, sim_params.get('quantum_interval', 0), sim_params.get('quantum_beta', 0.0), None, 100) for theory in theories_to_run]
+            
+            for future in tqdm(as_completed(futures), total=len(theories_to_run), desc="Evaluating Theories"):
+                try:
+                    future.result()
+                except Exception as e:
+                    print(f"An error occurred in a parallel process: {e}")
+    else:
+        print("\n--- Running Theories Sequentially ---")
+        for i, theory in enumerate(tqdm(theories_to_run, desc="Evaluating Theories")):
+            print(f"\n[{i+1}/{len(theories_to_run)}] Processing: {theory.name}")
+            process_and_evaluate_theory(theory, engine, main_run_dir, baseline_results, baseline_theories, args, effective_steps, effective_dtau, r0, r0_val, sim_params.get('quantum_interval', 0), sim_params.get('quantum_beta', 0.0), None, 100)
+
+    # Clean up and exit
+    if args.clear_cache:
+        clear_cache()
+
+    # Generate final reports if not sweeping - AFTER theories are processed
+    if not args.enable_sweeps:
+        print("\n--- Generating Final Reports ---")
+        try:
+            from physics_agent.ui.leaderboard_html_generator import LeaderboardHTMLGenerator
+            html_generator = LeaderboardHTMLGenerator()
+            html_generator.generate_leaderboard(main_run_dir)
+        except ImportError:
+             print("Warning: Could not generate leaderboard: cannot import name 'LeaderboardHTMLGenerator' from 'physics_agent.ui.leaderboard_html_generator'")
+        except Exception as e:
+            print(f"Warning: Could not generate leaderboard: {e}")
+
     print(f"\n✅ Run complete! Results saved to: {main_run_dir}")
     return 0
 

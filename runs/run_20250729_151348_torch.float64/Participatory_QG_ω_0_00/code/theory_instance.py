@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+"""Exact theory instance used in this run"""
+
+# This file shows how the theory was instantiated for this run
+
+from theory_participatory_theory import Participatory
+
+# Instantiation with exact parameters
+theory = Participatory(omega=0.0)
+
+# Theory name: Participatory QG (ω=0.00)
+# Category: quantum

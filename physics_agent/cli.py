@@ -29,7 +29,8 @@ Use --enable-sweeps to test full parameter ranges instead of preferred values.
 Use --sweep-only [param] to sweep only specific parameters (e.g., --sweep-only gamma).
 
 PARALLELIZATION NOTE:
-  - Parameter sweeps: Automatically parallelized when --enable-sweeps is used
+  - Use the --parallel flag to run multiple theories concurrently.
+  - Parameter sweeps are automatically parallelized when --enable-sweeps is used.
   - Multiple theories: Run separate instances in parallel using shell job control (&)
     Example: python -m physics_agent.theory_engine_core --theories theory1 &
              python -m physics_agent.theory_engine_core --theories theory2 &
@@ -166,6 +167,10 @@ PARALLELIZATION NOTE:
     p.add_argument("--candidates", action="store_true",
                    help="Run in candidates mode: evaluate all theories in candidates/ folder along with regular theories")
     
+    # Parallel execution
+    p.add_argument("--parallel", action="store_true",
+                   help="Enable parallel execution of theories using multiprocessing.")
+
     return p
 
 

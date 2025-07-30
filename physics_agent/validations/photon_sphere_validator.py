@@ -24,7 +24,9 @@ class PhotonSphereValidator(BaseValidation):
             # For photons, the effective potential extremum determines circular orbits
             # In Schwarzschild: r_ph = 3GM/c² = 1.5 r_s
             
-            rs = 2 * self.engine.G_T * self.engine.M / self.engine.C_T**2  # Schwarzschild radius
+            # <reason>chain: Use M_si from engine to compute rs in SI units correctly</reason>
+            rs = torch.tensor(2 * self.engine.G_si * self.engine.M_si / self.engine.c_si**2, 
+                            device=self.engine.device, dtype=self.engine.dtype)  # Schwarzschild radius in meters
             
             # Search range: 1.1 to 5 Schwarzschild radii
             r_test = torch.linspace(1.1, 5.0, 200, device=self.engine.device, dtype=self.engine.dtype) * rs

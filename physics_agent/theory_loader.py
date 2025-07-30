@@ -144,7 +144,13 @@ class TheoryLoader:
             # Load the module with a unique name based on the theory path
             module_name = os.path.splitext(os.path.basename(theory_path))[0]
             theory_dir_name = os.path.basename(os.path.dirname(theory_path))
-            unique_module_name = f"theory_{theory_dir_name}_{module_name}"
+            
+            # Create a fully qualified module name that matches the import path
+            # This makes the theory objects pickleable for multiprocessing
+            # Convert file path to module path: theories/newtonian_limit/theory.py -> physics_agent.theories.newtonian_limit.theory
+            rel_path = os.path.relpath(theory_path, os.path.dirname(self.theories_base_dir))
+            module_parts = rel_path.replace(os.sep, '.').replace('.py', '')
+            unique_module_name = f"physics_agent.{module_parts}"
             
             spec = importlib.util.spec_from_file_location(unique_module_name, theory_path)
             module = importlib.util.module_from_spec(spec)
