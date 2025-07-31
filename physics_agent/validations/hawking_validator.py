@@ -50,7 +50,13 @@ class HawkingValidator(BaseValidation):
         # Check if theory implements custom Hawking temperature calculation
         if hasattr(theory, 'compute_hawking_temperature'):
             # <reason>chain: Theories should implement full temperature calculation</reason>
-            T_theory = theory.compute_hawking_temperature(M_sun)
+            # Check if method expects M only or (M, C_param, G_param)
+            try:
+                T_theory = theory.compute_hawking_temperature(M_sun)
+            except TypeError:
+                # Try with full parameters
+                M_tensor = torch.tensor(M_sun)
+                T_theory = theory.compute_hawking_temperature(M_tensor, c, G).item()
         elif hasattr(theory, 'compute_black_hole_entropy'):
             # <reason>chain: Calculate temperature from modified entropy using thermodynamic relation</reason>
             # T = dM/dS where S is entropy

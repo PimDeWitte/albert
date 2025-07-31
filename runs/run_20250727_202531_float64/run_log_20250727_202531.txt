@@ -1,9 +1,0 @@
-Running: SchwarzschildRunning: Reissner-Nordström (q_e=0.30)
-
-Running: Kerr (a=0.30)Running: Kerr-Newman (a=0.30, q_e=0.30)
-
-Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Schwarzschild_3ce6218204f36085_50000.pt
-Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Reissner-Nordstr_m__q_e_0_30__5375c2fff48403e3_50000.pt
-  ✓ Schwarzschild completed
-  ✓ Reissner-Nordström (q_e=0.30) completed
-  Error simulating baseline Kerr (a=0.30): The size of tensor a (6) must match the size of tensor b (4) at non-singleton dimension 0

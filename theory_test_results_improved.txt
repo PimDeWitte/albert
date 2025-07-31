@@ -1,0 +1,567 @@
+COMPREHENSIVE THEORY VALIDATION - FINAL TEST
+================================================================================
+Testing 15 theories
+Expected order: Quantum theories > Schwarzschild > Newtonian Limit
+
+============================================================
+Testing: Schwarzschild [baseline]
+============================================================
+Initialized: Schwarzschild
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Newtonian Limit [classical]
+============================================================
+Initialized: Newtonian Limit
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✗ FAIL
+    Error: 50.01%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 40435.421739
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 4/7 passed (57.1%)
+
+============================================================
+Testing: Kerr [classical]
+============================================================
+Initialized: Kerr (a=0.00)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.000000
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 1.000000
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Kerr-Newman [classical]
+============================================================
+Initialized: Kerr-Newman (a=0.00, q_e=0.00)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.000000
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 1.000000
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Yukawa [classical]
+============================================================
+Initialized: Yukawa (λ=10.00 RS)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 1010000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Einstein Teleparallel [classical]
+============================================================
+Initialized: Einstein Teleparallel (τ=0.000)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 1010000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Spinor Conformal [classical]
+============================================================
+Initialized: Spinor-Conformal QG (λ=0.00)
+
+Mercury Precession:
+  ✗ FAIL
+    Error: 16.81%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 1010000.639130
+
+COW Interferometry:
+  ✗ FAIL
+    Error: 719722215.01%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✗ FAIL
+    Loss: 1.000000
+
+Summary: 2/7 passed (28.6%)
+
+============================================================
+Testing: Quantum Corrected [quantum]
+============================================================
+Initialized: Quantum Corrected (α=+0.01)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✗ FAIL
+    Loss: 1.000000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218954
+
+Summary: 4/7 passed (57.1%)
+
+============================================================
+Testing: String Theory [quantum]
+============================================================
+Initialized: String Theory (α'=1.0e-66)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Asymptotic Safety [quantum]
+============================================================
+Initialized: Asymptotic Safety (Λ_as=1.0e+18 GeV)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Loop Quantum Gravity [quantum]
+============================================================
+Initialized: Loop Quantum Gravity (γ=0.2375)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 0.526746
+
+PPN Parameters:
+  ✓ WARNING
+    Loss: 0.500000
+
+COW Interferometry:
+  ✗ FAIL
+    Error: 100.00%
+
+Gravitational Waves:
+  ✗ FAIL
+    Loss: 1.000000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.216804
+
+Summary: 4/7 passed (57.1%)
+
+============================================================
+Testing: Non-Commutative Geometry [quantum]
+============================================================
+Initialized: Non-Commutative Geometry (θ=1.00)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 5/7 passed (71.4%)
+
+============================================================
+Testing: Twistor Theory [quantum]
+============================================================
+Initialized: Twistor Theory (λ=0.10)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✓ PASS
+    Error: 0.12%
+
+Gravitational Waves:
+  ✗ FAIL
+    Loss: 1.000000
+
+PSR J0740:
+  ✓ WARNING
+    Loss: 5.218953
+
+Summary: 4/7 passed (57.1%)
+
+============================================================
+Testing: Aalto Gauge Gravity [quantum]
+============================================================
+Initialized: Aalto Gauge Gravity (g=1.00)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 0.404268
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✗ FAIL
+    Error: 100.00%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✗ FAIL
+    Loss: 0.992651
+
+Summary: 3/7 passed (42.9%)
+
+============================================================
+Testing: Causal Dynamical Triangulations [quantum]
+============================================================
+Initialized: CDT (k₀=2.2, k₄=0.6)
+
+Mercury Precession:
+  ✓ PASS
+    Error: 0.02%
+
+Light Deflection:
+  ✓ PASS
+    Error: 0.02%
+
+Photon Sphere:
+  ✗ FAIL
+    Loss: 1.151721
+
+PPN Parameters:
+  ✗ FAIL
+    Loss: 990000.639130
+
+COW Interferometry:
+  ✗ FAIL
+    Error: 56.05%
+
+Gravitational Waves:
+  ✓ WARNING
+    Loss: 0.100000
+
+PSR J0740:
+  ✗ FAIL
+    Loss: 0.514336
+
+Summary: 3/7 passed (42.9%)
+
+
+================================================================================
+FINAL RANKINGS
+================================================================================
+
+Rank   Theory                              Category     Score      Tests Passed
+--------------------------------------------------------------------------------
+1      Schwarzschild                       baseline     71.4%      5/7 ← Baseline
+2      Kerr                                classical    71.4%      5/7
+3      Kerr-Newman                         classical    71.4%      5/7
+4      Yukawa                              classical    71.4%      5/7
+5      Einstein Teleparallel               classical    71.4%      5/7
+6      String Theory                       quantum      71.4%      5/7 ✓ High-performing quantum
+7      Asymptotic Safety                   quantum      71.4%      5/7 ✓ High-performing quantum
+8      Non-Commutative Geometry            quantum      71.4%      5/7 ✓ High-performing quantum
+9      Newtonian Limit                     classical    57.1%      4/7 ← Should be lowest
+10     Quantum Corrected                   quantum      57.1%      4/7
+11     Loop Quantum Gravity                quantum      57.1%      4/7
+12     Twistor Theory                      quantum      57.1%      4/7
+13     Aalto Gauge Gravity                 quantum      42.9%      3/7
+14     Causal Dynamical Triangulations     quantum      42.9%      3/7
+15     Spinor Conformal                    classical    28.6%      2/7
+
+
+ANALYSIS:
+------------------------------------------------------------
+
+Quantum theories in top 5: 0/5
+Schwarzschild rank: #1
+Newtonian Limit rank: #9
+
+Expectation Check:
+✗ No quantum theory outperforms Schwarzschild yet
+✗ Newtonian Limit is not at bottom
+
+
+Detailed report saved to: theory_validation_final_20250731_092946.json

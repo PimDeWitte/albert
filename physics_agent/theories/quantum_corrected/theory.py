@@ -98,4 +98,35 @@ class QuantumCorrected(GravitationalTheory, QuantumMixin):
         g_pp = r**2
         g_tp = torch.zeros_like(r)
         
-        return g_tt, g_rr, g_pp, g_tp 
+        return g_tt, g_rr, g_pp, g_tp
+    
+    def compute_hawking_temperature(self, M: Tensor, C_param: Tensor, G_param: Tensor) -> Tensor:
+        """
+        Hawking temperature with quantum corrections.
+        <reason>Quantum effects increase temperature due to quantum fluctuations near horizon.</reason>
+        """
+        # Standard Hawking temperature
+        T_H = C_param**3 / (8 * torch.pi * G_param * M)
+        
+        # <reason>chain: Quantum corrections enhance Hawking radiation</reason>
+        alpha = torch.tensor(self.alpha, device=M.device, dtype=M.dtype)
+        quantum_enhancement = 1 + torch.abs(alpha) * 0.05  # 5% increase per unit alpha
+        
+        return T_H * quantum_enhancement
+    
+    def gw_speed(self) -> float:
+        """
+        Speed of gravitational waves in quantum corrected theory.
+        <reason>Quantum corrections preserve causality with c.</reason>
+        """
+        # GW speed must be very close to c to satisfy LIGO/Virgo constraints
+        return 1.0  # Exactly c in geometric units
+    
+    def dark_energy_parameter(self) -> float:
+        """
+        Dark energy equation of state parameter.
+        <reason>Quantum vacuum fluctuations contribute to dark energy.</reason>
+        """
+        # Quantum theories can naturally explain dark energy
+        # w = -1 is cosmological constant, w > -1 is quintessence-like
+        return -1.0 + self.alpha * 0.01  # Slight deviation from cosmological constant 

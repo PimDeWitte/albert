@@ -83,9 +83,12 @@ class TheoryVisualizer:
         is_quantum = theory_category == 'quantum' and hasattr(model, 'quantum_integrator')
         
         # Convert to Cartesian coordinates
+        # <reason>chain: Create spatial 3D coordinates with small z-variation for visual depth</reason>
         x = r * np.cos(phi)
         y = r * np.sin(phi)
-        z = t  # Use time as z-axis
+        # For equatorial orbits, z should be constant (zero)
+        # <reason>chain: Equatorial orbits have constant z=0, no artificial variation needed</reason>
+        z = np.zeros_like(t)
         
         # <reason>chain: Collect all trajectory data for proper bounds calculation
         all_x = [x]
@@ -185,7 +188,14 @@ class TheoryVisualizer:
         # <reason>chain: Use a dotted line style for the main theory as requested.
         ax.plot(x, y, z, color='red', linestyle=':', linewidth=2, alpha=0.9, label=main_particle_name, zorder=10)
         
-        # Add step markers along the main trajectory - make them smaller
+        # <reason>chain: Add time labels every 5% of trajectory to show time dilation</reason>
+        # Calculate indices for every 5% of the trajectory
+        time_label_indices = []
+        for pct in range(0, 101, 5):  # 0%, 5%, 10%, ..., 100%
+            idx = int((pct / 100.0) * (total_steps - 1))
+            time_label_indices.append(idx)
+        
+        # Add step markers along the main trajectory
         marker_indices = list(range(0, total_steps, step_interval))
         # Ensure the last point is included
         if marker_indices[-1] != total_steps - 1:
@@ -195,6 +205,23 @@ class TheoryVisualizer:
             # <reason>chain: Use consistent marker style regardless of charge
             ax.scatter(x[i], y[i], z[i], c='white', s=15, marker='o',
                       edgecolors='red', linewidth=0.5, alpha=0.7, zorder=11)
+        
+        # <reason>chain: Add time labels at 5% intervals to visualize time dilation</reason>
+        for idx, i in enumerate(time_label_indices):
+            if i < len(t):  # Safety check
+                # Add a larger marker at time label positions
+                ax.scatter(x[i], y[i], z[i], c='yellow', s=40, marker='D',
+                          edgecolors='red', linewidth=1.0, alpha=0.9, zorder=12)
+                
+                # Add text label showing elapsed proper time
+                # Offset the label slightly to avoid overlap
+                offset_x = 0.5 if idx % 2 == 0 else -0.5
+                offset_y = 0.5 if idx % 2 == 1 else -0.5
+                
+                ax.text(x[i] + offset_x, y[i] + offset_y, z[i], 
+                       f't={t[i]:.1f}',
+                       color='yellow', fontsize=8, alpha=0.9,
+                       ha='center', va='center')
         
         # <reason>chain: Initialize list to store z values for axis limits
         all_z = [z]
@@ -220,14 +247,24 @@ class TheoryVisualizer:
                 # New structure: baseline_data is a dict of particle trajectories
                 # Get particle name and normalize case
                 current_particle_name = particle_info.get('particle_properties', {}).get('name', 'electron') if particle_info else 'electron'
-                # <reason>chain: Normalize particle name to lowercase for consistency</reason>
+                # <reason>chain: Try multiple case variations to find the particle data</reason>
                 current_particle_name_lower = current_particle_name.lower()
                 baseline_hist = baseline_data.get(current_particle_name_lower)
                 if baseline_hist is None:
-                    # Try exact match first
+                    # Try exact match
                     baseline_hist = baseline_data.get(current_particle_name)
                 if baseline_hist is None:
+                    # Try capitalized version
+                    baseline_hist = baseline_data.get(current_particle_name.capitalize())
+                if baseline_hist is None:
+                    # Try all lowercase version of the exact particle name from particle_info
+                    if particle_info and 'particle' in particle_info:
+                        particle_obj = particle_info['particle']
+                        if hasattr(particle_obj, 'name'):
+                            baseline_hist = baseline_data.get(particle_obj.name.lower())
+                if baseline_hist is None:
                     print(f"        Skipping - no data for particle {current_particle_name}")
+                    print(f"        Available particles in baseline: {list(baseline_data.keys())}")
                     continue
             else:
                 # Old structure: baseline_data is the trajectory itself
@@ -277,14 +314,15 @@ class TheoryVisualizer:
                 continue
                 
             # Convert to Cartesian
+            # <reason>chain: Create spatial 3D coordinates matching main trajectory z-variation</reason>
             x_b = r_b * np.cos(phi_b)
             y_b = r_b * np.sin(phi_b)
-            z_b = t_b
+            # For equatorial orbits, z should be constant (zero)
+            # <reason>chain: Baseline trajectories also have z=0 for equatorial orbits</reason>
+            z_b = np.zeros_like(t_b)
             
-            # <reason>chain: Limit z values to prevent baselines from going too high
-            # Truncate baseline at main trajectory's max time
-            max_z_main = z.max() if len(z) > 0 else 100.0
-            z_b_truncated = z_b[z_b <= max_z_main * 1.1]  # Allow 10% extra
+            # <reason>chain: No need to truncate z since it's spatial now, not time-based
+            z_b_truncated = z_b
             if len(z_b_truncated) > 0:
                 x_b = x_b[:len(z_b_truncated)]
                 y_b = y_b[:len(z_b_truncated)]
@@ -502,7 +540,8 @@ class TheoryVisualizer:
         ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=16, color='white')
         # <reason>chain: Make z-label more visible with better positioning and larger font
         dtau_value = 0.1  # Default time step in geometric units
-        ax.set_zlabel(f'Time Units\n(Δτ = {dtau_value})', fontsize=18, color='white', labelpad=30)
+        # <reason>chain: Update z-axis label to show spatial depth</reason>
+        ax.set_zlabel('Z\n(Schwarzschild radii)', fontsize=18, color='white', labelpad=30)
         
         # <reason>chain: Removed CONSTRAINTS PASSED text - now in legend
         
@@ -667,7 +706,8 @@ class TheoryVisualizer:
             # Convert to Cartesian
             x = r * np.cos(phi)
             y = r * np.sin(phi)
-            z = t
+            # For equatorial orbits, z should be constant (zero)
+            z = np.zeros_like(t)
             
             all_z.append(z)
             all_r.append(r)
@@ -806,7 +846,7 @@ class TheoryVisualizer:
         ax.set_xlabel('\nX (Schwarzschild radii)', fontsize=14)
         ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=14)
         # <reason>chain: Use proper time τ in geometric units for relativistic accuracy
-        ax.set_zlabel('Proper Time (τ)', fontsize=16, labelpad=15)
+        ax.set_zlabel('Z (Schwarzschild radii)', fontsize=16, labelpad=15)
         
         # Legend
         ax.legend(loc='upper right', bbox_to_anchor=(0.98, 0.98), 
@@ -958,7 +998,8 @@ class TheoryVisualizer:
             # Convert to Cartesian
             x = r * np.cos(phi)
             y = r * np.sin(phi)
-            z = t  # Time as z-axis
+            # For equatorial orbits, z should be constant (zero)
+            z = np.zeros_like(t)  # Time as z-axis
             
             # Plot trajectory with particle-specific color
             # <reason>chain: Use gold for photon for better visibility
@@ -1177,7 +1218,7 @@ class TheoryVisualizer:
             # Labels
             ax.set_xlabel('X (M)', color='white', fontsize=10, labelpad=15)
             ax.set_ylabel('Y (M)', color='white', fontsize=10, labelpad=15)
-            ax.set_zlabel('Time (M)', color='white', fontsize=10, labelpad=15)
+            ax.set_zlabel('Z (M)', color='white', fontsize=10, labelpad=15)
             
             # Customize view
             ax.view_init(elev=20, azim=-60)
@@ -1307,7 +1348,8 @@ class TheoryVisualizer:
             # Convert to Cartesian coordinates
             x = r * np.cos(phi)
             y = r * np.sin(phi)
-            z = t  # Use time as z-axis
+            # For equatorial orbits, z should be constant (zero)
+            z = np.zeros_like(t)  # Use time as z-axis
             
             all_z.append(z)
             all_r.append(r)
@@ -1523,7 +1565,7 @@ class TheoryVisualizer:
         ax.set_xlabel('\nX (Schwarzschild radii)', fontsize=14, color='white')
         ax.set_ylabel('\nY (Schwarzschild radii)', fontsize=14, color='white')
         # <reason>chain: Use proper time τ in geometric units for relativistic accuracy
-        ax.set_zlabel('Proper Time (τ)', fontsize=16, color='white', labelpad=15)
+        ax.set_zlabel('Z (Schwarzschild radii)', fontsize=16, color='white', labelpad=15)
         
         # Custom legend with additional labels
         legend_handles, legend_labels = ax.get_legend_handles_labels()

@@ -115,6 +115,8 @@ PARALLELIZATION NOTE:
     # Simulation parameters
     p.add_argument("--close-orbit", action="store_true", 
                    help="Use closer initial orbit (6RS) for stronger field effects in tests")
+    p.add_argument("--quantum-orbit", action="store_true",
+                   help="Use quantum-optimal orbit (10 RS) for balanced quantum/classical effects")
     
     # Parameter sweep control
     p.add_argument("--enable-sweeps", action="store_true",

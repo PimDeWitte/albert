@@ -389,15 +389,28 @@ class TheoryEngine:
             particle_obj = self.particle_loader.get_particle(particle_name)
             if particle_obj and hasattr(particle_obj, 'orbital_parameters'):
                 orbital_params = particle_obj.orbital_parameters
-                u_phi *= orbital_params.get('angular_velocity_factor', 1.0)
+                angular_factor = orbital_params.get('angular_velocity_factor', 1.0)
                 
                 # Radial velocity from configuration
                 radial_factor = orbital_params.get('radial_velocity_factor', 0.0)
                 u_r = radial_factor * torch.sqrt(1.0 / r0_geom)
                 
+                # <reason>chain: Recalculate u_t and u_phi to maintain proper normalization</reason>
+                # For non-circular orbits, modify Omega but maintain normalization
+                Omega_modified = Omega * angular_factor
+                
+                # Recalculate norm factor with modified angular velocity
+                norm_factor = g_tt + 2 * Omega_modified * g_tp + Omega_modified**2 * g_pp + g_rr * u_r**2
+                
+                if norm_factor >= 0:
+                    norm_factor = -epsilon
+                    
+                u_t = 1.0 / torch.sqrt(-norm_factor)
+                u_phi = Omega_modified * u_t
+                
                 if self.verbose:
                     print(f"  Using orbital parameters for {particle_name}:")
-                    print(f"    Angular factor: {orbital_params.get('angular_velocity_factor', 1.0)}")
+                    print(f"    Angular factor: {angular_factor}")
                     print(f"    Radial factor: {radial_factor}")
                     print(f"    Orbit type: {orbital_params.get('orbit_type', 'default')}")
             else:
@@ -407,7 +420,7 @@ class TheoryEngine:
                 u_r = torch.zeros_like(r0_geom)
         
         # <reason>chain: Validate 4-velocity normalization</reason>
-        norm_check = g_tt * u_t**2 + 2 * g_tp * u_t * u_phi + g_pp * u_phi**2
+        norm_check = g_tt * u_t**2 + 2 * g_tp * u_t * u_phi + g_pp * u_phi**2 + g_rr * u_r**2
         if abs(norm_check + 1.0) > NUMERICAL_THRESHOLDS['norm_check']:
             if self.verbose:
                 if self.verbose:
@@ -817,6 +830,31 @@ class TheoryEngine:
                 # visualization_paths are just sample paths between start/end, not actual evolution
                 # We should use the classical trajectory with quantum corrections instead
                 quantum_data = results.get('quantum', {})
+                quantum_paths = quantum_data.get('visualization_paths', [])
+                if quantum_paths:
+                    # Compute mean trajectory from sample paths
+                    num_paths = len(quantum_paths)
+                    path_length = len(quantum_paths[0])
+                    mean_traj = torch.zeros(path_length, 4, device=self.device, dtype=self.dtype)
+                    
+                    for path in quantum_paths:
+                        path_tensor = torch.tensor(path, device=self.device, dtype=self.dtype)
+                        mean_traj += path_tensor / num_paths
+                    
+                    # Use mean quantum trajectory
+                    hist_geom = mean_traj
+                    tag = "quantum_mean_trajectory"
+                    
+                    # Add quantum uncertainty (small perturbation)
+                    uncertainty = 1e-5  # Planck-scale uncertainty
+                    hist_geom[:, 1:] += torch.normal(0, uncertainty, size=hist_geom[:, 1:].shape)
+                    
+                    if self.verbose:
+                        print(f"  Using mean quantum trajectory from {num_paths} samples")
+                else:
+                    # Fallback to classical
+                    traj = results['classical']['trajectory']
+                    hist_geom = torch.tensor(traj, device=self.device, dtype=self.dtype)
                     
                 # <reason>chain: Fall back to classical trajectory if no quantum paths available</reason>
                 if 'classical' in results and 'trajectory' in results['classical']:
@@ -885,14 +923,21 @@ class TheoryEngine:
             g_tt, g_rr, g_pp, g_tp = metric_func(**metric_args)
             
             # Calculate E and Lz from initial 4-velocity
-            # u^t = y0_gen[3], u^r = y0_gen[4], u^phi = y0_gen[5]
-            # But y0_gen is in SI units, need to convert to geometric first
-            # <reason>chain: Convert SI velocities to geometric units for consistent calculations</reason>
-            # <reason>chain: Time components (u^t, u^phi) scale by time_scale since dt_SI = time_scale * dt_geom</reason>
-            # <reason>chain: Radial component (u^r) scales by time_scale/length_scale since dr/dt_SI = (length_scale/time_scale) * dr/dtau_geom</reason>
-            u_t_geom = y0_gen[3] * self.time_scale
-            u_r_geom = y0_gen[4] * self.time_scale / self.length_scale
-            u_phi_geom = y0_gen[5] * self.time_scale
+            # <reason>chain: Handle both 4D and 6D initial state formats</reason>
+            if len(y0_gen) == 4:
+                # 4D format: [t, r, phi, dr/dtau] - already in geometric units
+                # For circular orbits, compute velocities from orbit parameters
+                u_t_geom = torch.sqrt(1.0 / (1.0 - 3.0/r0_geom))  # Circular orbit u^t
+                u_r_geom = 0.0  # No radial motion for circular orbit
+                u_phi_geom = torch.sqrt(1.0 / (r0_geom**3 - 3.0*r0_geom**2))  # Circular orbit u^phi
+            else:
+                # 6D format: [t, r, phi, u^t, u^r, u^phi] in SI units
+                # <reason>chain: Convert SI velocities to geometric units for consistent calculations</reason>
+                # <reason>chain: Time components (u^t, u^phi) scale by time_scale since dt_SI = time_scale * dt_geom</reason>
+                # <reason>chain: Radial component (u^r) scales by time_scale/length_scale since dr/dt_SI = (length_scale/time_scale) * dr/dtau_geom</reason>
+                u_t_geom = y0_gen[3] * self.time_scale
+                u_r_geom = y0_gen[4] * self.time_scale / self.length_scale
+                u_phi_geom = y0_gen[5] * self.time_scale
             
             # <reason>chain: Calculate conserved energy E = -g_tt*u^t - g_tp*u^phi from Killing vector ∂/∂t</reason>
             # <reason>chain: In stationary spacetimes, E is conserved along geodesics due to time translation symmetry</reason>
@@ -907,8 +952,20 @@ class TheoryEngine:
             # Create 4D initial state: [t, r, phi, dr/dtau]
             # <reason>chain: Use 4D state for symmetric spacetimes where theta=π/2 is fixed</reason>
             # <reason>chain: This reduces computational cost while preserving equatorial plane motion</reason>
-            y0_4d = torch.tensor([y0_gen[0], y0_gen[1], y0_gen[2], y0_gen[4]], 
-                                device=self.device, dtype=self.dtype)
+            # <reason>chain: Handle case where y0_gen might be 4D already (from baseline computation)</reason>
+            if len(y0_gen) == 4:
+                # Already in 4D format, use directly
+                y0_4d = y0_gen.clone()
+            else:
+                # Extract from 6D format: [t, r, phi, u^t, u^r, u^phi]
+                # <reason>chain: Convert to geometric units for 4D state</reason>
+                # y0_gen is in SI units, need to convert to geometric for 4D solver
+                t_geom = y0_gen[0] / self.time_scale
+                r_geom = y0_gen[1] / self.length_scale
+                phi_geom = y0_gen[2]  # Already dimensionless
+                dr_dtau_geom = u_r_geom  # Already calculated above
+                y0_4d = torch.tensor([t_geom, r_geom, phi_geom, dr_dtau_geom], 
+                                    device=self.device, dtype=self.dtype)
             
             # <reason>chain: Check if this is a quantum theory that needs quantum path integrals</reason>
             from physics_agent.geodesic_integrator_stable import is_quantum_theory
@@ -984,6 +1041,12 @@ class TheoryEngine:
             # Initialize history with 4D state
             hist = torch.zeros((N_STEPS + 1, 4), device=self.device, dtype=self.dtype)
             y = y0_4d
+            
+            # <reason>chain: Debug output for baseline trajectories</reason>
+            if 'Kerr' in model.name and self.verbose:
+                print(f"  DEBUG: Starting {model.name} with initial state y0_4d={y0_4d}")
+                print(f"  DEBUG: Using solver {solver.__class__.__name__}")
+                print(f"  DEBUG: E={solver.E}, Lz={solver.Lz}")
         else:
             # <reason>chain: Use 6D general solver for non-symmetric spacetimes</reason>
             # Check if this is a UGM theory that needs special handling
@@ -2467,8 +2530,9 @@ def process_and_evaluate_theory(
     theory_category = getattr(model, 'category', 'unknown')
     
     # Run multi-particle trajectories
+    # <reason>chain: r0_val is already in meters, don't multiply by length_scale again</reason>
     particle_results = engine.run_multi_particle_trajectories(
-        model, r0_val * engine.length_scale, effective_steps, effective_dtau.item() * engine.time_scale,
+        model, r0_val, effective_steps, effective_dtau.item() * engine.time_scale,
         theory_category=theory_category,
                     quantum_interval=quantum_interval if getattr(args, 'experimental', False) else 0,
             quantum_beta=quantum_beta if getattr(args, 'experimental', False) else 0.0,
@@ -3985,14 +4049,27 @@ def main():
     
     # <reason>chain: Use standard timestep of 0.01 for accurate energy conservation</reason>
     DTau = torch.tensor(0.01, device=engine.device, dtype=engine.dtype)
+    
+    # <reason>chain: Calculate actual Schwarzschild radius in meters for correct positioning</reason>
+    rs_meters = 2 * engine.G_si * engine.M_si / engine.c_si**2
+    
     if args.close_orbit:
-        r0_val = 6.0 * engine.rs
+        # <reason>chain: 6 rs is good for strong field quantum effects</reason>
+        r0_val = 6.0 * rs_meters  # 6 Schwarzschild radii in meters
+        radius_rs = 6.0
+    elif hasattr(args, 'quantum_orbit') and args.quantum_orbit:
+        # <reason>chain: 10 rs provides optimal balance of quantum and classical effects</reason>
+        r0_val = 10.0 * rs_meters  # 10 Schwarzschild radii in meters
+        radius_rs = 10.0
     else:
-        # <reason>chain: Use user-specified radius or default to 6.0 Rs</reason>
-        r0_val = args.radius * engine.rs  # User-specified radius in Schwarzschild radii
+        # <reason>chain: Use user-specified radius in actual Schwarzschild radii</reason>
+        r0_val = args.radius * rs_meters  # Convert rs to meters using actual rs value
+        radius_rs = args.radius
+    
     r0 = torch.tensor([r0_val], device=engine.device, dtype=engine.dtype)
     
-    print(f"Starting radius: {args.radius:.1f} Rs = {r0_val:.1f} m")
+    print(f"Starting radius: {radius_rs:.1f} Rs = {r0_val:.1f} m")
+    print(f"  (Schwarzschild radius = {rs_meters:.1f} m)")
     
     # <reason>chain: Removed sample rate functionality - using direct values instead</reason>
     effective_dtau = DTau
@@ -4046,7 +4123,7 @@ def main():
         baseline_theories[kerr_instance.name] = kerr_instance
         print(f"  Loaded baseline: {kerr_instance.name} (rotating, uncharged)")
         
-        kn_instance = KerrNewman(a=0.5, Q=0.5)  # Kerr-Newman (rotating, charged) - Note: Q not q_e
+        kn_instance = KerrNewman(a=0.5, Q=0.5)  # Kerr-Newman (rotating, charged)
         baseline_theories[kn_instance.name] = kn_instance  
         print(f"  Loaded baseline: {kn_instance.name} (rotating, charged)")
     except Exception as e:
@@ -4128,8 +4205,9 @@ def main():
             sys.stdout = StringIO()  # Capture output to prevent interference
             
             try:
+                # <reason>chain: r0_val is already in meters, don't multiply by length_scale again</reason>
                 particle_results = engine.run_multi_particle_trajectories(
-                    model, r0_val * engine.length_scale, effective_steps, effective_dtau.item() * engine.time_scale,
+                    model, r0_val, effective_steps, effective_dtau.item() * engine.time_scale,
                     theory_category='classical',  # All baselines are classical
                     quantum_interval=0,
                     quantum_beta=0.0,
@@ -4150,6 +4228,12 @@ def main():
                     # Save individual particle trajectory
                     particle_file = os.path.join(theory_dir, f"trajectory_{particle_name}.pt")
                     torch.save(result['trajectory'].to(dtype=engine.dtype), particle_file)
+                else:
+                    # <reason>chain: Log details about failed trajectories for debugging</reason>
+                    if result['trajectory'] is None:
+                        print(f"      {particle_name}: trajectory is None")
+                    elif result['trajectory'].shape[0] <= 1:
+                        print(f"      {particle_name}: trajectory too short ({result['trajectory'].shape[0]} points)")
             
             print(f"    ✓ Computed {success_count}/4 particle trajectories")
             
@@ -4160,6 +4244,10 @@ def main():
                 
         except Exception as e:
             print(f"\nError in baseline {name}: {e}")
+            # <reason>chain: Add detailed error logging for debugging baseline failures</reason>
+            import traceback
+            print(f"Traceback for {name}:")
+            traceback.print_exc()
             return name, None, False
     
     # <reason>chain: Only compute baselines if not skipped</reason>

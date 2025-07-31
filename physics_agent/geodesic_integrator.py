@@ -996,3 +996,49 @@ if __name__ == "__main__":
             break
         y = y_new
         print(f"Step {i+1}: r = {y[1]:.4f}, phi = {y[2]:.4f}")
+
+import pennylane as qml
+from pennylane import numpy as pnp
+import sympy as sp
+from typing import Callable
+
+class QuantumGeodesicSimulator(GeneralGeodesicRK4Solver):
+    """
+    Quantum geodesic simulator using Pennylane for state evolution.
+    Evolves quantum state according to Hamiltonian derived from Lagrangian.
+    """
+    
+    def __init__(self, model: GravitationalTheory, num_qubits: int = 4, M_phys: Tensor = None,
+                 c: float = C_SI, G: float = G_SI, M: Tensor = None, **kwargs):
+        super().__init__(model, M_phys, c, G, M, **kwargs)
+        self.num_qubits = num_qubits
+        self.dev = qml.device("default.qubit", wires=num_qubits)
+        self._hamiltonian_func = self._derive_hamiltonian(model.lagrangian)
+        
+    def _derive_hamiltonian(self, lagrangian: sp.Expr) -> Callable:
+        if lagrangian is None:
+            raise ValueError("Theory must have a Lagrangian for quantum simulation")
+        
+        # Simplified: assume 1D radial motion
+        r, p = qml.qnode(self.dev, interface="autograd")(lambda: [qml.PauliX(0), qml.PauliZ(0)])
+        # TODO: Proper Hamiltonian from Lagrangian
+        def hamiltonian(params):
+            return params[0] * r + params[1] * p**2 / 2  # Placeholder
+        return hamiltonian
+    
+    def compute_derivatives(self, y: Tensor) -> Tensor:
+        base_deriv = super().compute_derivatives(y)
+        
+        # Quantum evolution step
+        params = [y[1].item()]  # Use current r as parameter
+        @qml.qnode(self.dev)
+        def circuit(params):
+            qml.templates.BasicEntanglerLayers(params, wires=range(self.num_qubits))
+            return qml.expval(self._hamiltonian_func(params))
+        
+        quantum_correction = circuit(pnp.array(params, requires_grad=True))
+        
+        # Apply correction to radial acceleration
+        base_deriv[4] += quantum_correction  # Add to u^r
+        
+        return base_deriv

@@ -1,3 +1,0 @@
-Running: Schwarzschild
-Running: Reissner-Nordström (q_e=0.30)
-Running: Kerr (a=0.30)
