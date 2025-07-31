@@ -93,7 +93,8 @@ class UnifiedTrajectoryCalculator:
                 self.theory, M, c, G,
                 q=self.theory.charge
             )
-        elif self.theory.is_symmetric:
+        elif self.theory.has_conserved_quantities:
+            # <reason>chain: Use 4D solver for any stationary axisymmetric spacetime</reason>
             self.classical_solver = GeodesicRK4Solver(self.theory, M, c, G)
         else:
             self.classical_solver = GeneralGeodesicRK4Solver(self.theory, M, c, G)

@@ -452,10 +452,22 @@ class QuantumPathIntegrator:
             try:
                 from physics_agent.geodesic_integrator_stable import GeodesicRK4Solver
                 
-                # Set reasonable conserved quantities for orbiting trajectory
-                # E = 1.0 (normalized energy)
-                # Lz = 4.0 (angular momentum for visible orbits, in geometric units where M=1)
-                self._geodesic_solver = GeodesicRK4Solver(E=1.0, Lz=4.0)
+                # <reason>chain: Compute proper circular orbit parameters based on initial radius</reason>
+                # Extract initial radius from start position
+                r_initial = start[1] if len(start) > 1 else 12.0  # Default to r=12 if not specified
+                
+                # For circular orbit: E = (r - 2) / sqrt(r(r - 3)), L = sqrt(r² / (r - 3))
+                # Valid for r > 6 (ISCO)
+                if r_initial > 6:
+                    E_circular = (r_initial - 2) / np.sqrt(r_initial * (r_initial - 3))
+                    L_circular = np.sqrt(r_initial**2 / (r_initial - 3))
+                else:
+                    # Fallback for r <= 6 (inside ISCO)
+                    E_circular = 1.0
+                    L_circular = 4.0
+                    print(f"WARNING: Initial radius {r_initial} is inside ISCO (r=6), using default values")
+                
+                self._geodesic_solver = GeodesicRK4Solver(E=E_circular, Lz=L_circular)
                 
                 classical_path = self._compute_geodesic_path(start, end, num_points=100, **params)
             except Exception as e:

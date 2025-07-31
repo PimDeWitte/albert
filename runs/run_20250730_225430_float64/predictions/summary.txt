@@ -1,0 +1,35 @@
+Prediction Validation Report
+------------------------------------------------------------
+Run: run_20250730_225430_float64
+Finalists tested: 2
+Total predictions: 2
+
+
+CMB Power Spectrum Prediction Validator
+------------------------------------------------------------
+SOTA: Standard ΛCDM model (53.08198369836476 )
+Theories beating SOTA: 1/2 (50.0%)
+
+Top performers:
+  1. ✓ TestDivergent-α=1.00e-03 (test)
+     Improvement: +0.03 chi²/dof
+     Theory: 53.05 vs SOTA: 53.08
+  2. ✗ Variable G (δ=+0.00) (classical)
+     Improvement: +0.00 chi²/dof
+     Theory: 53.08 vs SOTA: 53.08
+
+Primordial GWs Validator
+------------------------------------------------------------
+SOTA: Standard single-field inflation (-0.0 )
+Theories beating SOTA: 0/2 (0.0%)
+
+Top performers:
+  1. ✗ Variable G (δ=+0.00) (classical)
+     Improvement: +0.00 tensor-to-scalar ratio r
+     Theory: 0.01 vs SOTA: 0.01
+  2. ✗ TestDivergent-α=1.00e-03 (test)
+     Improvement: +0.00 tensor-to-scalar ratio r
+     Theory: 0.01 vs SOTA: 0.01
+
+============================================================
+Full details saved to: runs/run_20250730_225430_float64/predictions/predictions_report.json

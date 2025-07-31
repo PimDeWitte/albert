@@ -50,13 +50,12 @@ class KerrNewman(GravitationalTheory):
         gauge_lagrangian = -sp.Rational(1,4) * F_mn * sp.Symbol('F^μν')
         interaction_lagrangian = -sp.Symbol('q') * psi_bar * gamma_mu * psi * A_mu
         
-        # When a=0, reduces to Reissner-Nordström (symmetric)
-        # When a≠0, has frame-dragging (asymmetric)
-        force_6dof = None if a == 0 else True
+        # <reason>chain: Kerr-Newman spacetime is stationary axisymmetric with conserved E and Lz</reason>
+        # Even with rotation (a≠0) and charge (Q≠0), we can use 4D solver due to conserved quantities
         
         super().__init__(
             f"Kerr-Newman (a={a:.2f}, q_e={Q:.2f})",
-            force_6dof_solver=force_6dof,
+            force_6dof_solver=None,  # Let has_conserved_quantities decide
             lagrangian=gravity_lagrangian,
             matter_lagrangian=matter_lagrangian,
             gauge_lagrangian=gauge_lagrangian,

@@ -287,6 +287,46 @@ class GravitationalTheory:
             self._is_symmetric_cached = False
             return False
 
+    @property
+    def has_conserved_quantities(self) -> bool:
+        """
+        <reason>chain: Determine if spacetime has conserved E and Lz allowing 4D solver use</reason>
+        
+        Checks if the spacetime has the following properties:
+        1. Stationary: metric components don't depend on time t
+        2. Axisymmetric: metric components don't depend on azimuthal angle φ
+        
+        These symmetries imply conserved energy E and angular momentum Lz,
+        allowing efficient 4D solver usage even if g_tp ≠ 0 (rotating spacetimes).
+        
+        Returns:
+            True if spacetime has conserved E and Lz (can use 4D solver)
+            False otherwise (must use 6D solver)
+        """
+        # Allow explicit override via force_6dof_solver
+        if self.force_6dof_solver is True:
+            return False
+        if self.force_6dof_solver is False:
+            return True
+            
+        # <reason>chain: Known stationary axisymmetric spacetimes with conserved quantities</reason>
+        stationary_axisymmetric_names = [
+            'Schwarzschild', 'Reissner', 'Kerr', 'Kerr-Newman'
+        ]
+        
+        # Check if theory name matches known stationary axisymmetric spacetimes
+        for name in stationary_axisymmetric_names:
+            if name in self.name:
+                return True
+                
+        # <reason>chain: For unknown theories, check if g_tp = 0 (spherically symmetric)</reason>
+        # If g_tp = 0, it's definitely stationary axisymmetric
+        if self.is_symmetric:
+            return True
+            
+        # Default to False for safety
+        return False
+
     @abstractmethod
     def get_metric(self, r: Tensor, M_param: Tensor, C_param: Tensor, G_param: Tensor, t: Tensor = None, phi: Tensor = None) -> tuple[Tensor, Tensor, Tensor, Tensor]:
         """

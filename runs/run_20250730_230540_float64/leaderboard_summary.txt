@@ -1,0 +1,34 @@
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 1
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     Alena‑Tensor‑γ=+0.00               quantum     0.3024  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      Alena‑Tensor‑γ=+0.00           (0.000)
+Observational (Quantum Tests)            Alena‑Tensor‑γ=+0.00           (0.000)
+Predictions (CMB, PTA)                   Alena‑Tensor‑γ=+0.00           (0.000)
+Trajectory Matching                      Alena‑Tensor‑γ=+0.00           (0.000)
+Unification Potential                    Alena‑Tensor‑γ=+0.00           (0.200)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+Quantum      theories:   1 | Avg score: 0.302 | Best: Alena‑Tensor‑γ=+0.00
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.302
+Std deviation: 0.000
+Score range: 0.302 - 0.302
+
+================================================================================
+Full details saved to: runs/run_20250730_230540_float64/leaderboard.json

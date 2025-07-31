@@ -867,7 +867,7 @@ class TheoryEngine:
                 # Fall through to classical solver
         
         # Select appropriate solver
-        if model.is_symmetric:
+        if model.has_conserved_quantities:
             # <reason>chain: Use 4D solver for symmetric spacetimes with conserved E, Lz</reason>
             # Extract E and Lz from initial conditions
             # In geometric units: E_geom = E_si / c^2, Lz_geom = Lz_si / (M*G/c)
@@ -910,13 +910,38 @@ class TheoryEngine:
             y0_4d = torch.tensor([y0_gen[0], y0_gen[1], y0_gen[2], y0_gen[4]], 
                                 device=self.device, dtype=self.dtype)
             
+            # <reason>chain: Check if this is a quantum theory that needs quantum path integrals</reason>
+            from physics_agent.geodesic_integrator_stable import is_quantum_theory
+            is_quantum = is_quantum_theory(model)
+            
             # <reason>chain: Check if this is a UGM theory first</reason>
             is_ugm = (hasattr(model, 'use_ugm_solver') and model.use_ugm_solver) or \
                      model.__class__.__name__ == 'UnifiedGaugeModel' or \
                      'ugm' in model.__class__.__name__.lower()
             
-            # <reason>chain: Choose solver based on particle properties</reason>
-            if is_ugm:
+            # <reason>chain: Choose solver based on theory type and particle properties</reason>
+            if is_quantum and not is_ugm:
+                # <reason>chain: Quantum theories must use quantum path integrals even if symmetric</reason>
+                # Use factory function that correctly routes to QuantumGeodesicSolver
+                from physics_agent.geodesic_integrator_stable import create_geodesic_solver
+                solver = create_geodesic_solver(
+                    model,
+                    torch.tensor(1.0, device=self.device, dtype=self.dtype),  # M=1 in geometric
+                    1.0,  # c=1 in geometric
+                    1.0,  # G=1 in geometric
+                    **optimization_kwargs
+                )
+                tag = "quantum_symmetric_solver_run"
+                # <reason>chain: QuantumGeodesicSolver needs conserved quantities for WKB approximation</reason>
+                if hasattr(solver, 'E'):
+                    solver.E = E_geom.item()
+                if hasattr(solver, 'Lz'):
+                    solver.Lz = Lz_geom.item()
+                # Pass conserved quantities to classical solver inside quantum solver
+                if hasattr(solver, 'classical_solver'):
+                    solver.classical_solver.E = E_geom.item()
+                    solver.classical_solver.Lz = Lz_geom.item()
+            elif is_ugm:
                 # <reason>chain: Always use UGM solver for Unified Gauge Model theories</reason>
                 # UGM needs special handling even for symmetric spacetimes due to gauge fields
                 solver = UGMGeodesicRK4Solver(model,
@@ -951,8 +976,10 @@ class TheoryEngine:
                                          **optimization_kwargs)
                 tag = "symmetric_solver_run"
                 
-            solver.E = E_geom.item()
-            solver.Lz = Lz_geom.item()
+            # <reason>chain: Set conserved quantities for non-quantum solvers</reason>
+            if not is_quantum or is_ugm:
+                solver.E = E_geom.item()
+                solver.Lz = Lz_geom.item()
             
             # Initialize history with 4D state
             hist = torch.zeros((N_STEPS + 1, 4), device=self.device, dtype=self.dtype)

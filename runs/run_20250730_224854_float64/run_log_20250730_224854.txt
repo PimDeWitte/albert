@@ -1,0 +1,59 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 4/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 2 Theories ---
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Kerr__a_0_50__6a3013f9b41b70af_steps_100.pt
+  Truncating trajectory from 101 to 100 steps
+  Constraint validators using classical Lagrangian
+  Error running Conservation Validator: sqrt(): argument 'input' (position 1) must be Tensor, not float
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1290, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/conservation_validator.py", line 98, in validate
+    g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_si, M_si, self.engine.c_si, self.engine.G_si)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/defaults/baselines/kerr.py", line 68, in get_metric
+    r_plus = rs/2 + torch.sqrt(discriminant)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: sqrt(): argument 'input' (position 1) must be Tensor, not float
+
+  Error running Metric Properties Validator: sqrt(): argument 'input' (position 1) must be Tensor, not float
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1290, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/metric_properties_validator.py", line 35, in validate
+    g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M_si, self.engine.c_si, self.engine.G_si)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/defaults/baselines/kerr.py", line 68, in get_metric
+    r_plus = rs/2 + torch.sqrt(discriminant)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: sqrt(): argument 'input' (position 1) must be Tensor, not float
+
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+--- Validating: Kerr-Newman (a=0.50, q_e=0.30) ---
+  Running validation trajectory for Kerr-Newman (a=0.50, q_e=0.30)...

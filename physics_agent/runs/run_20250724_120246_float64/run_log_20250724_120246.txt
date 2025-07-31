@@ -1,2 +1,0 @@
-Running: Schwarzschild
-Running: Kerr (a=0.00)

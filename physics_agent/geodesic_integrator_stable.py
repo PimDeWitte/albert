@@ -53,6 +53,7 @@ Competitive Research Suggestions Integrated:
 
 import torch
 import math
+import numpy as np
 from typing import Optional, Tuple, Dict, List
 from physics_agent.base_theory import GravitationalTheory
 from physics_agent.utils import get_metric_wrapper
@@ -291,9 +292,17 @@ class QuantumGeodesicSolver:
         # <reason>chain: Add classical solver for finding stationary paths</reason>
         # Use classical solver to find the path of stationary action
         # Choose appropriate solver based on theory properties
-        if hasattr(model, 'is_symmetric') and model.is_symmetric:
-            # Use 4D solver for symmetric spacetimes
+        if hasattr(model, 'has_conserved_quantities') and model.has_conserved_quantities:
+            # <reason>chain: Use 4D solver for stationary axisymmetric spacetimes</reason>
             self.classical_solver = GeodesicRK4Solver(model, M_phys, c, G, **kwargs)
+            # <reason>chain: Initialize classical solver with proper circular orbit parameters</reason>
+            r_init = kwargs.get('r_init', kwargs.get('r0', 12.0))
+            if r_init > 6:
+                # Convert to geometric units for solver
+                r_geom = r_init  # Already in geometric units if passed from engine
+                E_circ, Lz_circ = self.classical_solver.compute_circular_orbit_params(torch.tensor(r_geom))
+                self.classical_solver.E = E_circ.item()
+                self.classical_solver.Lz = Lz_circ.item()
         else:
             # Use 6D solver for general spacetimes
             self.classical_solver = GeneralGeodesicRK4Solver(model, M_phys, c, G, **kwargs)
@@ -315,8 +324,16 @@ class QuantumGeodesicSolver:
         self.enable_qed_corrections = kwargs.get('enable_qed_corrections', True)
         
         # <reason>chain: Default conserved quantities (will be set by user)</reason>
-        self.E = 1.0  # Energy per unit mass (geometric)
-        self.Lz = 0.0  # Angular momentum per unit mass (geometric)
+        # <reason>chain: Initialize with circular orbit parameters if radius provided</reason>
+        r_init = kwargs.get('r_init', kwargs.get('r0', 12.0))  # Default r=12 if not specified
+        if r_init > 6:  # Valid circular orbit above ISCO
+            # For circular orbit: E = (r - 2) / sqrt(r(r - 3)), L = sqrt(r² / (r - 3))
+            self.E = (r_init - 2) / np.sqrt(r_init * (r_init - 3))
+            self.Lz = np.sqrt(r_init**2 / (r_init - 3))
+        else:
+            # Fallback for r <= 6 (inside ISCO)
+            self.E = 1.0  # Energy per unit mass (geometric)
+            self.Lz = 4.0  # Angular momentum per unit mass (geometric)
     
     def to_geometric_length(self, r_phys: Tensor) -> Tensor:
         """Convert physical length (m) to geometric units"""

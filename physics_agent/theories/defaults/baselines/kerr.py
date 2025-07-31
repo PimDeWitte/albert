@@ -21,13 +21,12 @@ class Kerr(GravitationalTheory):
         # <reason>chain: Define R as Ricci scalar symbol</reason>
         R = sp.Symbol('R')
         
-        # When a=0, reduces to Schwarzschild (symmetric)
-        # When a≠0, has frame-dragging (asymmetric)
-        force_6dof = None if a == 0 else True
+        # <reason>chain: Kerr spacetime is stationary axisymmetric with conserved E and Lz</reason>
+        # Even with rotation (a≠0), we can use 4D solver due to conserved quantities
         
         super().__init__(
             f"Kerr (a={a:.2f})",
-            force_6dof_solver=force_6dof,
+            force_6dof_solver=None,  # Let has_conserved_quantities decide
             lagrangian=R
         )
         self.a = a

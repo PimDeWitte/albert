@@ -134,6 +134,10 @@ class GeodesicRK4Solver:
         self.kwargs = kwargs
         self.metric_func = get_metric_wrapper(model.get_metric)
         
+        # <reason>chain: Set device and dtype for tensor operations</reason>
+        self.device = kwargs.get('device', torch.device('cpu'))
+        self.dtype = kwargs.get('dtype', torch.float64)
+        
         # Default conserved quantities (will be set by user)
         self.E = 1.0  # Energy per unit mass (geometric)
         self.Lz = 0.0  # Angular momentum per unit mass (geometric)
@@ -198,31 +202,76 @@ class GeodesicRK4Solver:
         """
         Compute state derivatives in geometric units (c=1, G=1, M=1).
         
-        <reason>chain: Following expert recommendation to work purely in geometric units internally</reason>
+        <reason>chain: Generic implementation for stationary axisymmetric spacetimes</reason>
         """
         t, r, phi, dr_dtau_geom = y[0], y[1], y[2], y[3]
         
-        # <reason>chain: In geometric units (G=c=M=1), Schwarzschild radius r_s = 2M = 2</reason>
-        RS_GEOM = 2.0  # Schwarzschild radius in geometric units
+        # <reason>chain: Get metric components to handle any stationary axisymmetric spacetime</reason>
+        M_geom = torch.tensor(1.0, dtype=self.dtype, device=self.device)  # M=1 in geometric units
+        g_tt, g_rr, g_pp, g_tp = self.metric_func(
+            r=r.unsqueeze(0), M=M_geom, c=1.0, G=1.0
+        )
         
-        # Safety check: r > r_s + epsilon (expert recommendation)
-        if r <= RS_GEOM + 0.01:  # Avoid singularity at horizon
+        # Extract scalar values
+        g_tt = g_tt.squeeze()
+        g_rr = g_rr.squeeze()
+        g_pp = g_pp.squeeze()
+        g_tp = g_tp.squeeze()
+        
+        # <reason>chain: Compute metric determinant for stationary axisymmetric metric</reason>
+        # For equatorial plane: det(g) = g_rr * (g_tt * g_pp - g_tp²)
+        det_2d = g_tt * g_pp - g_tp**2
+        
+        # Safety check: ensure metric is non-singular
+        if torch.abs(det_2d) < 1e-10 or torch.abs(g_rr) < 1e-10:
             return torch.full_like(y, float('nan'))
         
-        # Compute velocities using conserved quantities
-        # <reason>chain: Time dilation factor (1 - r_s/r) appears in conserved quantity relations</reason>
-        u_t_geom = self.E / (1 - RS_GEOM / r)
-        u_phi_geom = self.Lz / r**2
+        # <reason>chain: Compute inverse metric components for raising indices</reason>
+        # For 2x2 (t,φ) block: inverse matrix formula
+        g_tt_inv = g_pp / det_2d
+        g_pp_inv = g_tt / det_2d
+        g_tp_inv = -g_tp / det_2d
+        g_rr_inv = 1.0 / g_rr
         
-        # Radial acceleration from standard Schwarzschild geodesic equation
-        # <reason>chain: Correct Schwarzschild geodesic equation for Mercury precession</reason>
-        # d²r/dτ² = -M/r² * (1-2M/r) * (dt/dτ)² + L²/r³ * (1-3M/r) - M/r² * (dr/dτ)² / (1-2M/r)
-        # With M=1 in geometric units:
-        M_GEOM = 1.0  # Mass in geometric units
-        d2r_dtau2_geom = (
-            - (M_GEOM / r**2) * u_t_geom**2 * (1 - RS_GEOM / r) + 
-            (self.Lz**2 / r**3) * (1 - 3.0 * M_GEOM / r) -  # Correct coefficient (1-3M/r) for GR precession
-            (M_GEOM / r**2) * dr_dtau_geom**2 / (1 - RS_GEOM / r)  # Fixed normalization
+        # <reason>chain: Compute 4-velocities from conserved quantities E and Lz</reason>
+        # E = -g_tt * u^t - g_tp * u^φ
+        # Lz = g_tp * u^t + g_pp * u^φ
+        # Solving for u^t and u^φ:
+        u_t_geom = -g_tt_inv * self.E - g_tp_inv * self.Lz
+        u_phi_geom = -g_tp_inv * self.E - g_pp_inv * self.Lz
+        
+        # <reason>chain: Compute radial equation using effective potential method</reason>
+        # (dr/dτ)² = -1/g_rr * [1 + g^tt * E² + 2 * g^tp * E * Lz + g^pp * Lz²]
+        dr_dtau_sq = -g_rr_inv * (1.0 + g_tt_inv * self.E**2 + 
+                                  2.0 * g_tp_inv * self.E * self.Lz + 
+                                  g_pp_inv * self.Lz**2)
+        
+        # <reason>chain: Compute radial acceleration from effective potential</reason>
+        # Need partial derivatives of metric components
+        h = 1e-6  # Small step for numerical derivative
+        r_plus = r + h
+        r_minus = r - h
+        
+        # Get metric at nearby points
+        g_tt_plus, g_rr_plus, g_pp_plus, g_tp_plus = self.metric_func(
+            r=r_plus.unsqueeze(0), M=M_geom, c=1.0, G=1.0
+        )
+        g_tt_minus, g_rr_minus, g_pp_minus, g_tp_minus = self.metric_func(
+            r=r_minus.unsqueeze(0), M=M_geom, c=1.0, G=1.0
+        )
+        
+        # Numerical derivatives
+        dg_tt_dr = (g_tt_plus.squeeze() - g_tt_minus.squeeze()) / (2 * h)
+        dg_rr_dr = (g_rr_plus.squeeze() - g_rr_minus.squeeze()) / (2 * h)
+        dg_pp_dr = (g_pp_plus.squeeze() - g_pp_minus.squeeze()) / (2 * h)
+        dg_tp_dr = (g_tp_plus.squeeze() - g_tp_minus.squeeze()) / (2 * h)
+        
+        # <reason>chain: Geodesic equation for radial acceleration in stationary axisymmetric spacetime</reason>
+        d2r_dtau2_geom = -0.5 * g_rr_inv * (
+            dg_tt_dr * u_t_geom**2 + 
+            dg_rr_dr * dr_dtau_geom**2 + 
+            dg_pp_dr * u_phi_geom**2 +
+            2.0 * dg_tp_dr * u_t_geom * u_phi_geom
         )
         
         return torch.stack([u_t_geom, dr_dtau_geom, u_phi_geom, d2r_dtau2_geom])
