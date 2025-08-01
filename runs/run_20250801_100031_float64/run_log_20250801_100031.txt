@@ -275,3 +275,11 @@ Theory Predictions:
     Using solver: GeodesicRK4Solver    Time steps: 100000, Step size: 0.01
 
     Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 100001 points
+    Completed proton: tag=quantum_unified_trajectory, hist_shape=torch.Size([100001, 4])
+    Classical trajectory computed: 100001 points
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([100001, 4])
+    Classical trajectory computed: 100001 points
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([100001, 4])
+    Classical trajectory computed: 100001 points
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([100001, 4])

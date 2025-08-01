@@ -3576,3 +3576,6 @@ Theory Predictions:
 
     Using solver: GeodesicRK4Solver
     Using solver: GeodesicRK4Solver
+    WARNING: Solver returned None at step 112332
+    Classical trajectory computed: 112333 points
+    Completed proton: tag=quantum_symmetric_solver_run, hist_shape=torch.Size([11, 4])
