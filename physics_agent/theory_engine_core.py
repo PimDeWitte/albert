@@ -521,6 +521,7 @@ class TheoryEngine:
         # <reason>chain: Use ThreadPoolExecutor for parallel particle computation</reason>
         import concurrent.futures
         import threading
+        import time
         
         # Create a lock for thread-safe operations
         results_lock = threading.Lock()
@@ -529,10 +530,6 @@ class TheoryEngine:
             """Compute trajectory for a single particle"""
             # Load particle properties
             particle = self.particle_loader.get_particle(particle_name)
-            
-            # <reason>chain: Debug particle properties</reason>
-            if self.verbose:
-                print(f"\n    Starting {particle_name}: type={particle.particle_type}, mass={particle.mass}, charge={particle.charge}")
             
             # <reason>chain: Create progress callback with proper closure for this particle</reason>
             def make_progress_callback(progress_bar):
@@ -558,13 +555,23 @@ class TheoryEngine:
                              if k not in ['show_pbar', 'progress_callback', 'callback_interval']}
             
             # Run trajectory with particle properties
+            # <reason>chain: Capture stdout to prevent thread output interference</reason>
+            import sys
+            from io import StringIO
+            captured_output = StringIO()
+            
             try:
-                # <reason>chain: Debug print to understand trajectory computation</reason>
-                print(f"\n    Starting trajectory computation for {particle_name}...")
+                # <reason>chain: Redirect stdout to prevent interleaved output in multi-threaded execution</reason>
+                old_stdout = sys.stdout
+                sys.stdout = captured_output
+                
                 # <reason>chain: Debug callback interval calculation</reason>
                 callback_interval = max(1, N_STEPS // 100)
-                if self.verbose:
-                    print(f"      Callback interval for {particle_name}: {callback_interval} (N_STEPS={N_STEPS})")
+                
+                # <reason>chain: Add timing info that bypasses stdout capture for debugging</reason>
+                start_time = time.time()
+                with results_lock:
+                    pbar.set_description(f"    {particle_name} [starting]")
                 
                 hist, tag, kicks = self.run_trajectory(
                     model, r0_si, N_STEPS, DTau_si,
@@ -578,21 +585,37 @@ class TheoryEngine:
                     show_pbar=False,  # <reason>chain: Disable inner progress bar to avoid conflicts with outer progress bars</reason>
                     **filtered_kwargs
                 )
-                print(f"    Completed {particle_name}: tag={tag}, hist_shape={hist.shape if hist is not None else None}")
+                
+                # <reason>chain: Update status after completion</reason>
+                elapsed = time.time() - start_time
+                with results_lock:
+                    pbar.set_description(f"    {particle_name} [done in {elapsed:.1f}s]")
             except Exception as e:
                 # <reason>chain: Always log particle-specific errors for debugging</reason>
                 import traceback
+                hist, tag, kicks = None, f"error: {str(e)}", []
+                # <reason>chain: Store error in captured output for later retrieval if needed</reason>
                 print(f"\n      Error computing {particle_name} trajectory: {str(e)}")
                 if self.verbose:
                     print(f"      Traceback:\n{traceback.format_exc()}")
-                hist, tag, kicks = None, f"error: {str(e)}", []
             finally:
+                # <reason>chain: Restore stdout</reason>
+                sys.stdout = old_stdout
+                
                 # <reason>chain: Ensure progress bar is updated to 100% on completion</reason>
                 with results_lock:
                     if pbar.n < pbar.total:
                         pbar.update(pbar.total - pbar.n)
                     pbar.refresh()
                     # Don't close here, let the main thread handle it
+                
+                # <reason>chain: Optionally log captured output for debugging if verbose</reason>
+                if self.verbose and captured_output.getvalue():
+                    output_lines = captured_output.getvalue().strip().split('\n')
+                    # Log only important lines to avoid clutter
+                    for line in output_lines:
+                        if 'Error' in line or 'Warning' in line or 'Failed' in line:
+                            print(f"      [{particle_name}] {line}")
             
             # Return results
             return particle_name, {

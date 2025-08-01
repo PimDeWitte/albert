@@ -275,3 +275,21 @@ Theory Predictions:
 
     Using solver: GeodesicRK4Solver
 
+    Classical trajectory computed: 10001 points
+    Completed proton: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+    Classical trajectory computed: 10001 points
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+    Classical trajectory computed: 10001 points
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+    Classical trajectory computed: 10001 points
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+
+  Computing quantum trajectories with PennyLane solver for Einstein Asymmetric (α=0.0e+00)...
+
+    Starting trajectory computation for electron...
+
+    Starting trajectory computation for neutrino...
+    Starting trajectory computation for photon...
+
+    Starting trajectory computation for proton...
+
