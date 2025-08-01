@@ -128,6 +128,11 @@ class TrajectoryCache:
             extra_params['c_si'] = kwargs['c_si']
         if 'G_si' in kwargs:
             extra_params['G_si'] = kwargs['G_si']
+        
+        # <reason>chain: Include black hole preset to ensure cache separation by mass</reason>
+        # This is critical because trajectories depend strongly on the central mass
+        if 'black_hole_preset' in kwargs:
+            extra_params['black_hole_preset'] = kwargs['black_hole_preset']
                     
         # Always use hash-based filename for consistency and to include all parameters
         # <reason>chain: Generate hash of all parameters except n_steps for unique identification</reason>
@@ -139,8 +144,19 @@ class TrajectoryCache:
         # <reason>chain: Format: (theory)_(params_hash)_steps_(n_steps).pt</reason>
         # <reason>chain: The _steps suffix allows fetching partial trajectories from longer runs</reason>
         filename = f"{sanitized_name}_{param_hash}_steps_{n_steps}.pt"
-            
-        return os.path.join(self.trajectories_dir, filename)
+        
+        # <reason>chain: Organize cache by black hole preset for clarity</reason>
+        # Create subdirectory for black hole preset if provided
+        if 'black_hole_preset' in kwargs:
+            bh_preset = kwargs['black_hole_preset']
+            # Sanitize preset name for filesystem
+            sanitized_preset = re.sub(r'[^a-zA-Z0-9_\-]', '_', bh_preset)
+            preset_dir = os.path.join(self.trajectories_dir, sanitized_preset)
+            os.makedirs(preset_dir, exist_ok=True)
+            return os.path.join(preset_dir, filename)
+        else:
+            # Fallback to root trajectories directory for legacy compatibility
+            return os.path.join(self.trajectories_dir, filename)
         
     def load_trajectory(self, cache_path: str, device: torch.device, 
                        max_steps: Optional[int] = None) -> Optional[Tensor]:

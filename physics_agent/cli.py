@@ -132,6 +132,11 @@ PARALLELIZATION NOTE:
     p.add_argument("--sweepable_fields", type=str, default='any', 
                    help="Text list (e.g., 'gamma,sigma') or JSON dict of fields to sweep (e.g., '{\"gamma\": [0.1,0.3]}'). Default: 'any' (all fields).")
     
+    # Black hole configuration
+    p.add_argument("--black-hole-preset", type=str, default='primordial_mini', dest='black_hole_preset',
+                   choices=['stellar_mass', 'primordial_mini', 'laboratory_micro', 'intermediate_mass', 'sagittarius_a_star'],
+                   help="Black hole preset to use for simulations (default: primordial_mini for stable numerics)")
+    
     # Miscellaneous
     p.add_argument("--verbose", action="store_true", 
                    help="Enable verbose logging.")

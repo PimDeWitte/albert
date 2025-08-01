@@ -136,9 +136,20 @@ class TheoryEngine:
     """Core engine for gravitational theory simulation and evaluation"""
     
     def __init__(self, device: str = 'cpu', dtype: torch.dtype = torch.float64, theories_base_dir: str = 'physics_agent/theories', particles_base_dir: str = 'physics_agent/particles',
-                 quantum_field_content: str = 'all', quantum_phase_precision: float = QUANTUM_PHASE_PRECISION, verbose: bool = False):
+                 quantum_field_content: str = 'all', quantum_phase_precision: float = QUANTUM_PHASE_PRECISION, verbose: bool = False,
+                 black_hole_preset: str = 'primordial_mini'):
         """
         Initialize the TheoryEngine with device, datatype, and directory paths.
+        
+        Args:
+            device: PyTorch device (default: 'cpu')
+            dtype: PyTorch data type (default: torch.float64)
+            theories_base_dir: Base directory for theories
+            particles_base_dir: Base directory for particles
+            quantum_field_content: Quantum field content for theories (default: 'all')
+            quantum_phase_precision: Phase precision for quantum calculations (default: QUANTUM_PHASE_PRECISION)
+            verbose: Enable verbose output (default: False)
+            black_hole_preset: Black hole configuration preset (default: 'primordial_mini')
         """
         # <reason>chain: Store verbose flag for consistent logging control</reason>
         self.verbose = verbose
@@ -151,10 +162,20 @@ class TheoryEngine:
         self.quantum_field_content = quantum_field_content
         self.quantum_phase_precision = quantum_phase_precision
         
-        # <reason>chain: Use constants from constants.py module for SI values</reason>
-        self.M_si = M_sun  # Solar mass in kg
+        # <reason>chain: Load black hole configuration from JSON files</reason>
+        from physics_agent.black_hole_loader import BlackHoleLoader
+        self.bh_loader = BlackHoleLoader()
+        self.bh_preset = self.bh_loader.get_black_hole(black_hole_preset)
+        
+        # <reason>chain: Use black hole preset mass or default to solar mass</reason>
+        self.M_si = self.bh_preset.mass_kg  # Black hole mass in kg
         self.c_si = c  # Speed of light in m/s
         self.G_si = G  # Gravitational constant in m^3 kg^-1 s^-2
+        
+        if self.verbose:
+            print(f"Using black hole preset: {self.bh_preset.name}")
+            print(f"  Mass: {self.bh_preset.mass_solar:.2e} solar masses")
+            print(f"  Schwarzschild radius: {self.bh_preset.schwarzschild_radius_m:.2e} m")
         
         # <reason>chain: Define scale factors for geometric unit conversions</reason>
         self.length_scale = self.G_si * self.M_si / self.c_si**2  # GM/c^2
@@ -728,6 +749,7 @@ class TheoryEngine:
         cache_kwargs['M_si'] = self.M_si
         cache_kwargs['c_si'] = self.c_si
         cache_kwargs['G_si'] = self.G_si
+        cache_kwargs['black_hole_preset'] = self.bh_preset.name  # Include black hole preset for cache organization
         
         # Regenerate cache path with theory-specific information
         cache_path = self.get_trajectory_cache_path(
@@ -968,10 +990,10 @@ class TheoryEngine:
                 y0_4d = y0_gen.clone()
             else:
                 # Extract from 6D format: [t, r, phi, u^t, u^r, u^phi]
-                # <reason>chain: Convert to geometric units for 4D state</reason>
-                # y0_gen is in SI units, need to convert to geometric for 4D solver
-                t_geom = y0_gen[0] / self.time_scale
-                r_geom = y0_gen[1] / self.length_scale
+                # <reason>chain: y0_gen has mixed units: position in geometric, velocities in SI</reason>
+                # t, r, phi are already in geometric units from get_initial_conditions
+                t_geom = y0_gen[0]  # Already geometric
+                r_geom = y0_gen[1]  # Already geometric  
                 phi_geom = y0_gen[2]  # Already dimensionless
                 dr_dtau_geom = u_r_geom  # Already calculated above
                 y0_4d = torch.tensor([t_geom, r_geom, phi_geom, dr_dtau_geom], 
@@ -1051,6 +1073,7 @@ class TheoryEngine:
             if not is_quantum or is_ugm:
                 solver.E = E_geom.item()
                 solver.Lz = Lz_geom.item()
+
             
             # Initialize history with 4D state
             hist = torch.zeros((N_STEPS + 1, 4), device=self.device, dtype=self.dtype)
@@ -1180,6 +1203,8 @@ class TheoryEngine:
             step_successful = False
             h_current = h.clone()
             
+
+            
             # <reason>chain: Track time per step to identify slow steps</reason>
             step_start_time = time.time()
             
@@ -1195,6 +1220,7 @@ class TheoryEngine:
                     y_new = solver.rk4_step(y, h_float)
                 
                 if y_new is None or torch.any(~torch.isfinite(y_new)):
+
                     if adaptive_stepping:
                         h_current = h_current * INTEGRATION_STEP_FACTORS['standard_reduction']
                         if verbose and retry == 0:
@@ -3919,16 +3945,18 @@ def main():
         else:
             device = "cpu"
             
-    # <reason>chain: Pass quantum configuration to TheoryEngine</reason>
+    # <reason>chain: Pass quantum configuration and black hole preset to TheoryEngine</reason>
     engine = TheoryEngine(
         device=device, 
         dtype=dtype,
         quantum_field_content=getattr(args, 'quantum_field_content', 'all'),
         quantum_phase_precision=getattr(args, 'quantum_phase_precision', 1e-30),
-        verbose=args.verbose
+        verbose=args.verbose,
+        black_hole_preset=getattr(args, 'black_hole_preset', 'primordial_mini')
     )
     engine.loss_type = 'ricci'  # <reason>chain: Ricci tensor is the only loss type</reason>
     print(f"Running on device: {engine.device}, with dtype: {engine.dtype}")
+    print(f"Black hole: {engine.bh_preset.name} ({engine.bh_preset.mass_solar:.2e} solar masses)")
     
     # <reason>chain: Print quantum configuration for clarity</reason>
     print(f"Quantum field content for quantum theories: {engine.quantum_field_content}")

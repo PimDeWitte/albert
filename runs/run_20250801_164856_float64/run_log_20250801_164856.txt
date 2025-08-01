@@ -1,0 +1,277 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+      neutrino: trajectory is None
+      photon: trajectory is None
+      proton: trajectory is None
+      electron: trajectory is None
+    ✓ Computed 0/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      neutrino: trajectory is None
+      photon: trajectory is None
+      electron: trajectory is None
+      proton: trajectory is None
+    ✓ Computed 0/4 particle trajectories
+
+Completed 2/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 1 Theories ---
+  Using preferred values for Einstein Asymmetric (α=0.0e+00): {'alpha': 0.0}
+
+--- Validating: Einstein Asymmetric (α=0.0e+00) ---
+  Running validation trajectory for Einstein Asymmetric (α=0.0e+00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+    Initial conditions: r=12.0, E=0.9622504486493765, Lz=4.0
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Einstein Asymmetric (α=0.0e+00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Einstein Asymmetric (α=0.0e+00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Einstein Asymmetric (α=0.0e+00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Unrealistic gamma=-1829.358667, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 1.000000 (0.0σ)
+  Combined loss: 0.639
+  Status: PASS
+
+Calculating photon sphere for Einstein Asymmetric (α=0.0e+00)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 1
+  Failed: 0
+============================================================
+
+Theories that passed validation:
+  ✓ Einstein Asymmetric (α=0.0e+00)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Einstein Asymmetric (α=0.0e+00) ---
+
+--- Evaluating: Einstein Asymmetric (α=0.0e+00) ---
+
+--- Evaluating: Einstein Asymmetric (α=0.0e+00) ---
+  Results will be saved to: runs/run_20250801_164856_float64/Einstein_Asymmetric_α_0_0e+00
+  Running pre-flight checks for Einstein Asymmetric (α=0.0e+00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+    Initial conditions: r=12.0, E=0.9622504486493765, Lz=4.0
+    Time steps: 100, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Einstein Asymmetric (α=0.0e+00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Einstein Asymmetric (α=0.0e+00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Einstein Asymmetric (α=0.0e+00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Unrealistic gamma=-1829.358667, defaulting to measurement
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 1.000000 (0.0σ)
+  Combined loss: 0.639
+  Status: PASS
+
+Calculating photon sphere for Einstein Asymmetric (α=0.0e+00)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Running trajectory simulation for Einstein Asymmetric (α=0.0e+00)...
+
+    Starting trajectory computation for electron...
+    Starting trajectory computation for neutrino...
+
+    Starting trajectory computation for proton...
+
+    Starting trajectory computation for photon...
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+
+
+    Initial conditions: r=12.0, E=0.7698003589195013, Lz=3.8400000000000007
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)    Initial conditions: r=12.0, E=0.9622504486493765, Lz=6.000000000000001    Initial conditions: r=12.0, E=0.9435641951204965, Lz=3.137858162210945
+
+
+
+    Time steps: 10000, Step size: 0.01    Initial conditions: r=12.0, E=0.9622504486493765, Lz=4.0    Time steps: 10000, Step size: 0.01
+    Time steps: 10000, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+
+    Using solver: GeodesicRK4Solver    Using solver: GeodesicRK4Solver    Time steps: 10000, Step size: 0.01
+
+
+    Using solver: GeodesicRK4Solver
+

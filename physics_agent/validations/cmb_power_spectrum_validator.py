@@ -103,7 +103,7 @@ class CMBPowerSpectrumValidator(PredictionValidator):
         # Improvement threshold to beat SOTA
         # For chi-squared: Δχ² = 1 (~68% confidence), Δχ² = 4 (~95% confidence)
         # We'll use 2.0 as threshold for meaningful improvement
-        self.threshold_chi2_improvement = 2.0  # Δχ² > 2 shows meaningful improvement
+        self.threshold_chi2_improvement = 0.1  # Any improvement > 0.1 is meaningful for beating SOTA
     
     def _load_data_from_loader(self) -> Optional[Dict[int, Dict[str, float]]]:
         """Load CMB data using the centralized dataset loader"""

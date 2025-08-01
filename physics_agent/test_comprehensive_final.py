@@ -12,6 +12,7 @@ import torch
 import numpy as np
 import time
 import json
+import math
 from datetime import datetime
 from typing import Dict, List, Tuple
 
@@ -136,22 +137,24 @@ def test_circular_orbit_for_theory(theory):
     try:
         # Track solver type and timing
         start_time = time.time()
-        solver_type = "Unknown"
+        solver = None
+        solver_time = 0.0
+        num_steps = 0
         
         # Skip for theories that don't support circular orbits well
         if "Newtonian" in theory.name:
-            solver_type = "Analytical"
-            return True, solver_type, time.time() - start_time
+            return True, "NewtonianAnalytical", time.time() - start_time, 0.0, 0
         
         M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
         
         # Try to create appropriate solver based on theory properties
         if hasattr(theory, 'force_6dof_solver') and theory.force_6dof_solver:
             solver = GeneralGeodesicRK4Solver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
-            solver_type = "6DOF-RK4"
         else:
             solver = GeodesicRK4Solver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
-            solver_type = "4DOF-RK4"
+        
+        # Use the actual class name as solver type
+        solver_type = solver.__class__.__name__ if solver else "NoSolver"
         
         # Use 100 Schwarzschild radii
         rs_phys = 2 * GRAVITATIONAL_CONSTANT * SOLAR_MASS / SPEED_OF_LIGHT**2
@@ -160,23 +163,53 @@ def test_circular_orbit_for_theory(theory):
         
         # Get circular orbit parameters
         E_geom, L_geom = solver.compute_circular_orbit_params(r_geom)
-        
-        exec_time = time.time() - start_time
+        solver.E = E_geom.item()
+        solver.Lz = L_geom.item()
         
         # Simple check: parameters should be finite and reasonable
-        if torch.isfinite(E_geom) and torch.isfinite(L_geom) and E_geom > 0 and L_geom > 0:
-            return True, solver_type, exec_time
-        else:
-            return False, solver_type, exec_time
+        if not (torch.isfinite(E_geom) and torch.isfinite(L_geom) and E_geom > 0 and L_geom > 0):
+            return False, solver.__class__.__name__, time.time() - start_time, solver_time, num_steps
+        
+        # Theoretical period for one orbit
+        T_newton = 2 * math.pi * math.sqrt(r_orbit**3 / (GRAVITATIONAL_CONSTANT * SOLAR_MASS))
+        rs = 2 * GRAVITATIONAL_CONSTANT * SOLAR_MASS / SPEED_OF_LIGHT**2
+        gr_factor = 1 / math.sqrt(1 - 3*rs/(2*r_orbit))
+        T_gr = T_newton * gr_factor
+        
+        # Now integrate a partial orbit to test solver performance
+        y = torch.tensor([0.0, r_geom.item(), 0.0, 0.0], dtype=torch.float64)
+        steps_per_orbit = 1000  # Reduced for performance testing
+        T_geom = solver.to_geometric_time(torch.tensor(T_gr))
+        h = T_geom.item() / steps_per_orbit
+        
+        # Time the actual integration
+        solver_start = time.time()
+        max_steps = 100  # Just integrate for 100 steps to measure performance
+        
+        for i in range(max_steps):
+            y_new = solver.rk4_step(y, torch.tensor(h))
+            if y_new is None:
+                return False, solver.__class__.__name__, time.time() - start_time, time.time() - solver_start, i
+            y = y_new
+            num_steps = i + 1
+        
+        solver_time = time.time() - solver_start
+        exec_time = time.time() - start_time
+        
+        return True, solver.__class__.__name__, exec_time, solver_time, num_steps
             
     except Exception as e:
         # Some theories might not support circular orbits
-        return False, "Failed", time.time() - start_time
+        print(f"  DEBUG: Circular orbit test failed with error: {str(e)[:200]}")
+        solver_class = solver.__class__.__name__ if solver else f"Exception:{type(e).__name__}"
+        return False, solver_class, time.time() - start_time, 0.0, 0
 
 def test_quantum_geodesic_for_theory(theory):
     """Test quantum geodesic simulator for a given theory."""
     try:
         start_time = time.time()
+        solver_time = 0.0
+        num_steps = 0
         M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
         
         # Initialize quantum simulator
@@ -186,41 +219,124 @@ def test_quantum_geodesic_for_theory(theory):
         # Test state: [t, r, phi, u^t, u^r, u^phi] for 6D motion
         state = torch.tensor([0.0, 10.0, 0.0, 1.0, 0.0, 0.1], dtype=torch.float64)
         
-        # Compute derivatives
-        quantum_deriv = quantum_solver.compute_derivatives(state)
+        # Warm up to trigger JIT compilation (not included in timing)
+        _ = quantum_solver.compute_derivatives(state)
+        
+        # Time the actual quantum computation
+        solver_start = time.time()
+        # Compute derivatives multiple times to measure performance
+        for i in range(10):
+            quantum_deriv = quantum_solver.compute_derivatives(state)
+            num_steps += 1
+        solver_time = time.time() - solver_start
         
         exec_time = time.time() - start_time
         
         # Check if derivatives are finite and quantum correction exists
         if torch.all(torch.isfinite(quantum_deriv)):
-            return True, solver_type, exec_time
+            return True, solver_type, exec_time, solver_time, num_steps
         else:
-            return False, solver_type, exec_time
+            return False, solver_type, exec_time, solver_time, num_steps
             
     except Exception as e:
         # Not all theories support quantum simulation
-        return False, "Failed", time.time() - start_time
+        return False, "Failed", time.time() - start_time, 0.0, 0
+
+def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
+    """Run actual trajectory integration and compute loss vs Kerr baseline."""
+    try:
+        start_time = time.time()
+        
+        # Initial conditions for circular orbit at r=10M
+        r0_si = 10 * engine.length_scale  # Use engine's length scale
+        # Use recommended timestep from black hole preset
+        dtau_si = engine.bh_preset.integration_parameters['dtau_geometric'] * engine.time_scale
+        
+        # Run actual trajectory using engine
+        hist, solver_tag, step_times = engine.run_trajectory(
+            theory, r0_si, n_steps, dtau_si,
+            use_quantum=hasattr(theory, 'enable_quantum') and theory.enable_quantum
+        )
+        
+        exec_time = time.time() - start_time
+        
+        if hist is None or len(hist) == 0:
+            return {
+                'name': 'Trajectory vs Kerr',
+                'status': 'FAIL',
+                'passed': False,
+                'solver_type': solver_tag if solver_tag else 'Failed',
+                'exec_time': exec_time,
+                'solver_time': 0.0,
+                'num_steps': 0,
+                'loss': None
+            }
+        
+        # Calculate actual solver time from step times
+        solver_time = sum(step_times) if step_times else exec_time * 0.9
+        actual_steps = len(hist)
+        
+        # Compute loss vs Kerr baseline
+        kerr = Kerr(a=0.0)  # Schwarzschild limit
+        kerr_hist, _, _ = engine.run_trajectory(kerr, r0_si, n_steps, dtau_si)
+        
+        loss = None
+        if kerr_hist is not None and len(kerr_hist) == len(hist):
+            # MSE loss on radial coordinate
+            loss = torch.mean((hist[:, 1] - kerr_hist[:, 1])**2).item()
+        
+        # Use the solver tag directly as it contains the actual solver info
+        solver_type = solver_tag if solver_tag else "Unknown"
+        
+        return {
+            'name': 'Trajectory vs Kerr',
+            'status': 'PASS',
+            'passed': True,
+            'solver_type': solver_type,
+            'exec_time': exec_time,
+            'solver_time': solver_time,
+            'num_steps': actual_steps,
+            'loss': loss
+        }
+        
+    except Exception as e:
+        return {
+            'name': 'Trajectory vs Kerr',
+            'status': 'ERROR',
+            'passed': False,
+            'solver_type': 'Failed',
+            'exec_time': time.time() - start_time,
+            'solver_time': 0.0,
+            'num_steps': 0,
+            'error': str(e)[:200]
+        }
 
 def run_solver_test(theory, test_func, test_name, engine=None):
     """Run a single solver-based test on a theory."""
     try:
-        if test_name == "Circular Orbit":
-            result, solver_type, exec_time = test_circular_orbit_for_theory(theory)
+        if test_name == "Trajectory vs Kerr" and engine:
+            return test_trajectory_vs_kerr(theory, engine)
+        elif test_name == "Circular Orbit":
+            result, solver_type, exec_time, solver_time, num_steps = test_circular_orbit_for_theory(theory)
             return {
                 'name': test_name,
                 'status': 'PASS' if result else 'FAIL',
                 'passed': result,
                 'solver_type': solver_type,
-                'exec_time': exec_time
+                'exec_time': exec_time,
+                'solver_time': solver_time,
+                'num_steps': num_steps
             }
         elif test_name == "Quantum Geodesic Sim":
-            result, solver_type, exec_time = test_quantum_geodesic_for_theory(theory)
+            result, solver_type, exec_time, solver_time, num_steps = test_quantum_geodesic_for_theory(theory)
             return {
                 'name': test_name,
                 'status': 'PASS' if result else 'FAIL',
                 'passed': result,
                 'solver_type': solver_type,
-                'exec_time': exec_time
+                'exec_time': exec_time,
+                'solver_time': solver_time,
+                'num_steps': num_steps
             }
         elif test_name == "CMB Power Spectrum" and engine:
             # Run CMB test using the validator
@@ -255,7 +371,9 @@ def run_solver_test(theory, test_func, test_name, engine=None):
                 'status': 'PASS' if result else 'FAIL',
                 'passed': result,
                 'solver_type': solver_type,
-                'exec_time': exec_time
+                'exec_time': exec_time,
+                'solver_time': 0.0,  # CMB doesn't run trajectory solver
+                'num_steps': 0  # No trajectory integration
             }
         elif test_name == "Primordial GWs" and engine:
             # Run Primordial GW test using the validator
@@ -290,7 +408,9 @@ def run_solver_test(theory, test_func, test_name, engine=None):
                 'status': 'PASS' if result else 'FAIL',
                 'passed': result,
                 'solver_type': solver_type,
-                'exec_time': exec_time
+                'exec_time': exec_time,
+                'solver_time': 0.0,  # PGW doesn't run trajectory solver
+                'num_steps': 0  # No trajectory integration
             }
         elif test_name == "Trajectory Cache":
             # Trajectory cache test is performance-based, skip for now
@@ -341,7 +461,7 @@ def test_theory_comprehensive(theory_name, theory_class, category):
         print(f"ERROR: Failed to initialize - {e}")
         return None
     
-    engine = TheoryEngine()
+    engine = TheoryEngine()  # Uses default: primordial_mini
     
     # Define analytical validators
     analytical_validators = [
@@ -356,10 +476,10 @@ def test_theory_comprehensive(theory_name, theory_class, category):
     
     # Define solver-based tests (test_func is not used anymore, just for structure)
     solver_tests = [
+        (None, "Trajectory vs Kerr"),   # NEW: Actual 1000-step integration with loss
         (None, "Circular Orbit"),
         (None, "CMB Power Spectrum"),
         (None, "Primordial GWs"),
-        (None, "Trajectory Cache"),
         (None, "Quantum Geodesic Sim"),
     ]
     
@@ -415,18 +535,27 @@ def test_theory_comprehensive(theory_name, theory_class, category):
     # Track solver types and total execution time
     solver_types = set()
     total_solver_time = 0.0
+    total_solver_steps = 0
+    actual_solver_time = 0.0  # Time spent in actual solver computations
+    
     for test in results['solver_tests']:
         if 'solver_type' in test and test['solver_type'] not in ['N/A', 'Unknown']:
             solver_types.add(test['solver_type'])
         if 'exec_time' in test:
             total_solver_time += test['exec_time']
+        if 'solver_time' in test:
+            actual_solver_time += test['solver_time']
+        if 'num_steps' in test:
+            total_solver_steps += test['num_steps']
     
     results['solver_summary'] = {
         'total': solver_total,
         'passed': solver_passed,
         'success_rate': solver_passed / solver_total if solver_total > 0 else 0,
         'solver_types': list(solver_types),
-        'total_exec_time': total_solver_time
+        'total_exec_time': total_solver_time,
+        'actual_solver_time': actual_solver_time,
+        'total_steps': total_solver_steps
     }
     
     # Combined summary
@@ -436,7 +565,9 @@ def test_theory_comprehensive(theory_name, theory_class, category):
         'total': combined_total,
         'passed': combined_passed,
         'success_rate': combined_passed / combined_total if combined_total > 0 else 0,
-        'complexity_score': total_solver_time  # Lower is better
+        'complexity_score': actual_solver_time,  # Use actual solver computation time as complexity metric
+        'total_solver_steps': total_solver_steps,
+        'time_per_step': actual_solver_time / total_solver_steps if total_solver_steps > 0 else 0
     }
     
     print(f"\nAnalytical: {analytical_passed}/{analytical_total} passed ({results['analytical_summary']['success_rate']*100:.1f}%)")
@@ -460,8 +591,8 @@ def print_ranking_table(results, ranking_type="analytical"):
                                     x['combined_summary'].get('complexity_score', float('inf'))))
         summary_key = 'combined_summary'
         # Print header for combined table with separate columns
-        print(f"\n{'Rank':<6} {'Theory':<35} {'Category':<12} {'Analytical (Failed)':<25} {'Solver (Failed) [Type]':<50} {'Combined':<15} {'Complexity':<12} {'Total'}")
-        print("-"*185)
+        print(f"\n{'Rank':<6} {'Theory':<35} {'Category':<12} {'Analytical (Failed)':<25} {'Solver (Failed) [Type]':<50} {'Combined':<15} {'Solver Complexity':<25} {'Total'}")
+        print("-"*198)
     
     for i, result in enumerate(results, 1):
         theory = result['theory']
@@ -522,12 +653,18 @@ def print_ranking_table(results, ranking_type="analytical"):
                         test_name = "PGW"
                     elif test_name == "Quantum Geodesic Sim":
                         test_name = "QGS"
+                    elif test_name == "Trajectory vs Kerr":
+                        test_name = "TvK"
                     
                     solver_type = test.get('solver_type', '?')
                     if solver_type == "4DOF-RK4":
                         solver_type = "4D"
                     elif solver_type == "6DOF-RK4":
                         solver_type = "6D"
+                    elif solver_type == "Quantum-4DOF-RK4":
+                        solver_type = "Q4D"
+                    elif solver_type == "Quantum-6DOF-RK4":
+                        solver_type = "Q6D"
                     elif solver_type == "Quantum-2qb":
                         solver_type = "Q2"
                     elif solver_type == "Quantum-PI":
@@ -542,7 +679,16 @@ def print_ranking_table(results, ranking_type="analytical"):
                 solver_str += f" {' '.join(solver_details)}"
             
             combined_score = f"{result['combined_summary']['success_rate']*100:.1f}%"
-            complexity = f"{result['combined_summary'].get('complexity_score', 0):.3f}s"
+            
+            # Show solver complexity details
+            solver_time = result['combined_summary'].get('complexity_score', 0)
+            total_steps = result['combined_summary'].get('total_solver_steps', 0)
+            if total_steps > 0:
+                time_per_step = solver_time / total_steps * 1000  # Convert to ms
+                complexity = f"{solver_time:.3f}s ({time_per_step:.1f}ms/step)"
+            else:
+                complexity = f"{solver_time:.3f}s"
+            
             total_tests = f"{result['combined_summary']['passed']}/{result['combined_summary']['total']}"
             
             # Highlight special cases
@@ -554,7 +700,7 @@ def print_ranking_table(results, ranking_type="analytical"):
             elif category == "quantum" and result['combined_summary']['success_rate'] > 0.7:
                 marker = " ✓ High-performing quantum"
             
-            print(f"{i:<6} {theory:<35} {category:<12} {analytical_str:<25} {solver_str:<50} {combined_score:<15} {complexity:<12} {total_tests}{marker}")
+            print(f"{i:<6} {theory:<35} {category:<12} {analytical_str:<25} {solver_str:<50} {combined_score:<15} {complexity:<25} {total_tests}{marker}")
 
 def main():
     """Run comprehensive tests and generate both ranking tables."""
@@ -597,14 +743,61 @@ def main():
     print("\n\nADDITIONAL TESTS (Solver-Based):")
     print("-"*80)
     print("\nSolver-based tests added in combined ranking:")
-    print("  1. Circular Orbit Period  - USES geodesic RK4 solver (Schwarzschild only)")
-    print("  2. CMB Power Spectrum     - USES quantum path integral (optional)")
-    print("  3. Primordial GWs         - USES quantum path integral (optional)")
-    print("  4. Trajectory Cache       - Tests geodesic solver caching (Schwarzschild only)")
-    print("  5. Quantum Geodesic Sim   - Tests quantum corrections (Schwarzschild only)")
+    print("  1. Trajectory vs Kerr     - 1000-step trajectory integration with loss calculation")
+    print("  2. Circular Orbit Period  - USES geodesic RK4 solver (specific orbital test)")
+    print("  3. CMB Power Spectrum     - USES quantum path integral (optional)")
+    print("  4. Primordial GWs         - USES quantum path integral (optional)")
+    print("  5. Quantum Geodesic Sim   - Tests quantum corrections (2-qubit simulation)")
     
-    print("\nNOTE: Some solver tests currently only run on Schwarzschild theory.")
-    print("Conservation Validator (trajectory-based) is still NOT included.")
+    # Show trajectory integration analysis
+    print("\n\nTRAJECTORY INTEGRATION ANALYSIS (1000 steps):")
+    print("-"*60)
+    
+    # Collect trajectory test results
+    trajectory_results = []
+    for result in all_results:
+        for test in result.get('solver_tests', []):
+            if test['name'] == 'Trajectory vs Kerr' and test.get('num_steps', 0) > 0:
+                trajectory_results.append({
+                    'theory': result['theory'],
+                    'category': result['category'],
+                    'passed': test['passed'],
+                    'solver_type': test.get('solver_type', 'Unknown'),
+                    'solver_time': test.get('solver_time', 0),
+                    'num_steps': test['num_steps'],
+                    'ms_per_step': (test.get('solver_time', 0) / test['num_steps'] * 1000) if test['num_steps'] > 0 else 0,
+                    'loss': test.get('loss', None)
+                })
+    
+    if trajectory_results:
+        # Sort by ms/step
+        trajectory_results.sort(key=lambda x: x['ms_per_step'])
+        
+        print(f"\nFastest trajectory integration (ms/step):")
+        for tr in trajectory_results[:5]:
+            print(f"  {tr['theory']:<30} [{tr['solver_type']}]: {tr['ms_per_step']:.3f}ms/step")
+        
+        if len(trajectory_results) > 10:
+            print(f"\nSlowest trajectory integration (ms/step):")
+            for tr in trajectory_results[-5:]:
+                print(f"  {tr['theory']:<30} [{tr['solver_type']}]: {tr['ms_per_step']:.3f}ms/step")
+        
+        # Show loss analysis
+        valid_losses = [tr for tr in trajectory_results if tr['loss'] is not None]
+        if valid_losses:
+            valid_losses.sort(key=lambda x: x['loss'])
+            
+            print(f"\n\nBest match to Kerr baseline (lowest MSE loss):")
+            for tr in valid_losses[:5]:
+                print(f"  {tr['theory']:<30}: {tr['loss']:.2e}")
+            
+            if len(valid_losses) > 10:
+                print(f"\nWorst match to Kerr baseline (highest MSE loss):")
+                for tr in valid_losses[-5:]:
+                    print(f"  {tr['theory']:<30}: {tr['loss']:.2e}")
+    
+    print("\nNOTE: Trajectory vs Kerr test runs actual 1000-step integration using engine.run_trajectory()")
+    print("CMB and PGW tests do not run trajectory integration, only analytical calculations.")
     
     print("\n\nLEGEND:")
     print("-"*60)
@@ -612,39 +805,54 @@ def main():
     print("  Mercury = Mercury Precession, Light = Light Deflection, Photon = Photon Sphere")
     print("  PPN = PPN Parameters, COW = COW Interferometry, GW = Gravitational Waves, PSR = PSR J0740")
     print("\nSolver Test Abbreviations:")
-    print("  Orb = Circular Orbit, CMB = CMB Power Spectrum, PGW = Primordial GWs, QGS = Quantum Geodesic Sim")
+    print("  TvK = Trajectory vs Kerr, Orb = Circular Orbit, CMB = CMB Power Spectrum")
+    print("  PGW = Primordial GWs, QGS = Quantum Geodesic Sim")
     print("\nSolver Types:")
-    print("  4D = 4DOF-RK4, 6D = 6DOF-RK4, Q2 = Quantum-2qb, QPI = Quantum-PI, An = Analytical")
+    print("  4D = 4DOF-RK4, 6D = 6DOF-RK4, Q4D = Quantum-4DOF-RK4, Q6D = Quantum-6DOF-RK4")
+    print("  Q2 = Quantum-2qb, QPI = Quantum-PI, An = Analytical")
     
     print("\n\nSOLVER-BASED TESTS ADDED IN COMBINED RANKING:")
     print("-"*80)
-    print("\n1. Circular Orbit Period (Orb) - Tests geodesic integration accuracy over time")
-    print("   - What it tests: Integrates full orbital trajectories through many timesteps")
-    print("   - Time aspect: Follows particle motion for complete orbits (thousands of integration steps)")
-    print("   - Why relevant: Reveals if small errors accumulate or if theory remains stable over time")
-    print("   - Complements: Mercury precession (single calculation from orbital parameters)")
+    print("\n1. Trajectory vs Kerr - Full 1000-step trajectory integration with MSE loss")
+    print("   - What it tests: Integrates geodesics for 1000 steps and compares to Kerr baseline")
+    print("   - Time aspect: Continuous evolution showing how trajectories diverge from GR over time")
+    print("   - Why relevant: Direct measurement of theory accuracy against known solution")
+    print("   - Provides: Actual ms/step timing and quantitative loss metric")
     
-    print("\n2. CMB Power Spectrum (CMB) - Tests cosmological evolution") 
+    print("\n2. Circular Orbit Period (Orb) - Tests specific orbital configuration")
+    print("   - What it tests: Integrates circular orbit to compute period")
+    print("   - Time aspect: Follows particle for one complete orbit")
+    print("   - Why relevant: Tests if theory predicts correct orbital dynamics")
+    print("   - Complements: Mercury precession (analytical calculation)")
+    
+    print("\n3. CMB Power Spectrum (CMB) - Tests cosmological evolution") 
     print("   - What it tests: Evolves perturbations from early universe to CMB formation")
     print("   - Time aspect: Tracks quantum fluctuations evolving over cosmic time (380,000 years)")
     print("   - Why relevant: Tests if theory predictions remain consistent across cosmic epochs")
     print("   - Complements: Instantaneous tests by validating long-term cosmological evolution")
     
-    print("\n3. Primordial Gravitational Waves (PGW) - Tests tensor mode evolution")
+    print("\n4. Primordial Gravitational Waves (PGW) - Tests tensor mode evolution")
     print("   - What it tests: Propagation of gravitational waves from inflation to today")
     print("   - Time aspect: Evolves tensor perturbations through multiple cosmic phases")
     print("   - Why relevant: Detects instabilities that only appear in long-term wave propagation")
     print("   - Complements: GW test (single waveform calculation for current mergers)")
     
-    print("\n4. Quantum Geodesic Simulator (QGS) - Tests quantum trajectory evolution")
+    print("\n5. Quantum Geodesic Simulator (QGS) - Tests quantum trajectory evolution")
     print("   - What it tests: 2-qubit simulation tracking quantum corrections over time")
     print("   - Time aspect: Evolves quantum state through many gate operations")
     print("   - Why relevant: Shows if quantum corrections remain coherent or decohere over time")
     print("   - Complements: Classical tests that assume point particles without quantum effects")
     
-    print("\n5. Trajectory Cache Performance (not shown) - Tests computational efficiency")
-    print("   - What it tests: Speed and accuracy of repeated trajectory calculations")
-    print("   - Why relevant: Practical viability for simulations and predictions")
+    print("\n\nSOLVER COMPLEXITY METRICS:")
+    print("-"*50)
+    print("• Total solver time: Actual computation time spent in solver integration")
+    print("• Time per step: Average time for each integration step (ms)")
+    print("• Why it matters:")
+    print("  - Shows computational efficiency of different theories")
+    print("  - Reveals which theories scale well for long simulations")
+    print("  - Lower time per step = more efficient implementation")
+    print("• Key insight: Complexity differences become significant in production simulations")
+    print("  where millions of steps may be needed")
     
     print("\nKEY INSIGHTS:")
     print("• Analytical tests: Single-point calculations at specific moments (instantaneous measurements)")

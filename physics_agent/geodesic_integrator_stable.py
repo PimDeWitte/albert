@@ -753,6 +753,38 @@ class GeodesicRK4Solver:
             h_current *= 0.5
             attempts += 1
         return None  # Failed to converge
+    
+    def integrate(self, y0: List[float], num_steps: int, h: float = 0.01) -> List[Tensor]:
+        """
+        Integrate geodesic from initial conditions.
+        
+        Args:
+            y0: Initial state [t, r, phi, dr_dtau] (t is ignored for 4D solver)
+            num_steps: Number of integration steps
+            h: Step size (default 0.01)
+            
+        Returns:
+            List of states at each step
+        """
+        # Convert initial conditions to proper format for 4D solver
+        # Input format: [t, r, phi, dr_dtau]
+        # Solver format: [r, phi, dr_dtau]
+        y = torch.tensor([y0[1], y0[2], y0[3]], dtype=torch.float64)
+        
+        trajectory = [y.clone()]
+        
+        for _ in range(num_steps - 1):
+            y_new = self.rk4_step(y, h)
+            if y_new is None:
+                break  # Integration failed
+            y = y_new
+            trajectory.append(y.clone())
+            
+            # Check for horizon crossing
+            if y[0] <= 2.1:  # Near horizon
+                break
+                
+        return trajectory
 
 
 class GeneralGeodesicRK4Solver:
@@ -915,6 +947,45 @@ class GeneralGeodesicRK4Solver:
             h_current *= 0.5
             attempts += 1
         return None  # Failed to converge
+    
+    def integrate(self, y0: List[float], num_steps: int, h: float = 0.01) -> List[Tensor]:
+        """
+        Integrate geodesic from initial conditions.
+        
+        Args:
+            y0: Initial state [t, r, phi, dr_dtau] 
+            num_steps: Number of integration steps
+            h: Step size (default 0.01)
+            
+        Returns:
+            List of states at each step
+        """
+        # For 6D solver, we need full state: [t, r, phi, u^t, u^r, u^phi]
+        # Convert from [t, r, phi, dr_dtau] to full 6D state
+        t0, r0, phi0, dr_dtau0 = y0
+        
+        # Initialize 4-velocity components
+        # For circular orbit approximation
+        u_t = 1.0  # Proper time parameterization
+        u_r = dr_dtau0
+        u_phi = 0.1 / r0  # Approximate angular velocity
+        
+        y = torch.tensor([t0, r0, phi0, u_t, u_r, u_phi], dtype=torch.float64)
+        
+        trajectory = [y[:4].clone()]  # Return only position components
+        
+        for _ in range(num_steps - 1):
+            y_new = self.rk4_step(y, h)
+            if y_new is None:
+                break
+            y = y_new
+            trajectory.append(y[:4].clone())  # Only position components
+            
+            # Check for horizon crossing
+            if y[1] <= 2.1:  # Near horizon
+                break
+                
+        return trajectory
 
 
 class ChargedGeodesicRK4Solver(GeneralGeodesicRK4Solver):

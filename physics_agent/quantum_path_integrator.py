@@ -23,7 +23,7 @@ import random
 # <reason>chain: Import constants from centralized module for consistency</reason>
 from physics_agent.constants import (
     HBAR, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT,
-    PLANCK_LENGTH, PLANCK_TIME, PLANCK_MASS
+    PLANCK_LENGTH, PLANCK_TIME, PLANCK_MASS, SOLAR_MASS
 )
 
 Tensor = torch.Tensor
@@ -59,6 +59,9 @@ class QuantumPathIntegrator:
         
         # <reason>chain: Cache for lambdified Lagrangian functions</reason>
         self._lagrangian_func_cache = {}
+        
+        # <reason>chain: Initialize geodesic solver for exact path computation</reason>
+        self._geodesic_solver = None  # Will be initialized on first use
         
     def _get_lagrangian_function(self, use_complete: bool = False) -> Callable:
         """
@@ -454,7 +457,7 @@ class QuantumPathIntegrator:
         else:
             # Create a geodesic solver if needed
             try:
-                from physics_agent.geodesic_integrator_stable import GeodesicRK4Solver
+                # Removed duplicate import - using geodesic_integrator instead
                 
                 # <reason>chain: Compute proper circular orbit parameters based on initial radius</reason>
                 # Extract initial radius from start position
@@ -471,7 +474,17 @@ class QuantumPathIntegrator:
                     L_circular = 4.0
                     print(f"WARNING: Initial radius {r_initial} is inside ISCO (r=6), using default values")
                 
-                self._geodesic_solver = GeodesicRK4Solver(E=E_circular, Lz=L_circular)
+                # Need to create solver with the theory model
+                M_phys = params.get('M', SOLAR_MASS)
+                self._geodesic_solver = GeodesicRK4Solver(
+                    self.theory, 
+                    M_phys=M_phys,
+                    c=SPEED_OF_LIGHT,
+                    G=GRAVITATIONAL_CONSTANT
+                )
+                # Set the conserved quantities
+                self._geodesic_solver.E = E_circular
+                self._geodesic_solver.Lz = L_circular
                 
                 classical_path = self._compute_geodesic_path(start, end, num_points=100, **params)
             except Exception as e:
@@ -736,9 +749,27 @@ class QuantumPathIntegrator:
         """
         <reason>chain: Use geodesic solver to compute exact path</reason>
         """
+        # Initialize geodesic solver if not already done
         if self._geodesic_solver is None:
-            # Fall back to curved approximation
-            return self._compute_curved_spacetime_path(start, end, num_points, **params)
+            try:
+                # Import geodesic solver classes
+                from physics_agent.geodesic_integrator import GeodesicRK4Solver, GeneralGeodesicRK4Solver
+                
+                # Get mass parameter
+                M = params.get('M', 1.989e30)  # Default to solar mass
+                if not isinstance(M, torch.Tensor):
+                    M = torch.tensor(M, dtype=torch.float64)
+                
+                # Choose appropriate solver based on theory properties
+                if hasattr(self.theory, 'has_conserved_quantities') and self.theory.has_conserved_quantities:
+                    self._geodesic_solver = GeodesicRK4Solver(self.theory, M_phys=M)
+                else:
+                    self._geodesic_solver = GeneralGeodesicRK4Solver(self.theory, M_phys=M)
+                    
+            except Exception as e:
+                print(f"Failed to initialize geodesic solver: {e}")
+                # Fall back to curved approximation
+                return self._compute_curved_spacetime_path(start, end, num_points, **params)
             
         # Convert to appropriate format for geodesic solver
         try:
@@ -746,7 +777,13 @@ class QuantumPathIntegrator:
             y0 = [start[0], start[1], start[3], 0.0]  # [t, r, phi, dr/dtau]
             
             # Integrate geodesic
+            import time
+            solver_start = time.time()
             trajectory = self._geodesic_solver.integrate(y0, num_points)
+            solver_time = time.time() - solver_start
+            
+            if hasattr(self, '_debug_timing'):
+                print(f"[DEBUG] Geodesic solver took {solver_time:.3f}s for {num_points} steps ({solver_time/num_points*1000:.3f}ms/step)")
             
             # Convert back to 4-tuple format
             path = []
