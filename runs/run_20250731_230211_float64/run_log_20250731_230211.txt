@@ -1,0 +1,3578 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+      electron: trajectory too short (1 points)
+      proton: trajectory too short (1 points)
+    ✓ Computed 2/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+      proton: trajectory too short (1 points)
+      electron: trajectory too short (1 points)
+    ✓ Computed 2/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 4/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 31 Theories ---
+
+--- Validating: Newtonian Limit ---
+  Running validation trajectory for Newtonian Limit...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Regularised Core QG (ε=1.0e-04): {'epsilon': 0.0001}
+
+--- Validating: Regularised Core QG (ε=1.0e-04) ---
+  Running validation trajectory for Regularised Core QG (ε=1.0e-04)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)
+    Initial conditions: r=12.000000000000002, E=0.962250448661256, Lz=3.999999999938272
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Loop Quantum Gravity (γ=0.2375): {'gamma_I': 0.2375}
+
+--- Validating: Loop Quantum Gravity (γ=0.2375) ---
+  Running validation trajectory for Loop Quantum Gravity (γ=0.2375)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)
+    Initial conditions: r=12.000000000000002, E=0.9637239290120462, Lz=4.0306803690938
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Loop Quantum Gravity (γ=0.2375)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 0.00 radians
+  Error: 2.70 radians (100.0%)
+  Status: FAILED
+
+Debug info:
+  g_metric: 0.000000 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: 0.000000e+00
+
+Calculating Mercury precession for Loop Quantum Gravity (γ=0.2375)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Loop Quantum Gravity (γ=0.2375)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000000000
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Loop Quantum Gravity (γ=0.2375)...
+  Warning: Using analytical weak-field expansion (g_rr deviation too small)
+
+Calculating photon sphere for Loop Quantum Gravity (γ=0.2375)...
+  Debug: Found extremum at index 189 of 200
+  Debug: |dV/dr| = 1.529e-03
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 4.804 r_s (expected: 1.500 r_s)
+  Shadow diameter: 10.797 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 107.80%
+  Status: FAIL
+
+Generating gravitational waveforms for Loop Quantum Gravity (γ=0.2375)...
+  Error generating waveforms: LoopQuantumGravity.gw_speed() takes 1 positional argument but 2 were given
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.650 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Phase Transition QG (T_c=1.0): {'T_c': 1.1}
+
+--- Validating: Phase Transition QG (T_c=1.1) ---
+  Running validation trajectory for Phase Transition QG (T_c=1.1)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)
+    Initial conditions: r=12.000000000000002, E=0.962250185883353, Lz=4.0000013653728335
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Phase Transition QG (T_c=1.1)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Phase Transition QG (T_c=1.1)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Phase Transition QG (T_c=1.1)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Phase Transition QG (T_c=1.1)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Phase Transition QG (T_c=1.1)...
+  Debug: Found extremum at index 64 of 200
+  Debug: |dV/dr| = 2.428e-05
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 2.354 r_s (expected: 1.500 r_s)
+  Shadow diameter: 6.208 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 19.48%
+  Status: FAIL
+
+Generating gravitational waveforms for Phase Transition QG (T_c=1.1)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: Kerr (a=0.50) ---
+  Running validation trajectory for Kerr (a=0.50)...
+  [WARNING] Could not compute validation trajectory for Kerr (a=0.50)
+  Using preferred values for Post-Quantum Gravity (γ=1.00e-02): {'gamma_pqg': 0.01}
+
+--- Validating: Post-Quantum Gravity (γ=1.00e-02) ---
+  Running validation trajectory for Post-Quantum Gravity (γ=1.00e-02)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Post-Quantum Gravity (γ=1.00e-02)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Post-Quantum Gravity (γ=1.00e-02)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Post-Quantum Gravity (γ=1.00e-02)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Post-Quantum Gravity (γ=1.00e-02)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Post-Quantum Gravity (γ=1.00e-02)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Post-Quantum Gravity (γ=1.00e-02)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Post-Quantum Gravity (γ=1.00e-02)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Einstein Asymmetric (α=0.0e+00): {'alpha': 0.0}
+
+--- Validating: Einstein Asymmetric (α=0.0e+00) ---
+  Running validation trajectory for Einstein Asymmetric (α=0.0e+00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Einstein Asymmetric (α=0.0e+00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Einstein Asymmetric (α=0.0e+00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Einstein Asymmetric (α=0.0e+00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Einstein Asymmetric (α=0.0e+00)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Einstein Asymmetric (α=0.0e+00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01): {'alpha0': 1.0, 'alpha1': 1.0, 'alpha2': 1.0, 'alpha3': 1.0, 'g_coupling': 0.1}
+
+--- Validating: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) ---
+  ⚠️  WARNING: Skipping UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) - UGM theories are 8-dimensional and computationally expensive.
+      To run UGM theories, use --category ugm or include 'ugm' in categories list.
+  → Skipped: UGM (α=[1.0,1.0,1.0,1.0], g=1.00e-01) (UGM theories require explicit opt-in with --category ugm)
+  Using preferred values for Twistor Theory (λ=0.10): {'lambda_t': 0.1}
+
+--- Validating: Twistor Theory (λ=0.10) ---
+  Running validation trajectory for Twistor Theory (λ=0.10)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Twistor Theory (λ=0.10)
+    Initial conditions: r=12.000000000000002, E=0.9625969074582933, Lz=4.010698509031009
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Twistor Theory (λ=0.10)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Twistor Theory (λ=0.10)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Twistor Theory (λ=0.10)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Twistor Theory (λ=0.10)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Twistor Theory (λ=0.10)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 3.961e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Twistor Theory (λ=0.10)...
+  Error generating waveforms: TwistorTheory.gw_speed() takes 1 positional argument but 2 were given
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Spinor-Conformal QG (λ=0.00): {'lambda_c': 0.0}
+
+--- Validating: Spinor-Conformal QG (λ=0.00) ---
+  Running validation trajectory for Spinor-Conformal QG (λ=0.00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Spinor-Conformal QG (λ=0.00)
+    Initial conditions: r=12.000000000000002, E=0.9708327823995959, Lz=4.035676091446945
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: FAILED
+  Overall validation: FAILED
+  Using preferred values for Alena‑Tensor‑γ=+0.00: {'gamma': 0.0}
+
+--- Validating: Alena‑Tensor‑γ=+0.00 ---
+  Running validation trajectory for Alena‑Tensor‑γ=+0.00...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for CDT (k₀=2.2, k₄=0.6): {'k_0': 2.2, 'k_4': 0.6}
+
+--- Validating: CDT (k₀=2.2, k₄=0.6) ---
+  Running validation trajectory for CDT (k₀=2.2, k₄=0.6)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for CDT (k₀=2.2, k₄=0.6)
+    Initial conditions: r=12.000000000000002, E=1.0089617780080642, Lz=3.4436281476420114
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for CDT (k₀=2.2, k₄=0.6)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 1.19 radians
+  Error: 1.51 radians (56.1%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -4.307235 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -9.584408e-17
+
+Calculating Mercury precession for CDT (k₀=2.2, k₄=0.6)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for CDT (k₀=2.2, k₄=0.6)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000192911
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for CDT (k₀=2.2, k₄=0.6)...
+  Warning: Unrealistic beta=-15750839141832175725098948065568634165229306234788411477787148288.000000, using perturbative estimate
+  Warning: Beta still extreme (6.31e+67), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: -0.546022 (67219.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1037053.495
+  Status: FAIL
+
+Calculating photon sphere for CDT (k₀=2.2, k₄=0.6)...
+  Debug: Found extremum at index 175 of 200
+  Debug: |dV/dr| = 2.740e-03
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 4.530 r_s (expected: 1.500 r_s)
+  Shadow diameter: 10.263 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 97.51%
+  Status: FAIL
+
+Generating gravitational waveforms for CDT (k₀=2.2, k₄=0.6)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 8.480 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: MyTheory (p=1.0) ---
+  Running validation trajectory for MyTheory (p=1.0)...
+  [WARNING] Could not compute validation trajectory for MyTheory (p=1.0)
+
+--- Validating: Quantum Quantum Template (g=1.0) ---
+  Running validation trajectory for Quantum Quantum Template (g=1.0)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Quantum Quantum Template (g=1.0)
+    Initial conditions: r=12.000000000000002, E=0.9969563024836714, Lz=3.828323993830994
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Quantum Quantum Template (g=1.0)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 1.94 radians
+  Error: 0.76 radians (28.1%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -7.048203 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -1.568358e-16
+
+Calculating Mercury precession for Quantum Quantum Template (g=1.0)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Quantum Quantum Template (g=1.0)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000334815
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Quantum Quantum Template (g=1.0)...
+  Warning: Unrealistic beta=37667062705073159927979472844294736563459888466160876867570480969678848.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: -0.136335 (49406.8σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1044584.757
+  Status: FAIL
+
+Calculating photon sphere for Quantum Quantum Template (g=1.0)...
+  Debug: Found extremum at index 189 of 200
+  Debug: |dV/dr| = 1.845e-03
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 4.804 r_s (expected: 1.500 r_s)
+  Shadow diameter: 10.797 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 107.80%
+  Status: FAIL
+
+Generating gravitational waveforms for Quantum Quantum Template (g=1.0)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 13.007 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Fractal QG (D=3.000): {'D': 3.1}
+
+--- Validating: Fractal QG (D=3.100) ---
+  Running validation trajectory for Fractal QG (D=3.100)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Fractal QG (D=3.100)
+    Initial conditions: r=12.000000000000002, E=0.9453268767438651, Lz=4.090173981452019
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Fractal QG (D=3.100)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 18.66 radians
+  Error: 15.96 radians (591.2%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -67.741061 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -1.507366e-15
+
+Calculating Mercury precession for Fractal QG (D=3.100)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Fractal QG (D=3.100)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000001840678
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Fractal QG (D=3.100)...
+  Warning: Unrealistic gamma=17.825307, defaulting to measurement
+  Warning: Unrealistic beta=37618856788937007133439608211016517179936510623246105435666928661168128.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1010000.639
+  Status: FAIL
+
+Calculating photon sphere for Fractal QG (D=3.100)...
+  Debug: Found extremum at index 21 of 200
+  Debug: |dV/dr| = 4.629e-06
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.512 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.197 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Fractal QG (D=3.100)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 68.482 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Einstein Teleparallel (τ=0.000): {'tau': 0.0}
+
+--- Validating: Einstein Teleparallel (τ=0.000) ---
+  Running validation trajectory for Einstein Teleparallel (τ=0.000)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Teleparallel (τ=0.000)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Einstein Teleparallel (τ=0.000)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Einstein Teleparallel (τ=0.000)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Einstein Teleparallel (τ=0.000)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Einstein Teleparallel (τ=0.000)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Einstein Teleparallel (τ=0.000)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Einstein Teleparallel (τ=0.000)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: Kerr-Newman (a=0.50, q_e=0.30) ---
+  Running validation trajectory for Kerr-Newman (a=0.50, q_e=0.30)...
+  Constraint validators using classical Lagrangian
+  Error running Conservation Validator: sqrt(): argument 'input' (position 1) must be Tensor, not float
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1395, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/conservation_validator.py", line 98, in validate
+    g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_si, M_si, self.engine.c_si, self.engine.G_si)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/defaults/baselines/kerr_newman.py", line 107, in get_metric
+    r_plus = rs/2 + torch.sqrt(discriminant)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: sqrt(): argument 'input' (position 1) must be Tensor, not float
+
+  Error running Metric Properties Validator: sqrt(): argument 'input' (position 1) must be Tensor, not float
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1395, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/metric_properties_validator.py", line 35, in validate
+    g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M_si, self.engine.c_si, self.engine.G_si)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/defaults/baselines/kerr_newman.py", line 107, in get_metric
+    r_plus = rs/2 + torch.sqrt(discriminant)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: sqrt(): argument 'input' (position 1) must be Tensor, not float
+
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Log-Corrected QG (γ=0.000): {'gamma': 1e-05}
+
+--- Validating: Log-Corrected QG (γ=0.000) ---
+  Running validation trajectory for Log-Corrected QG (γ=0.000)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Log-Corrected QG (γ=0.000)
+    Initial conditions: r=12.000000000000002, E=0.9622496823729334, Lz=4.000003981693655
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Log-Corrected QG (γ=0.000)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Log-Corrected QG (γ=0.000)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Log-Corrected QG (γ=0.000)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424334
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Log-Corrected QG (γ=0.000)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Log-Corrected QG (γ=0.000)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.233e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Log-Corrected QG (γ=0.000)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.658 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: Entropic‑Λσβ ---
+  Running validation trajectory for Entropic‑Λσβ...
+  Constraint validators using classical Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+  Using preferred values for Aalto Gauge Gravity (g=1.00): {'g_gauge': 1.0}
+
+--- Validating: Aalto Gauge Gravity (g=1.00) ---
+  Running validation trajectory for Aalto Gauge Gravity (g=1.00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Aalto Gauge Gravity (g=1.00)
+    Initial conditions: r=12.000000000000002, E=1.0416697165697393, Lz=3.629801036257621
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Aalto Gauge Gravity (g=1.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 0.00 radians
+  Error: 2.70 radians (100.0%)
+  Status: FAILED
+
+Debug info:
+  g_metric: 0.000000 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: 0.000000e+00
+
+Calculating Mercury precession for Aalto Gauge Gravity (g=1.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Aalto Gauge Gravity (g=1.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000002496
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Aalto Gauge Gravity (g=1.00)...
+  Warning: Using analytical weak-field expansion (g_rr deviation too small)
+
+Calculating photon sphere for Aalto Gauge Gravity (g=1.00)...
+  Debug: Found extremum at index 189 of 200
+  Debug: |dV/dr| = 2.224e-03
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 4.804 r_s (expected: 1.500 r_s)
+  Shadow diameter: 10.797 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 107.80%
+  Status: FAIL
+
+Generating gravitational waveforms for Aalto Gauge Gravity (g=1.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 0.128 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Surfaceology‑ε=+0.00: {'epsilon': 0.0}
+
+--- Validating: Surfaceology‑ε=+0.00 ---
+  Running validation trajectory for Surfaceology‑ε=+0.00...
+  [WARNING] Could not compute validation trajectory for Surfaceology‑ε=+0.00
+  Using preferred values for String Theory (α'=1.0e-66): {'alpha_prime': 1e-66}
+
+--- Validating: String Theory (α'=1.0e-66) ---
+  Running validation trajectory for String Theory (α'=1.0e-66)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for String Theory (α'=1.0e-66)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for String Theory (α'=1.0e-66)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for String Theory (α'=1.0e-66)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for String Theory (α'=1.0e-66)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for String Theory (α'=1.0e-66)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for String Theory (α'=1.0e-66)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for String Theory (α'=1.0e-66)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Emergent Gravity (η=0.00): {'eta': 0.0}
+
+--- Validating: Emergent Gravity (η=0.00) ---
+  Running validation trajectory for Emergent Gravity (η=0.00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Emergent Gravity (η=0.00)
+    Initial conditions: r=12.000000000000002, E=0.9373196092253706, Lz=4.134464234935487
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Emergent Gravity (η=0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 11.00 radians
+  Error: 8.30 radians (307.5%)
+  Status: FAILED
+
+Debug info:
+  g_metric: -39.939816 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -8.887361e-16
+
+Calculating Mercury precession for Emergent Gravity (η=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Emergent Gravity (η=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000001415377
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Emergent Gravity (η=0.00)...
+  Warning: Unrealistic beta=37663566071179765766254372236560048937980152403394249964723752975466496.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 4.676565 (159849.8σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1121894.829
+  Status: FAIL
+
+Calculating photon sphere for Emergent Gravity (η=0.00)...
+  Debug: Found extremum at index 27 of 200
+  Debug: |dV/dr| = 8.157e-05
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.629 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.243 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.91%
+  Status: FAIL
+
+Generating gravitational waveforms for Emergent Gravity (η=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 56.591 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Gauge Gravity (κ=0.00): {'kappa': 0.0}
+
+--- Validating: Gauge Gravity (κ=0.00) ---
+  Running validation trajectory for Gauge Gravity (κ=0.00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Gauge Gravity (κ=0.00)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Gauge Gravity (κ=0.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Gauge Gravity (κ=0.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Gauge Gravity (κ=0.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Gauge Gravity (κ=0.00)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Gauge Gravity (κ=0.00)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Gauge Gravity (κ=0.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Asymptotic Safety (Λ_as=1.0e+18 GeV): {'Lambda_as': 1e+18}
+
+--- Validating: Asymptotic Safety (Λ_as=1.0e+18 GeV) ---
+  Running validation trajectory for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Asymptotic Safety (Λ_as=1.0e+18 GeV)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Quantum Corrected (α=+0.01): {'alpha': 0.01}
+
+--- Validating: Quantum Corrected (α=+0.01) ---
+  Running validation trajectory for Quantum Corrected (α=+0.01)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Quantum Corrected (α=+0.01)
+    Initial conditions: r=12.000000000000002, E=0.9621078831264359, Lz=4.000740946565585
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Quantum Corrected (α=+0.01)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Quantum Corrected (α=+0.01)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Quantum Corrected (α=+0.01)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Quantum Corrected (α=+0.01)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Quantum Corrected (α=+0.01)...
+  Debug: Found extremum at index 21 of 200
+  Debug: |dV/dr| = 9.660e-05
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.512 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.197 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Quantum Corrected (α=+0.01)...
+  Error generating waveforms: QuantumCorrected.gw_speed() takes 1 positional argument but 2 were given
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Yukawa (λ=10.00 RS): {'lambda_rs': 1000000.0}
+
+--- Validating: Yukawa (λ=1000000.00 RS) ---
+  Running validation trajectory for Yukawa (λ=1000000.00 RS)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Yukawa (λ=1000000.00 RS)
+    Initial conditions: r=12.000000000000002, E=1.0041577756183644, Lz=3.7947343306191113
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  WARNING: Yukawa (λ=1000000.00 RS) is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Yukawa (λ=1000000.00 RS)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Yukawa (λ=1000000.00 RS)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Yukawa (λ=1000000.00 RS)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000404192
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Yukawa (λ=1000000.00 RS)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Yukawa (λ=1000000.00 RS)...
+  Debug: Found extremum at index 189 of 200
+  Debug: |dV/dr| = 1.903e-03
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 4.804 r_s (expected: 1.500 r_s)
+  Shadow diameter: 10.797 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 107.80%
+  Status: FAIL
+
+Generating gravitational waveforms for Yukawa (λ=1000000.00 RS)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 13.390 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Non-Commutative Geometry (θ=1.00): {'theta': 1.0}
+
+--- Validating: Non-Commutative Geometry (θ=1.00) ---
+  Running validation trajectory for Non-Commutative Geometry (θ=1.00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Non-Commutative Geometry (θ=1.00)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Non-Commutative Geometry (θ=1.00)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Non-Commutative Geometry (θ=1.00)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Non-Commutative Geometry (θ=1.00)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Non-Commutative Geometry (θ=1.00)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Non-Commutative Geometry (θ=1.00)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Non-Commutative Geometry (θ=1.00)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+  Using preferred values for Stochastic Noise (σ=1.00e-05): {'sigma': 0.0001}
+
+--- Validating: Stochastic Noise (σ=1.00e-04) ---
+  Running validation trajectory for Stochastic Noise (σ=1.00e-04)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Stochastic Noise (σ=1.00e-04)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Stochastic Noise (σ=1.00e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Stochastic Noise (σ=1.00e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Stochastic Noise (σ=1.00e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Stochastic Noise (σ=1.00e-04)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Stochastic Noise (σ=1.00e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Stochastic Noise (σ=1.00e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+--- Validating: Schwarzschild ---
+  Running validation trajectory for Schwarzschild...
+  [WARNING] Could not compute validation trajectory for Schwarzschild
+
+--- Validating: Reissner-Nordström (q_e=0.30) ---
+  Running validation trajectory for Reissner-Nordström (q_e=0.30)...
+  Constraint validators using classical Lagrangian
+  Error running Conservation Validator: sqrt(): argument 'input' (position 1) must be Tensor, not float
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1395, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/conservation_validator.py", line 98, in validate
+    g_tt, g_rr, g_pp, g_tp = theory.get_metric(r_si, M_si, self.engine.c_si, self.engine.G_si)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/defaults/baselines/reissner_nordstrom.py", line 88, in get_metric
+    r_plus = rs/2 + torch.sqrt(discriminant)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: sqrt(): argument 'input' (position 1) must be Tensor, not float
+
+  Error running Metric Properties Validator: sqrt(): argument 'input' (position 1) must be Tensor, not float
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1395, in run_all_validations
+    result = validator.validate(theory, hist, y0_general=y0_general)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/metric_properties_validator.py", line 35, in validate
+    g_tt, g_rr, g_pp, _ = theory.get_metric(sampled_radii, self.engine.M_si, self.engine.c_si, self.engine.G_si)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/theories/defaults/baselines/reissner_nordstrom.py", line 88, in get_metric
+    r_plus = rs/2 + torch.sqrt(discriminant)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: sqrt(): argument 'input' (position 1) must be Tensor, not float
+
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint tests: FAILED
+  Observation tests: PASSED
+  Overall validation: FAILED
+
+============================================================
+Validation Summary:
+  Total theories validated: 31
+  Passed: 21
+  Failed: 9
+============================================================
+
+Theories that failed validation:
+  ✗ Newtonian Limit
+    → Moved to: runs/run_20250731_230211_float64/fail/Newtonian_Limit
+  ✗ Kerr (a=0.50)
+    → Moved to: runs/run_20250731_230211_float64/fail/Kerr_a_0_50
+  ✗ Spinor-Conformal QG (λ=0.00)
+    → Moved to: runs/run_20250731_230211_float64/fail/Spinor-Conformal_QG_λ_0_00
+  ✗ MyTheory (p=1.0)
+    → Moved to: runs/run_20250731_230211_float64/fail/MyTheory_p_1_0
+  ✗ Kerr-Newman (a=0.50, q_e=0.30)
+    → Moved to: runs/run_20250731_230211_float64/fail/Kerr-Newman_a_0_50_q_e_0_30
+  ✗ Entropic‑Λσβ
+    → Moved to: runs/run_20250731_230211_float64/fail/Entropic‑Λσβ
+  ✗ Surfaceology‑ε=+0.00
+    → Moved to: runs/run_20250731_230211_float64/fail/Surfaceology‑ε_+0_00
+  ✗ Schwarzschild
+    → Moved to: runs/run_20250731_230211_float64/fail/Schwarzschild
+  ✗ Reissner-Nordström (q_e=0.30)
+    → Moved to: runs/run_20250731_230211_float64/fail/Reissner-Nordström_q_e_0_30
+
+Theories that passed validation:
+  ✓ Regularised Core QG (ε=1.0e-04)
+  ✓ Loop Quantum Gravity (γ=0.2375)
+  ✓ Phase Transition QG (T_c=1.1)
+  ✓ Post-Quantum Gravity (γ=1.00e-02)
+  ✓ Einstein Asymmetric (α=0.0e+00)
+  ✓ Twistor Theory (λ=0.10)
+  ✓ Alena‑Tensor‑γ=+0.00
+  ✓ CDT (k₀=2.2, k₄=0.6)
+  ✓ Quantum Quantum Template (g=1.0)
+  ✓ Fractal QG (D=3.100)
+  ✓ Einstein Teleparallel (τ=0.000)
+  ✓ Log-Corrected QG (γ=0.000)
+  ✓ Aalto Gauge Gravity (g=1.00)
+  ✓ String Theory (α'=1.0e-66)
+  ✓ Emergent Gravity (η=0.00)
+  ✓ Gauge Gravity (κ=0.00)
+  ✓ Asymptotic Safety (Λ_as=1.0e+18 GeV)
+  ✓ Quantum Corrected (α=+0.01)
+  ✓ Yukawa (λ=1000000.00 RS)
+  ✓ Non-Commutative Geometry (θ=1.00)
+  ✓ Stochastic Noise (σ=1.00e-04)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Regularised Core QG (ε=1.0e-04) ---
+
+--- Evaluating: Regularised Core QG (ε=1.0e-04) ---
+
+--- Evaluating: Regularised Core QG (ε=1.0e-04) ---
+  Results will be saved to: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04
+  Running pre-flight checks for Regularised Core QG (ε=1.0e-04)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)
+    Initial conditions: r=12.000000000000002, E=0.962250448661256, Lz=3.999999999938272
+    Time steps: 100, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Regularised Core QG (ε=1.0e-04). Continuing with evaluation.
+  Running trajectory simulation for Regularised Core QG (ε=1.0e-04)...
+
+    Starting trajectory computation for electron...
+
+    Starting trajectory computation for neutrino...
+
+    Starting trajectory computation for photon...
+
+    Starting trajectory computation for proton...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)
+    Initial conditions: r=12.000000000000002, E=0.962250448661256, Lz=5.999999999907408
+    Time steps: 500000, Step size: 0.01
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)    Initial conditions: r=12.000000000000002, E=0.962250448661256, Lz=3.999999999938272
+    Using solver: GeodesicRK4Solver
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)
+    Time steps: 500000, Step size: 0.01
+
+
+    Initial conditions: r=12.000000000000002, E=0.9435641951327054, Lz=3.1378581621643837    Initial conditions: r=12.000000000000002, E=0.7698003589290049, Lz=3.8399999999407424
+    Time steps: 500000, Step size: 0.01
+
+    Using solver: GeodesicRK4Solver    Time steps: 500000, Step size: 0.01
+
+    Using solver: GeodesicRK4Solver    Using solver: GeodesicRK4Solver
+
+    WARNING: Solver returned None at step 112332
+    Classical trajectory computed: 112333 points
+    Completed proton: tag=quantum_symmetric_solver_run, hist_shape=torch.Size([11, 4])
+    WARNING: Solver returned None at step 293554
+    Classical trajectory computed: 293555 points
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([293555, 4])
+    Classical trajectory computed: 500001 points
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([500001, 4])
+    Classical trajectory computed: 500001 points
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([500001, 4])
+
+  Computing quantum trajectories with PennyLane solver for Regularised Core QG (ε=1.0e-04)...
+
+    Starting trajectory computation for electron...
+
+    Starting trajectory computation for neutrino...
+
+    Starting trajectory computation for photon...
+    Starting trajectory computation for proton...
+
+
+      Error computing photon trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing neutrino trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing proton trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing electron trajectory: expected Tensor as element 0 in argument 0, but got float
+
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Regularised Core QG (ε=1.0e-04)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Regularised Core QG (ε=1.0e-04)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Regularised Core QG (ε=1.0e-04)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Regularised Core QG (ε=1.0e-04)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Regularised Core QG (ε=1.0e-04)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Regularised Core QG (ε=1.0e-04)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Generating trajectory comparison plot...
+  Trajectory has 14 points, using step interval 1 for markers
+  Trajectory range: r=[0.000, 0.008], phi=[0.000, 0.000]
+  WARNING: Theory 'Regularised Core QG (ε=1.0e-04)' has no angular motion (radial plunge)
+    Processing 5 baselines...
+      Baseline: Schwarzschild
+        Skipping - no data for particle Proton
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+        Skipping - no data for particle Proton
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_proton.png
+  Generated trajectory comparison for proton: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_proton.png
+  Generating trajectory comparison plot...
+  Trajectory has 293558 points, using step interval 9785 for markers
+  Trajectory range: r=[2.101, 12.000], phi=[0.000, 11.437]
+    Processing 5 baselines...
+      Baseline: Schwarzschild
+        Skipping - no data for particle Electron
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+        Skipping - no data for particle Electron
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_electron.png
+  Generated trajectory comparison for electron: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_electron.png
+  Generating trajectory comparison plot...
+  Trajectory has 500004 points, using step interval 16666 for markers
+  Trajectory range: r=[12.000, 81.561], phi=[0.000, 2.469]
+    Processing 5 baselines...
+      Baseline: Schwarzschild
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_photon.png
+  Generated trajectory comparison for photon: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_photon.png
+  Generating trajectory comparison plot...
+  Trajectory has 500004 points, using step interval 16666 for markers
+  Trajectory range: r=[11.728, 31.170], phi=[0.000, 3.908]
+    Processing 5 baselines...
+      Baseline: Schwarzschild
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_neutrino.png
+  Generated trajectory comparison for neutrino: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/viz/trajectory_comparison_neutrino.png
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Regularised Core QG (ε=1.0e-04)
+    Initial conditions: r=20.0, E=0.9894026910104767, Lz=5.899657797888946
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Generated HTML report: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04/results.html
+  Results saved to: runs/run_20250731_230211_float64/Regularised_Core_QG_ε_1_0e-04
+
+--- Running Full Trajectory: Loop Quantum Gravity (γ=0.2375) ---
+
+--- Evaluating: Loop Quantum Gravity (γ=0.2375) ---
+
+--- Evaluating: Loop Quantum Gravity (γ=0.2375) ---
+  Results will be saved to: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375
+  Running pre-flight checks for Loop Quantum Gravity (γ=0.2375)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)
+    Initial conditions: r=12.000000000000002, E=0.9637239290120462, Lz=4.0306803690938
+    Time steps: 100, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Loop Quantum Gravity (γ=0.2375)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 0.00 radians
+  Error: 2.70 radians (100.0%)
+  Status: FAILED
+
+Debug info:
+  g_metric: 0.000000 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: 0.000000e+00
+
+Calculating Mercury precession for Loop Quantum Gravity (γ=0.2375)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Loop Quantum Gravity (γ=0.2375)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000000000
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Loop Quantum Gravity (γ=0.2375)...
+  Warning: Using analytical weak-field expansion (g_rr deviation too small)
+
+Calculating photon sphere for Loop Quantum Gravity (γ=0.2375)...
+  Debug: Found extremum at index 189 of 200
+  Debug: |dV/dr| = 1.529e-03
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 4.804 r_s (expected: 1.500 r_s)
+  Shadow diameter: 10.797 r_s (expected: 5.196 r_s)
+  Orbit stability: Stable (non-physical)
+  Error: 107.80%
+  Status: FAIL
+
+Generating gravitational waveforms for Loop Quantum Gravity (γ=0.2375)...
+  Error generating waveforms: LoopQuantumGravity.gw_speed() takes 1 positional argument but 2 were given
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.650 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Loop Quantum Gravity (γ=0.2375). Continuing with evaluation.
+  Running trajectory simulation for Loop Quantum Gravity (γ=0.2375)...
+
+    Starting trajectory computation for electron...
+    Starting trajectory computation for neutrino...
+
+
+    Starting trajectory computation for proton...
+    Starting trajectory computation for photon...
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)    Initial conditions: r=12.000000000000002, E=0.770979143209637, Lz=3.869453154330048
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)
+
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)    Time steps: 500000, Step size: 0.01    Initial conditions: r=12.000000000000002, E=0.9637239290120462, Lz=4.0306803690938    Initial conditions: r=12.000000000000002, E=0.9448852331486255, Lz=3.1615115039868873
+
+
+    Using solver: GeodesicRK4Solver    Time steps: 500000, Step size: 0.01
+    Time steps: 500000, Step size: 0.01
+
+
+    Initial conditions: r=12.000000000000002, E=0.9637239290120462, Lz=6.046020553640699    Using solver: GeodesicRK4Solver    Using solver: GeodesicRK4Solver
+
+
+    Time steps: 500000, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    WARNING: Solver returned None at step 113219
+    Classical trajectory computed: 113220 points
+    Completed proton: tag=quantum_symmetric_solver_run, hist_shape=torch.Size([11, 4])
+    WARNING: Solver returned None at step 399281
+    Classical trajectory computed: 399282 points
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([399282, 4])
+    Classical trajectory computed: 500001 points
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([500001, 4])
+    Classical trajectory computed: 500001 points
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([500001, 4])
+
+  Computing quantum trajectories with PennyLane solver for Loop Quantum Gravity (γ=0.2375)...
+
+    Starting trajectory computation for electron...
+
+    Starting trajectory computation for neutrino...
+    Starting trajectory computation for photon...
+
+    Starting trajectory computation for proton...
+
+
+      Error computing electron trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing photon trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing neutrino trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing proton trajectory: expected Tensor as element 0 in argument 0, but got float
+
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Generating trajectory comparison plot...
+  Trajectory has 14 points, using step interval 1 for markers
+  Trajectory range: r=[0.000, 0.008], phi=[0.000, 0.000]
+  WARNING: Theory 'Loop Quantum Gravity (γ=0.2375)' has no angular motion (radial plunge)
+    Processing 6 baselines...
+      Baseline: Schwarzschild
+        Skipping - no data for particle Proton
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+        Skipping - no data for particle Proton
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_proton.png
+  Generated trajectory comparison for proton: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_proton.png
+  Generating trajectory comparison plot...
+  Trajectory has 399285 points, using step interval 13309 for markers
+  Trajectory range: r=[2.101, 12.000], phi=[0.000, 17.222]
+    Processing 6 baselines...
+      Baseline: Schwarzschild
+        Skipping - no data for particle Electron
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+        Skipping - no data for particle Electron
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_electron.png
+  Generated trajectory comparison for electron: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_electron.png
+  Generating trajectory comparison plot...
+  Trajectory has 500004 points, using step interval 16666 for markers
+  Trajectory range: r=[12.000, 82.925], phi=[0.000, 2.454]
+    Processing 6 baselines...
+      Baseline: Schwarzschild
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_photon.png
+  Generated trajectory comparison for photon: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_photon.png
+  Generating trajectory comparison plot...
+  Trajectory has 500004 points, using step interval 16666 for markers
+  Trajectory range: r=[11.742, 32.174], phi=[0.000, 3.834]
+    Processing 6 baselines...
+      Baseline: Schwarzschild
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_neutrino.png
+  Generated trajectory comparison for neutrino: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/viz/trajectory_comparison_neutrino.png
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Loop Quantum Gravity (γ=0.2375)
+    Initial conditions: r=20.0, E=0.989750465296313, Lz=5.917018384470454
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Generated HTML report: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375/results.html
+  Results saved to: runs/run_20250731_230211_float64/Loop_Quantum_Gravity_γ_0_2375
+
+--- Running Full Trajectory: Phase Transition QG (T_c=1.1) ---
+
+--- Evaluating: Phase Transition QG (T_c=1.1) ---
+
+--- Evaluating: Phase Transition QG (T_c=1.1) ---
+  Results will be saved to: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1
+  Running pre-flight checks for Phase Transition QG (T_c=1.1)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)
+    Initial conditions: r=12.000000000000002, E=0.962250185883353, Lz=4.0000013653728335
+    Time steps: 100, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Phase Transition QG (T_c=1.1)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Phase Transition QG (T_c=1.1)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Phase Transition QG (T_c=1.1)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Phase Transition QG (T_c=1.1)...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Phase Transition QG (T_c=1.1)...
+  Debug: Found extremum at index 64 of 200
+  Debug: |dV/dr| = 2.428e-05
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 2.354 r_s (expected: 1.500 r_s)
+  Shadow diameter: 6.208 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 19.48%
+  Status: FAIL
+
+Generating gravitational waveforms for Phase Transition QG (T_c=1.1)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Phase Transition QG (T_c=1.1). Continuing with evaluation.
+  Running trajectory simulation for Phase Transition QG (T_c=1.1)...
+
+    Starting trajectory computation for electron...
+
+    Starting trajectory computation for neutrino...
+    Starting trajectory computation for photon...
+
+
+    Starting trajectory computation for proton...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)    Initial conditions: r=12.000000000000002, E=0.7698001487066826, Lz=3.840001310757921
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)    Initial conditions: r=12.000000000000002, E=0.962250185883353, Lz=6.00000204805925
+    Initial conditions: r=12.000000000000002, E=0.962250185883353, Lz=4.0000013653728335
+    Time steps: 500000, Step size: 0.01
+
+
+    Time steps: 500000, Step size: 0.01    Time steps: 500000, Step size: 0.01    Using solver: GeodesicRK4Solver    Initial conditions: r=12.000000000000002, E=0.9435639250695507, Lz=3.1378591921018595
+
+
+    Using solver: GeodesicRK4Solver
+    Using solver: GeodesicRK4Solver    Time steps: 500000, Step size: 0.01
+
+
+    Using solver: GeodesicRK4Solver
+    WARNING: Solver returned None at step 112331
+    Classical trajectory computed: 112332 points
+    Completed proton: tag=quantum_symmetric_solver_run, hist_shape=torch.Size([11, 4])
+    WARNING: Solver returned None at step 293559
+    Classical trajectory computed: 293560 points
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([293560, 4])
+    Classical trajectory computed: 500001 points
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([500001, 4])
+    Classical trajectory computed: 500001 points
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([500001, 4])
+
+  Computing quantum trajectories with PennyLane solver for Phase Transition QG (T_c=1.1)...
+
+    Starting trajectory computation for electron...
+    Starting trajectory computation for neutrino...
+    Starting trajectory computation for photon...
+
+
+    Starting trajectory computation for proton...
+
+
+      Error computing proton trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing electron trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing neutrino trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing photon trajectory: expected Tensor as element 0 in argument 0, but got float
+
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Constraint validators using quantum Lagrangian
+  ⚠️ Constraint validations failed - skipping observational and prediction validations
+  Generating trajectory comparison plot...
+  Trajectory has 14 points, using step interval 1 for markers
+  Trajectory range: r=[0.000, 0.008], phi=[0.000, 0.000]
+  WARNING: Theory 'Phase Transition QG (T_c=1.1)' has no angular motion (radial plunge)
+    Processing 7 baselines...
+      Baseline: Schwarzschild
+        Skipping - no data for particle Proton
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+        Skipping - no data for particle Proton
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Phase Transition QG (T_c=1.1) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_proton.png
+  Generated trajectory comparison for proton: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_proton.png
+  Generating trajectory comparison plot...
+  Trajectory has 293563 points, using step interval 9785 for markers
+  Trajectory range: r=[2.101, 12.000], phi=[0.000, 11.437]
+    Processing 7 baselines...
+      Baseline: Schwarzschild
+        Skipping - no data for particle Electron
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+        Skipping - no data for particle Electron
+        Available particles in baseline: ['photon', 'neutrino']
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Phase Transition QG (T_c=1.1) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_electron.png
+  Generated trajectory comparison for electron: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_electron.png
+  Generating trajectory comparison plot...
+  Trajectory has 500004 points, using step interval 16666 for markers
+  Trajectory range: r=[11.728, 31.170], phi=[0.000, 3.908]
+    Processing 7 baselines...
+      Baseline: Schwarzschild
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Phase Transition QG (T_c=1.1) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_neutrino.png
+  Generated trajectory comparison for neutrino: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_neutrino.png
+  Generating trajectory comparison plot...
+  Trajectory has 500004 points, using step interval 16666 for markers
+  Trajectory range: r=[12.000, 81.561], phi=[0.000, 2.469]
+    Processing 7 baselines...
+      Baseline: Schwarzschild
+      Baseline: Reissner-Nordström (q_e=0.50)
+      Baseline: Kerr (a=0.50)
+      Baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      Baseline: Regularised Core QG (ε=1.0e-04) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Loop Quantum Gravity (γ=0.2375) (Quantum PennyLane)
+        Skipping - no data or too short
+      Baseline: Phase Transition QG (T_c=1.1) (Quantum PennyLane)
+        Skipping - no data or too short
+  Plot saved to runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_photon.png
+  Generated trajectory comparison for photon: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/viz/trajectory_comparison_photon.png
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Phase Transition QG (T_c=1.1)
+    Initial conditions: r=20.0, E=0.9894026910079169, Lz=5.899657797906685
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Generated HTML report: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1/results.html
+  Results saved to: runs/run_20250731_230211_float64/Phase_Transition_QG_T_c_1_1
+
+--- Running Full Trajectory: Post-Quantum Gravity (γ=1.00e-02) ---
+
+--- Evaluating: Post-Quantum Gravity (γ=1.00e-02) ---
+
+--- Evaluating: Post-Quantum Gravity (γ=1.00e-02) ---
+  Results will be saved to: runs/run_20250731_230211_float64/Post-Quantum_Gravity_γ_1_00e-02
+  Running pre-flight checks for Post-Quantum Gravity (γ=1.00e-02)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Post-Quantum Gravity (γ=1.00e-02)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Post-Quantum Gravity (γ=1.00e-02)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Post-Quantum Gravity (γ=1.00e-02)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Post-Quantum Gravity (γ=1.00e-02)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424403
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Post-Quantum Gravity (γ=1.00e-02)...
+  Warning: Unrealistic beta=-48755280527538674937832614601456178751646168283151592942991310848.000000, using perturbative estimate
+  Warning: Beta still extreme (1.35e+68), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 100.000000 (3300000.0σ)
+  Combined loss: 1020428.511
+  Status: FAIL
+
+Calculating photon sphere for Post-Quantum Gravity (γ=1.00e-02)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Post-Quantum Gravity (γ=1.00e-02)...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Post-Quantum Gravity (γ=1.00e-02). Continuing with evaluation.
+  Running trajectory simulation for Post-Quantum Gravity (γ=1.00e-02)...
+
+    Starting trajectory computation for electron...
+
+    Starting trajectory computation for neutrino...
+    Starting trajectory computation for proton...
+
+
+    Starting trajectory computation for photon...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Post-Quantum Gravity (γ=1.00e-02)
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=6.000000000000002
+    Time steps: 500000, Step size: 0.01
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Post-Quantum Gravity (γ=1.00e-02)
+
+    Using solver: GeodesicRK4Solver    Initial conditions: r=12.000000000000002, E=0.9435641951204965, Lz=3.137858162210945
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Post-Quantum Gravity (γ=1.00e-02)
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Post-Quantum Gravity (γ=1.00e-02)    Time steps: 500000, Step size: 0.01
+
+
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002    Using solver: GeodesicRK4Solver    Initial conditions: r=12.000000000000002, E=0.7698003589195012, Lz=3.8400000000000007
+
+    Time steps: 500000, Step size: 0.01    Time steps: 500000, Step size: 0.01
+
+
+    Using solver: GeodesicRK4Solver
+    Using solver: GeodesicRK4Solver

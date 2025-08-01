@@ -41,6 +41,8 @@ class QuantumPathIntegrator:
     1. Monte Carlo sampling of paths
     2. Semiclassical WKB approximation
     3. Stationary phase approximation
+    
+    Note: This is a toy model for exploring quantum effects in curved spacetime. In reality, quantum gravity effects are negligible for macroscopic observations, and quantizing test particles doesn't produce observable deviations from classical geodesics.
     """
     
     def __init__(self, theory, enable_quantum: bool = True):
@@ -234,7 +236,9 @@ class QuantumPathIntegrator:
         
         for i in range(1, num_points - 1):
             # Take RK4 step
-            y_new = self._geodesic_solver.rk4_step(y, step_size)
+            # <reason>chain: Convert step_size to float for rk4_step</reason>
+            step_size_float = step_size.item() if torch.is_tensor(step_size) else step_size
+            y_new = self._geodesic_solver.rk4_step(y, step_size_float)
             if y_new is None:
                 # Integration failed, fall back to straight line
                 alpha = i / (num_points - 1)

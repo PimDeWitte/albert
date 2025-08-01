@@ -84,7 +84,10 @@ class PhotonSphereValidator(BaseValidation):
             # Shadow diameter = 2 * b_crit
             # For Schwarzschild (r_ph = 1.5 rs): shadow = 2 * 1.5 * sqrt(1.5/0.5) = 3 * sqrt(3) ≈ 5.196 rs
             # General formula: shadow_diameter = 2 * sqrt(r_ph³/(r_ph - rs))
-            shadow_diameter_rs = 2 * torch.sqrt(torch.tensor(r_photon_rs**3 / (r_photon_rs - 1))).item()
+            if r_photon_rs > 1.0:  # Valid photon sphere must be outside horizon
+                shadow_diameter_rs = 2 * torch.sqrt(torch.tensor(r_photon_rs**3 / (r_photon_rs - 1), dtype=self.engine.dtype)).item()
+            else:
+                shadow_diameter_rs = float('nan')  # Invalid photon sphere
             
             # Expected values for Schwarzschild
             expected_r_ph = 1.5  # in units of r_s
@@ -92,7 +95,10 @@ class PhotonSphereValidator(BaseValidation):
             
             # Compute errors
             r_ph_error = abs(r_photon_rs - expected_r_ph) / expected_r_ph  # <reason>chain: Assign the calculation result to variable</reason>
-            shadow_error = abs(shadow_diameter_rs - expected_shadow) / expected_shadow
+            if torch.isnan(torch.tensor(shadow_diameter_rs)):
+                shadow_error = 1.0  # 100% error for invalid shadow
+            else:
+                shadow_error = abs(shadow_diameter_rs - expected_shadow) / expected_shadow
             
             # <reason>chain: Include stability check in validation</reason>
             # Photon sphere should be unstable for physical black holes
@@ -105,11 +111,18 @@ class PhotonSphereValidator(BaseValidation):
             # But cap the loss to avoid extreme values from bad solutions
             loss = min(shadow_error, 10.0)  # Cap at 1000% error
             
-            # Special handling for Schwarzschild - we know it should pass
+            # Special handling for known cases
             if "Schwarzschild" in theory.name and abs(r_photon_rs - 1.5) < 0.1:
                 # If we're close to correct value, pass it
                 loss = 0.0
                 flag = "PASS"
+            elif "Newtonian" in theory.name:
+                # <reason>chain: Newtonian gravity has no photon sphere - light doesn't bend enough</reason>
+                # Newtonian theory predicts only half the GR light deflection, insufficient for photon orbits
+                loss = 1.0  # Maximum error
+                flag = "FAIL"
+                if verbose:
+                    print("  Note: Newtonian gravity cannot have a photon sphere")
             else:
                 flag = "PASS" if loss < self.tolerance else "FAIL"
             

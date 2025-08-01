@@ -239,6 +239,28 @@ def main():
         
         print(f"{i:<6} {theory:<35} {category:<12} {score:<10} {tests}{marker}")
     
+    # Validator and Solver Information
+    print("\n\nVALIDATOR DETAILS:")
+    print("-"*80)
+    print("\nValidators used in these tests (all use analytical methods, no trajectory solvers):")
+    print("  1. Mercury Precession     - Analytical (weak-field approximation)")
+    print("  2. Light Deflection       - Analytical (PPN calculation, γ parameter)")
+    print("  3. Photon Sphere          - Analytical (effective potential extremum)")
+    print("  4. PPN Parameters         - Analytical (metric expansion, γ and β)")
+    print("  5. COW Interferometry     - Analytical (metric gradient calculation)")
+    print("  6. Gravitational Waves    - Analytical (post-Newtonian waveforms)")
+    print("  7. PSR J0740              - Analytical (Shapiro time delay)")
+    
+    print("\nNOTE: No geodesic trajectory integration is used in these validators.")
+    print("Conservation Validator (which uses trajectories) is NOT included in this test suite.")
+    
+    print("\nAdditional solver-based tests available in test_geodesic_validator_comparison.py:")
+    print("  • Circular Orbit Period   - USES geodesic RK4 solver")
+    print("  • CMB Power Spectrum      - USES quantum path integral (optional)")
+    print("  • Primordial GWs          - USES quantum path integral (optional)")
+    print("  • Trajectory Cache Test   - Tests geodesic solver caching")
+    print("  • Quantum Geodesic Sim    - Tests quantum corrections to trajectories")
+    
     # Analysis
     print("\n\nANALYSIS:")
     print("-"*60)

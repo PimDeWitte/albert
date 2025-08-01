@@ -198,7 +198,9 @@ class UnifiedTrajectoryCalculator:
             h = torch.tensor(step_size * self.time_scale, dtype=torch.float64)
         
         for i in range(time_steps):
-            y_new = self.classical_solver.rk4_step(y, h)
+            # <reason>chain: Convert h to float for rk4_step</reason>
+            h_float = h.item() if torch.is_tensor(h) else h
+            y_new = self.classical_solver.rk4_step(y, h_float)
             if y_new is None:
                 print(f"    WARNING: Solver returned None at step {i}")
                 break

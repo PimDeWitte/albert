@@ -58,22 +58,26 @@ class Kerr(GravitationalTheory):
         
         # Check if we're near horizons
         # For Kerr: r± = (rs/2) ± sqrt((rs/2)² - a²)
-        discriminant = (rs/2)**2 - a_sq
-        if discriminant >= 0:
-            r_plus = rs/2 + torch.sqrt(discriminant)
-            r_minus = rs/2 - torch.sqrt(discriminant)
+        # Ensure all operations use tensors
+        rs_tensor = torch.as_tensor(rs, dtype=r.dtype, device=r.device)
+        a_val_tensor = torch.as_tensor(a_val, dtype=r.dtype, device=r.device)
+        discriminant = (rs_tensor/2)**2 - a_val_tensor**2
+        
+        if torch.all(discriminant >= 0):
+            r_plus = rs_tensor/2 + torch.sqrt(discriminant)
+            r_minus = rs_tensor/2 - torch.sqrt(discriminant)
             
             # If too close to either horizon, add offset
-            horizon_epsilon = rs * epsilon  # Scale with rs
-            if torch.any(torch.abs(r - r_plus) < horizon_epsilon) or (r_minus > 0 and torch.any(torch.abs(r - r_minus) < horizon_epsilon)):
-                if torch.abs(r - r_plus) < torch.abs(r - r_minus):
+            horizon_epsilon = rs_tensor * epsilon  # Scale with rs
+            if torch.any(torch.abs(r - r_plus) < horizon_epsilon) or (torch.all(r_minus > 0) and torch.any(torch.abs(r - r_minus) < horizon_epsilon)):
+                if torch.all(torch.abs(r - r_plus) < torch.abs(r - r_minus)):
                     r = r_plus + horizon_epsilon
                 else:
-                    r = r_minus - horizon_epsilon if r < r_minus else r_minus + horizon_epsilon
+                    r = torch.where(r < r_minus, r_minus - horizon_epsilon, r_minus + horizon_epsilon)
                 # Recalculate with offset r
                 r_sq = r**2
                 Sigma = r_sq
-                Delta = r_sq - rs * r + a_sq
+                Delta = r_sq - rs_tensor * r + a_sq
         
         # Ensure Delta doesn't get too close to zero
         if torch.any(torch.abs(Delta) < epsilon):

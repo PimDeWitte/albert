@@ -19,7 +19,7 @@ from physics_agent.validations.mercury_precession_validator import MercuryPreces
 from physics_agent.validations.light_deflection_validator import LightDeflectionValidator
 
 # Import geodesic solvers
-from physics_agent.geodesic_integrator import GeodesicRK4Solver, NullGeodesicRK4Solver
+from physics_agent.geodesic_integrator import GeodesicRK4Solver, NullGeodesicRK4Solver, QuantumGeodesicSimulator
 from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
@@ -1065,6 +1065,60 @@ def test_trajectory_cache_performance():
     return passed
 
 
+@benchmark_test("Quantum Geodesic Simulator")
+def test_quantum_geodesic_simulator():
+    """Test the QuantumGeodesicSimulator for basic functionality."""
+    print("\n" + "="*60)
+    print("Test 11: Quantum Geodesic Simulator")
+    print("="*60)
+    
+    theory = Schwarzschild()
+    M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
+    
+    # Initialize classical solver for comparison (use GeneralGeodesicRK4Solver for 6D)
+    from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver
+    classical_solver = GeneralGeodesicRK4Solver(theory, M_phys=M_sun)
+    
+    # Initialize quantum simulator
+    try:
+        quantum_solver = QuantumGeodesicSimulator(theory, num_qubits=2, M_phys=M_sun)
+    except Exception as e:
+        print(f"Failed to initialize QuantumGeodesicSimulator: {e}")
+        return False
+    
+    print("QuantumGeodesicSimulator initialized successfully")
+    
+    # Test state: [t, r, phi, u^t, u^r, u^phi] for 6D motion
+    state = torch.tensor([0.0, 10.0, 0.0, 1.0, 0.0, 0.1], dtype=torch.float64)
+    
+    # Compute derivatives with classical and quantum
+    classical_deriv = classical_solver.compute_derivatives(state)
+    quantum_deriv = quantum_solver.compute_derivatives(state)
+    
+    print(f"\nClassical derivatives: {classical_deriv}")
+    print(f"Quantum derivatives: {quantum_deriv}")
+    
+    # Check if quantum correction is applied (should differ in radial component)
+    diff = torch.abs(quantum_deriv[4] - classical_deriv[4])
+    print(f"Quantum correction magnitude: {diff:.6f}")
+    corrected = diff > 1e-6
+    print(f"Quantum correction applied: {'YES' if corrected else 'NO'}")
+    
+    # Check if derivatives are finite
+    finite = torch.all(torch.isfinite(quantum_deriv))
+    print(f"Derivatives finite: {'YES' if finite else 'NO'}")
+    
+    # Simple evolution test
+    h = 0.01
+    new_state = quantum_solver.rk4_step(state, h)
+    evolved = new_state is not None
+    print(f"Evolution successful: {'YES' if evolved else 'NO'}")
+    
+    passed = corrected and finite and evolved
+    print(f"\n  Status: {'PASSED' if passed else 'FAILED'}")
+    return passed
+
+
 def main():
     """Run all comparison tests."""
     print("="*60)
@@ -1093,6 +1147,7 @@ def main():
     results['bicep_keck_primordial_gws'] = test_bicep_keck_primordial_gws()
     results['psr_j0740_validation'] = test_psr_j0740_validation()
     results['trajectory_cache_performance'] = test_trajectory_cache_performance()
+    results['quantum_geodesic_simulator'] = test_quantum_geodesic_simulator()
     
     # Track which validators were tested
     validator_test_mapping = {

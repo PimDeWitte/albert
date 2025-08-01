@@ -192,8 +192,14 @@ class PpnValidator(BaseValidation):
             beta_error = abs(beta_est - obs_beta)
             beta_error_normalized = beta_error / obs_beta_uncertainty
             
+            # <reason>chain: Cap individual normalized errors to prevent extreme loss values</reason>
+            # When theories produce unrealistic values, cap the error contribution
+            max_sigma = 1000.0  # 1000 sigma is effectively "completely wrong"
+            gamma_error_capped = min(gamma_error_normalized, max_sigma)
+            beta_error_capped = min(beta_error_normalized, max_sigma)
+            
             # Combined loss (weighted by precision)
-            loss = 0.7 * gamma_error_normalized + 0.3 * beta_error_normalized
+            loss = 0.7 * gamma_error_capped + 0.3 * beta_error_capped
             
             # Pass if both are within 3-sigma
             flag = "PASS" if (gamma_error_normalized < 3.0 and beta_error_normalized < 3.0) else "FAIL"
@@ -212,12 +218,14 @@ class PpnValidator(BaseValidation):
         except Exception as e:
             if verbose:
                 print(f"  Error computing PPN parameters: {str(e)}")
-            # Return failed result
+            # Return failed result with high loss (not just 1.0)
+            # <reason>chain: Use max_sigma to indicate complete failure, consistent with capped errors</reason>
             return {
-                "loss": 1.0,
+                "loss": 1000.0,  # Max capped error, indicates complete failure
                 "flags": {"overall": "FAIL"},
                 "details": {
                     "gamma": float('nan'),
+                    "beta": float('nan'),
                     "error": str(e),
                     "notes": "Failed to compute PPN parameters"
                 }

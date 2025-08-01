@@ -1,0 +1,675 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+      proton: trajectory too short (1 points)
+      electron: trajectory too short (1 points)
+    ✓ Computed 2/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+      proton: trajectory is None
+    ✓ Computed 3/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 4/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 1 Theories ---
+  Using preferred values for Alena‑Tensor‑γ=+0.00: {'gamma': 0.0}
+
+--- Validating: Alena‑Tensor‑γ=+0.00 ---
+  Running validation trajectory for Alena‑Tensor‑γ=+0.00...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 1
+  Failed: 0
+============================================================
+
+Theories that passed validation:
+  ✓ Alena‑Tensor‑γ=+0.00
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: Alena‑Tensor‑γ=+0.00 ---
+
+--- Evaluating: Alena‑Tensor‑γ=+0.00 ---
+
+--- Evaluating: Alena‑Tensor‑γ=+0.00 ---
+  Results will be saved to: runs/run_20250731_222802_float64/Alena‑Tensor‑γ_+0_00
+  Running pre-flight checks for Alena‑Tensor‑γ=+0.00...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 101 points
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  [WARNING] Pre-flight constraint checks failed for Alena‑Tensor‑γ=+0.00. Continuing with evaluation.
+  Running trajectory simulation for Alena‑Tensor‑γ=+0.00...
+
+    Starting trajectory computation for electron...
+    Starting trajectory computation for neutrino...
+
+
+    Starting trajectory computation for photon...
+    Starting trajectory computation for proton...
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00
+
+    Initial conditions: r=24.000000000000004, E=0.7839663096097782, Lz=5.027740191037263    Initial conditions: r=24.000000000000004, E=0.9799578870122226, Lz=5.237229365663816
+
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00    Time steps: 10000, Step size: 0.01
+    Time steps: 10000, Step size: 0.01
+    Initial conditions: r=24.000000000000004, E=0.9799578870122226, Lz=7.855844048495724
+    Using solver: GeodesicRK4Solver
+
+    Time steps: 10000, Step size: 0.01
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00    Using solver: GeodesicRK4Solver
+
+
+    Initial conditions: r=24.000000000000004, E=0.9716647233391633, Lz=4.154326295115988    Using solver: GeodesicRK4Solver
+
+    Time steps: 10000, Step size: 0.01
+    Using solver: GeodesicRK4Solver
+    Classical trajectory computed: 10001 points
+    Completed proton: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+    Classical trajectory computed: 10001 points
+    Completed photon: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+    Classical trajectory computed: 10001 points
+    Completed neutrino: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+    Classical trajectory computed: 10001 points
+    Completed electron: tag=quantum_unified_trajectory, hist_shape=torch.Size([10001, 4])
+
+  Computing quantum trajectories with PennyLane solver for Alena‑Tensor‑γ=+0.00...
+
+    Starting trajectory computation for electron...
+    Starting trajectory computation for neutrino...
+    Starting trajectory computation for photon...
+    Starting trajectory computation for proton...
+
+
+
+
+      Error computing electron trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing photon trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing neutrino trajectory: expected Tensor as element 0 in argument 0, but got float
+
+      Error computing proton trajectory: expected Tensor as element 0 in argument 0, but got float
+
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  WARNING: Alena‑Tensor‑γ=+0.00 is missing quantum field terms: ['matter_lagrangian', 'interaction_lagrangian', 'gauge_lagrangian']
+  Constraint validators using quantum Lagrangian
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+
+Calculating COW phase shift for Alena‑Tensor‑γ=+0.00...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.70 radians
+  Error: 0.00 radians (0.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.789171 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.178275e-16
+
+Calculating Mercury precession for Alena‑Tensor‑γ=+0.00...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+
+Calculating light deflection for Alena‑Tensor‑γ=+0.00...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000424303
+  Weak field factor: 4.244030e-07
+
+Calculating PPN parameters for Alena‑Tensor‑γ=+0.00...
+  Warning: Unrealistic beta=37667254493862065874701840450416660267260356840396689413686182767755264.000000, using perturbative estimate
+  Warning: Beta still extreme (-1.01e+72), clamping to ±100
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 0.000227 (43469.3σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: -100.000000 (3366666.7σ)
+  Combined loss: 1040428.511
+  Status: FAIL
+
+Calculating photon sphere for Alena‑Tensor‑γ=+0.00...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.232e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+
+Generating gravitational waveforms for Alena‑Tensor‑γ=+0.00...
+  Warning: Theory has no GW modifications implemented
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 3.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.657 μs
+  ⚠️ Observational validations failed - skipping prediction validations
+  Generating trajectory comparison plot...
+  Trajectory has 10004 points, using step interval 333 for markers
+  Trajectory range: r=[23.986, 24.000], phi=[0.000, 0.045]

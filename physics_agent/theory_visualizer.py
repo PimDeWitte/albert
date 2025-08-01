@@ -188,43 +188,26 @@ class TheoryVisualizer:
         # <reason>chain: Use a dotted line style for the main theory as requested.
         ax.plot(x, y, z, color='red', linestyle=':', linewidth=2, alpha=0.9, label=main_particle_name, zorder=10)
         
-        # <reason>chain: Add time labels every 5% of trajectory to show time dilation</reason>
-        # Calculate indices for every 5% of the trajectory
-        time_label_indices = []
-        for pct in range(0, 101, 5):  # 0%, 5%, 10%, ..., 100%
-            idx = int((pct / 100.0) * (total_steps - 1))
-            time_label_indices.append(idx)
+        # <reason>chain: Add only start and end markers for clean visualization</reason>
+        # Mark start point with green circle
+        if len(x) > 0:
+            ax.scatter(x[0], y[0], z[0], c='green', s=60, marker='o',
+                      edgecolors='lightgreen', linewidth=2, alpha=0.9, zorder=12,
+                      label='Start')
         
-        # Add step markers along the main trajectory
-        marker_indices = list(range(0, total_steps, step_interval))
-        # Ensure the last point is included
-        if marker_indices[-1] != total_steps - 1:
-            marker_indices.append(total_steps - 1)
-            
-        for i in marker_indices:
-            # <reason>chain: Use consistent marker style regardless of charge
-            ax.scatter(x[i], y[i], z[i], c='white', s=15, marker='o',
-                      edgecolors='red', linewidth=0.5, alpha=0.7, zorder=11)
-        
-        # <reason>chain: Add time labels at 5% intervals to visualize time dilation</reason>
-        for idx, i in enumerate(time_label_indices):
-            if i < len(t):  # Safety check
-                # Add a larger marker at time label positions
-                ax.scatter(x[i], y[i], z[i], c='yellow', s=40, marker='D',
-                          edgecolors='red', linewidth=1.0, alpha=0.9, zorder=12)
-                
-                # Add text label showing elapsed proper time
-                # Offset the label slightly to avoid overlap
-                offset_x = 0.5 if idx % 2 == 0 else -0.5
-                offset_y = 0.5 if idx % 2 == 1 else -0.5
-                
-                ax.text(x[i] + offset_x, y[i] + offset_y, z[i], 
-                       f't={t[i]:.1f}',
-                       color='yellow', fontsize=8, alpha=0.9,
-                       ha='center', va='center')
+        # Mark end point with red square
+        if len(x) > 1:
+            ax.scatter(x[-1], y[-1], z[-1], c='red', s=60, marker='s',
+                      edgecolors='lightcoral', linewidth=2, alpha=0.9, zorder=12,
+                      label='End')
         
         # <reason>chain: Initialize list to store z values for axis limits
         all_z = [z]
+        
+        # <reason>chain: Initialize plot_radius early as fallback for legend generation</reason>
+        x_abs_max = max(abs(x.min()), abs(x.max())) if len(x) > 0 else 5.0
+        y_abs_max = max(abs(y.min()), abs(y.max())) if len(y) > 0 else 5.0
+        plot_radius = max(x_abs_max, y_abs_max, 5.0) * 1.2
         
         # <reason>chain: Dynamically build a list of legend elements for baselines that are actually plotted.
         baseline_legend_elements = []
@@ -234,6 +217,7 @@ class TheoryVisualizer:
             'Schwarzschild': '#A9A9A9',
             'Kerr': '#D3D3D3',
             'Kerr-Newman': '#FFFFFF',
+            'Quantum PennyLane': '#FF00FF',  # Magenta for quantum trajectories
         }
         
         # <reason>chain: Process baselines
@@ -270,13 +254,25 @@ class TheoryVisualizer:
                 # Old structure: baseline_data is the trajectory itself
                 baseline_hist = baseline_data
             
+            # <reason>chain: Handle nested dictionary structure for particle results</reason>
+            if isinstance(baseline_hist, dict):
+                # This is a particle result dict, extract the trajectory
+                if 'trajectory' in baseline_hist:
+                    baseline_hist = baseline_hist['trajectory']
+                else:
+                    print(f"        Skipping - baseline data is dict but has no 'trajectory' key")
+                    print(f"        Available keys: {list(baseline_hist.keys())}")
+                    continue
+            
             if baseline_hist is None or len(baseline_hist) < 2:
                 print(f"        Skipping - no data or too short")
                 continue
                 
             # <reason>chain: Skip baseline if it's the same as the main theory
             # Don't plot the main theory as its own baseline
-            if baseline_name == model.name or (baseline_name in model.name) or (model.name in baseline_name):
+            # Exception: Allow quantum versions of the same theory
+            if baseline_name == model.name or ((baseline_name in model.name or model.name in baseline_name) 
+                                              and 'Quantum' not in baseline_name):
                 print(f"        Skipping - same as main theory")
                 continue
                 
@@ -341,12 +337,16 @@ class TheoryVisualizer:
                     break
                     
             if not baseline_theory:
-                print(f"        WARNING: Could not find baseline theory object for '{baseline_name}'. Skipping.")
-                continue
+                # <reason>chain: Quantum trajectories don't have separate theory objects</reason>
+                if 'Quantum PennyLane' not in baseline_name:
+                    print(f"        WARNING: Could not find baseline theory object for '{baseline_name}'. Skipping.")
+                    continue
             
             # <reason>chain: Determine the baseline color from the monochrome palette.
             color = 'gray' # default
-            if 'Kerr-Newman' in baseline_name:
+            if 'Quantum PennyLane' in baseline_name:
+                color = baseline_colors['Quantum PennyLane']
+            elif 'Kerr-Newman' in baseline_name:
                 color = baseline_colors['Kerr-Newman']
             elif 'Kerr' in baseline_name:
                 color = baseline_colors['Kerr']
@@ -355,9 +355,14 @@ class TheoryVisualizer:
             
             # <reason>chain: Plot baselines with styles based on whether the black hole is charged.
             # A baseline is considered charged if its class name includes "Newman" or "Reissner".
-            is_charged_baseline = 'Newman' in baseline_theory.__class__.__name__ or 'Reissner' in baseline_theory.__class__.__name__
+            is_charged_baseline = baseline_theory and ('Newman' in baseline_theory.__class__.__name__ or 'Reissner' in baseline_theory.__class__.__name__)
+            is_quantum_baseline = 'Quantum PennyLane' in baseline_name
 
-            if is_charged_baseline:
+            if is_quantum_baseline:
+                # Use dashed line for quantum trajectories
+                ax.plot(x_b, y_b, z_b, color=color, linestyle='--', linewidth=2.5,
+                       alpha=0.9, label=baseline_name, zorder=12)
+            elif is_charged_baseline:
                 # Use '+' markers for charged baselines to represent '++' style.
                 ax.plot(x_b, y_b, z_b, color=color, linestyle='None', marker='+', markersize=5,
                        alpha=0.6, label=baseline_name, zorder=3)
@@ -368,7 +373,12 @@ class TheoryVisualizer:
             
             # <reason>chain: Dynamically add legend entry for the plotted baseline to ensure accuracy
             # The legend now indicates whether the baseline theory describes a charged black hole.
-            if 'Schwarzschild' in baseline_name:
+            if 'Quantum PennyLane' in baseline_name:
+                # Extract theory name from quantum label
+                theory_name = baseline_name.replace(' (Quantum PennyLane)', '')
+                baseline_legend_elements.append(Line2D([0], [0], color=color, lw=2.5, linestyle='--', 
+                                            label=f'-- {theory_name} (Quantum)', alpha=0.9))
+            elif 'Schwarzschild' in baseline_name:
                 baseline_legend_elements.append(Line2D([0], [0], color=color, lw=2, linestyle='--', 
                                             label='-- Schwarzschild (uncharged)', alpha=0.7))
             elif 'Kerr' in baseline_name and 'Newman' not in baseline_name:
@@ -541,7 +551,7 @@ class TheoryVisualizer:
         # <reason>chain: Make z-label more visible with better positioning and larger font
         dtau_value = 0.1  # Default time step in geometric units
         # <reason>chain: Update z-axis label to show spatial depth</reason>
-        ax.set_zlabel('Z\n(Schwarzschild radii)', fontsize=18, color='white', labelpad=30)
+        ax.set_zlabel('Z (Schwarzschild radii)', fontsize=18, color='white', labelpad=30)
         
         # <reason>chain: Removed CONSTRAINTS PASSED text - now in legend
         

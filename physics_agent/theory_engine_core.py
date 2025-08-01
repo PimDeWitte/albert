@@ -686,6 +686,13 @@ class TheoryEngine:
             kwargs.get('use_quantum_trajectories', True)  # Allow override to disable
         )
         
+        # <reason>chain: For visualization, compute BOTH classical and quantum trajectories</reason>
+        # This allows showing quantum theories with both solver types
+        compute_both_trajectories = (
+            theory_category == 'quantum' and 
+            kwargs.get('compute_both_trajectories', False)
+        )
+        
         if self.verbose and theory_category == 'quantum':
             print(f"  Quantum theory detected: {model.name}")
             print(f"    - Category: {theory_category}")
@@ -745,7 +752,8 @@ class TheoryEngine:
                 return hist_geom, "cached_trajectory", []
         
         # <reason>chain: Use quantum trajectory calculator for quantum theories if enabled</reason>
-        if use_quantum_trajectories:
+        # Skip UnifiedTrajectoryCalculator if using PennyLane quantum solver
+        if use_quantum_trajectories and not kwargs.get('use_pennylane_quantum', False):
             if self.verbose:
                 print(f"  Attempting to use UnifiedTrajectoryCalculator for quantum theory")
             try:
@@ -927,9 +935,11 @@ class TheoryEngine:
             if len(y0_gen) == 4:
                 # 4D format: [t, r, phi, dr/dtau] - already in geometric units
                 # For circular orbits, compute velocities from orbit parameters
-                u_t_geom = torch.sqrt(1.0 / (1.0 - 3.0/r0_geom))  # Circular orbit u^t
+                # <reason>chain: Ensure r0_geom is a tensor for torch operations</reason>
+                r0_tensor = torch.tensor(r0_geom, device=self.device, dtype=self.dtype) if not torch.is_tensor(r0_geom) else r0_geom
+                u_t_geom = torch.sqrt(1.0 / (1.0 - 3.0/r0_tensor))  # Circular orbit u^t
                 u_r_geom = 0.0  # No radial motion for circular orbit
-                u_phi_geom = torch.sqrt(1.0 / (r0_geom**3 - 3.0*r0_geom**2))  # Circular orbit u^phi
+                u_phi_geom = torch.sqrt(1.0 / (r0_tensor**3 - 3.0*r0_tensor**2))  # Circular orbit u^phi
             else:
                 # 6D format: [t, r, phi, u^t, u^r, u^phi] in SI units
                 # <reason>chain: Convert SI velocities to geometric units for consistent calculations</reason>
@@ -986,9 +996,13 @@ class TheoryEngine:
                     torch.tensor(1.0, device=self.device, dtype=self.dtype),  # M=1 in geometric
                     1.0,  # c=1 in geometric
                     1.0,  # G=1 in geometric
+                    use_pennylane_quantum=kwargs.get('use_pennylane_quantum', False),
                     **optimization_kwargs
                 )
-                tag = "quantum_symmetric_solver_run"
+                if kwargs.get('use_pennylane_quantum', False):
+                    tag = "pennylane_quantum_solver_run"
+                else:
+                    tag = "quantum_symmetric_solver_run"
                 # <reason>chain: QuantumGeodesicSolver needs conserved quantities for WKB approximation</reason>
                 if hasattr(solver, 'E'):
                     solver.E = E_geom.item()
@@ -1172,10 +1186,13 @@ class TheoryEngine:
             for retry in range(5):  # Max 5 retries with smaller steps
                 # <reason>chain: Use simple RK4 step if available for performance, otherwise use higher tolerance</reason>
                 if hasattr(solver, 'rk4_step_simple') and not adaptive_stepping:
-                    y_new = solver.rk4_step_simple(y, h_current)
+                    h_float = h_current.item() if torch.is_tensor(h_current) else h_current
+                    y_new = solver.rk4_step_simple(y, h_float)
                 else:
                     # Standard call for all solvers
-                    y_new = solver.rk4_step(y, h_current)
+                    # <reason>chain: Convert h_current to float for rk4_step</reason>
+                    h_float = h_current.item() if torch.is_tensor(h_current) else h_current
+                    y_new = solver.rk4_step(y, h_float)
                 
                 if y_new is None or torch.any(~torch.isfinite(y_new)):
                     if adaptive_stepping:
@@ -2545,6 +2562,27 @@ def process_and_evaluate_theory(
         no_cache=args.no_cache
     )
     
+    # <reason>chain: For quantum theories, also compute classical trajectories as baseline</reason>
+    quantum_particle_results = None
+    if theory_category == 'quantum':
+        print(f"  Computing quantum trajectories with PennyLane solver for {model.name}...")
+        
+        # Run again with PennyLane quantum solver
+        quantum_particle_results = engine.run_multi_particle_trajectories(
+            model, r0_val, effective_steps, effective_dtau.item() * engine.time_scale,
+            theory_category=theory_category,
+            use_pennylane_quantum=True,  # Use PennyLane-based quantum solver
+            quantum_interval=quantum_interval if getattr(args, 'experimental', False) else 0,
+            quantum_beta=quantum_beta if getattr(args, 'experimental', False) else 0.0,
+            progress_callback=progress_callback if getattr(args, 'self_monitor', False) else None,
+            callback_interval=CALLBACK_INTERVAL,
+            baseline_results=baseline_results if getattr(args, 'early_stop', False) else None,
+            early_stopping=getattr(args, 'early_stop', False),
+            test_mode=False,
+            verbose=args.verbose,
+            no_cache=True  # Always disable cache for quantum to ensure we get different results
+        )
+    
     # Check if any particle trajectory succeeded
     successful_particles = {name: res for name, res in particle_results.items() 
                           if res['trajectory'] is not None and res['trajectory'].shape[0] > 1}
@@ -2739,6 +2777,11 @@ def process_and_evaluate_theory(
         
         # <reason>chain: Store baseline theories in engine for enhanced visualization</reason>
         engine._baseline_theories = baseline_theories
+        
+        # <reason>chain: Add quantum trajectories to baseline_results for visualization</reason>
+        if quantum_particle_results is not None:
+            # Store quantum trajectories as special baselines
+            baseline_results[f"{model.name} (Quantum PennyLane)"] = quantum_particle_results
         
         # Get particle info for both charged and uncharged particles
         charged_particle_info = None

@@ -1,0 +1,33 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+      electron: trajectory too short (1 points)
+      proton: trajectory too short (1 points)
+    ✓ Computed 2/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+      electron: trajectory too short (1 points)
+      proton: trajectory too short (1 points)
+    ✓ Computed 2/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+Completed 4/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 1 Theories ---
+  Using preferred values for Alena‑Tensor‑γ=+0.00: {'gamma': 0.0}
+
+--- Validating: Alena‑Tensor‑γ=+0.00 ---
+  Running validation trajectory for Alena‑Tensor‑γ=+0.00...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Alena‑Tensor‑γ=+0.00
+    Initial conditions: r=12.000000000000002, E=0.9622504486493765, Lz=4.000000000000002
+    Time steps: 100, Step size: 0.1
+    Using solver: GeodesicRK4Solver

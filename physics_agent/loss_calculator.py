@@ -313,3 +313,16 @@ class LossCalculator:
             return ca[i, j]
             
         return c(len_p - 1, len_q - 1) 
+
+def compute_quantum_trajectory_loss(self, quantum_hist: Tensor, classical_hist: Tensor) -> float:
+    """
+    Compute loss between quantum and classical trajectories.
+    <reason>chain: Specific loss for quantum vs classical comparison to address feedback on quantum properties.</reason>
+    
+    This could use differences in path amplitudes or uncertainties.
+    """
+    # Simplified: use MSE plus a term for quantum spread
+    mse = self.compute_trajectory_loss(quantum_hist, classical_hist, 'trajectory_mse')
+    # Add quantum uncertainty term (placeholder)
+    quantum_spread = torch.std(quantum_hist[:, 1])  # Std of radial position
+    return mse + 0.1 * quantum_spread.item() 
