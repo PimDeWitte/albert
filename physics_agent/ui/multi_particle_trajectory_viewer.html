@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{THEORY_NAME} - Multi-Particle Trajectory Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+        }
+        
+        h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        
+        .button {
+            background: #2980b9;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background: #3498db;
+        }
+        
+        .button.active {
+            background: #27ae60;
+        }
+        
+        input[type="range"] {
+            width: 200px;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        
+        #error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #e74c3c;
+            display: none;
+        }
+        
+        .particle-legend {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .particle-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        
+        .particle-item:hover {
+            opacity: 0.8;
+        }
+        
+        .particle-item.disabled {
+            opacity: 0.3;
+        }
+        
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        
+        .stats {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="loading">Loading trajectories...</div>
+    <div id="error"></div>
+    
+    <div class="controls">
+        <h3>Controls</h3>
+        <div>
+            <button class="button" id="playPause">Play</button>
+            <button class="button" id="reset">Reset</button>
+        </div>
+        <div style="margin-top: 10px;">
+            <label>Speed: <input type="range" id="speed" min="0" max="10" value="3" step="0.1"></label>
+        </div>
+        <div style="margin-top: 10px;">
+            <label>Zoom: <input type="range" id="zoom" min="0.1" max="10" value="1" step="0.1"></label>
+        </div>
+        <div style="margin-top: 10px;">
+            <button class="button" id="toggleTrail">Show Trail</button>
+            <button class="button" id="toggleGrid">Show Grid</button>
+        </div>
+    </div>
+    
+    <div class="info">
+        <h3>{THEORY_NAME}</h3>
+        <div>Black Hole Mass: {BLACK_HOLE_MASS} kg</div>
+        <div>Step: <span id="stepInfo">0 / 0</span></div>
+        <div>Time: <span id="timeInfo">0.00e+00</span> s</div>
+        
+        <div class="particle-legend" id="particleLegend">
+            <h4>Particles (click to toggle)</h4>
+        </div>
+        
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <script>
+        // Multi-particle trajectory data will be injected here
+        const PARTICLE_DATA = {PARTICLE_DATA_JSON};
+        const THEORY_NAME = '{THEORY_NAME}';
+        const BLACK_HOLE_MASS = {BLACK_HOLE_MASS};
+        
+        // Particle colors
+        const PARTICLE_COLORS = {
+            electron: { 
+                theory: [0.29, 0.62, 1.0, 1.0],  // Blue
+                kerr: [0.29, 0.62, 1.0, 0.5]      // Blue (transparent)
+            },
+            neutrino: { 
+                theory: [0.96, 0.26, 0.21, 1.0],  // Red
+                kerr: [0.96, 0.26, 0.21, 0.5]     // Red (transparent)
+            },
+            photon: { 
+                theory: [0.98, 0.74, 0.02, 1.0],  // Yellow
+                kerr: [0.98, 0.74, 0.02, 0.5]     // Yellow (transparent)
+            },
+            proton: { 
+                theory: [0.18, 0.80, 0.44, 1.0],  // Green
+                kerr: [0.18, 0.80, 0.44, 0.5]     // Green (transparent)
+            }
+        };
+        
+        // Track which particles are enabled
+        const particleEnabled = {};
+        
+        // WebGL setup
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        
+        if (!gl) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').innerHTML = 'WebGL not supported in your browser.';
+            document.getElementById('error').style.display = 'block';
+        }
+        
+        // Resize canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Shader sources
+        const vertexShaderSource = `
+            attribute vec2 a_position;
+            uniform mat3 u_matrix;
+            uniform float u_pointSize;
+            
+            void main() {
+                vec3 position = u_matrix * vec3(a_position, 1.0);
+                gl_Position = vec4(position.xy, 0.0, 1.0);
+                gl_PointSize = u_pointSize;
+            }
+        `;
+        
+        const fragmentShaderSource = `
+            precision mediump float;
+            uniform vec4 u_color;
+            uniform float u_isPoint;
+            
+            void main() {
+                if (u_isPoint > 0.5) {
+                    // Draw circular point
+                    vec2 coord = gl_PointCoord - vec2(0.5);
+                    if (length(coord) > 0.5) {
+                        discard;
+                    }
+                }
+                gl_FragColor = u_color;
+            }
+        `;
+        
+        // Create shaders
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error('Shader compilation error:', gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+        
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+        
+        // Create program
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error('Program linking error:', gl.getProgramInfoLog(program));
+        }
+        
+        // Get locations
+        const positionLocation = gl.getAttribLocation(program, 'a_position');
+        const matrixLocation = gl.getUniformLocation(program, 'u_matrix');
+        const colorLocation = gl.getUniformLocation(program, 'u_color');
+        const pointSizeLocation = gl.getUniformLocation(program, 'u_pointSize');
+        const isPointLocation = gl.getUniformLocation(program, 'u_isPoint');
+        
+        // Create buffer
+        const positionBuffer = gl.createBuffer();
+        
+        // Animation state
+        let currentStep = 0;
+        let isPlaying = true;
+        let showTrail = true;
+        let showGrid = true;
+        let cameraX = 0;
+        let cameraY = 0;
+        let cameraZoom = 1;
+        let animationSpeed = 3;
+        
+        // Calculate bounds from all particle data
+        function calculateBounds() {
+            let minX = Infinity, maxX = -Infinity;
+            let minY = Infinity, maxY = -Infinity;
+            
+            if (PARTICLE_DATA) {
+                Object.keys(PARTICLE_DATA).forEach(particleName => {
+                    const particleData = PARTICLE_DATA[particleName];
+                    ['theory', 'kerr'].forEach(dataType => {
+                        const data = particleData[dataType];
+                        if (data && data.positions) {
+                            data.positions.forEach(pos => {
+                                const x = pos[0] * Math.cos(pos[1]);
+                                const y = pos[0] * Math.sin(pos[1]);
+                                minX = Math.min(minX, x);
+                                maxX = Math.max(maxX, x);
+                                minY = Math.min(minY, y);
+                                maxY = Math.max(maxY, y);
+                            });
+                        }
+                    });
+                });
+            }
+            
+            const scale = Math.max(maxX - minX, maxY - minY) * 1.2;
+            return { minX, maxX, minY, maxY, scale: scale || 100 };
+        }
+        
+        // Matrix operations
+        function createMatrix(tx, ty, scale) {
+            const aspect = canvas.width / canvas.height;
+            return [
+                2 * scale / canvas.width, 0, 0,
+                0, -2 * scale / canvas.height, 0,
+                tx, ty, 1
+            ];
+        }
+        
+        // Draw scene
+        function drawScene() {
+            gl.clearColor(0.04, 0.04, 0.04, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            
+            gl.useProgram(program);
+            
+            const bounds = calculateBounds();
+            const matrix = createMatrix(
+                -cameraX / bounds.scale,
+                -cameraY / bounds.scale,
+                cameraZoom / bounds.scale
+            );
+            gl.uniformMatrix3fv(matrixLocation, false, matrix);
+            
+            // Draw grid
+            if (showGrid) {
+                drawGrid();
+            }
+            
+            // Draw black hole
+            drawBlackHole();
+            
+            // Draw all particle trajectories
+            if (PARTICLE_DATA) {
+                Object.keys(PARTICLE_DATA).forEach(particleName => {
+                    if (particleEnabled[particleName]) {
+                        const particleData = PARTICLE_DATA[particleName];
+                        const colors = PARTICLE_COLORS[particleName];
+                        
+                        // Draw Kerr baseline (dashed)
+                        if (particleData.kerr && particleData.kerr.positions) {
+                            drawTrajectory(particleData.kerr, colors.kerr, currentStep, true);
+                        }
+                        
+                        // Draw theory trajectory (solid)
+                        if (particleData.theory && particleData.theory.positions) {
+                            drawTrajectory(particleData.theory, colors.theory, currentStep, false);
+                        }
+                        
+                        // Draw current positions
+                        if (particleData.theory && particleData.theory.positions && 
+                            currentStep < particleData.theory.positions.length) {
+                            drawParticle(particleData.theory.positions[currentStep], colors.theory);
+                        }
+                        if (particleData.kerr && particleData.kerr.positions && 
+                            currentStep < particleData.kerr.positions.length) {
+                            drawParticle(particleData.kerr.positions[currentStep], colors.kerr);
+                        }
+                    }
+                });
+            }
+        }
+        
+        function drawGrid() {
+            const gridSize = 10;
+            const gridLines = [];
+            
+            for (let i = -100; i <= 100; i += gridSize) {
+                // Vertical lines
+                gridLines.push(i, -100, i, 100);
+                // Horizontal lines
+                gridLines.push(-100, i, 100, i);
+            }
+            
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(gridLines), gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+            
+            gl.uniform4f(colorLocation, 0.2, 0.2, 0.2, 0.3);
+            gl.uniform1f(isPointLocation, 0.0);
+            
+            for (let i = 0; i < gridLines.length / 4; i++) {
+                gl.drawArrays(gl.LINES, i * 2, 2);
+            }
+        }
+        
+        function drawBlackHole() {
+            const segments = 64;
+            const vertices = [];
+            
+            // Event horizon (r = 2M)
+            const r_horizon = 2;
+            for (let i = 0; i <= segments; i++) {
+                const angle = (i / segments) * Math.PI * 2;
+                vertices.push(r_horizon * Math.cos(angle), r_horizon * Math.sin(angle));
+            }
+            
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+            
+            gl.uniform4f(colorLocation, 1.0, 1.0, 1.0, 0.5);
+            gl.uniform1f(isPointLocation, 0.0);
+            gl.drawArrays(gl.LINE_LOOP, 0, vertices.length / 2);
+        }
+        
+        function drawTrajectory(data, color, upToStep, isDashed) {
+            if (!data.positions || data.positions.length === 0) return;
+            
+            const vertices = [];
+            const limit = showTrail ? upToStep : Math.max(0, upToStep - 50);
+            
+            for (let i = Math.max(0, limit); i <= upToStep && i < data.positions.length; i++) {
+                const pos = data.positions[i];
+                const x = pos[0] * Math.cos(pos[1]);
+                const y = pos[0] * Math.sin(pos[1]);
+                vertices.push(x, y);
+            }
+            
+            if (vertices.length > 2) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+                gl.enableVertexAttribArray(positionLocation);
+                gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+                
+                const alpha = showTrail ? color[3] : color[3] * 0.5;
+                gl.uniform4f(colorLocation, color[0], color[1], color[2], alpha);
+                gl.uniform1f(isPointLocation, 0.0);
+                
+                if (isDashed) {
+                    // Draw dashed line for Kerr baseline
+                    for (let i = 0; i < vertices.length / 2 - 1; i += 2) {
+                        gl.drawArrays(gl.LINES, i, 2);
+                    }
+                } else {
+                    gl.drawArrays(gl.LINE_STRIP, 0, vertices.length / 2);
+                }
+            }
+        }
+        
+        function drawParticle(position, color) {
+            const x = position[0] * Math.cos(position[1]);
+            const y = position[0] * Math.sin(position[1]);
+            
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([x, y]), gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+            
+            gl.uniform4f(colorLocation, color[0], color[1], color[2], color[3]);
+            gl.uniform1f(pointSizeLocation, 8.0);
+            gl.uniform1f(isPointLocation, 1.0);
+            gl.drawArrays(gl.POINTS, 0, 1);
+        }
+        
+        // Update info panel
+        function updateInfo() {
+            let maxSteps = 0;
+            let currentTime = 0;
+            
+            if (PARTICLE_DATA) {
+                Object.keys(PARTICLE_DATA).forEach(particleName => {
+                    const particleData = PARTICLE_DATA[particleName];
+                    if (particleData.theory && particleData.theory.positions) {
+                        maxSteps = Math.max(maxSteps, particleData.theory.positions.length);
+                        if (particleData.theory.times && currentStep < particleData.theory.times.length) {
+                            currentTime = Math.max(currentTime, particleData.theory.times[currentStep]);
+                        }
+                    }
+                });
+            }
+            
+            document.getElementById('stepInfo').textContent = `${currentStep} / ${maxSteps}`;
+            document.getElementById('timeInfo').textContent = currentTime.toExponential(2);
+        }
+        
+        // Setup particle legend
+        function setupParticleLegend() {
+            const legend = document.getElementById('particleLegend');
+            
+            if (PARTICLE_DATA) {
+                Object.keys(PARTICLE_DATA).forEach(particleName => {
+                    const colors = PARTICLE_COLORS[particleName];
+                    particleEnabled[particleName] = true; // Enable all by default
+                    
+                    const item = document.createElement('div');
+                    item.className = 'particle-item';
+                    item.innerHTML = `
+                        <div class="color-box" style="background: rgb(${Math.round(colors.theory[0]*255)}, ${Math.round(colors.theory[1]*255)}, ${Math.round(colors.theory[2]*255)})"></div>
+                        <div>${particleName}</div>
+                    `;
+                    
+                    item.onclick = () => {
+                        particleEnabled[particleName] = !particleEnabled[particleName];
+                        item.classList.toggle('disabled', !particleEnabled[particleName]);
+                    };
+                    
+                    legend.appendChild(item);
+                });
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            if (isPlaying) {
+                currentStep += animationSpeed;
+                
+                // Find max steps across all particles
+                let maxSteps = 0;
+                if (PARTICLE_DATA) {
+                    Object.values(PARTICLE_DATA).forEach(particleData => {
+                        if (particleData.theory && particleData.theory.positions) {
+                            maxSteps = Math.max(maxSteps, particleData.theory.positions.length);
+                        }
+                    });
+                }
+                
+                if (currentStep >= maxSteps - 1) {
+                    currentStep = maxSteps - 1;
+                    isPlaying = false;
+                    document.getElementById('playPause').textContent = 'Play';
+                }
+            }
+            
+            drawScene();
+            updateInfo();
+            requestAnimationFrame(animate);
+        }
+        
+        // Controls
+        document.getElementById('playPause').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            document.getElementById('playPause').textContent = isPlaying ? 'Pause' : 'Play';
+        });
+        
+        document.getElementById('reset').addEventListener('click', () => {
+            currentStep = 0;
+            isPlaying = false;
+            document.getElementById('playPause').textContent = 'Play';
+        });
+        
+        document.getElementById('speed').addEventListener('input', (e) => {
+            animationSpeed = parseFloat(e.target.value);
+        });
+        
+        document.getElementById('zoom').addEventListener('input', (e) => {
+            cameraZoom = parseFloat(e.target.value);
+        });
+        
+        document.getElementById('toggleTrail').addEventListener('click', (e) => {
+            showTrail = !showTrail;
+            e.target.classList.toggle('active', showTrail);
+        });
+        
+        document.getElementById('toggleGrid').addEventListener('click', (e) => {
+            showGrid = !showGrid;
+            e.target.classList.toggle('active', showGrid);
+        });
+        
+        // Mouse controls
+        let isDragging = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                cameraX += dx * 2;
+                cameraY += dy * 2;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const scaleFactor = e.deltaY > 0 ? 0.9 : 1.1;
+            cameraZoom *= scaleFactor;
+            cameraZoom = Math.max(0.1, Math.min(10, cameraZoom));
+            document.getElementById('zoom').value = cameraZoom;
+        });
+        
+        // Initialize
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('toggleTrail').classList.add('active');
+        document.getElementById('toggleGrid').classList.add('active');
+        setupParticleLegend();
+        animate();
+    </script>
+</body>
+</html>

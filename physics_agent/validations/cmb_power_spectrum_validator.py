@@ -460,19 +460,11 @@ class CMBPowerSpectrumValidator(PredictionValidator):
             'quantum_discrepancy': quantum_discrepancy
         }
         
-        result.notes = f"Δχ² = {delta_chi2:.2f} (improvement over ΛCDM). "
+        result.notes = f"Δχ² = {delta_chi2:.2f} (improvement over ΛCDM)."
         if quantum_discrepancy > 0:
-            result.notes += f"Quantum trajectory discrepancy: {quantum_discrepancy:.2f}. "
-        if has_cosmological_capability:  # Only add detailed notes if theory can handle cosmology
-            if result.beats_sota:
-                if delta_chi2 > self.threshold_chi2_improvement:
-                    result.notes += f"BEATS SOTA! Better explains low-l anomaly."
-                else:
-                    result.notes += f"Minor SOTA improvement (Δχ² = {delta_chi2:.2f})."
-            elif not is_quantum_enabled and abs(delta_chi2) < 5.0:
-                result.notes += f"Matches ΛCDM (expected for classical GR)"
-            else:
-                result.notes += f"Does not improve on ΛCDM model."
+            result.notes += f" Quantum trajectory discrepancy: {quantum_discrepancy:.2f}."
+        if has_cosmological_capability and result.beats_sota and delta_chi2 > self.threshold_chi2_improvement:
+            result.notes += f" BEATS SOTA! Better explains low-l anomaly."
         
         if verbose:
             print(f"\n{theory.name} CMB Prediction Results:")

@@ -38,8 +38,8 @@ def run_quantum_visualization_test():
     r0 = 10 * rs  # Start at 10 Schwarzschild radii
     
     # Set up initial conditions for circular orbit
-    from physics_agent.geodesic_integrator import GeodesicRK4Solver
-    temp_solver = GeodesicRK4Solver(classical_theory, M_phys=torch.tensor(M_sun))
+    from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver
+    temp_solver = ConservedQuantityGeodesicSolver(classical_theory, M_phys=torch.tensor(M_sun))
     r0_geom = temp_solver.to_geometric_length(torch.tensor(r0))
     E_geom, L_geom = temp_solver.compute_circular_orbit_params(r0_geom)
     

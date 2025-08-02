@@ -6,7 +6,7 @@ Test that GeneralGeodesicRK4Solver handles both 4D and 6D state vectors correctl
 import torch
 import sys
 from physics_agent.theories.defaults.baselines.kerr import Kerr
-from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver
+from physics_agent.geodesic_integrator import GeneralRelativisticGeodesicSolver
 
 def test_general_solver_with_different_state_dimensions():
     """Test that the general solver handles both 4D and 6D states"""

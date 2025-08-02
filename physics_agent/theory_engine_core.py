@@ -4121,6 +4121,9 @@ def main():
                 'test_results': test_results
             }
             
+            # Copy comprehensive test results to run directory
+            copy_comprehensive_results_to_run()
+            
             # By default, exit after comprehensive test unless --continue-after-test is set
             if not (hasattr(args, 'continue_after_test') and args.continue_after_test):
                 print("\nComprehensive test complete. Use --continue-after-test to run full simulation afterwards.")
@@ -4416,6 +4419,48 @@ def main():
     
     print(f"Run directory: {main_run_dir}")
     
+    # <reason>chain: Copy comprehensive test results, viewers, and weights to run directory if they exist</reason>
+    def copy_comprehensive_results_to_run():
+        """Copy comprehensive test results, viewers and weights to the run directory."""
+        import shutil
+        
+        # Create reports subdirectory in run
+        reports_dir = os.path.join(main_run_dir, "reports")
+        os.makedirs(reports_dir, exist_ok=True)
+        
+        # Copy comprehensive test report if it exists
+        latest_report = "physics_agent/reports/latest_comprehensive_validation.html"
+        if os.path.exists(latest_report):
+            shutil.copy2(latest_report, os.path.join(reports_dir, "comprehensive_validation.html"))
+            print(f"  Copied comprehensive validation report to run directory")
+        
+        # Copy trajectory viewers if they exist
+        viewers_src = "physics_agent/reports/trajectory_viewers"
+        if os.path.exists(viewers_src):
+            viewers_dst = os.path.join(reports_dir, "trajectory_viewers")
+            shutil.copytree(viewers_src, viewers_dst)
+            print(f"  Copied trajectory viewers to run directory")
+        
+        # Copy weights files if they exist
+        weights_patterns = [
+            "comprehensive_theory_validation_*.html",
+            "comprehensive_theory_validation_*.json",
+            "theory_validation_comprehensive_*.json"
+        ]
+        
+        for pattern in weights_patterns:
+            for file_path in glob.glob(pattern):
+                if os.path.exists(file_path):
+                    shutil.copy2(file_path, reports_dir)
+                    print(f"  Copied {os.path.basename(file_path)} to run directory")
+                    
+        # Also check in physics_agent directory
+        for pattern in weights_patterns:
+            for file_path in glob.glob(os.path.join("physics_agent", pattern)):
+                if os.path.exists(file_path):
+                    shutil.copy2(file_path, reports_dir)
+                    print(f"  Copied {os.path.basename(file_path)} to run directory")
+    
     # <reason>chain: Start capturing all output to a log file</reason>
     run_logger = RunLogger(main_run_dir)
     run_logger.start()
@@ -4424,6 +4469,10 @@ def main():
     run_config['log_file'] = run_logger.get_log_path()
     with open(os.path.join(main_run_dir, "run_config.json"), 'w') as f:
         json.dump(run_config, f, indent=4)
+    
+    # Copy any existing comprehensive test results even if tests weren't run this time
+    if not run_comprehensive:
+        copy_comprehensive_results_to_run()
     
     # <reason>chain: Use concurrent.futures for parallel baseline computation</reason>
     import concurrent.futures
@@ -4880,6 +4929,28 @@ def main():
             for finalist in top_theories:
                 print(f"  Would sweep: {finalist['info']['name']}")
             print("Note: Auto-sweep functionality is still under development.")
+    
+    # <reason>chain: Copy final leaderboard and comprehensive results to reports directory</reason>
+    # This ensures all important outputs are preserved with the run
+    print("\nCopying final results to run directory...")
+    copy_comprehensive_results_to_run()
+    
+    # Also copy any leaderboard files
+    import shutil
+    reports_dir = os.path.join(main_run_dir, "reports")
+    
+    # Copy leaderboard.html if it exists in the run directory
+    leaderboard_path = os.path.join(main_run_dir, "leaderboard.html")
+    if os.path.exists(leaderboard_path):
+        shutil.copy2(leaderboard_path, os.path.join(reports_dir, "leaderboard.html"))
+        print(f"  Copied leaderboard.html to reports directory")
+    
+    # Copy any updated comprehensive reports
+    for pattern in ["comprehensive_*.html", "comprehensive_*.json"]:
+        for file_path in glob.glob(os.path.join(".", pattern)):
+            if os.path.exists(file_path):
+                shutil.copy2(file_path, reports_dir)
+                print(f"  Copied {os.path.basename(file_path)} to reports directory")
     
     # <reason>chain: Stop capturing output and save the log file</reason>
     run_logger.stop()

@@ -61,9 +61,9 @@ from physics_agent.quantum_path_integrator import QuantumPathIntegrator
 
 # <reason>chain: Import the GeneralGeodesicRK4Solver from geodesic_integrator.py which has proper 6D support</reason>
 try:
-    from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver as GeneralGeodesicRK4SolverImported
+    from physics_agent.geodesic_integrator import GeneralRelativisticGeodesicSolver as GeneralRelativisticGeodesicSolverImported
 except ImportError:
-    GeneralGeodesicRK4SolverImported = None
+    GeneralRelativisticGeodesicSolverImported = None
 
 # Import constants from centralized module
 from physics_agent.constants import (

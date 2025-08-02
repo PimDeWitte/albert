@@ -19,7 +19,7 @@ from physics_agent.validations.mercury_precession_validator import MercuryPreces
 from physics_agent.validations.light_deflection_validator import LightDeflectionValidator
 
 # Import geodesic solvers
-from physics_agent.geodesic_integrator import GeodesicRK4Solver, NullGeodesicRK4Solver, QuantumGeodesicSimulator
+from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver, PhotonGeodesicSolver, QuantumCorrectedGeodesicSolver
 from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
@@ -1076,7 +1076,7 @@ def test_quantum_geodesic_simulator():
     M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
     
     # Initialize classical solver for comparison (use GeneralGeodesicRK4Solver for 6D)
-    from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver
+    from physics_agent.geodesic_integrator import GeneralRelativisticGeodesicSolver
     classical_solver = GeneralGeodesicRK4Solver(theory, M_phys=M_sun)
     
     # Initialize quantum simulator

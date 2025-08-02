@@ -31,7 +31,7 @@ from physics_agent.validations.gw_validator import GwValidator
 from physics_agent.validations.psr_j0740_validator import PsrJ0740Validator
 
 # Import necessary components for solver tests
-from physics_agent.geodesic_integrator import GeodesicRK4Solver, GeneralGeodesicRK4Solver, QuantumGeodesicSimulator
+from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver, GeneralRelativisticGeodesicSolver, QuantumCorrectedGeodesicSolver
 from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
 from physics_agent.validations.primordial_gws_validator import PrimordialGWsValidator
 
@@ -162,7 +162,7 @@ def test_trajectory_integration(theory, engine, n_steps=500, verbose=False):
         
         # Create appropriate solver
         if hasattr(theory, 'has_conserved_quantities') and theory.has_conserved_quantities:
-            solver = GeodesicRK4Solver(theory, M_phys)
+            solver = ConservedQuantityGeodesicSolver(theory, M_phys)
             if isinstance(solver_info, dict):
                 solver.E = solver_info.get('E', 0.95)
                 solver.Lz = solver_info.get('Lz', 4.0)
@@ -171,7 +171,7 @@ def test_trajectory_integration(theory, engine, n_steps=500, verbose=False):
                 solver.Lz = 4.0
             y0 = y0_symmetric
         else:
-            solver = GeneralGeodesicRK4Solver(theory, M_phys)
+            solver = GeneralRelativisticGeodesicSolver(theory, M_phys)
             y0 = y0_general
         
         # Use actual class name
@@ -243,9 +243,9 @@ def test_circular_orbit_period(theory, engine):
         
         # Create solver
         if hasattr(theory, 'has_conserved_quantities') and theory.has_conserved_quantities:
-            solver = GeodesicRK4Solver(theory, M_phys)
+            solver = ConservedQuantityGeodesicSolver(theory, M_phys)
         else:
-            solver = GeneralGeodesicRK4Solver(theory, M_phys)
+            solver = GeneralRelativisticGeodesicSolver(theory, M_phys)
         
         # Use actual class name
         solver_type = solver.__class__.__name__
@@ -300,7 +300,7 @@ def test_quantum_geodesic_sim(theory):
     """Test quantum geodesic simulator."""
     try:
         start_time = time.time()
-        simulator = QuantumGeodesicSimulator(theory, num_qubits=2, 
+        simulator = QuantumCorrectedGeodesicSolver(theory, num_qubits=2, 
                                            M_phys=torch.tensor(SOLAR_MASS))
         
         # Initial state

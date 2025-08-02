@@ -18,7 +18,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from physics_agent.geodesic_integrator import GeodesicRK4Solver
+from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver
 from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT

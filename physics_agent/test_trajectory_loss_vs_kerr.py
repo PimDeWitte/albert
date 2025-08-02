@@ -114,7 +114,7 @@ def run_trajectory_with_loss(theory_name, theory_class, category, kerr_trajector
         
         # Create appropriate solver
         if hasattr(theory, 'has_conserved_quantities') and theory.has_conserved_quantities:
-            from physics_agent.geodesic_integrator import GeodesicRK4Solver
+            from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver
             solver = GeodesicRK4Solver(theory, M_phys)
             if isinstance(solver_info, dict):
                 solver.E = solver_info.get('E', 0.95)
@@ -124,7 +124,7 @@ def run_trajectory_with_loss(theory_name, theory_class, category, kerr_trajector
                 solver.Lz = 4.0
             y0 = y0_symmetric  # 4D state
         else:
-            from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver
+            from physics_agent.geodesic_integrator import GeneralRelativisticGeodesicSolver
             solver = GeneralGeodesicRK4Solver(theory, M_phys)
             y0 = y0_general  # 6D state
             

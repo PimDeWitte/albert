@@ -94,7 +94,7 @@ def run_trajectory_test(theory_name, theory_class, category, kerr_trajectory=Non
         
         # Create appropriate solver
         if hasattr(theory, 'has_conserved_quantities') and theory.has_conserved_quantities:
-            from physics_agent.geodesic_integrator import GeodesicRK4Solver
+            from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver
             solver = GeodesicRK4Solver(theory, M_phys)
             # Extract E and Lz from solver_info
             if isinstance(solver_info, dict):
@@ -107,7 +107,7 @@ def run_trajectory_test(theory_name, theory_class, category, kerr_trajectory=Non
             # Use symmetric initial conditions for 4D solver
             y0 = y0_symmetric  # Full 4D state: [t, r, phi, dr_dtau]
         else:
-            from physics_agent.geodesic_integrator import GeneralGeodesicRK4Solver
+            from physics_agent.geodesic_integrator import GeneralRelativisticGeodesicSolver
             solver = GeneralGeodesicRK4Solver(theory, M_phys)
             # Use general initial conditions for 6D solver
             y0 = y0_general

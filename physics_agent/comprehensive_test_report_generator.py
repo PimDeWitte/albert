@@ -50,6 +50,8 @@ class ComprehensiveTestReportGenerator:
         
         # Generate trajectory viewers
         output_dir = os.path.dirname(output_file)
+        if not output_dir:
+            output_dir = '.'  # Current directory if no directory specified
         self._generate_trajectory_viewers(results, output_dir)
             
         return output_file
@@ -480,19 +482,57 @@ class ComprehensiveTestReportGenerator:
         viewers_dir = os.path.join(output_dir, 'trajectory_viewers')
         os.makedirs(viewers_dir, exist_ok=True)
         
-        # Import viewer generator
+        # Import both viewer generators
         try:
             from physics_agent.ui.trajectory_viewer_generator import generate_trajectory_viewer
-        except ImportError:
-            print("Warning: Could not import trajectory viewer generator")
+            from physics_agent.ui.multi_particle_trajectory_viewer_generator import generate_multi_particle_viewer_from_run
+        except ImportError as e:
+            print(f"Warning: Could not import trajectory viewer generators: {e}")
             return
+        
+        # Try to find the run directory
+        # Assuming we're in a report directory, the run directory should be the parent
+        run_dir = os.path.dirname(output_dir)
+        if not os.path.exists(run_dir) or 'run_' not in run_dir:
+            # Try to find a recent run directory
+            parent_dir = os.path.dirname(output_dir) if output_dir != '.' else '.'
+            
+            # Also check the runs directory
+            if os.path.exists('runs'):
+                run_dirs = [d for d in os.listdir('runs') if d.startswith('run_') and os.path.isdir(os.path.join('runs', d))]
+                if run_dirs:
+                    parent_dir = 'runs'
+            elif os.path.exists(parent_dir):
+                run_dirs = [d for d in os.listdir(parent_dir) if d.startswith('run_') and os.path.isdir(os.path.join(parent_dir, d))]
+            else:
+                run_dirs = []
+            if run_dirs:
+                run_dirs.sort(reverse=True)  # Get most recent
+                run_dir = os.path.join(parent_dir, run_dirs[0])
+            else:
+                print("Warning: Could not find run directory for trajectory viewers")
+                run_dir = None
         
         # Process each theory
         for result in results:
             theory_name = result['theory']
             clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
             
-            # Look for trajectory data in solver tests
+            # Generate multi-particle viewer if we have a run directory
+            if run_dir:
+                try:
+                    viewer_path = os.path.join(viewers_dir, f'{clean_name}_viewer.html')
+                    generate_multi_particle_viewer_from_run(
+                        theory_name=theory_name,
+                        run_dir=run_dir,
+                        output_path=viewer_path,
+                        black_hole_mass=9.945e13  # Primordial mini BH in kg
+                    )
+                    continue  # Skip single-particle viewer if multi-particle succeeds
+                except Exception as e:
+                    print(f"Warning: Could not generate multi-particle viewer for {theory_name}: {e}")
+            
+            # Fallback to single particle viewer
             trajectory_data = None
             kerr_data = None
             
@@ -518,7 +558,7 @@ class ComprehensiveTestReportGenerator:
                         kerr_data = trajectory_data.clone()
                         kerr_data[:, 1] *= 1.001  # Slightly different radius
             
-            # Generate viewer HTML
+            # Generate single-particle viewer HTML as fallback
             viewer_path = os.path.join(viewers_dir, f'{clean_name}_viewer.html')
             
             try:
@@ -526,7 +566,7 @@ class ComprehensiveTestReportGenerator:
                     theory_name=theory_name,
                     theory_trajectory=trajectory_data,
                     kerr_trajectory=kerr_data,
-                    black_hole_mass=1e-19 * 1.989e30,  # Primordial mini BH in kg
+                    black_hole_mass=9.945e13,  # Primordial mini BH in kg
                     particle_name="electron",
                     output_path=viewer_path
                 )

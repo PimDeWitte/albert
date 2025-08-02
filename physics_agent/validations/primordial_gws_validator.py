@@ -148,11 +148,8 @@ class PrimordialGWsValidator(PredictionValidator):
         else:
             result.passed = predicted_r < self.observed_data['r_upper_95']  # Just need to be within limits
             
-            # Add context to notes based on prediction
-            if abs(predicted_r - 0.01) < 0.001:  # Close to standard inflation
-                result.notes = f"r={predicted_r:.3f} < {self.observed_data['r_upper_95']} (matches standard inflation)"
-            else:
-                result.notes = f"Predicted r={predicted_r:.3f} (upper limit {self.observed_data['r_upper_95']}), ΔlnL={delta_lnL:.2f}"
+            # Report actual values without hardcoded expectations
+            result.notes = f"Predicted r={predicted_r:.3f} (upper limit {self.observed_data['r_upper_95']}), ΔlnL={delta_lnL:.2f}"
         
         # Set SOTA value
         result.sota_value = 0.01  # Standard inflation prediction for r

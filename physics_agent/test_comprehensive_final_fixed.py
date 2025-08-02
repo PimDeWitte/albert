@@ -30,7 +30,7 @@ from physics_agent.validations.gw_validator import GwValidator
 from physics_agent.validations.psr_j0740_validator import PsrJ0740Validator
 
 # Import necessary components for solver tests
-from physics_agent.geodesic_integrator import GeodesicRK4Solver, GeneralGeodesicRK4Solver, QuantumGeodesicSimulator
+from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver, GeneralRelativisticGeodesicSolver, QuantumCorrectedGeodesicSolver
 from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
 from physics_agent.validations.primordial_gws_validator import PrimordialGWsValidator
 
@@ -137,7 +137,7 @@ def test_circular_orbit_with_timing(theory, engine, n_steps=100):
         
         # Create appropriate solver
         if hasattr(theory, 'has_conserved_quantities') and theory.has_conserved_quantities:
-            solver = GeodesicRK4Solver(theory, M_phys)
+            solver = ConservedQuantityGeodesicSolver(theory, M_phys)
             if isinstance(solver_info, dict):
                 solver.E = solver_info.get('E', 0.95)
                 solver.Lz = solver_info.get('Lz', 4.0)
@@ -147,7 +147,7 @@ def test_circular_orbit_with_timing(theory, engine, n_steps=100):
             y0 = y0_symmetric
             solver_type = "4DOF-RK4"
         else:
-            solver = GeneralGeodesicRK4Solver(theory, M_phys)
+            solver = GeneralRelativisticGeodesicSolver(theory, M_phys)
             y0 = y0_general
             solver_type = "6DOF-RK4"
         
@@ -220,7 +220,7 @@ def run_solver_test_with_timing(theory, test_name, engine=None):
         # Test quantum geodesic simulator
         try:
             start_time = time.time()
-            simulator = QuantumGeodesicSimulator(theory, num_qubits=2, 
+            simulator = QuantumCorrectedGeodesicSolver(theory, num_qubits=2, 
                                                M_phys=torch.tensor(SOLAR_MASS))
             
             # Run a few integration steps
