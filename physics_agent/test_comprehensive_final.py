@@ -340,8 +340,9 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
             theory_diffs = torch.diff(theory_xyz, dim=0)
             kerr_diffs = torch.diff(kerr_xyz, dim=0)
             
-            distance_traveled = torch.sum(torch.norm(theory_diffs, dim=1)).item()
-            kerr_distance = torch.sum(torch.norm(kerr_diffs, dim=1)).item()
+            # Calculate distances in geometric units (M)
+            distance_traveled = torch.sum(torch.norm(theory_diffs, dim=1)).item() / engine.length_scale
+            kerr_distance = torch.sum(torch.norm(kerr_diffs, dim=1)).item() / engine.length_scale
         
         # Use the solver tag directly as it contains the actual solver info
         solver_type = solver_tag if solver_tag else "Unknown"

@@ -106,7 +106,7 @@ from physics_agent.run_logger import generate_comprehensive_summary
 from physics_agent.validations.comprehensive_report_generator import ComprehensiveReportGenerator
 # <reason>chain: Import theory utility functions</reason>
 from physics_agent.theory_utils import get_preferred_values
-from physics_agent.ui.leaderboard_html_generator import LeaderboardHTMLGenerator
+# Leaderboard functionality now integrated into comprehensive test report
 from physics_agent.run_logger import RunLogger
 # <reason>chain: Import new modules for better separation of concerns</reason>
 from physics_agent.cli import get_cli_parser, setup_execution_mode, handle_special_modes, determine_device_and_dtype

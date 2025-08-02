@@ -120,7 +120,45 @@ class ComprehensiveTestReportGenerator:
             '        }',
             '        .view-trajectory-btn { background: #4a9eff; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }',
             '        .view-trajectory-btn:hover { background: #357abd; }',
+            '        .trajectory-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 1000; max-width: 90vw; max-height: 90vh; overflow: auto; }',
+            '        .trajectory-popup.show { display: block; }',
+            '        .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }',
+            '        .popup-overlay.show { display: block; }',
+            '        .popup-close { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }',
+            '        .trajectory-image { max-width: 100%; height: auto; }',
+            '        .trajectory-links { margin-top: 15px; }',
+            '        .trajectory-links a { margin-right: 15px; }',
             '    </style>',
+            '    <script>',
+            '        function viewTrajectory(theoryName) {',
+            '            const safeName = theoryName.replace(/ /g, "_").replace(/[(),.]/g, "");',
+            '            const trajectoryPath = "../trajectory_visualizations/" + safeName + "_trajectory.png";',
+            '            const orbitPath = "../trajectory_visualizations/" + safeName + "_orbit.png";',
+            '            ',
+            '            const popup = document.getElementById("trajectory-popup");',
+            '            const overlay = document.getElementById("popup-overlay");',
+            '            const imageContainer = document.getElementById("trajectory-image-container");',
+            '            const titleElement = document.getElementById("trajectory-title");',
+            '            ',
+            '            titleElement.textContent = theoryName + " Trajectory Analysis";',
+            '            imageContainer.innerHTML = `',
+            '                <img src="${trajectoryPath}" alt="${theoryName} trajectory" class="trajectory-image" onerror="this.src=\'../trajectory_visualizations/index.html\'">',
+            '                <div class="trajectory-links">',
+            '                    <a href="${trajectoryPath}" target="_blank">📊 Full Analysis</a>',
+            '                    <a href="${orbitPath}" target="_blank">🌐 Orbit View</a>',
+            '                    <a href="../trajectory_visualizations/index.html" target="_blank">🗂️ All Trajectories</a>',
+            '                </div>',
+            '            `;',
+            '            ',
+            '            popup.classList.add("show");',
+            '            overlay.classList.add("show");',
+            '        }',
+            '        ',
+            '        function closeTrajectoryPopup() {',
+            '            document.getElementById("trajectory-popup").classList.remove("show");',
+            '            document.getElementById("popup-overlay").classList.remove("show");',
+            '        }',
+            '    </script>',
             '</head>',
             '<body>',
             '    <div class="container">',
@@ -300,11 +338,8 @@ class ComprehensiveTestReportGenerator:
             
             # Format distance traveled
             if distance_traveled is not None and kerr_distance is not None:
-                # Use scientific notation for very small distances
-                if distance_traveled < 0.1 or kerr_distance < 0.1:
-                    distance_str = f'{distance_traveled:.2e} / {kerr_distance:.2e}'
-                else:
-                    distance_str = f'{distance_traveled:.1f} / {kerr_distance:.1f}'
+                # Distances are now in geometric units (M)
+                distance_str = f'{distance_traveled:.1f}M / {kerr_distance:.1f}M'
                 if kerr_distance > 0:
                     ratio = distance_traveled / kerr_distance
                     if abs(ratio - 1.0) > 0.01:  # More than 1% difference
@@ -365,11 +400,17 @@ class ComprehensiveTestReportGenerator:
                                                         x['combined_summary'].get('complexity_score', float('inf'))))
         
         for result in sorted_results:
+            # Add link to trajectory visualization
+            safe_name = result["theory"].replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')
+            
             lines.extend([
                 f'            <div class="theory-detail">',
                 f'                <h3>{result["theory"]} <span class="category-{result["category"]}">({result["category"]})</span></h3>',
                 f'                <p>Combined Score: <strong>{result["combined_summary"]["success_rate"]*100:.1f}%</strong> ',
                 f'                ({result["combined_summary"]["passed"]}/{result["combined_summary"]["total"]} tests passed)</p>',
+                f'                <p><a href="../trajectory_visualizations/{safe_name}_trajectory.png" target="_blank">📊 View Trajectory Analysis</a> | ',
+                f'                <a href="../trajectory_visualizations/{safe_name}_orbit.png" target="_blank">🌐 View Orbit</a> | ',
+                f'                <button onclick="viewTrajectory(\'{result["theory"]}\')">🚀 Interactive 3D Viewer</button></p>',
                 '                <h4>Analytical Tests</h4>',
                 '                <div class="test-grid">'
             ])
@@ -487,6 +528,13 @@ class ComprehensiveTestReportGenerator:
     def _generate_footer(self) -> List[str]:
         """Generate HTML footer."""
         return [
+            '    </div>',
+            '    <!-- Trajectory Popup -->',
+            '    <div id="popup-overlay" class="popup-overlay" onclick="closeTrajectoryPopup()"></div>',
+            '    <div id="trajectory-popup" class="trajectory-popup">',
+            '        <button class="popup-close" onclick="closeTrajectoryPopup()">✕</button>',
+            '        <h2 id="trajectory-title">Trajectory Analysis</h2>',
+            '        <div id="trajectory-image-container"></div>',
             '    </div>',
             '</body>',
             '</html>'
