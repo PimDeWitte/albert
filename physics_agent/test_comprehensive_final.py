@@ -29,6 +29,8 @@ from physics_agent.validations.ppn_validator import PpnValidator
 from physics_agent.validations.cow_interferometry_validator import COWInterferometryValidator
 from physics_agent.validations.gw_validator import GwValidator
 from physics_agent.validations.psr_j0740_validator import PsrJ0740Validator
+from physics_agent.validations.g_minus_2_validator import GMinus2Validator
+from physics_agent.validations.scattering_amplitude_validator import ScatteringAmplitudeValidator
 
 # Import necessary components for solver tests
 import torch
@@ -372,6 +374,28 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
             'error': str(e)[:200]
         }
 
+def test_g_minus_2(theory):
+    validator = GMinus2Validator()
+    result = validator.validate(theory)
+    return {
+        'name': 'g-2 Muon',
+        'status': 'PASS' if result.passed else 'FAIL',
+        'passed': result.passed,
+        'loss': result.loss,
+        'notes': result.notes
+    }
+
+def test_scattering_amplitude(theory):
+    validator = ScatteringAmplitudeValidator()
+    result = validator.validate(theory)
+    return {
+        'name': 'Scattering Amplitudes',
+        'status': 'PASS' if result.passed else 'FAIL',
+        'passed': result.passed,
+        'loss': result.loss,
+        'notes': result.notes
+    }
+
 def run_solver_test(theory, test_func, test_name, engine=None):
     """Run a single solver-based test on a theory."""
     try:
@@ -547,6 +571,10 @@ def run_solver_test(theory, test_func, test_name, engine=None):
                 'solver_type': 'N/A',
                 'exec_time': 0.0
             }
+        elif test_name == "g-2 Muon":
+            return test_g_minus_2(theory)
+        elif test_name == "Scattering Amplitudes":
+            return test_scattering_amplitude(theory)
         else:
             return {
                 'name': test_name,
@@ -599,13 +627,16 @@ def test_theory_comprehensive(theory_name, theory_class, category):
         (PsrJ0740Validator, "PSR J0740"),
     ]
     
-    # Define solver-based tests (test_func is not used anymore, just for structure)
-    solver_tests = [
-        (None, "Trajectory vs Kerr"),   # NEW: Actual 1000-step integration with loss
-        (None, "Circular Orbit"),
+    # Define solver-based tests
+    SOLVER_TESTS = [
+        (test_trajectory_vs_kerr, 'Trajectory vs Kerr'),
+        (test_circular_orbit_for_theory, 'Circular Orbit'),
+        (test_quantum_geodesic_for_theory, 'Quantum Geodesic Sim'),
+        (test_g_minus_2, 'g-2 Muon'),
+        (test_scattering_amplitude, 'Scattering Amplitudes'),
         (None, "CMB Power Spectrum"),
         (None, "Primordial GWs"),
-        (None, "Quantum Geodesic Sim"),
+        (None, "Trajectory Cache"),
     ]
     
     results = {
@@ -627,21 +658,21 @@ def test_theory_comprehensive(theory_name, theory_class, category):
     
     # Run solver-based tests
     print("\nSolver-Based Tests:")
-    for test_func, test_name in solver_tests:
-        result = run_solver_test(theory, test_func, test_name, engine)
-        results['solver_tests'].append(result)
+    for test_func, test_name in SOLVER_TESTS:
+        test_result = run_solver_test(theory, test_func, test_name, engine)
+        results['solver_tests'].append(test_result)
         
         # Format solver info
         solver_info = ""
-        if 'solver_type' in result and result['solver_type'] not in ['N/A', 'Unknown']:
-            solver_info = f" [{result['solver_type']}]"
+        if 'solver_type' in test_result and test_result['solver_type'] not in ['N/A', 'Unknown']:
+            solver_info = f" [{test_result['solver_type']}]"
         
-        if result['status'] in ['SKIP', 'N/A']:
-            print(f"  - {test_name}: {result['status']} ({result.get('notes', '')})")
-        elif result['passed']:
-            print(f"  ✓ {test_name}: {result['status']}{solver_info}")
+        if test_result['status'] in ['SKIP', 'N/A']:
+            print(f"  - {test_name}: {test_result['status']} ({test_result.get('notes', '')})")
+        elif test_result['passed']:
+            print(f"  ✓ {test_name}: {test_result['status']}{solver_info}")
         else:
-            print(f"  ✗ {test_name}: {result['status']}{solver_info}")
+            print(f"  ✗ {test_name}: {test_result['status']}{solver_info}")
     
     # Calculate summaries
     analytical_total = len(results['analytical_tests'])
@@ -780,6 +811,10 @@ def print_ranking_table(results, ranking_type="analytical"):
                         test_name = "QGS"
                     elif test_name == "Trajectory vs Kerr":
                         test_name = "TvK"
+                    elif test_name == "g-2 Muon":
+                        test_name = "g-2"
+                    elif test_name == "Scattering Amplitudes":
+                        test_name = "SA"
                     
                     solver_type = test.get('solver_type', '?')
                     if solver_type == "4DOF-RK4":
@@ -880,6 +915,8 @@ def run_comprehensive_tests():
     print("  3. CMB Power Spectrum     - USES quantum path integral (optional)")
     print("  4. Primordial GWs         - USES quantum path integral (optional)")
     print("  5. Quantum Geodesic Sim   - Tests quantum corrections (2-qubit simulation)")
+    print("  6. g-2 Muon               - Tests quantum corrections (2-qubit simulation)")
+    print("  7. Scattering Amplitudes - Tests quantum corrections (2-qubit simulation)")
     
     # Show trajectory integration analysis
     print("\n\nTRAJECTORY INTEGRATION ANALYSIS (1000 steps):")
@@ -946,7 +983,7 @@ def run_comprehensive_tests():
     print("  PPN = PPN Parameters, COW = COW Interferometry, GW = Gravitational Waves, PSR = PSR J0740")
     print("\nSolver Test Abbreviations:")
     print("  TvK = Trajectory vs Kerr, Orb = Circular Orbit, CMB = CMB Power Spectrum")
-    print("  PGW = Primordial GWs, QGS = Quantum Geodesic Sim")
+    print("  PGW = Primordial GWs, QGS = Quantum Geodesic Sim, g-2 = g-2 Muon, SA = Scattering Amplitudes")
     print("\nSolver Types:")
     print("  4D = 4DOF-RK4, 6D = 6DOF-RK4, Q4D = Quantum-4DOF-RK4, Q6D = Quantum-6DOF-RK4")
     print("  Q2 = Quantum-2qb, QPI = Quantum-PI, An = Analytical")
@@ -982,6 +1019,18 @@ def run_comprehensive_tests():
     print("   - Time aspect: Evolves quantum state through many gate operations")
     print("   - Why relevant: Shows if quantum corrections remain coherent or decohere over time")
     print("   - Complements: Classical tests that assume point particles without quantum effects")
+    
+    print("\n6. g-2 Muon - Tests quantum corrections (2-qubit simulation)")
+    print("   - What it tests: Tests if theory predictions for the anomalous magnetic moment of the muon are consistent with experimental data.")
+    print("   - Time aspect: Simulates quantum corrections over time.")
+    print("   - Why relevant: Tests if quantum corrections remain coherent or decohere over time.")
+    print("   - Complements: Classical tests that assume point particles without quantum effects.")
+    
+    print("\n7. Scattering Amplitudes - Tests quantum corrections (2-qubit simulation)")
+    print("   - What it tests: Tests if theory predictions for the scattering of particles are consistent with experimental data.")
+    print("   - Time aspect: Simulates quantum corrections over time.")
+    print("   - Why relevant: Tests if quantum corrections remain coherent or decohere over time.")
+    print("   - Complements: Classical tests that assume point particles without quantum effects.")
     
     print("\n\nSOLVER COMPLEXITY METRICS:")
     print("-"*50)

@@ -429,7 +429,13 @@ class TheoryVisualizer:
             z_max = z[-1] * 1.1  # Use main trajectory's max time
         # Add extra margin to Z-axis for label visibility
         z_range = z_max - z_min
-        ax.set_zlim(z_min - z_range * 0.05, z_max + z_range * 0.1)
+        # <reason>chain: Handle case when all trajectories are at z=0 (equatorial orbits)</reason>
+        if z_range < 1e-10:
+            # All trajectories are at same z-level (e.g., equatorial orbits)
+            # Create a reasonable z-range for visibility
+            ax.set_zlim(-0.5, 0.5)
+        else:
+            ax.set_zlim(z_min - z_range * 0.05, z_max + z_range * 0.1)
         
         # <reason>chain: Always show event horizon since we center at origin
         # Draw event horizon at r = 2 (2M in geometric units)
@@ -832,8 +838,13 @@ class TheoryVisualizer:
             z_max = max(z_arr.max() for z_arr in all_z if len(z_arr) > 0 and np.isfinite(z_arr).all())
         else:
             z_min, z_max = 0, 100
-            
-        ax.set_zlim(z_min, z_max)
+        
+        # <reason>chain: Handle case when z_min equals z_max to avoid singular transformation</reason>
+        if abs(z_max - z_min) < 1e-10:
+            # All trajectories are at same z-level
+            ax.set_zlim(-0.5, 0.5)
+        else:
+            ax.set_zlim(z_min, z_max)
         
         # Draw event horizon
         u_cyl = np.linspace(0, 2 * np.pi, 100)
@@ -1110,13 +1121,19 @@ class TheoryVisualizer:
             ax.plot_surface(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.15, linewidth=0)
             
             # Add singularity
-            ax.plot([0, 0], [0, 0], [z.min(), z.max()], 'y--', linewidth=2, alpha=0.6)
+            # <reason>chain: Handle case when z has no variation</reason>
+            z_min_val = z.min()
+            z_max_val = z.max()
+            if abs(z_max_val - z_min_val) < 1e-10:
+                z_min_val = -0.5
+                z_max_val = 0.5
+            ax.plot([0, 0], [0, 0], [z_min_val, z_max_val], 'y--', linewidth=2, alpha=0.6)
             
             # Set axis limits
             max_r = max(30.0, r.max() * 1.2)
             ax.set_xlim(-max_r, max_r)
             ax.set_ylim(-max_r, max_r)
-            ax.set_zlim(z.min(), z.max())
+            ax.set_zlim(z_min_val, z_max_val)
             
             # Particle-specific title with better spacing
             particle = result.get('particle')

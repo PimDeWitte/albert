@@ -1469,7 +1469,7 @@ class TheoryEngine:
         # <reason>chain: Close progress bar and show final summary</reason>
         pbar.close()
         if verbose and show_pbar:
-            total_time = time.time() - pbar.start_time
+            total_time = time.time() - pbar.start_t
             avg_time_per_step = total_time / (i + 1) if i > 0 else 0
             print(f"  Integration completed: {i+1}/{N_STEPS} steps in {total_time:.1f}s ({avg_time_per_step*1000:.2f}ms/step)")
         

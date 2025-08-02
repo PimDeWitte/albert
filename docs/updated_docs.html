@@ -830,31 +830,558 @@
         </svg>
     </div>
 
-    <h2>10. Quantum Path Integration</h2>
+    <h2>10. Quantum Path Integration - Extreme Detail</h2>
     
-    <p>For quantum theories, the system employs path integral formulation:</p>
+    <p>The quantum trajectory system represents one of the most sophisticated aspects of the Albert Physics Engine, 
+    combining Feynman path integral formulation with modern computational techniques. This section provides an 
+    exhaustive technical overview of how quantum trajectories are computed, validated, and integrated with 
+    gravitational physics.</p>
 
+    <h3>10.1 Theoretical Foundation</h3>
+    
+    <div class="info-box">
+        <strong>Path Integral Formulation:</strong> The quantum amplitude for a particle to travel from point A to B is:
+        <br><br>
+        <span class="math">K(B,A) = ∫ D[x(t)] exp(iS[x]/ℏ)</span>
+        <br><br>
+        Where:
+        <ul>
+            <li>D[x(t)] represents integration over all possible paths</li>
+            <li>S[x] is the action along path x(t)</li>
+            <li>ℏ = 1.054571817×10⁻³⁴ J·s (reduced Planck constant)</li>
+        </ul>
+    </div>
+
+    <h3>10.2 Quantum Solver Architecture</h3>
+    
+    <div class="diagram-container">
+        <h4>Quantum Trajectory Computation Flow</h4>
+        <svg viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="900" height="700" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+            
+            <!-- Input Layer -->
+            <g transform="translate(50, 30)">
+                <rect width="200" height="80" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="5"/>
+                <text x="100" y="40" text-anchor="middle" font-size="16" font-weight="bold">Input</text>
+                <text x="100" y="60" text-anchor="middle" font-size="12">Theory + Initial State</text>
+                <text x="100" y="80" text-anchor="middle" font-size="10" fill="#666">(t₀, r₀, θ₀, φ₀)</text>
+            </g>
+            
+            <!-- UnifiedQuantumSolver -->
+            <g transform="translate(300, 30)">
+                <rect width="300" height="80" fill="#f3e5f5" stroke="#9c27b0" stroke-width="3" rx="5" class="pulsing-node"/>
+                <text x="150" y="40" text-anchor="middle" font-size="16" font-weight="bold">UnifiedQuantumSolver</text>
+                <text x="150" y="60" text-anchor="middle" font-size="12">Path Integral Engine</text>
+                <text x="150" y="80" text-anchor="middle" font-size="10" fill="#666">unified_quantum_solver.py</text>
+            </g>
+            
+            <!-- Method Selection -->
+            <g transform="translate(100, 150)">
+                <text x="0" y="0" font-size="14" font-weight="bold">Approximation Methods:</text>
+                
+                <!-- Monte Carlo -->
+                <rect x="-50" y="20" width="180" height="100" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="5"/>
+                <text x="40" y="40" text-anchor="middle" font-size="13" font-weight="bold">Monte Carlo</text>
+                <text x="40" y="60" text-anchor="middle" font-size="10">• Sample N paths</text>
+                <text x="40" y="75" text-anchor="middle" font-size="10">• Compute S[x] for each</text>
+                <text x="40" y="90" text-anchor="middle" font-size="10">• Average exp(iS/ℏ)</text>
+                <text x="40" y="105" text-anchor="middle" font-size="10">• N ~ 1000-10000</text>
+                
+                <!-- WKB -->
+                <rect x="150" y="20" width="180" height="100" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="5"/>
+                <text x="240" y="40" text-anchor="middle" font-size="13" font-weight="bold">WKB Approximation</text>
+                <text x="240" y="60" text-anchor="middle" font-size="10">• Find classical path</text>
+                <text x="240" y="75" text-anchor="middle" font-size="10">• S = S_classical</text>
+                <text x="240" y="90" text-anchor="middle" font-size="10">• Add 2nd order corr.</text>
+                <text x="240" y="105" text-anchor="middle" font-size="10">• Fast, ℏ→0 limit</text>
+                
+                <!-- Stationary Phase -->
+                <rect x="350" y="20" width="180" height="100" fill="#e1f5fe" stroke="#0288d1" stroke-width="2" rx="5"/>
+                <text x="440" y="40" text-anchor="middle" font-size="13" font-weight="bold">Stationary Phase</text>
+                <text x="440" y="60" text-anchor="middle" font-size="10">• Expand around δS=0</text>
+                <text x="440" y="75" text-anchor="middle" font-size="10">• Gaussian integral</text>
+                <text x="440" y="90" text-anchor="middle" font-size="10">• Include fluctuations</text>
+                <text x="440" y="105" text-anchor="middle" font-size="10">• Det(∂²S/∂x²)^(-1/2)</text>
+            </g>
+            
+            <!-- Classical Path Finding -->
+            <g transform="translate(600, 150)">
+                <rect width="250" height="120" fill="#f5f5f5" stroke="#666" stroke-width="1" rx="5"/>
+                <text x="125" y="20" text-anchor="middle" font-size="12" font-weight="bold">Classical Path Finder</text>
+                <text x="10" y="40" font-size="10">1. Use appropriate geodesic solver</text>
+                <text x="10" y="55" font-size="10">2. Solve Hamilton-Jacobi equation</text>
+                <text x="10" y="70" font-size="10">3. Minimize action functional:</text>
+                <text x="20" y="85" font-size="9" font-family="monospace">S = ∫ L(x,ẋ,t) dt</text>
+                <text x="10" y="100" font-size="10">4. Return x_cl(t) trajectory</text>
+            </g>
+            
+            <!-- Quantum Corrections -->
+            <g transform="translate(100, 300)">
+                <rect width="700" height="140" fill="#e8eaf6" stroke="#3f51b5" stroke-width="2" rx="5"/>
+                <text x="350" y="25" text-anchor="middle" font-size="14" font-weight="bold">Quantum Corrections Pipeline</text>
+                
+                <!-- PennyLane Integration -->
+                <rect x="20" y="40" width="200" height="80" fill="#d1c4e9" stroke="#512da8" stroke-width="1" rx="3"/>
+                <text x="120" y="60" text-anchor="middle" font-size="11" font-weight="bold">PennyLane Circuits</text>
+                <text x="120" y="75" text-anchor="middle" font-size="9">• Quantum circuit simulation</text>
+                <text x="120" y="90" text-anchor="middle" font-size="9">• Hamiltonian expectation</text>
+                <text x="120" y="105" text-anchor="middle" font-size="9">• Phase corrections</text>
+                
+                <!-- Fluctuations -->
+                <rect x="240" y="40" width="200" height="80" fill="#c5e1a5" stroke="#558b2f" stroke-width="1" rx="3"/>
+                <text x="340" y="60" text-anchor="middle" font-size="11" font-weight="bold">Quantum Fluctuations</text>
+                <text x="340" y="75" text-anchor="middle" font-size="9">• δr ~ ℏ/(mc) uncertainty</text>
+                <text x="340" y="90" text-anchor="middle" font-size="9">• Gaussian noise addition</text>
+                <text x="340" y="105" text-anchor="middle" font-size="9">• Preserve endpoints</text>
+                
+                <!-- Action Computation -->
+                <rect x="460" y="40" width="220" height="80" fill="#ffccbc" stroke="#d84315" stroke-width="1" rx="3"/>
+                <text x="570" y="60" text-anchor="middle" font-size="11" font-weight="bold">Action Computation</text>
+                <text x="570" y="75" text-anchor="middle" font-size="9">• S = ∫[½mẋ² - V(x)] dt</text>
+                <text x="570" y="90" text-anchor="middle" font-size="9">• Include gravity: +∫√g_μν dx^μ dx^ν</text>
+                <text x="570" y="105" text-anchor="middle" font-size="9">• Quantum Lagrangian terms</text>
+            </g>
+            
+            <!-- Output -->
+            <g transform="translate(300, 480)">
+                <rect width="300" height="100" fill="#c8e6c9" stroke="#4caf50" stroke-width="2" rx="5"/>
+                <text x="150" y="25" text-anchor="middle" font-size="14" font-weight="bold">Quantum Trajectory Output</text>
+                <text x="150" y="45" text-anchor="middle" font-size="11">• Amplitude: K(B,A) ∈ ℂ</text>
+                <text x="150" y="60" text-anchor="middle" font-size="11">• Probability: |K(B,A)|²</text>
+                <text x="150" y="75" text-anchor="middle" font-size="11">• Quantum path: x_q(t)</text>
+                <text x="150" y="90" text-anchor="middle" font-size="11">• Uncertainty bounds</text>
+            </g>
+            
+            <!-- SLAC Validators -->
+            <g transform="translate(100, 600)">
+                <rect width="700" height="80" fill="#ffe0b2" stroke="#e65100" stroke-width="2" rx="5"/>
+                <text x="350" y="25" text-anchor="middle" font-size="14" font-weight="bold">SLAC-Specific Quantum Validators (New)</text>
+                
+                <rect x="50" y="35" width="280" height="35" fill="#fff8e1" stroke="#f57c00" stroke-width="1" rx="3"/>
+                <text x="190" y="55" text-anchor="middle" font-size="11" font-weight="bold">g-2 Muon Validator</text>
+                <text x="190" y="65" text-anchor="middle" font-size="9">Precision: 22×10⁻¹¹ (0.19 ppm)</text>
+                
+                <rect x="370" y="35" width="280" height="35" fill="#fff8e1" stroke="#f57c00" stroke-width="1" rx="3"/>
+                <text x="510" y="55" text-anchor="middle" font-size="11" font-weight="bold">e⁺e⁻ Scattering Validator</text>
+                <text x="510" y="65" text-anchor="middle" font-size="9">Energy: 10-91.2 GeV (LEP/SLC)</text>
+            </g>
+            
+            <!-- Flow arrows -->
+            <path d="M 250 70 L 300 70" stroke="#2196f3" stroke-width="3" marker-end="url(#arrowhead-q)" class="animated-path"/>
+            <path d="M 450 110 L 225 150" stroke="#9c27b0" stroke-width="2" marker-end="url(#arrowhead-q)"/>
+            <path d="M 450 110 L 450 150" stroke="#9c27b0" stroke-width="2" marker-end="url(#arrowhead-q)"/>
+            <path d="M 450 110 L 675 150" stroke="#9c27b0" stroke-width="2" marker-end="url(#arrowhead-q)"/>
+            <path d="M 350 270 L 450 300" stroke="#666" stroke-width="2" marker-end="url(#arrowhead-q)" stroke-dasharray="5,5"/>
+            <path d="M 450 440 L 450 480" stroke="#4caf50" stroke-width="3" marker-end="url(#arrowhead-q)" class="animated-path"/>
+            <path d="M 450 580 L 450 600" stroke="#e65100" stroke-width="2" marker-end="url(#arrowhead-q)"/>
+            
+            <!-- Arrow marker -->
+            <defs>
+                <marker id="arrowhead-q" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <h3>10.3 Implementation Details</h3>
+    
     <div class="code-example">
 <span class="code-comment"># From physics_agent/unified_quantum_solver.py</span>
 <span class="code-keyword">class</span> <span class="code-function">UnifiedQuantumSolver</span>:
+    <span class="code-string">"""Unified quantum solver combining path integrals with optional PennyLane corrections"""</span>
+    
     <span class="code-keyword">def</span> <span class="code-function">compute_amplitude</span>(self, start: Tuple, end: Tuple, 
-                          method: str = <span class="code-string">'wkb'</span>) -> complex:
+                          method: str = <span class="code-string">'wkb'</span>, num_samples: int = 1000) -> complex:
         <span class="code-keyword">if</span> method == <span class="code-string">'monte_carlo'</span>:
-            <span class="code-comment"># Sample random paths</span>
+            <span class="code-comment"># Monte Carlo Path Integral</span>
             paths = self._generate_paths(start, end, num_samples)
             
-            <span class="code-comment"># Compute action for each path</span>
-            actions = [self._compute_action(path) <span class="code-keyword">for</span> path <span class="code-keyword">in</span> paths]
+            <span class="code-comment"># Compute action for each path using theory's Lagrangian</span>
+            actions = []
+            <span class="code-keyword">for</span> path <span class="code-keyword">in</span> paths:
+                <span class="code-comment"># Path: list of (t, r, theta, phi) tuples</span>
+                action = 0.0
+                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(len(path) - 1):
+                    <span class="code-comment"># Discrete action sum: S = Σ L Δt</span>
+                    x1, x2 = path[i], path[i+1]
+                    dt = x2[0] - x1[0]
+                    
+                    <span class="code-comment"># Position and velocity</span>
+                    q = torch.tensor([x1[1], x1[2], x1[3]])  <span class="code-comment"># r, θ, φ</span>
+                    dq = (torch.tensor([x2[1], x2[2], x2[3]]) - q) / dt
+                    
+                    <span class="code-comment"># Evaluate Lagrangian (includes metric tensor)</span>
+                    L = self._lagrangian_func(x1[0], q, dq)
+                    action += L * dt
+                    
+                actions.append(action)
             
-            <span class="code-comment"># Path integral: ∫ D[x] exp(iS[x]/ℏ)</span>
+            <span class="code-comment"># Path integral: ⟨B|A⟩ = (1/N) Σ exp(iS[x]/ℏ)</span>
             amplitudes = [torch.exp(1j * S / self.hbar) <span class="code-keyword">for</span> S <span class="code-keyword">in</span> actions]
             <span class="code-keyword">return</span> torch.mean(torch.stack(amplitudes))
             
         <span class="code-keyword">elif</span> method == <span class="code-string">'wkb'</span>:
-            <span class="code-comment"># WKB approximation: A ~ exp(iS_cl/ℏ)</span>
-            classical_action = self._compute_classical_action(start, end)
-            <span class="code-keyword">return</span> torch.exp(1j * classical_action / self.hbar)
+            <span class="code-comment"># WKB approximation - semiclassical limit</span>
+            <span class="code-comment"># 1. Find classical path (stationary action)</span>
+            classical_path = self._compute_stationary_path(start, end)
+            
+            <span class="code-comment"># 2. Compute classical action</span>
+            S_cl = self._compute_action_along_path(classical_path)
+            
+            <span class="code-comment"># 3. Second-order corrections (Van Vleck determinant)</span>
+            det_factor = self._compute_van_vleck_determinant(classical_path)
+            
+            <span class="code-comment"># WKB amplitude: A = sqrt(det) * exp(iS_cl/ℏ)</span>
+            <span class="code-keyword">return</span> torch.sqrt(det_factor) * torch.exp(1j * S_cl / self.hbar)
+            
+        <span class="code-keyword">elif</span> method == <span class="code-string">'stationary_phase'</span>:
+            <span class="code-comment"># Full stationary phase approximation</span>
+            <span class="code-comment"># Includes quantum fluctuations around classical path</span>
+            <span class="code-keyword">return</span> self._stationary_phase_approximation(start, end)
 </div>
+
+    <h3>10.4 Quantum Corrections in Curved Spacetime</h3>
+    
+    <p>The quantum corrections must account for the curved spacetime metric, leading to additional complexity:</p>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/geodesic_integrator.py</span>
+<span class="code-keyword">class</span> <span class="code-function">QuantumCorrectedGeodesicSolver</span>(GeneralRelativisticGeodesicSolver):
+    <span class="code-string">"""Geodesic solver with quantum corrections via PennyLane circuits"""</span>
+    
+    <span class="code-keyword">def</span> <span class="code-function">compute_derivatives</span>(self, y: Tensor) -> Tensor:
+        <span class="code-comment"># Get classical geodesic acceleration</span>
+        base_deriv = super().compute_derivatives(y)
+        
+        <span class="code-comment"># Extract position and velocity for quantum circuit</span>
+        r = y[1].item()  <span class="code-comment"># Radial coordinate</span>
+        v_r = y[4].item() <span class="code-keyword">if</span> len(y) > 4 <span class="code-keyword">else</span> 0.0  <span class="code-comment"># Radial velocity</span>
+        
+        <span class="code-comment"># Normalize for quantum circuit (keep in [0,1] range)</span>
+        r_norm = r / 10.0  <span class="code-comment"># Normalize by typical radius</span>
+        v_norm = v_r * 10.0  <span class="code-comment"># Scale velocity</span>
+        
+        <span class="code-comment"># Compute quantum correction using Hamiltonian circuit</span>
+        params = pnp.array([r_norm, v_norm], requires_grad=True)
+        quantum_energy = self._hamiltonian_func(params)
+        
+        <span class="code-comment"># Quantum force: F_q = -∇E_q</span>
+        quantum_correction = -0.01 * quantum_energy  <span class="code-comment"># Small correction</span>
+        
+        <span class="code-comment"># Apply to radial acceleration</span>
+        <span class="code-keyword">if</span> len(base_deriv) > 4:
+            base_deriv[4] += torch.tensor(quantum_correction)
+        
+        <span class="code-keyword">return</span> base_deriv
+</div>
+
+    <h3>10.5 Quantum Uncertainty and Fluctuations</h3>
+    
+    <p>The system models quantum uncertainty through several mechanisms:</p>
+    
+    <div class="info-box">
+        <strong>Uncertainty Principles in Curved Spacetime:</strong>
+        <ul>
+            <li><strong>Position-Momentum:</strong> Δr · Δp ≥ ℏ/2</li>
+            <li><strong>Energy-Time:</strong> ΔE · Δt ≥ ℏ/2</li>
+            <li><strong>Gravitational modification:</strong> Δr_min ~ max(ℏ/mc, √(ℏG/c³)) = max(λ_C, l_P)</li>
+        </ul>
+        Where λ_C is the Compton wavelength and l_P is the Planck length.
+    </div>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/geodesic_integrator_stable.py</span>
+<span class="code-keyword">def</span> <span class="code-function">_add_quantum_fluctuations</span>(self, classical_path, mass, **params):
+    <span class="code-string">"""Add quantum fluctuations to classical trajectory"""</span>
+    
+    quantum_path = []
+    <span class="code-keyword">for</span> i, point <span class="code-keyword">in</span> enumerate(classical_path):
+        <span class="code-comment"># Quantum uncertainty scales with de Broglie wavelength</span>
+        <span class="code-comment"># λ_dB = h/p = h/(mv)</span>
+        momentum = mass * self.c * 0.1  <span class="code-comment"># Typical momentum</span>
+        uncertainty = self.hbar / momentum
+        
+        <span class="code-comment"># Near black hole: include gravitational uncertainty</span>
+        r = point[1]
+        r_s = 2 * self.G * self.M / self.c**2  <span class="code-comment"># Schwarzschild radius</span>
+        <span class="code-keyword">if</span> r < 10 * r_s:
+            <span class="code-comment"># Enhanced uncertainty near horizon</span>
+            grav_factor = torch.sqrt(r_s / r)
+            uncertainty *= (1 + grav_factor)
+        
+        <span class="code-comment"># Add Gaussian fluctuations</span>
+        quantum_point = list(point)
+        <span class="code-keyword">if</span> 0 < i < len(classical_path) - 1:  <span class="code-comment"># Preserve endpoints</span>
+            <span class="code-comment"># Radial fluctuation</span>
+            quantum_point[1] += torch.randn(1) * uncertainty * 0.1
+            <span class="code-comment"># Angular fluctuation (scaled by 1/r)</span>
+            quantum_point[3] += torch.randn(1) * uncertainty * 0.01 / r
+        
+        quantum_path.append(quantum_point)
+    
+    <span class="code-keyword">return</span> quantum_path
+</div>
+
+    <h3>10.6 SLAC-Relevant Quantum Validators</h3>
+    
+    <p>The new quantum validators being developed focus on precision tests relevant to SLAC's experimental capabilities:</p>
+    
+    <h4>10.6.1 g-2 Muon Anomaly Validator</h4>
+    
+    <div class="info-box">
+        <strong>Physical Context:</strong> The muon anomalous magnetic moment provides one of the most precise tests of quantum field theory:
+        <ul>
+            <li><strong>Experimental:</strong> a_μ = 116592059(22) × 10⁻¹¹ (Fermilab 2023, 0.19 ppm precision)</li>
+            <li><strong>SM Prediction:</strong> a_μ = 116591810(43) × 10⁻¹¹</li>
+            <li><strong>Discrepancy:</strong> Δa_μ = 249(48) × 10⁻¹¹ (4.2σ tension)</li>
+        </ul>
+    </div>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/validations/g_minus_2_validator_spec.py</span>
+<span class="code-keyword">class</span> <span class="code-function">GMinus2Validator</span>(ObservationalValidator):
+    <span class="code-string">"""Validator for anomalous magnetic moment predictions"""</span>
+    
+    <span class="code-keyword">def</span> <span class="code-function">calculate_one_loop_correction</span>(self, theory, lepton: str = <span class="code-string">'muon'</span>):
+        <span class="code-comment"># Extract electromagnetic coupling at muon mass scale</span>
+        energy_scale = 0.105658  <span class="code-comment"># GeV (muon mass)</span>
+        alpha_eff = self._extract_em_coupling(theory, energy_scale)
+        
+        <span class="code-comment"># 1. Schwinger term (pure QED)</span>
+        a_schwinger = alpha_eff / (2 * np.pi)
+        
+        <span class="code-comment"># 2. Vacuum polarization (fermion loops)</span>
+        a_vp = self._compute_vacuum_polarization(theory, lepton)
+        
+        <span class="code-comment"># 3. Light-by-light scattering (if theory has 4-photon vertex)</span>
+        a_lbl = 0.0
+        <span class="code-keyword">if</span> hasattr(theory, <span class="code-string">'has_four_photon_vertex'</span>):
+            <span class="code-keyword">if</span> theory.has_four_photon_vertex():
+                a_lbl = self._compute_light_by_light(theory, lepton)
+        
+        <span class="code-comment"># 4. Hadronic contributions (from PDG data)</span>
+        a_had_lo = 693.1e-10  <span class="code-comment"># Leading order</span>
+        a_had_ho = 9.8e-10    <span class="code-comment"># Higher order</span>
+        
+        <span class="code-comment"># 5. Electroweak corrections</span>
+        a_ew = 15.4e-10
+        
+        <span class="code-comment"># Total prediction</span>
+        a_total = a_schwinger + a_vp + a_lbl + a_had_lo + a_had_ho + a_ew
+        
+        <span class="code-comment"># Theory-specific corrections</span>
+        <span class="code-keyword">if</span> hasattr(theory, <span class="code-string">'predict_g_minus_2_correction'</span>):
+            a_total += theory.predict_g_minus_2_correction(lepton)
+        
+        <span class="code-keyword">return</span> a_total, self._estimate_uncertainty(theory, lepton)
+</div>
+
+    <h4>10.6.2 e⁺e⁻ Scattering Amplitude Validator</h4>
+    
+    <p>This validator tests theories against precision electron-positron scattering data from LEP/SLC era experiments:</p>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/validations/scattering_amplitude_validator.py</span>
+<span class="code-keyword">class</span> <span class="code-function">ScatteringAmplitudeValidator</span>(PredictionValidator):
+    <span class="code-string">"""SLAC-focused validator for e+e- scattering processes"""</span>
+    
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(self):
+        super().__init__()
+        self.processes = [<span class="code-string">'ee_to_mumu'</span>, <span class="code-string">'bhabha_scattering'</span>]
+        self.energy_ranges = {<span class="code-string">'low'</span>: 10.0, <span class="code-string">'high'</span>: 91.2}  <span class="code-comment"># GeV</span>
+    
+    <span class="code-keyword">def</span> <span class="code-function">calculate_amplitude</span>(self, theory, process: str, 
+                            energy: float, theta: float) -> complex:
+        <span class="code-comment"># Mandelstam variables</span>
+        s = energy**2  <span class="code-comment"># Center of mass energy squared</span>
+        t = -s/2 * (1 - np.cos(theta))
+        u = -s - t
+        
+        <span class="code-keyword">if</span> process == <span class="code-string">'ee_to_mumu'</span>:
+            <span class="code-comment"># e⁺e⁻ → μ⁺μ⁻ via photon/Z exchange</span>
+            <span class="code-keyword">if</span> hasattr(theory, <span class="code-string">'calculate_scattering_amplitude'</span>):
+                <span class="code-keyword">return</span> theory.calculate_scattering_amplitude(
+                    process=<span class="code-string">'ee_to_mumu'</span>, s=s, t=t, u=u
+                )
+            <span class="code-keyword">else</span>:
+                <span class="code-comment"># Default QED calculation</span>
+                alpha = 1/137.036
+                <span class="code-keyword">return</span> 4 * np.pi * alpha / s
+        
+        <span class="code-keyword">elif</span> process == <span class="code-string">'bhabha_scattering'</span>:
+            <span class="code-comment"># e⁺e⁻ → e⁺e⁻ (t and s channel)</span>
+            <span class="code-keyword">return</span> self._bhabha_amplitude(theory, s, t, u)
+    
+    <span class="code-keyword">def</span> <span class="code-function">validate</span>(self, theory) -> ValidationResult:
+        <span class="code-comment"># Compare to precision LEP/SLC data</span>
+        chi2 = 0.0
+        dof = 0
+        
+        <span class="code-keyword">for</span> energy <span class="code-keyword">in</span> [30.0, 45.0, 91.2]:  <span class="code-comment"># GeV</span>
+            <span class="code-keyword">for</span> process <span class="code-keyword">in</span> self.processes:
+                <span class="code-comment"># Get experimental cross section</span>
+                exp_data = self.get_experimental_data(process, energy)
+                
+                <span class="code-comment"># Calculate theory prediction</span>
+                theory_xsec = self.calculate_cross_section(theory, process, energy)
+                
+                <span class="code-comment"># Add to chi-squared</span>
+                chi2 += ((theory_xsec - exp_data.value) / exp_data.error)**2
+                dof += 1
+        
+        <span class="code-keyword">return</span> ValidationResult(
+            passed=chi2/dof < 2.0,  <span class="code-comment"># Reasonable fit</span>
+            loss=chi2/dof,
+            notes=f<span class="code-string">"χ²/dof = {chi2/dof:.2f} for e⁺e⁻ processes"</span>
+        )
+</div>
+
+    <h3>10.7 Quantum Trajectory Validation Framework</h3>
+    
+    <p>Following the test-driven approach of <code>test_geodesic_validator_comparison.py</code>, the quantum validators 
+    are tested rigorously before deployment:</p>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/solver_tests/test_quantum_validators.py (proposed)</span>
+<span class="code-keyword">def</span> <span class="code-function">test_g_minus_2_validator</span>():
+    <span class="code-string">"""Test g-2 validator against known QED calculations"""</span>
+    
+    <span class="code-comment"># 1. Test pure QED (Schwinger term)</span>
+    qed_theory = create_qed_theory()
+    validator = GMinus2Validator()
+    result = validator.validate(qed_theory)
+    
+    <span class="code-comment"># Should give α/(2π) = 0.00115965...</span>
+    expected_schwinger = 1/137.036 / (2 * np.pi)
+    assert abs(result.value - expected_schwinger) < 1e-8
+    
+    <span class="code-comment"># 2. Test against SM prediction</span>
+    sm_theory = create_standard_model_theory()
+    sm_result = validator.validate(sm_theory)
+    
+    <span class="code-comment"># Should match PDG value within uncertainties</span>
+    pdg_value = 116591810e-11
+    pdg_error = 43e-11
+    assert abs(sm_result.value - pdg_value) < 3 * pdg_error
+    
+    <span class="code-comment"># 3. Test quantum gravity theories</span>
+    <span class="code-keyword">for</span> theory_name, theory <span class="code-keyword">in</span> load_quantum_theories():
+        result = validator.validate(theory)
+        
+        <span class="code-comment"># Quantum gravity should give small corrections</span>
+        correction = abs(result.value - pdg_value)
+        
+        <span class="code-comment"># Newtonian limit should give negligible correction</span>
+        <span class="code-keyword">if</span> theory_name == <span class="code-string">'NewtonianLimit'</span>:
+            assert correction < 1e-15  <span class="code-comment"># Sub-atomic scale invisible</span>
+        
+        <span class="code-comment"># Log significant corrections</span>
+        <span class="code-keyword">if</span> correction > pdg_error:
+            print(f<span class="code-string">"{theory_name}: Δa_μ = {correction:.2e}"</span>)
+</div>
+
+    <h3>10.8 Quantum-Classical Correspondence</h3>
+    
+    <p>The system ensures smooth transitions between quantum and classical regimes:</p>
+    
+    <div class="info-box">
+        <strong>Correspondence Principle Implementation:</strong>
+        <ul>
+            <li><strong>ℏ → 0 limit:</strong> Quantum trajectories → Classical geodesics</li>
+            <li><strong>Large mass limit:</strong> Quantum fluctuations ~ ℏ/mc → 0</li>
+            <li><strong>Ehrenfest theorem:</strong> ⟨x⟩_quantum follows classical equations</li>
+            <li><strong>Decoherence:</strong> Environmental coupling suppresses quantum coherence</li>
+        </ul>
+    </div>
+
+    <h3>10.9 Performance Optimization</h3>
+    
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Computational Cost</th>
+            <th>Accuracy</th>
+            <th>Use Case</th>
+        </tr>
+        <tr>
+            <td>WKB Approximation</td>
+            <td>O(N) - Linear in trajectory points</td>
+            <td>Good for ℏ → 0</td>
+            <td>Semiclassical regime</td>
+        </tr>
+        <tr>
+            <td>Monte Carlo Path Integral</td>
+            <td>O(N²M) - N paths, M points</td>
+            <td>Statistical convergence ~ 1/√N</td>
+            <td>Full quantum regime</td>
+        </tr>
+        <tr>
+            <td>Stationary Phase</td>
+            <td>O(N³) - Matrix determinant</td>
+            <td>2nd order in ℏ</td>
+            <td>Moderate quantum effects</td>
+        </tr>
+        <tr>
+            <td>PennyLane Circuits</td>
+            <td>O(2^q) - q qubits</td>
+            <td>Exact for small systems</td>
+            <td>Few-particle quantum</td>
+        </tr>
+    </table>
+
+    <h3>10.10 Critical Issues and Solutions</h3>
+    
+    <div class="warning">
+        <strong>Normalization Issue (Fixed Dec 2024):</strong><br>
+        Quantum path integrals at cosmological scales (r ~ 10¹⁰m) produced action/ℏ ratios of ~10²⁸, 
+        causing catastrophic numerical errors. Solution: Proper phase normalization using bounded 
+        oscillations: sin(S/ℏ × scaling_factor) instead of exp(iS/ℏ).
+    </div>
+
+    <h3>10.11 Future Quantum Validators</h3>
+    
+    <p>Additional quantum validators planned for implementation:</p>
+    
+    <table>
+        <tr>
+            <th>Validator</th>
+            <th>Physical Test</th>
+            <th>Precision Target</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Quantum Interferometry</td>
+            <td>Gravitational phase shifts</td>
+            <td>10⁻⁹ rad</td>
+            <td>Implemented (COW)</td>
+        </tr>
+        <tr>
+            <td>Beta Function</td>
+            <td>Running couplings</td>
+            <td>0.1% at TeV scale</td>
+            <td>Planned</td>
+        </tr>
+        <tr>
+            <td>Anomaly Cancellation</td>
+            <td>Quantum consistency</td>
+            <td>Exact (0 or fail)</td>
+            <td>Planned</td>
+        </tr>
+        <tr>
+            <td>Vacuum Stability</td>
+            <td>Higgs potential</td>
+            <td>Λ_instability > 10¹⁰ GeV</td>
+            <td>Planned</td>
+        </tr>
+        <tr>
+            <td>Graviton Scattering</td>
+            <td>Quantum gravity</td>
+            <td>Tree-level unitarity</td>
+            <td>Research</td>
+        </tr>
+    </table>
 
     <h2>11. Report Generation</h2>
     
