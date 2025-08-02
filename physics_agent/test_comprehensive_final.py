@@ -250,7 +250,7 @@ def test_quantum_geodesic_for_theory(theory):
         exec_time = time.time() - start_time
         return False, "NotSupported" if "Newtonian" in str(e) or "not supported" in str(e) else "Failed", exec_time, 0.0, 0
 
-def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
+def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
     """Run actual trajectory integration and compute loss vs Kerr baseline."""
     try:
         start_time = time.time()
@@ -297,9 +297,24 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
         distance_traveled = None
         kerr_distance = None
         
+        progressive_losses = None
+        
         if kerr_hist is not None and len(kerr_hist) == len(hist):
             # MSE loss on radial coordinate
             loss = torch.mean((hist[:, 1] - kerr_hist[:, 1])**2).item()
+            
+            # Calculate progressive loss metrics at 1%, 50%, and 99% of trajectory
+            n_points = len(hist)
+            indices = {
+                '1%': max(1, int(0.01 * n_points)),
+                '50%': int(0.5 * n_points),
+                '99%': int(0.99 * n_points)
+            }
+            
+            progressive_losses = {}
+            for label, idx in indices.items():
+                # Calculate MSE up to this point
+                progressive_losses[label] = torch.mean((hist[:idx, 1] - kerr_hist[:idx, 1])**2).item()
             
             # Calculate distance traveled in 3D space
             # Convert spherical to Cartesian for proper distance calculation
@@ -338,6 +353,7 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
             'solver_time': solver_time,
             'num_steps': actual_steps,
             'loss': loss,
+            'progressive_losses': progressive_losses,
             'distance_traveled': distance_traveled,
             'kerr_distance': kerr_distance,
             'trajectory_data': hist,  # Store actual trajectory data

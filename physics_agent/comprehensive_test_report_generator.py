@@ -68,7 +68,8 @@ class ComprehensiveTestReportGenerator:
             '    <script>',
             '    function viewTrajectory(theoryName) {',
             '        const cleanName = theoryName.replace(/[^a-zA-Z0-9]/g, "_");',
-            '        const viewerPath = "trajectory_viewers/" + cleanName + "_viewer.html";',
+            '        // Use multi-particle viewer for comprehensive view',
+            '        const viewerPath = "trajectory_viewers/" + cleanName + "_multi_particle_viewer.html";',
             '        window.open(viewerPath, "_blank");',
             '    }',
             '    </script>',
@@ -229,7 +230,8 @@ class ComprehensiveTestReportGenerator:
             '                    <th>Combined Score</th>',
             '                    <th>Analytical</th>',
             '                    <th>Solver (Failed Tests)</th>',
-            '                    <th>Trajectory Loss vs Kerr<br>(1000 steps)</th>',
+            '                    <th>Trajectory Loss vs Kerr<br>(10000 steps)</th>',
+            '                    <th>Loss Progression<br>(1% / 50% / 99%)</th>',
             '                    <th>Distance Traveled<br>(Theory / Kerr)</th>',
             '                    <th>Solver Compute Time</th>',
             '                    <th>Actions</th>',
@@ -245,6 +247,7 @@ class ComprehensiveTestReportGenerator:
         for i, result in enumerate(combined_sorted, 1):
             # Get trajectory loss and timing info
             trajectory_loss = None
+            progressive_losses = None
             distance_traveled = None
             kerr_distance = None
             ms_per_step = None
@@ -273,6 +276,7 @@ class ComprehensiveTestReportGenerator:
                 # Get trajectory loss and distance specifically
                 if test['name'] == 'Trajectory vs Kerr':
                     trajectory_loss = test.get('loss')
+                    progressive_losses = test.get('progressive_losses')
                     distance_traveled = test.get('distance_traveled')
                     kerr_distance = test.get('kerr_distance')
                     if 'cached' in test.get('solver_type', '').lower():
@@ -296,7 +300,11 @@ class ComprehensiveTestReportGenerator:
             
             # Format distance traveled
             if distance_traveled is not None and kerr_distance is not None:
-                distance_str = f'{distance_traveled:.1f} / {kerr_distance:.1f}'
+                # Use scientific notation for very small distances
+                if distance_traveled < 0.1 or kerr_distance < 0.1:
+                    distance_str = f'{distance_traveled:.2e} / {kerr_distance:.2e}'
+                else:
+                    distance_str = f'{distance_traveled:.1f} / {kerr_distance:.1f}'
                 if kerr_distance > 0:
                     ratio = distance_traveled / kerr_distance
                     if abs(ratio - 1.0) > 0.01:  # More than 1% difference
@@ -318,6 +326,12 @@ class ComprehensiveTestReportGenerator:
             else:
                 time_str = 'N/A'
             
+            # Format progressive losses
+            if progressive_losses:
+                prog_loss_str = f'{progressive_losses["1%"]:.2e} / {progressive_losses["50%"]:.2e} / {progressive_losses["99%"]:.2e}'
+            else:
+                prog_loss_str = 'N/A'
+            
             lines.extend([
                 '                <tr>',
                 f'                    <td class="rank">{i}</td>',
@@ -327,6 +341,7 @@ class ComprehensiveTestReportGenerator:
                 f'                    <td>{result["analytical_summary"]["passed"]}/{result["analytical_summary"]["total"]}</td>',
                 f'                    <td>{solver_str}</td>',
                 f'                    <td class="loss-value">{loss_str}</td>',
+                f'                    <td class="loss-progression">{prog_loss_str}</td>',
                 f'                    <td class="distance-info">{distance_str}</td>',
                 f'                    <td class="timing-info">{time_str}</td>',
                 f'                    <td><button class="view-trajectory-btn" onclick="viewTrajectory(\'{result["theory"]}\')">View Trajectory</button></td>',
@@ -510,18 +525,23 @@ class ComprehensiveTestReportGenerator:
                 run_dirs.sort(reverse=True)  # Get most recent
                 run_dir = os.path.join(parent_dir, run_dirs[0])
             else:
-                print("Warning: Could not find run directory for trajectory viewers")
+                # This is expected when running comprehensive tests standalone
                 run_dir = None
+        
+        # Skip viewer generation if no run directory found
+        if not run_dir:
+            print("Info: Skipping trajectory viewer generation (no run directory found - this is normal for standalone tests)")
+            return
         
         # Process each theory
         for result in results:
             theory_name = result['theory']
             clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
             
-            # Generate multi-particle viewer if we have a run directory
+            # Generate multi-particle viewer
             if run_dir:
                 try:
-                    viewer_path = os.path.join(viewers_dir, f'{clean_name}_viewer.html')
+                    viewer_path = os.path.join(viewers_dir, f'{clean_name}_multi_particle_viewer.html')
                     generate_multi_particle_viewer_from_run(
                         theory_name=theory_name,
                         run_dir=run_dir,

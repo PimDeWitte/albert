@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert Physics Engine: Complete System Architecture</title>
+    <style>
+        body {
+            font-family: 'Computer Modern', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1, h2, h3 {
+            color: #000;
+            margin-top: 30px;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+            border-bottom: 3px solid #000;
+            padding-bottom: 20px;
+        }
+        h2 {
+            font-size: 2em;
+            border-bottom: 2px solid #666;
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.5em;
+            color: #444;
+        }
+        .diagram-container {
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        .code-comment {
+            color: #75715e;
+        }
+        .code-string {
+            color: #e6db74;
+        }
+        .code-keyword {
+            color: #66d9ef;
+        }
+        .code-function {
+            color: #a6e22e;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .flow-diagram {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .math {
+            font-style: italic;
+            color: #0066cc;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .validator-table td:first-child {
+            font-family: monospace;
+            font-weight: bold;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        @keyframes flow {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -20; }
+        }
+        .animated-path {
+            stroke-dasharray: 5, 5;
+            animation: flow 1s linear infinite;
+        }
+        .pulsing-node {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌌 Albert Physics Engine: Complete System Architecture</h1>
+    
+    <div class="info-box">
+        <strong>Document Purpose:</strong> This document provides a comprehensive technical overview of the Albert Physics Engine, 
+        a sophisticated system for simulating and validating gravitational theories. Written for physicists and researchers, 
+        it explains the complete flow from command-line invocation to final results.
+    </div>
+
+    <h2>1. System Overview</h2>
+    
+    <p>The Albert Physics Engine is a high-precision computational framework for testing gravitational theories against 
+    observational data and mathematical constraints. The system employs multiple specialized solvers, a comprehensive 
+    validation pipeline, and sophisticated caching mechanisms to enable rapid theory development and testing.</p>
+
+    <div class="diagram-container">
+        <h3>System Architecture Overview</h3>
+        <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="800" height="600" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+            
+            <!-- Command Line Layer -->
+            <g transform="translate(50, 30)">
+                <rect width="700" height="60" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="5" class="pulsing-node"/>
+                <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="bold">Command Line Interface</text>
+                <text x="350" y="55" text-anchor="middle" font-size="14">albert run --steps 10000 --theory-filter quantum</text>
+            </g>
+            
+            <!-- Theory Engine Core -->
+            <g transform="translate(250, 120)">
+                <rect width="300" height="80" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="5"/>
+                <text x="150" y="40" text-anchor="middle" font-size="16" font-weight="bold">TheoryEngine Core</text>
+                <text x="150" y="60" text-anchor="middle" font-size="12">Orchestration & Control</text>
+                <text x="150" y="75" text-anchor="middle" font-size="10" fill="#666">theory_engine_core.py</text>
+            </g>
+            
+            <!-- Theory Discovery -->
+            <g transform="translate(50, 250)">
+                <rect width="150" height="60" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">Theory Loader</text>
+                <text x="75" y="50" text-anchor="middle" font-size="10" fill="#666">Dynamic Discovery</text>
+            </g>
+            
+            <!-- Particle/BH Loader -->
+            <g transform="translate(225, 250)">
+                <rect width="150" height="60" fill="#fce4ec" stroke="#e91e63" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">Particle/BH</text>
+                <text x="75" y="50" text-anchor="middle" font-size="10" fill="#666">Configuration</text>
+            </g>
+            
+            <!-- Solver Selection -->
+            <g transform="translate(400, 250)">
+                <rect width="150" height="60" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">Solver Selection</text>
+                <text x="75" y="50" text-anchor="middle" font-size="10" fill="#666">Adaptive Choice</text>
+            </g>
+            
+            <!-- Validation Pipeline -->
+            <g transform="translate(575, 250)">
+                <rect width="150" height="60" fill="#e8eaf6" stroke="#3f51b5" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">Validators</text>
+                <text x="75" y="50" text-anchor="middle" font-size="10" fill="#666">11 Active Tests</text>
+            </g>
+            
+            <!-- Solvers -->
+            <g transform="translate(100, 370)">
+                <text x="0" y="0" font-size="14" font-weight="bold" fill="#333">Solvers:</text>
+                <!-- 4D Solvers -->
+                <rect x="-50" y="20" width="140" height="40" fill="#e1f5fe" stroke="#0288d1" stroke-width="1" rx="3"/>
+                <text x="20" y="40" text-anchor="middle" font-size="11">ConservedQuantity</text>
+                <text x="20" y="52" text-anchor="middle" font-size="9" fill="#666">4D Symmetric</text>
+                
+                <rect x="-50" y="70" width="140" height="40" fill="#e1f5fe" stroke="#0288d1" stroke-width="1" rx="3"/>
+                <text x="20" y="90" text-anchor="middle" font-size="11">ChargedGeodesic</text>
+                <text x="20" y="102" text-anchor="middle" font-size="9" fill="#666">4D + EM</text>
+                
+                <rect x="-50" y="120" width="140" height="40" fill="#e1f5fe" stroke="#0288d1" stroke-width="1" rx="3"/>
+                <text x="20" y="140" text-anchor="middle" font-size="11">PhotonGeodesic</text>
+                <text x="20" y="152" text-anchor="middle" font-size="9" fill="#666">Null geodesics</text>
+            </g>
+            
+            <g transform="translate(300, 370)">
+                <!-- 6D Solvers -->
+                <rect x="-50" y="20" width="140" height="40" fill="#c8e6c9" stroke="#388e3c" stroke-width="1" rx="3"/>
+                <text x="20" y="40" text-anchor="middle" font-size="11">GeneralRelativistic</text>
+                <text x="20" y="52" text-anchor="middle" font-size="9" fill="#666">6D General</text>
+                
+                <rect x="-50" y="70" width="140" height="40" fill="#c8e6c9" stroke="#388e3c" stroke-width="1" rx="3"/>
+                <text x="20" y="90" text-anchor="middle" font-size="11">UGMGeodesic</text>
+                <text x="20" y="102" text-anchor="middle" font-size="9" fill="#666">Gauge fields</text>
+                
+                <!-- Quantum Solver -->
+                <rect x="-50" y="120" width="140" height="40" fill="#d1c4e9" stroke="#512da8" stroke-width="1" rx="3"/>
+                <text x="20" y="140" text-anchor="middle" font-size="11">QuantumPath</text>
+                <text x="20" y="152" text-anchor="middle" font-size="9" fill="#666">Path integral</text>
+            </g>
+            
+            <!-- Results -->
+            <g transform="translate(250, 480)">
+                <rect width="300" height="60" fill="#c8e6c9" stroke="#4caf50" stroke-width="2" rx="5"/>
+                <text x="150" y="30" text-anchor="middle" font-size="16" font-weight="bold">Results & Reports</text>
+                <text x="150" y="50" text-anchor="middle" font-size="12">HTML, LaTeX, Trajectories</text>
+            </g>
+            
+            <!-- Animated flow arrows -->
+            <path d="M 400 90 L 400 120" stroke="#2196f3" stroke-width="3" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 400 200 L 125 250" stroke="#ff9800" stroke-width="2" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 400 200 L 300 250" stroke="#e91e63" stroke-width="2" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 400 200 L 475 250" stroke="#9c27b0" stroke-width="2" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 400 200 L 650 250" stroke="#3f51b5" stroke-width="2" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 475 310 L 170 370" stroke="#0288d1" stroke-width="2" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 475 310 L 320 370" stroke="#388e3c" stroke-width="2" marker-end="url(#arrowhead)" class="animated-path"/>
+            <path d="M 400 540 L 400 480" stroke="#4caf50" stroke-width="3" marker-end="url(#arrowhead)" class="animated-path"/>
+            
+            <!-- Arrow marker definition -->
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <h2>2. Command Line Entry Point</h2>
+    
+    <p>The system begins with the command line interface, which provides multiple operation modes:</p>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/__main__.py</span>
+<span class="code-keyword">def</span> <span class="code-function">main</span>():
+    <span class="code-string">"""Main entry point for albert CLI"""</span>
+    parser = argparse.ArgumentParser(
+        prog=<span class="code-string">'albert'</span>,
+        description=<span class="code-string">'🌌 Albert: Physics at The Speed of AI'</span>
+    )
+    
+    <span class="code-comment"># Available commands:</span>
+    <span class="code-comment"># - run: Execute gravitational theory simulations</span>
+    <span class="code-comment"># - test: Run environment/solver tests</span>
+    <span class="code-comment"># - validate: Test specific theory</span>
+    <span class="code-comment"># - discover: AI-powered theory generation</span>
+    <span class="code-comment"># - benchmark: Test AI models</span>
+</div>
+
+    <p>The most common entry point is <code>albert run</code>, which accepts numerous parameters:</p>
+
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>--steps</code></td>
+            <td>10000</td>
+            <td>Number of integration steps</td>
+        </tr>
+        <tr>
+            <td><code>--r0</code></td>
+            <td>40.0</td>
+            <td>Initial radius (Schwarzschild radii)</td>
+        </tr>
+        <tr>
+            <td><code>--theory-filter</code></td>
+            <td>None</td>
+            <td>Filter theories by pattern</td>
+        </tr>
+        <tr>
+            <td><code>--quantum-field-content</code></td>
+            <td>'all'</td>
+            <td>Particle content: standard_model, all, none</td>
+        </tr>
+        <tr>
+            <td><code>--black-hole-preset</code></td>
+            <td>'primordial_mini'</td>
+            <td>Black hole configuration</td>
+        </tr>
+    </table>
+
+    <h2>3. Theory Discovery and Loading</h2>
+    
+    <p>The <code>TheoryLoader</code> dynamically discovers gravitational theories from the file system:</p>
+
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/theory_loader.py</span>
+<span class="code-keyword">def</span> <span class="code-function">discover_theories</span>(self) -> Dict[str, Dict[str, Any]]:
+    <span class="code-string">"""Discover all available theories in the theories directory."""</span>
+    theories = {}
+    
+    <span class="code-comment"># Walk through theories/ directory structure</span>
+    <span class="code-keyword">for</span> root, dirs, files <span class="code-keyword">in</span> os.walk(self.theories_base_dir):
+        <span class="code-comment"># Look for theory.py files</span>
+        <span class="code-keyword">if</span> <span class="code-string">'theory.py'</span> <span class="code-keyword">in</span> files:
+            theory_classes = self._load_theory_classes(theory_path)
+            
+            <span class="code-keyword">for</span> class_name, theory_class <span class="code-keyword">in</span> theory_classes.items():
+                <span class="code-comment"># Extract metadata</span>
+                category = getattr(theory_class, <span class="code-string">'category'</span>, <span class="code-string">'unknown'</span>)
+                sweep = getattr(theory_class, <span class="code-string">'sweep'</span>, None)
+</div>
+
+    <div class="info-box">
+        <strong>Theory Structure:</strong> Each theory must inherit from <code>GravitationalTheory</code> and implement:
+        <ul>
+            <li><code>compute_metric_components()</code> - Returns g<sub>tt</sub>, g<sub>rr</sub>, g<sub>φφ</sub></li>
+            <li><code>compute_classical_lagrangian()</code> - Classical action</li>
+            <li><code>compute_quantum_lagrangian()</code> - Quantum corrections (optional)</li>
+        </ul>
+    </div>
+
+    <h2>4. Particle and Black Hole Configuration</h2>
+    
+    <p>The system loads particle and black hole configurations from JSON files:</p>
+
+    <div class="diagram-container">
+        <h3>Particle/Black Hole Loading Flow</h3>
+        <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- JSON Files -->
+            <g transform="translate(50, 50)">
+                <rect width="150" height="60" fill="#fff9c4" stroke="#f57f17" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">JSON Files</text>
+                <text x="75" y="50" text-anchor="middle" font-size="11">particles/defaults/</text>
+                <text x="75" y="70" text-anchor="middle" font-size="11">black_holes/defaults/</text>
+            </g>
+            
+            <!-- Loader Classes -->
+            <g transform="translate(275, 50)">
+                <rect width="150" height="60" fill="#e1bee7" stroke="#6a1b9a" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">Loaders</text>
+                <text x="75" y="50" text-anchor="middle" font-size="11">ParticleLoader</text>
+                <text x="75" y="70" text-anchor="middle" font-size="11">BlackHoleLoader</text>
+            </g>
+            
+            <!-- Objects -->
+            <g transform="translate(500, 50)">
+                <rect width="150" height="60" fill="#c5e1a5" stroke="#558b2f" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="14" font-weight="bold">Objects</text>
+                <text x="75" y="50" text-anchor="middle" font-size="11">Particle instances</text>
+                <text x="75" y="70" text-anchor="middle" font-size="11">BlackHole instances</text>
+            </g>
+            
+            <!-- Example Particles -->
+            <g transform="translate(50, 150)">
+                <text x="0" y="0" font-size="12" font-weight="bold">Example Particles:</text>
+                <rect x="0" y="10" width="120" height="30" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1" rx="3"/>
+                <text x="60" y="30" text-anchor="middle" font-size="10">electron.json</text>
+                
+                <rect x="0" y="50" width="120" height="30" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1" rx="3"/>
+                <text x="60" y="70" text-anchor="middle" font-size="10">proton.json</text>
+                
+                <rect x="0" y="90" width="120" height="30" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1" rx="3"/>
+                <text x="60" y="110" text-anchor="middle" font-size="10">photon.json</text>
+            </g>
+            
+            <!-- Example Black Holes -->
+            <g transform="translate(50, 280)">
+                <text x="0" y="0" font-size="12" font-weight="bold">Example Black Holes:</text>
+                <rect x="0" y="10" width="120" height="30" fill="#e3f2fd" stroke="#1565c0" stroke-width="1" rx="3"/>
+                <text x="60" y="30" text-anchor="middle" font-size="10">stellar_mass.json</text>
+                
+                <rect x="0" y="50" width="120" height="30" fill="#e3f2fd" stroke="#1565c0" stroke-width="1" rx="3"/>
+                <text x="60" y="70" text-anchor="middle" font-size="10">primordial_mini.json</text>
+            </g>
+            
+            <!-- JSON Structure -->
+            <g transform="translate(275, 150)">
+                <rect width="375" height="180" fill="#f5f5f5" stroke="#999" stroke-width="1" rx="5"/>
+                <text x="10" y="20" font-family="monospace" font-size="10">
+                    <tspan x="10" dy="0">{</tspan>
+                    <tspan x="20" dy="15">"name": "electron",</tspan>
+                    <tspan x="20" dy="15">"particle_type": "lepton",</tspan>
+                    <tspan x="20" dy="15">"mass": 9.1093837015e-31,</tspan>
+                    <tspan x="20" dy="15">"charge": -1.602176634e-19,</tspan>
+                    <tspan x="20" dy="15">"spin": 0.5,</tspan>
+                    <tspan x="20" dy="15">"color": "#00ff00",</tspan>
+                    <tspan x="20" dy="15">"orbital_parameters": {</tspan>
+                    <tspan x="30" dy="15">"angular_velocity_factor": 1.0,</tspan>
+                    <tspan x="30" dy="15">"radial_velocity_factor": 0.0</tspan>
+                    <tspan x="20" dy="15">}</tspan>
+                    <tspan x="10" dy="15">}</tspan>
+                </text>
+            </g>
+            
+            <!-- Flow arrows -->
+            <path d="M 200 80 L 275 80" stroke="#666" stroke-width="2" marker-end="url(#arrowhead2)" class="animated-path"/>
+            <path d="M 425 80 L 500 80" stroke="#666" stroke-width="2" marker-end="url(#arrowhead2)" class="animated-path"/>
+            
+            <defs>
+                <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <h2>5. Solver Architecture</h2>
+    
+    <p>The solver selection is adaptive, choosing the most efficient solver based on spacetime symmetries and particle properties:</p>
+
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/theory_engine_core.py:_run_trajectory_geometric()</span>
+<span class="code-keyword">if</span> theory.has_conserved_quantities:
+    <span class="code-comment"># Use 4D solver for symmetric spacetimes (Schwarzschild, Kerr)</span>
+    solver = ConservedQuantityGeodesicSolver(theory, M, c, G)
+    <span class="code-comment"># State: [t, r, φ, dr/dτ] - exploits E, Lz conservation</span>
+<span class="code-keyword">elif</span> particle.charge != 0:
+    <span class="code-comment"># Charged particle solver</span>
+    solver = ChargedParticleGeodesicSolver(theory, M, c, G, q=particle.charge)
+    <span class="code-comment"># Adds Lorentz force: dp^μ/dτ = q F^μν u_ν</span>
+<span class="code-keyword">elif</span> particle.mass == 0:
+    <span class="code-comment"># Photon solver for null geodesics</span>
+    solver = PhotonGeodesicSolver(theory, M, c, G)
+    <span class="code-comment"># Uses impact parameter b = L/E</span>
+<span class="code-keyword">else</span>:
+    <span class="code-comment"># General 6D solver for arbitrary metrics</span>
+    solver = GeneralRelativisticGeodesicSolver(theory, M, c, G)
+    <span class="code-comment"># Full phase space: [t, r, φ, u^t, u^r, u^φ]</span>
+</div>
+
+    <h3>5.1 Solver Comparison</h3>
+    
+    <table class="validator-table">
+        <tr>
+            <th>Solver</th>
+            <th>State Dimensions</th>
+            <th>Use Case</th>
+            <th>Performance</th>
+        </tr>
+        <tr>
+            <td>ConservedQuantityGeodesicSolver</td>
+            <td>4D: [t, r, φ, dr/dτ]</td>
+            <td>Symmetric spacetimes</td>
+            <td>~3-5x faster</td>
+        </tr>
+        <tr>
+            <td>GeneralRelativisticGeodesicSolver</td>
+            <td>6D: [t, r, φ, u<sup>t</sup>, u<sup>r</sup>, u<sup>φ</sup>]</td>
+            <td>General metrics</td>
+            <td>Baseline</td>
+        </tr>
+        <tr>
+            <td>PhotonGeodesicSolver</td>
+            <td>4D with b = L/E</td>
+            <td>Massless particles</td>
+            <td>Optimized</td>
+        </tr>
+        <tr>
+            <td>ChargedParticleGeodesicSolver</td>
+            <td>6D + EM forces</td>
+            <td>Charged particles</td>
+            <td>~1.5x slower</td>
+        </tr>
+        <tr>
+            <td>QuantumPathIntegrator</td>
+            <td>Path integral</td>
+            <td>Quantum theories</td>
+            <td>~100x slower</td>
+        </tr>
+    </table>
+
+    <h3>5.2 Geodesic Equation Implementation</h3>
+    
+    <p>The core geodesic equation solved by all classical solvers:</p>
+    
+    <div class="info-box">
+        <strong>Geodesic Equation:</strong> <span class="math">d²x<sup>μ</sup>/dτ² = -Γ<sup>μ</sup><sub>νρ</sub> (dx<sup>ν</sup>/dτ)(dx<sup>ρ</sup>/dτ)</span>
+        <br><br>
+        Where Γ<sup>μ</sup><sub>νρ</sub> are the Christoffel symbols:
+        <span class="math">Γ<sup>μ</sup><sub>νρ</sub> = ½g<sup>μσ</sup>(∂<sub>ν</sub>g<sub>σρ</sub> + ∂<sub>ρ</sub>g<sub>σν</sub> - ∂<sub>σ</sub>g<sub>νρ</sub>)</span>
+    </div>
+
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/geodesic_integrator.py</span>
+<span class="code-keyword">def</span> <span class="code-function">_compute_christoffel_symbols_impl</span>(g: Tensor, coords: Tensor) -> Tensor:
+    <span class="code-string">"""Compute Christoffel symbols using automatic differentiation"""</span>
+    g_inv = torch.inverse(g)
+    
+    <span class="code-comment"># Compute metric derivatives</span>
+    g_derivs = []
+    <span class="code-keyword">for</span> mu <span class="code-keyword">in</span> range(4):
+        grad_outputs = torch.zeros_like(g).flatten()
+        grad_outputs[mu] = 1.0
+        g_mu = torch.autograd.grad(g.flatten(), coords, 
+                                   grad_outputs=grad_outputs,
+                                   create_graph=True)[0]
+        g_derivs.append(g_mu)
+    
+    <span class="code-comment"># Γ^μ_νρ = ½g^μσ(∂_ν g_σρ + ∂_ρ g_σν - ∂_σ g_νρ)</span>
+    Gamma = torch.zeros(4, 4, 4, dtype=g.dtype)
+    <span class="code-keyword">for</span> mu <span class="code-keyword">in</span> range(4):
+        <span class="code-keyword">for</span> nu <span class="code-keyword">in</span> range(4):
+            <span class="code-keyword">for</span> rho <span class="code-keyword">in</span> range(4):
+                <span class="code-keyword">for</span> sigma <span class="code-keyword">in</span> range(4):
+                    Gamma[mu, nu, rho] += 0.5 * g_inv[mu, sigma] * (
+                        g_derivs[nu][sigma, rho] + 
+                        g_derivs[rho][sigma, nu] - 
+                        g_derivs[sigma][nu, rho]
+                    )
+    <span class="code-keyword">return</span> Gamma
+</div>
+
+    <h2>6. Validation Pipeline</h2>
+    
+    <p>The validation system tests theories against known physics through 11 active validators:</p>
+
+    <div class="diagram-container">
+        <h3>Validation Pipeline Flow</h3>
+        <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- Trajectory Data -->
+            <g transform="translate(50, 50)">
+                <rect width="150" height="60" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="5"/>
+                <text x="75" y="35" text-anchor="middle" font-size="14" font-weight="bold">Trajectory Data</text>
+                <text x="75" y="55" text-anchor="middle" font-size="11">hist: [N, 3]</text>
+            </g>
+            
+            <!-- Phase 1: Constraints -->
+            <g transform="translate(250, 30)">
+                <rect width="200" height="100" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="5"/>
+                <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold">Phase 1: Constraints</text>
+                <text x="100" y="45" text-anchor="middle" font-size="11">• Conservation</text>
+                <text x="100" y="60" text-anchor="middle" font-size="11">• Metric Properties</text>
+                <text x="100" y="75" text-anchor="middle" font-size="11">• Mathematical Tests</text>
+                <text x="100" y="95" text-anchor="middle" font-size="10" fill="#666">Always Run</text>
+            </g>
+            
+            <!-- Phase 2: Observational -->
+            <g transform="translate(500, 30)">
+                <rect width="200" height="100" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="5"/>
+                <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold">Phase 2: Observational</text>
+                <text x="100" y="45" text-anchor="middle" font-size="11">• Mercury Precession</text>
+                <text x="100" y="60" text-anchor="middle" font-size="11">• Light Deflection</text>
+                <text x="100" y="75" text-anchor="middle" font-size="11">• GW, PPN, etc.</text>
+                <text x="100" y="95" text-anchor="middle" font-size="10" fill="#666">If Phase 1 Passes</text>
+            </g>
+            
+            <!-- Phase 3: Predictions -->
+            <g transform="translate(375, 180)">
+                <rect width="200" height="100" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="5"/>
+                <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold">Phase 3: Predictions</text>
+                <text x="100" y="45" text-anchor="middle" font-size="11">• CMB Power Spectrum</text>
+                <text x="100" y="60" text-anchor="middle" font-size="11">• Primordial GWs</text>
+                <text x="100" y="75" text-anchor="middle" font-size="11">• Novel Physics</text>
+                <text x="100" y="95" text-anchor="middle" font-size="10" fill="#666">Finalists Only</text>
+            </g>
+            
+            <!-- Validator Testing -->
+            <g transform="translate(250, 330)">
+                <rect width="300" height="120" fill="#e8eaf6" stroke="#3f51b5" stroke-width="2" rx="5"/>
+                <text x="150" y="25" text-anchor="middle" font-size="14" font-weight="bold">Validator Testing</text>
+                <text x="150" y="45" text-anchor="middle" font-size="11" font-family="monospace">test_geodesic_validator_comparison.py</text>
+                <text x="150" y="65" text-anchor="middle" font-size="10">• Benchmark against analytics</text>
+                <text x="150" y="80" text-anchor="middle" font-size="10">• Test circular dependencies</text>
+                <text x="150" y="95" text-anchor="middle" font-size="10">• Performance profiling</text>
+                <text x="150" y="110" text-anchor="middle" font-size="10">• Cache effectiveness</text>
+            </g>
+            
+            <!-- Flow arrows -->
+            <path d="M 200 80 L 250 80" stroke="#666" stroke-width="2" marker-end="url(#arrowhead3)"/>
+            <path d="M 450 80 L 500 80" stroke="#666" stroke-width="2" marker-end="url(#arrowhead3)"/>
+            <path d="M 600 130 L 475 180" stroke="#666" stroke-width="2" marker-end="url(#arrowhead3)"/>
+            <path d="M 475 280 L 400 330" stroke="#3f51b5" stroke-width="2" stroke-dasharray="5,5"/>
+            
+            <defs>
+                <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <h3>6.1 Active Validators</h3>
+    
+    <table class="validator-table">
+        <tr>
+            <th>Validator</th>
+            <th>Type</th>
+            <th>Test</th>
+            <th>Tolerance</th>
+        </tr>
+        <tr>
+            <td>ConservationValidator</td>
+            <td>Constraint</td>
+            <td>E, L<sub>z</sub> conservation</td>
+            <td>10<sup>-10</sup></td>
+        </tr>
+        <tr>
+            <td>MetricPropertiesValidator</td>
+            <td>Constraint</td>
+            <td>Signature, asymptotic flatness</td>
+            <td>10<sup>-10</sup></td>
+        </tr>
+        <tr>
+            <td>MercuryPrecessionValidator</td>
+            <td>Observational</td>
+            <td>43.98"/century</td>
+            <td>0.04"</td>
+        </tr>
+        <tr>
+            <td>LightDeflectionValidator</td>
+            <td>Observational</td>
+            <td>1.75" at solar limb</td>
+            <td>10<sup>-3</sup>"</td>
+        </tr>
+        <tr>
+            <td>PpnValidator</td>
+            <td>Observational</td>
+            <td>γ = 1, β = 1</td>
+            <td>10<sup>-5</sup></td>
+        </tr>
+        <tr>
+            <td>PhotonSphereValidator</td>
+            <td>Observational</td>
+            <td>r<sub>ph</sub> = 3GM/c²</td>
+            <td>10<sup>-10</sup></td>
+        </tr>
+        <tr>
+            <td>GravitationalWaveValidator</td>
+            <td>Observational</td>
+            <td>GW150914 waveform</td>
+            <td>10<sup>-3</sup></td>
+        </tr>
+        <tr>
+            <td>COWInterferometryValidator</td>
+            <td>Quantum</td>
+            <td>Neutron phase shift</td>
+            <td>10<sup>-8</sup></td>
+        </tr>
+        <tr>
+            <td>PSRShapiroDelayValidator</td>
+            <td>Observational</td>
+            <td>PSR J0740+6620</td>
+            <td>1.46 μs</td>
+        </tr>
+        <tr>
+            <td>CMBPowerSpectrumValidator</td>
+            <td>Prediction</td>
+            <td>Planck 2018 anomalies</td>
+            <td>χ² test</td>
+        </tr>
+        <tr>
+            <td>PrimordialGWValidator</td>
+            <td>Prediction</td>
+            <td>r < 0.036 (BICEP)</td>
+            <td>95% CL</td>
+        </tr>
+    </table>
+
+    <h3>6.2 Validator Implementation Example</h3>
+    
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/validations/mercury_precession_validator.py</span>
+<span class="code-keyword">class</span> <span class="code-function">MercuryPrecessionValidator</span>(BaseValidation):
+    <span class="code-keyword">def</span> <span class="code-function">validate</span>(self, theory, trajectory_data: Dict, 
+                   initial_conditions: Dict) -> Dict:
+        <span class="code-comment"># Extract trajectory</span>
+        hist = trajectory_data[<span class="code-string">'hist'</span>]
+        
+        <span class="code-comment"># Find perihelion points</span>
+        r_values = hist[:, 1]
+        perihelion_indices = self._find_local_minima(r_values)
+        
+        <span class="code-comment"># Calculate precession per orbit</span>
+        phi_values = hist[perihelion_indices, 2]
+        precession_per_orbit = torch.diff(phi_values) - 2*torch.pi
+        
+        <span class="code-comment"># Convert to arcseconds per century</span>
+        orbits_per_century = 415.2  <span class="code-comment"># Mercury orbital frequency</span>
+        precession_century = precession_per_orbit.mean() * orbits_per_century
+        precession_arcsec = precession_century * 206265  <span class="code-comment"># rad to arcsec</span>
+        
+        <span class="code-comment"># Compare to observed: 43.98 ± 0.04 arcsec/century</span>
+        observed = 43.98
+        error = abs(precession_arcsec - observed)
+        
+        <span class="code-keyword">return</span> {
+            <span class="code-string">'loss'</span>: error / 0.04,  <span class="code-comment"># Normalized by uncertainty</span>
+            <span class="code-string">'precession_arcsec'</span>: float(precession_arcsec),
+            <span class="code-string">'passed'</span>: error < 0.04
+        }
+</div>
+
+    <h2>7. Validator Testing Framework</h2>
+    
+    <p>Before validators can be used in production, they must pass rigorous testing to ensure they don't have circular dependencies with the solvers:</p>
+
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/solver_tests/test_geodesic_validator_comparison.py</span>
+<span class="code-function">@benchmark_test</span>(<span class="code-string">"Mercury Precession"</span>)
+<span class="code-keyword">def</span> <span class="code-function">test_mercury_comparison</span>():
+    <span class="code-string">"""Test Mercury precession calculation against analytic result"""</span>
+    
+    <span class="code-comment"># 1. Compute using geodesic solver</span>
+    solver_result = compute_mercury_precession_geodesic()
+    
+    <span class="code-comment"># 2. Compute analytically (no solver dependency)</span>
+    analytic_result = compute_mercury_precession_analytic()
+    
+    <span class="code-comment"># 3. Run validator</span>
+    validator = MercuryPrecessionValidator()
+    validator_result = validator.validate(theory, trajectory_data, {})
+    
+    <span class="code-comment"># 4. Ensure consistency</span>
+    assert abs(solver_result - analytic_result) < 1e-6
+    assert abs(validator_result[<span class="code-string">'precession_arcsec'</span>] - 43.98) < 0.04
+    
+    <span class="code-comment"># 5. Performance benchmark</span>
+    print(f<span class="code-string">"Solver time: {solver_time:.3f}s"</span>)
+    print(f<span class="code-string">"Validator overhead: {validator_time:.3f}s"</span>)
+</div>
+
+    <div class="warning">
+        <strong>Critical:</strong> Validators must not depend on the correctness of the solvers they are testing. 
+        This is why <code>test_geodesic_validator_comparison.py</code> implements independent analytic calculations 
+        to verify both solver and validator results.
+    </div>
+
+    <h2>8. Caching System</h2>
+    
+    <p>The engine implements sophisticated trajectory caching to avoid redundant calculations:</p>
+
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/theory_engine_core.py</span>
+<span class="code-keyword">def</span> <span class="code-function">get_trajectory_cache_path</span>(self, theory_name: str, r0: Tensor, 
+                                n_steps: int, dtau: Tensor, **kwargs) -> str:
+    <span class="code-comment"># Generate unique hash for trajectory parameters</span>
+    cache_key = {
+        <span class="code-string">'theory'</span>: theory_name,
+        <span class="code-string">'r0'</span>: float(r0),
+        <span class="code-string">'n_steps'</span>: n_steps,
+        <span class="code-string">'dtau'</span>: float(dtau),
+        <span class="code-string">'particle'</span>: kwargs.get(<span class="code-string">'particle_name'</span>, <span class="code-string">'default'</span>),
+        <span class="code-string">'black_hole'</span>: self.black_hole_preset
+    }
+    
+    <span class="code-comment"># Hash to create filename</span>
+    cache_hash = hashlib.md5(str(cache_key).encode()).hexdigest()
+    <span class="code-keyword">return</span> f<span class="code-string">"cache/trajectories/{theory_name}_{cache_hash}.pt"</span>
+</div>
+
+    <h2>9. Multi-Particle Simulation</h2>
+    
+    <p>The system can simulate multiple particles in parallel:</p>
+
+    <div class="diagram-container">
+        <h3>Multi-Particle Execution Flow</h3>
+        <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Theory -->
+            <g transform="translate(300, 30)">
+                <rect width="100" height="50" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="5"/>
+                <text x="50" y="30" text-anchor="middle" font-size="14" font-weight="bold">Theory</text>
+            </g>
+            
+            <!-- Particle List -->
+            <g transform="translate(50, 120)">
+                <rect width="150" height="80" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="5"/>
+                <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold">Particle List</text>
+                <text x="75" y="45" text-anchor="middle" font-size="10">• electron</text>
+                <text x="75" y="60" text-anchor="middle" font-size="10">• proton</text>
+                <text x="75" y="75" text-anchor="middle" font-size="10">• photon</text>
+            </g>
+            
+            <!-- Parallel Execution -->
+            <g transform="translate(275, 100)">
+                <rect width="150" height="120" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="5"/>
+                <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold">Parallel Execution</text>
+                <text x="75" y="45" text-anchor="middle" font-size="10">ThreadPoolExecutor</text>
+                <text x="75" y="65" text-anchor="middle" font-size="10">max_workers = 8</text>
+                <text x="75" y="85" text-anchor="middle" font-size="10">Progress bars</text>
+                <text x="75" y="105" text-anchor="middle" font-size="10">Cache checks</text>
+            </g>
+            
+            <!-- Results -->
+            <g transform="translate(500, 120)">
+                <rect width="150" height="80" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="5"/>
+                <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold">Results Dict</text>
+                <text x="75" y="45" text-anchor="middle" font-size="10">trajectories[particle]</text>
+                <text x="75" y="60" text-anchor="middle" font-size="10">validations[particle]</text>
+                <text x="75" y="75" text-anchor="middle" font-size="10">timings[particle]</text>
+            </g>
+            
+            <!-- Visualization -->
+            <g transform="translate(275, 280)">
+                <rect width="150" height="80" fill="#e1bee7" stroke="#6a1b9a" stroke-width="2" rx="5"/>
+                <text x="75" y="30" text-anchor="middle" font-size="12" font-weight="bold">Visualization</text>
+                <text x="75" y="50" text-anchor="middle" font-size="10">Multi-particle viewer</text>
+                <text x="75" y="70" text-anchor="middle" font-size="10">Interactive HTML</text>
+            </g>
+            
+            <!-- Flow arrows -->
+            <path d="M 350 80 L 125 120" stroke="#666" stroke-width="2" marker-end="url(#arrowhead4)"/>
+            <path d="M 200 160 L 275 160" stroke="#666" stroke-width="2" marker-end="url(#arrowhead4)"/>
+            <path d="M 425 160 L 500 160" stroke="#666" stroke-width="2" marker-end="url(#arrowhead4)"/>
+            <path d="M 350 220 L 350 280" stroke="#666" stroke-width="2" marker-end="url(#arrowhead4)"/>
+            
+            <defs>
+                <marker id="arrowhead4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <h2>10. Quantum Path Integration</h2>
+    
+    <p>For quantum theories, the system employs path integral formulation:</p>
+
+    <div class="code-example">
+<span class="code-comment"># From physics_agent/unified_quantum_solver.py</span>
+<span class="code-keyword">class</span> <span class="code-function">UnifiedQuantumSolver</span>:
+    <span class="code-keyword">def</span> <span class="code-function">compute_amplitude</span>(self, start: Tuple, end: Tuple, 
+                          method: str = <span class="code-string">'wkb'</span>) -> complex:
+        <span class="code-keyword">if</span> method == <span class="code-string">'monte_carlo'</span>:
+            <span class="code-comment"># Sample random paths</span>
+            paths = self._generate_paths(start, end, num_samples)
+            
+            <span class="code-comment"># Compute action for each path</span>
+            actions = [self._compute_action(path) <span class="code-keyword">for</span> path <span class="code-keyword">in</span> paths]
+            
+            <span class="code-comment"># Path integral: ∫ D[x] exp(iS[x]/ℏ)</span>
+            amplitudes = [torch.exp(1j * S / self.hbar) <span class="code-keyword">for</span> S <span class="code-keyword">in</span> actions]
+            <span class="code-keyword">return</span> torch.mean(torch.stack(amplitudes))
+            
+        <span class="code-keyword">elif</span> method == <span class="code-string">'wkb'</span>:
+            <span class="code-comment"># WKB approximation: A ~ exp(iS_cl/ℏ)</span>
+            classical_action = self._compute_classical_action(start, end)
+            <span class="code-keyword">return</span> torch.exp(1j * classical_action / self.hbar)
+</div>
+
+    <h2>11. Report Generation</h2>
+    
+    <p>The system generates comprehensive reports in multiple formats:</p>
+
+    <table>
+        <tr>
+            <th>Report Type</th>
+            <th>Format</th>
+            <th>Content</th>
+        </tr>
+        <tr>
+            <td>Leaderboard</td>
+            <td>HTML</td>
+            <td>Theory rankings, scores, pass/fail status</td>
+        </tr>
+        <tr>
+            <td>Trajectory Viewers</td>
+            <td>Interactive HTML</td>
+            <td>3D visualizations with Three.js</td>
+        </tr>
+        <tr>
+            <td>Validation Reports</td>
+            <td>HTML/LaTeX</td>
+            <td>Detailed test results, plots, metrics</td>
+        </tr>
+        <tr>
+            <td>Scientific Papers</td>
+            <td>LaTeX</td>
+            <td>Publication-ready articles</td>
+        </tr>
+    </table>
+
+    <h2>12. Complete Execution Flow</h2>
+    
+    <p>Here's the complete flow from command line to results:</p>
+
+    <div class="code-example">
+<span class="code-comment"># User executes:</span>
+$ albert run --steps 10000 --theory-filter quantum --quantum-field-content standard_model
+
+<span class="code-comment"># 1. CLI parsing (__main__.py)</span>
+<span class="code-comment"># 2. Environment tests (optional with --test)</span>
+<span class="code-comment"># 3. TheoryEngine initialization</span>
+engine = TheoryEngine(
+    device=<span class="code-string">'cuda'</span>,
+    dtype=torch.float64,
+    quantum_field_content=<span class="code-string">'standard_model'</span>
+)
+
+<span class="code-comment"># 4. Theory discovery</span>
+theories = engine.discover_theories()  <span class="code-comment"># Finds all theory.py files</span>
+
+<span class="code-comment"># 5. For each theory:</span>
+<span class="code-keyword">for</span> theory_name, theory <span class="code-keyword">in</span> theories.items():
+    <span class="code-comment"># 6. Multi-particle trajectories</span>
+    results = engine.run_multi_particle_trajectories(
+        model=theory,
+        r0_si=r0_meters,
+        N_STEPS=10000,
+        DTau_si=dtau_seconds
+    )
+    
+    <span class="code-comment"># 7. Validation pipeline</span>
+    <span class="code-keyword">for</span> particle, trajectory <span class="code-keyword">in</span> results[<span class="code-string">'trajectories'</span>].items():
+        validations = engine.run_all_validations(
+            theory=theory,
+            hist=trajectory[<span class="code-string">'hist'</span>],
+            y0_general=trajectory[<span class="code-string">'y0'</span>]
+        )
+    
+    <span class="code-comment"># 8. Report generation</span>
+    generate_leaderboard(run_dir)
+    generate_trajectory_viewers(results)
+    
+<span class="code-comment"># 9. Phase 3: Prediction validators on finalists</span>
+run_predictions_on_finalists(engine, run_dir, args)
+</div>
+
+    <h2>13. Performance Considerations</h2>
+    
+    <div class="info-box">
+        <strong>Key Performance Features:</strong>
+        <ul>
+            <li><strong>Adaptive Solver Selection:</strong> 4D solvers are ~3-5x faster than 6D for symmetric spacetimes</li>
+            <li><strong>Trajectory Caching:</strong> Avoids redundant calculations across runs</li>
+            <li><strong>Parallel Execution:</strong> Multi-particle simulations use ThreadPoolExecutor</li>
+            <li><strong>GPU Acceleration:</strong> PyTorch tensors leverage CUDA when available</li>
+            <li><strong>Precision Control:</strong> Configurable float32/float64 based on requirements</li>
+        </ul>
+    </div>
+
+    <h2>14. Advanced Features</h2>
+    
+    <h3>14.1 Theory Sweep Parameters</h3>
+    <p>Theories can define parameter sweeps for automatic exploration:</p>
+    
+    <div class="code-example">
+<span class="code-keyword">class</span> <span class="code-function">QuantumCorrectedSchwarzschild</span>(GravitationalTheory):
+    category = <span class="code-string">'quantum'</span>
+    sweep = {
+        <span class="code-string">'alpha'</span>: {
+            <span class="code-string">'min'</span>: -0.1,
+            <span class="code-string">'max'</span>: 0.1,
+            <span class="code-string">'steps'</span>: 5,
+            <span class="code-string">'scale'</span>: <span class="code-string">'linear'</span>
+        }
+    }
+</div>
+
+    <h3>14.2 Quantum Field Content</h3>
+    <p>The system can simulate different particle contents:</p>
+    
+    <table>
+        <tr>
+            <th>Setting</th>
+            <th>Particles Included</th>
+        </tr>
+        <tr>
+            <td><code>standard_model</code></td>
+            <td>All SM particles (quarks, leptons, bosons)</td>
+        </tr>
+        <tr>
+            <td><code>all</code></td>
+            <td>SM + hypothetical particles</td>
+        </tr>
+        <tr>
+            <td><code>none</code></td>
+            <td>Classical test particle only</td>
+        </tr>
+    </table>
+
+    <h3>14.3 Black Hole Presets</h3>
+    <p>Pre-configured black hole masses for different regimes:</p>
+    
+    <table>
+        <tr>
+            <th>Preset</th>
+            <th>Mass</th>
+            <th>Regime</th>
+        </tr>
+        <tr>
+            <td><code>laboratory_micro</code></td>
+            <td>10<sup>-8</sup> kg</td>
+            <td>Quantum gravity</td>
+        </tr>
+        <tr>
+            <td><code>primordial_mini</code></td>
+            <td>10<sup>15</sup> kg</td>
+            <td>Hawking radiation</td>
+        </tr>
+        <tr>
+            <td><code>stellar_mass</code></td>
+            <td>10 M<sub>☉</sub></td>
+            <td>Astrophysical</td>
+        </tr>
+        <tr>
+            <td><code>sagittarius_a_star</code></td>
+            <td>4.15×10<sup>6</sup> M<sub>☉</sub></td>
+            <td>Galactic center</td>
+        </tr>
+    </table>
+
+    <h2>15. Conclusion</h2>
+    
+    <p>The Albert Physics Engine represents a sophisticated framework for gravitational theory validation, 
+    combining high-precision numerical methods with comprehensive observational tests. The system's modular 
+    architecture enables rapid theory development while maintaining scientific rigor through its multi-phase 
+    validation pipeline.</p>
+    
+    <div class="info-box">
+        <strong>Key Takeaways:</strong>
+        <ul>
+            <li>Adaptive solver selection optimizes performance based on spacetime symmetries</li>
+            <li>11 active validators test against known physics and observations</li>
+            <li>Validator testing ensures no circular dependencies with solvers</li>
+            <li>Multi-particle simulations explore full particle physics content</li>
+            <li>Comprehensive reporting enables scientific discovery and publication</li>
+        </ul>
+    </div>
+
+    <hr style="margin-top: 50px;">
+    <p style="text-align: center; color: #666; font-size: 0.9em;">
+        Generated from <code>theory_engine_core.py</code> and associated modules<br>
+        Albert Physics Engine v2.0 - "Physics at The Speed of AI"
+    </p>
+</body>
+</html>
