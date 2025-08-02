@@ -520,8 +520,7 @@ class TheoryEngine:
         hist_si = hist_geom.clone()
         hist_si[:,0] *= self.time_scale  # t
         hist_si[:,1] *= self.length_scale  # r
-        hist_si[:,2] = hist_geom[:,2]  # phi unitless
-        hist_si[:,3] *= self.velocity_scale / self.time_scale  # dr/dtau in m/s
+        # theta (column 2) and phi (column 3) are already dimensionless angles - no conversion needed
         return hist_si, tag, kicks
         
     def run_multi_particle_trajectories(self, model: GravitationalTheory, r0_si: float, N_STEPS: int, DTau_si: float, 
@@ -877,9 +876,7 @@ class TheoryEngine:
                 hist_geom = hist.clone()
                 hist_geom[:,0] /= self.time_scale  # t
                 hist_geom[:,1] /= self.length_scale  # r
-                # phi is already dimensionless
-                if hist.shape[1] > 3:
-                    hist_geom[:,3] *= self.time_scale / self.velocity_scale  # dr/dtau
+                # theta (column 2) and phi (column 3) are already dimensionless angles
                 
                 # <reason>chain: Store cache path info for later copying</reason>
                 self._last_cache_path_used = cache_path
@@ -1102,12 +1099,11 @@ class TheoryEngine:
                 y0_4d = y0_gen.clone()
             else:
                 # Extract from 6D format: [t, r, phi, u^t, u^r, u^phi]
-                # <reason>chain: y0_gen has mixed units: position in geometric, velocities in SI</reason>
-                # t, r, phi are already in geometric units from get_initial_conditions
+                # <reason>chain: Create 4D state for ConservedQuantityGeodesicSolver [t, r, phi, dr/dtau]</reason>
                 t_geom = y0_gen[0]  # Already geometric
                 r_geom = y0_gen[1]  # Already geometric  
                 phi_geom = y0_gen[2]  # Already dimensionless
-                dr_dtau_geom = u_r_geom  # Already calculated above
+                dr_dtau_geom = u_r_geom  # Radial velocity in geometric units
                 y0_4d = torch.tensor([t_geom, r_geom, phi_geom, dr_dtau_geom], 
                                     device=self.device, dtype=self.dtype)
             
@@ -1258,9 +1254,19 @@ class TheoryEngine:
             y = torch.tensor([y0_gen[0], y0_gen[1], y0_gen[2], u_t_geom, u_r_geom, u_phi_geom], 
                            device=self.device, dtype=self.dtype)
         
-        # Store initial state
-        hist[0] = torch.tensor([y[0], y[1], y[2], y[4] if len(y) > 4 else y[3]], 
-                             device=self.device, dtype=self.dtype)
+        # Store initial state in standard format [t, r, theta, phi]
+        if len(y) == 4 and model.is_symmetric:
+            # ConservedQuantityGeodesicSolver uses [t, r, phi, dr/dtau] format
+            # Convert to standard [t, r, theta, phi] format
+            hist[0] = torch.tensor([y[0], y[1], torch.pi/2, y[2]], 
+                                 device=self.device, dtype=self.dtype)
+        elif len(y) == 4:
+            # Already in standard format [t, r, theta, phi]
+            hist[0] = y.clone()
+        else:
+            # 6D state has [t, r, phi, u^t, u^r, u^phi] - need to insert theta=π/2
+            hist[0] = torch.tensor([y[0], y[1], torch.pi/2, y[2]], 
+                                 device=self.device, dtype=self.dtype)
         
         # Integration loop
         quantum_kicks_indices = []
@@ -1412,11 +1418,14 @@ class TheoryEngine:
             else:
                 failed_steps = 0  # Reset counter on success
             
-            # Store state (t, r, phi, dr/dtau)
+            # Store state in standard format [t, r, theta, phi]
             if model.is_symmetric:
-                hist[i+1] = torch.tensor([y[0], y[1], y[2], y[3]], device=self.device, dtype=self.dtype)
+                # ConservedQuantityGeodesicSolver uses [t, r, phi, dr/dtau] format
+                # Need to convert to standard [t, r, theta, phi] format
+                hist[i+1] = torch.tensor([y[0], y[1], torch.pi/2, y[2]], device=self.device, dtype=self.dtype)
             else:
-                hist[i+1] = torch.tensor([y[0], y[1], y[2], y[4]], device=self.device, dtype=self.dtype)
+                # 6D state has [t, r, phi, u^t, u^r, u^phi] - need to insert theta=π/2
+                hist[i+1] = torch.tensor([y[0], y[1], torch.pi/2, y[2]], device=self.device, dtype=self.dtype)
             
             # Check for singularity approach (not just horizon crossing)
             r_current = y[1]
@@ -1468,10 +1477,9 @@ class TheoryEngine:
         if not no_cache and not test_mode:
             # Convert to SI units before caching
             hist_si = hist.clone()
-            hist_si[:,0] *= self.time_scale
-            hist_si[:,1] *= self.length_scale
-            if hist.shape[1] > 3:
-                hist_si[:,3] *= self.velocity_scale / self.time_scale
+            hist_si[:,0] *= self.time_scale  # t
+            hist_si[:,1] *= self.length_scale  # r
+            # theta (column 2) and phi (column 3) are already dimensionless - no conversion needed
             torch.save(hist_si, cache_path)
             if verbose:
                     print(f"Trajectory cached to: {cache_path}")

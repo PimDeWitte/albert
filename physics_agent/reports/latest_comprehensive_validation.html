@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comprehensive Theory Validation Report</title>
+    <script>
+    function viewTrajectory(theoryName) {
+        const cleanName = theoryName.replace(/[^a-zA-Z0-9]/g, "_");
+        const viewerPath = "trajectory_viewers/" + cleanName + "_viewer.html";
+        window.open(viewerPath, "_blank");
+    }
+    </script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
         .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -49,12 +56,14 @@
             table { font-size: 0.9em; }
             th, td { padding: 8px; }
         }
+        .view-trajectory-btn { background: #4a9eff; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .view-trajectory-btn:hover { background: #357abd; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Comprehensive Theory Validation Report</h1>
-        <div class="timestamp">Generated: 2025-08-01 21:49:21</div>
+        <div class="timestamp">Generated: 2025-08-01 23:41:44</div>
         <div class="summary-grid">
             <div class="summary-card">
                 <h3>Total Theories</h3>
@@ -68,12 +77,12 @@
             </div>
             <div class="summary-card">
                 <h3>Solver Tests</h3>
-                <div class="value">30/60</div>
-                <div class="label">50.0% Pass Rate</div>
+                <div class="value">54/60</div>
+                <div class="label">90.0% Pass Rate</div>
             </div>
             <div class="summary-card">
                 <h3>Perfect Scores</h3>
-                <div class="value">6/0</div>
+                <div class="value">6/3</div>
                 <div class="label">Analytical/Combined</div>
             </div>
         </div>
@@ -228,168 +237,200 @@
                     <th>Analytical</th>
                     <th>Solver (Failed Tests)</th>
                     <th>Trajectory Loss vs Kerr<br>(1000 steps)</th>
+                    <th>Distance Traveled<br>(Theory / Kerr)</th>
                     <th>Solver Compute Time</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td class="rank">1</td>
-                    <td class="theory-name">Einstein Teleparallel</td>
-                    <td class="category-classical">classical</td>
-                    <td class="score">81.8%</td>
+                    <td class="theory-name">Asymptotic Safety</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">100.0%</td>
                     <td>7/7</td>
-                    <td>2/4 (CMB,PGW)</td>
+                    <td>4/4</td>
                     <td class="loss-value">5.18e-45</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Asymptotic Safety')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">2</td>
-                    <td class="theory-name">String Theory</td>
-                    <td class="category-quantum">quantum</td>
-                    <td class="score">81.8%</td>
+                    <td class="theory-name">Schwarzschild</td>
+                    <td class="category-baseline">baseline</td>
+                    <td class="score">100.0%</td>
                     <td>7/7</td>
-                    <td>2/4 (CMB,PGW)</td>
+                    <td>4/4</td>
                     <td class="loss-value">5.18e-45</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Schwarzschild')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">3</td>
-                    <td class="theory-name">Schwarzschild</td>
-                    <td class="category-baseline">baseline</td>
-                    <td class="score">81.8%</td>
+                    <td class="theory-name">Kerr</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">100.0%</td>
                     <td>7/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">5.18e-45</td>
+                    <td>4/4</td>
+                    <td class="loss-value">0.00</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Kerr')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">4</td>
-                    <td class="theory-name">Asymptotic Safety</td>
-                    <td class="category-quantum">quantum</td>
-                    <td class="score">81.8%</td>
+                    <td class="theory-name">Einstein Teleparallel</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">90.9%</td>
                     <td>7/7</td>
-                    <td>2/4 (CMB,PGW)</td>
+                    <td>3/4 (CMB)</td>
                     <td class="loss-value">5.18e-45</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Einstein Teleparallel')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">5</td>
-                    <td class="theory-name">Non-Commutative Geometry</td>
+                    <td class="theory-name">Quantum Corrected</td>
                     <td class="category-quantum">quantum</td>
-                    <td class="score">81.8%</td>
-                    <td>7/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">5.18e-45</td>
+                    <td class="score">90.9%</td>
+                    <td>6/7</td>
+                    <td>4/4</td>
+                    <td class="loss-value">1.09e-26</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Quantum Corrected')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">6</td>
-                    <td class="theory-name">Kerr</td>
-                    <td class="category-classical">classical</td>
-                    <td class="score">81.8%</td>
+                    <td class="theory-name">String Theory</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">90.9%</td>
                     <td>7/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">0.00</td>
+                    <td>3/4 (CMB)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('String Theory')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">7</td>
-                    <td class="theory-name">Quantum Corrected</td>
-                    <td class="category-quantum">quantum</td>
-                    <td class="score">72.7%</td>
+                    <td class="theory-name">Yukawa</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">90.9%</td>
                     <td>6/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">1.09e-26</td>
+                    <td>4/4</td>
+                    <td class="loss-value">N/A</td>
+                    <td class="distance-info">N/A</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Yukawa')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">8</td>
-                    <td class="theory-name">Yukawa</td>
-                    <td class="category-classical">classical</td>
-                    <td class="score">72.7%</td>
+                    <td class="theory-name">Twistor Theory</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">90.9%</td>
                     <td>6/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">N/A</td>
+                    <td>4/4</td>
+                    <td class="loss-value">5.77e-26</td>
+                    <td class="distance-info">0.0 / 0.0 (0.95x)</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Twistor Theory')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">9</td>
-                    <td class="theory-name">Twistor Theory</td>
+                    <td class="theory-name">Non-Commutative Geometry</td>
                     <td class="category-quantum">quantum</td>
-                    <td class="score">72.7%</td>
-                    <td>6/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">5.77e-26</td>
+                    <td class="score">90.9%</td>
+                    <td>7/7</td>
+                    <td>3/4 (CMB)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Non-Commutative Geometry')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">10</td>
                     <td class="theory-name">Kerr-Newman</td>
                     <td class="category-classical">classical</td>
-                    <td class="score">63.6%</td>
+                    <td class="score">81.8%</td>
                     <td>5/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">2.09e-32</td>
+                    <td>4/4</td>
+                    <td class="loss-value">0.00e+00</td>
+                    <td class="distance-info">0.0 / 0.0</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Kerr-Newman')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">11</td>
-                    <td class="theory-name">Newtonian Limit</td>
-                    <td class="category-classical">classical</td>
-                    <td class="score">54.5%</td>
+                    <td class="theory-name">Loop Quantum Gravity</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">72.7%</td>
                     <td>4/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">1.29e-44</td>
+                    <td>4/4</td>
+                    <td class="loss-value">3.69e-24</td>
+                    <td class="distance-info">0.0 / 0.0 (0.82x)</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Loop Quantum Gravity')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">12</td>
-                    <td class="theory-name">Loop Quantum Gravity</td>
+                    <td class="theory-name">Causal Dynamical Triangulations</td>
                     <td class="category-quantum">quantum</td>
-                    <td class="score">54.5%</td>
+                    <td class="score">72.7%</td>
                     <td>4/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">3.69e-24</td>
+                    <td>4/4</td>
+                    <td class="loss-value">1.44e-26</td>
+                    <td class="distance-info">0.0 / 0.0 (0.98x)</td>
                     <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Causal Dynamical Triangulations')">View Trajectory</button></td>
                 </tr>
                 <tr>
                     <td class="rank">13</td>
+                    <td class="theory-name">Newtonian Limit</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">63.6%</td>
+                    <td>4/7</td>
+                    <td>3/4 (CMB)</td>
+                    <td class="loss-value">1.29e-44</td>
+                    <td class="distance-info">0.0 / 0.0 (0.98x)</td>
+                    <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Newtonian Limit')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">14</td>
+                    <td class="theory-name">Spinor Conformal</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">63.6%</td>
+                    <td>3/7</td>
+                    <td>4/4</td>
+                    <td class="loss-value">7.71e-25</td>
+                    <td class="distance-info">0.0 / 0.0 (1.06x)</td>
+                    <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Spinor Conformal')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">15</td>
                     <td class="theory-name">Aalto Gauge Gravity</td>
                     <td class="category-quantum">quantum</td>
                     <td class="score">54.5%</td>
                     <td>4/7</td>
                     <td>2/4 (CMB,PGW)</td>
                     <td class="loss-value">N/A</td>
+                    <td class="distance-info">N/A</td>
                     <td class="timing-info">Cached</td>
-                </tr>
-                <tr>
-                    <td class="rank">14</td>
-                    <td class="theory-name">Causal Dynamical Triangulations</td>
-                    <td class="category-quantum">quantum</td>
-                    <td class="score">54.5%</td>
-                    <td>4/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">1.44e-26</td>
-                    <td class="timing-info">Cached</td>
-                </tr>
-                <tr>
-                    <td class="rank">15</td>
-                    <td class="theory-name">Spinor Conformal</td>
-                    <td class="category-classical">classical</td>
-                    <td class="score">45.5%</td>
-                    <td>3/7</td>
-                    <td>2/4 (CMB,PGW)</td>
-                    <td class="loss-value">7.71e-25</td>
-                    <td class="timing-info">Cached</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Aalto Gauge Gravity')">View Trajectory</button></td>
                 </tr>
             </tbody>
         </table>
         <div class="details-section">
             <h2>Detailed Theory Results</h2>
             <div class="theory-detail">
-                <h3>Einstein Teleparallel <span class="category-classical">(classical)</span></h3>
-                <p>Combined Score: <strong>81.8%</strong> 
-                (9/11 tests passed)</p>
+                <h3>Asymptotic Safety <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>100.0%</strong> 
+                (11/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -417,15 +458,15 @@
                         <div class="test-details">Status: PASS</div>
                         <div class="test-details">Error: 0.12%</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -440,91 +481,19 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.058s (0.6ms/step)</div>
+                        <div class="timing-info">Time: 0.067s (0.7ms/step)</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 0.06 (improvement over ΛCDM). Minor SOTA improvement (Δχ² = 0.06).</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Quantum Geodesic Sim</div>
-                        <div class="test-details">Status: SKIP</div>
-                        <div class="solver-info">Solver: NotSupported</div>
-                        <div class="test-details">Theory does not support quantum corrections</div>
-                    </div>
-                </div>
-            </div>
-            <div class="theory-detail">
-                <h3>String Theory <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>81.8%</strong> 
-                (9/11 tests passed)</p>
-                <h4>Analytical Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Mercury Precession</div>
                         <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Light Deflection</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Photon Sphere</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.0001</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">PPN Parameters</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.6391</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">COW Interferometry</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.12%</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
-                    </div>
-                </div>
-                <h4>Solver-Based Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Trajectory vs Kerr</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">5.18e-45</span></div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Circular Orbit</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.059s (0.6ms/step)</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -536,8 +505,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Schwarzschild <span class="category-baseline">(baseline)</span></h3>
-                <p>Combined Score: <strong>81.8%</strong> 
-                (9/11 tests passed)</p>
+                <p>Combined Score: <strong>100.0%</strong> 
+                (11/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -565,15 +534,15 @@
                         <div class="test-details">Status: PASS</div>
                         <div class="test-details">Error: 0.12%</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -588,165 +557,19 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.063s (0.6ms/step)</div>
+                        <div class="timing-info">Time: 0.068s (0.7ms/step)</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). Matches ΛCDM (expected for classical GR)</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: Analytical</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Quantum Geodesic Sim</div>
-                        <div class="test-details">Status: SKIP</div>
-                        <div class="solver-info">Solver: NotSupported</div>
-                        <div class="test-details">Theory does not support quantum corrections</div>
-                    </div>
-                </div>
-            </div>
-            <div class="theory-detail">
-                <h3>Asymptotic Safety <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>81.8%</strong> 
-                (9/11 tests passed)</p>
-                <h4>Analytical Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Mercury Precession</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Light Deflection</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Photon Sphere</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.0001</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">PPN Parameters</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.6391</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">COW Interferometry</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.12%</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
-                    </div>
-                </div>
-                <h4>Solver-Based Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Trajectory vs Kerr</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">5.18e-45</span></div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Circular Orbit</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.063s (0.6ms/step)</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Quantum Geodesic Sim</div>
-                        <div class="test-details">Status: SKIP</div>
-                        <div class="solver-info">Solver: NotSupported</div>
-                        <div class="test-details">Theory does not support quantum corrections</div>
-                    </div>
-                </div>
-            </div>
-            <div class="theory-detail">
-                <h3>Non-Commutative Geometry <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>81.8%</strong> 
-                (9/11 tests passed)</p>
-                <h4>Analytical Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Mercury Precession</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Light Deflection</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Photon Sphere</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.0001</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">PPN Parameters</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.6391</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">COW Interferometry</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.12%</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
-                    </div>
-                </div>
-                <h4>Solver-Based Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Trajectory vs Kerr</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">5.18e-45</span></div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Circular Orbit</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.089s (0.9ms/step)</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -758,8 +581,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Kerr <span class="category-classical">(classical)</span></h3>
-                <p>Combined Score: <strong>81.8%</strong> 
-                (9/11 tests passed)</p>
+                <p>Combined Score: <strong>100.0%</strong> 
+                (11/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -787,15 +610,15 @@
                         <div class="test-details">Status: PASS</div>
                         <div class="test-details">Error: 0.12%</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -810,17 +633,95 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.093s (0.9ms/step)</div>
+                        <div class="timing-info">Time: 0.097s (1.0ms/step)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). Matches ΛCDM (expected for classical GR)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
+                    </div>
+                    <div class="test-result warning">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: SKIP</div>
+                        <div class="solver-info">Solver: NotSupported</div>
+                        <div class="test-details">Theory does not support quantum corrections</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Einstein Teleparallel <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>90.9%</strong> 
+                (10/11 tests passed)</p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: cached_trajectory</div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">5.18e-45</span></div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.060s (0.6ms/step)</div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">CMB Power Spectrum</div>
                         <div class="test-details">Status: FAIL</div>
-                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). Does not improve on ΛCDM model.</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -832,8 +733,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Quantum Corrected <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>72.7%</strong> 
-                (8/11 tests passed)</p>
+                <p>Combined Score: <strong>90.9%</strong> 
+                (10/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -866,10 +767,10 @@
                         <div class="test-details">Status: FAIL</div>
                         <div class="test-details">Loss: 1.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -884,17 +785,95 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.059s (0.6ms/step)</div>
+                        <div class="timing-info">Time: 0.061s (0.6ms/step)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 0.91 (improvement over ΛCDM). BEATS SOTA! Better explains low-l anomaly.</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
+                    </div>
+                    <div class="test-result warning">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: SKIP</div>
+                        <div class="solver-info">Solver: NotSupported</div>
+                        <div class="test-details">Theory does not support quantum corrections</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>String Theory <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>90.9%</strong> 
+                (10/11 tests passed)</p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: cached_trajectory</div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">5.18e-45</span></div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.062s (0.6ms/step)</div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). Does not improve on ΛCDM model.</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -906,8 +885,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Yukawa <span class="category-classical">(classical)</span></h3>
-                <p>Combined Score: <strong>72.7%</strong> 
-                (8/11 tests passed)</p>
+                <p>Combined Score: <strong>90.9%</strong> 
+                (10/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -935,15 +914,15 @@
                         <div class="test-details">Status: PASS</div>
                         <div class="test-details">Error: 0.12%</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -957,17 +936,19 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.061s (0.6ms/step)</div>
+                        <div class="timing-info">Time: 0.064s (0.6ms/step)</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 15.06 (improvement over ΛCDM). BEATS SOTA! Better explains low-l anomaly.</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Predicted r=0.009 (upper limit 0.032), ΔlnL=-0.36</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -979,8 +960,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Twistor Theory <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>72.7%</strong> 
-                (8/11 tests passed)</p>
+                <p>Combined Score: <strong>90.9%</strong> 
+                (10/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -1013,10 +994,10 @@
                         <div class="test-details">Status: FAIL</div>
                         <div class="test-details">Loss: 1.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -1031,17 +1012,95 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.064s (0.6ms/step)</div>
+                        <div class="timing-info">Time: 0.066s (0.7ms/step)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 5.91 (improvement over ΛCDM). BEATS SOTA! Better explains low-l anomaly.</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
+                    </div>
+                    <div class="test-result warning">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: SKIP</div>
+                        <div class="solver-info">Solver: NotSupported</div>
+                        <div class="test-details">Theory does not support quantum corrections</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Non-Commutative Geometry <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>90.9%</strong> 
+                (10/11 tests passed)</p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: cached_trajectory</div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">5.18e-45</span></div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.091s (0.9ms/step)</div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). Does not improve on ΛCDM model.</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -1053,8 +1112,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Kerr-Newman <span class="category-classical">(classical)</span></h3>
-                <p>Combined Score: <strong>63.6%</strong> 
-                (7/11 tests passed)</p>
+                <p>Combined Score: <strong>81.8%</strong> 
+                (9/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -1082,15 +1141,15 @@
                         <div class="test-details">Status: PASS</div>
                         <div class="test-details">Error: 0.12%</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -1099,97 +1158,25 @@
                         <div class="test-name">Trajectory vs Kerr</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">2.09e-32</span></div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">0.00e+00</span></div>
                     </div>
                     <div class="test-result pass">
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.096s (1.0ms/step)</div>
+                        <div class="timing-info">Time: 0.104s (1.0ms/step)</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). Matches ΛCDM (expected for classical GR)</div>
                     </div>
-                    <div class="test-result fail">
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: Analytical</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Quantum Geodesic Sim</div>
-                        <div class="test-details">Status: SKIP</div>
-                        <div class="solver-info">Solver: NotSupported</div>
-                        <div class="test-details">Theory does not support quantum corrections</div>
-                    </div>
-                </div>
-            </div>
-            <div class="theory-detail">
-                <h3>Newtonian Limit <span class="category-classical">(classical)</span></h3>
-                <p>Combined Score: <strong>54.5%</strong> 
-                (6/11 tests passed)</p>
-                <h4>Analytical Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Mercury Precession</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Light Deflection</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Error: 50.01%</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Photon Sphere</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Loss: 1.0000</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">PPN Parameters</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Loss: 700.0000</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">COW Interferometry</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.12%</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2190</div>
-                    </div>
-                </div>
-                <h4>Solver-Based Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Trajectory vs Kerr</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">1.29e-44</span></div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Circular Orbit</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: NewtonianAnalytical</div>
-                        <div class="timing-info">Time: 0.001s (1.0ms/step)</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="solver-info">Solver: Analytical</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -1201,8 +1188,8 @@
             </div>
             <div class="theory-detail">
                 <h3>Loop Quantum Gravity <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>54.5%</strong> 
-                (6/11 tests passed)</p>
+                <p>Combined Score: <strong>72.7%</strong> 
+                (8/11 tests passed)</p>
                 <h4>Analytical Tests</h4>
                 <div class="test-grid">
                     <div class="test-result pass">
@@ -1235,10 +1222,10 @@
                         <div class="test-details">Status: FAIL</div>
                         <div class="test-details">Loss: 1.0000</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 5.2168</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                 </div>
                 <h4>Solver-Based Tests</h4>
@@ -1253,17 +1240,247 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.085s (0.8ms/step)</div>
+                        <div class="timing-info">Time: 0.091s (0.9ms/step)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 17.14 (improvement over ΛCDM). BEATS SOTA! Better explains low-l anomaly.</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
+                    </div>
+                    <div class="test-result warning">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: SKIP</div>
+                        <div class="solver-info">Solver: NotSupported</div>
+                        <div class="test-details">Theory does not support quantum corrections</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Causal Dynamical Triangulations <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>72.7%</strong> 
+                (8/11 tests passed)</p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 0.9751</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 56.05%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 0.5143</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: cached_trajectory</div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">1.44e-26</span></div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.105s (1.0ms/step)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 19.81 (improvement over ΛCDM). BEATS SOTA! Better explains low-l anomaly.</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
+                    </div>
+                    <div class="test-result warning">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: SKIP</div>
+                        <div class="solver-info">Solver: NotSupported</div>
+                        <div class="test-details">Theory does not support quantum corrections</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Newtonian Limit <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>63.6%</strong> 
+                (7/11 tests passed)</p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 50.01%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 700.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: cached_trajectory</div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">1.29e-44</span></div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: NewtonianAnalytical</div>
+                        <div class="timing-info">Time: 0.001s (1.0ms/step)</div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">Δχ² = 0.00 (improvement over ΛCDM). </div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="test-details">r=0.010 < 0.032 (within limits)</div>
+                    </div>
+                    <div class="test-result warning">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: SKIP</div>
+                        <div class="solver-info">Solver: NotSupported</div>
+                        <div class="test-details">Theory does not support quantum corrections</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Spinor Conformal <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>63.6%</strong> 
+                (7/11 tests passed)</p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result fail">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 16.81%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
                     </div>
                     <div class="test-result fail">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 700.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 719722215.01%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: cached_trajectory</div>
+                        <div class="test-details">Loss vs Kerr: <span class="loss-value">7.71e-25</span></div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.066s (0.7ms/step)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 0.08 (improvement over ΛCDM). Minor SOTA improvement (Δχ² = 0.08).</div>
+                    </div>
+                    <div class="test-result pass">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">r=0.010 < 0.032 (matches standard inflation)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>
@@ -1304,10 +1521,10 @@
                         <div class="test-details">Status: FAIL</div>
                         <div class="test-details">Error: 100.00%</div>
                     </div>
-                    <div class="test-result warning">
+                    <div class="test-result pass">
                         <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">PSR J0740</div>
@@ -1326,165 +1543,19 @@
                         <div class="test-name">Circular Orbit</div>
                         <div class="test-details">Status: PASS</div>
                         <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.087s (0.9ms/step)</div>
+                        <div class="timing-info">Time: 0.089s (0.9ms/step)</div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Δχ² = 19.45 (improvement over ΛCDM). </div>
                     </div>
                     <div class="test-result fail">
                         <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Quantum Geodesic Sim</div>
-                        <div class="test-details">Status: SKIP</div>
-                        <div class="solver-info">Solver: NotSupported</div>
-                        <div class="test-details">Theory does not support quantum corrections</div>
-                    </div>
-                </div>
-            </div>
-            <div class="theory-detail">
-                <h3>Causal Dynamical Triangulations <span class="category-quantum">(quantum)</span></h3>
-                <p>Combined Score: <strong>54.5%</strong> 
-                (6/11 tests passed)</p>
-                <h4>Analytical Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Mercury Precession</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Light Deflection</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Photon Sphere</div>
                         <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Loss: 0.9751</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">PPN Parameters</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.6391</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">COW Interferometry</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Error: 56.05%</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Loss: 0.5143</div>
-                    </div>
-                </div>
-                <h4>Solver-Based Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Trajectory vs Kerr</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">1.44e-26</span></div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Circular Orbit</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.096s (1.0ms/step)</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Quantum Geodesic Sim</div>
-                        <div class="test-details">Status: SKIP</div>
-                        <div class="solver-info">Solver: NotSupported</div>
-                        <div class="test-details">Theory does not support quantum corrections</div>
-                    </div>
-                </div>
-            </div>
-            <div class="theory-detail">
-                <h3>Spinor Conformal <span class="category-classical">(classical)</span></h3>
-                <p>Combined Score: <strong>45.5%</strong> 
-                (5/11 tests passed)</p>
-                <h4>Analytical Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result fail">
-                        <div class="test-name">Mercury Precession</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Error: 16.81%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Light Deflection</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Error: 0.02%</div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Photon Sphere</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="test-details">Loss: 0.0001</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">PPN Parameters</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Loss: 700.0000</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">COW Interferometry</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Error: 719722215.01%</div>
-                    </div>
-                    <div class="test-result warning">
-                        <div class="test-name">Gravitational Waves</div>
-                        <div class="test-details">Status: WARNING</div>
-                        <div class="test-details">Loss: 0.1000</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">PSR J0740</div>
-                        <div class="test-details">Status: FAIL</div>
-                        <div class="test-details">Loss: 1.0000</div>
-                    </div>
-                </div>
-                <h4>Solver-Based Tests</h4>
-                <div class="test-grid">
-                    <div class="test-result pass">
-                        <div class="test-name">Trajectory vs Kerr</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: cached_trajectory</div>
-                        <div class="test-details">Loss vs Kerr: <span class="loss-value">7.71e-25</span></div>
-                    </div>
-                    <div class="test-result pass">
-                        <div class="test-name">Circular Orbit</div>
-                        <div class="test-details">Status: PASS</div>
-                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
-                        <div class="timing-info">Time: 0.060s (0.6ms/step)</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">CMB Power Spectrum</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
-                    </div>
-                    <div class="test-result fail">
-                        <div class="test-name">Primordial GWs</div>
-                        <div class="test-details">Status: ERROR</div>
-                        <div class="solver-info">Solver: Failed</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="test-details">Theory lacks spatial curvature (g_rr = 1, no tensor modes)</div>
                     </div>
                     <div class="test-result warning">
                         <div class="test-name">Quantum Geodesic Sim</div>

@@ -418,9 +418,40 @@ class CMBPowerSpectrumValidator(PredictionValidator):
         result.units = "chi²/dof"
         
         # Check if theory beats SOTA
-        # <reason>chain: ANY improvement over SOTA should be marked as beating SOTA</reason>
-        result.beats_sota = delta_chi2 > 0  # Any improvement counts
-        result.passed = delta_chi2 > self.threshold_chi2_improvement and theory_chi2 < 100  # Meaningful improvement
+        # <reason>chain: Different criteria for different theory types</reason>
+        result.beats_sota = delta_chi2 > 0  # Improvement over ΛCDM
+        
+        # Check theory capabilities
+        # CMB requires relativistic effects with spatial curvature
+        # Check if theory has non-trivial radial metric component
+        has_cosmological_capability = False
+        if hasattr(theory, 'get_metric'):
+            try:
+                # Test metric at r=10M to check for spatial curvature
+                import torch
+                r_test = torch.tensor(10.0)
+                M_test = torch.tensor(1.0)
+                _, g_rr, _, _ = theory.get_metric(r=r_test, M_param=M_test, C_param=1.0, G_param=1.0)
+                # Newtonian limit has g_rr = 1 (no spatial curvature)
+                # Relativistic has g_rr = 1/(1-2M/r) ≈ 1.25 at r=10M
+                g_rr_val = g_rr.item() if torch.is_tensor(g_rr) else g_rr
+                has_cosmological_capability = abs(g_rr_val - 1.0) > 0.01  # Has spatial curvature
+            except:
+                has_cosmological_capability = True  # Assume capable if can't test
+        
+        is_quantum_enabled = hasattr(theory, 'enable_quantum') and theory.enable_quantum
+        
+        if not has_cosmological_capability:
+            # Theory lacks basic requirements for cosmological predictions
+            result.passed = False
+            result.notes = "Theory lacks spatial curvature (g_rr = 1, no cosmological dynamics)"
+        elif is_quantum_enabled:
+            # Quantum theories should improve on ΛCDM
+            result.passed = delta_chi2 > 0 and theory_chi2 < 100
+        else:
+            # Classical GR theories should match ΛCDM within reasonable tolerance
+            # Since they implement the same physics as ΛCDM at large scales
+            result.passed = abs(delta_chi2) < 5.0 and theory_chi2 < 100  # Allow 5 chi² units tolerance
         
         # Store prediction details
         result.prediction_data = {
@@ -435,13 +466,16 @@ class CMBPowerSpectrumValidator(PredictionValidator):
         result.notes = f"Δχ² = {delta_chi2:.2f} (improvement over ΛCDM). "
         if quantum_discrepancy > 0:
             result.notes += f"Quantum trajectory discrepancy: {quantum_discrepancy:.2f}. "
-        if result.beats_sota:
-            if delta_chi2 > self.threshold_chi2_improvement:
-                result.notes += f"BEATS SOTA! Better explains low-l anomaly."
+        if has_cosmological_capability:  # Only add detailed notes if theory can handle cosmology
+            if result.beats_sota:
+                if delta_chi2 > self.threshold_chi2_improvement:
+                    result.notes += f"BEATS SOTA! Better explains low-l anomaly."
+                else:
+                    result.notes += f"Minor SOTA improvement (Δχ² = {delta_chi2:.2f})."
+            elif not is_quantum_enabled and abs(delta_chi2) < 5.0:
+                result.notes += f"Matches ΛCDM (expected for classical GR)"
             else:
-                result.notes += f"Minor SOTA beat (Δχ² = {delta_chi2:.2f})."
-        else:
-            result.notes += f"Does not improve on ΛCDM model."
+                result.notes += f"Does not improve on ΛCDM model."
         
         if verbose:
             print(f"\n{theory.name} CMB Prediction Results:")

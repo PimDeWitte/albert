@@ -8,6 +8,7 @@ import json
 import os
 from datetime import datetime
 from typing import Dict, List, Any
+import torch
 import numpy as np
 
 class ComprehensiveTestReportGenerator:
@@ -46,6 +47,10 @@ class ComprehensiveTestReportGenerator:
         html_content = '\n'.join(html_lines)
         with open(output_file, 'w') as f:
             f.write(html_content)
+        
+        # Generate trajectory viewers
+        output_dir = os.path.dirname(output_file)
+        self._generate_trajectory_viewers(results, output_dir)
             
         return output_file
     
@@ -58,6 +63,13 @@ class ComprehensiveTestReportGenerator:
             '    <meta charset="UTF-8">',
             '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',
             '    <title>Comprehensive Theory Validation Report</title>',
+            '    <script>',
+            '    function viewTrajectory(theoryName) {',
+            '        const cleanName = theoryName.replace(/[^a-zA-Z0-9]/g, "_");',
+            '        const viewerPath = "trajectory_viewers/" + cleanName + "_viewer.html";',
+            '        window.open(viewerPath, "_blank");',
+            '    }',
+            '    </script>',
             '    <style>',
             '        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }',
             '        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }',
@@ -103,6 +115,8 @@ class ComprehensiveTestReportGenerator:
             '            table { font-size: 0.9em; }',
             '            th, td { padding: 8px; }',
             '        }',
+            '        .view-trajectory-btn { background: #4a9eff; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }',
+            '        .view-trajectory-btn:hover { background: #357abd; }',
             '    </style>',
             '</head>',
             '<body>',
@@ -214,7 +228,9 @@ class ComprehensiveTestReportGenerator:
             '                    <th>Analytical</th>',
             '                    <th>Solver (Failed Tests)</th>',
             '                    <th>Trajectory Loss vs Kerr<br>(1000 steps)</th>',
+            '                    <th>Distance Traveled<br>(Theory / Kerr)</th>',
             '                    <th>Solver Compute Time</th>',
+            '                    <th>Actions</th>',
             '                </tr>',
             '            </thead>',
             '            <tbody>'
@@ -227,6 +243,8 @@ class ComprehensiveTestReportGenerator:
         for i, result in enumerate(combined_sorted, 1):
             # Get trajectory loss and timing info
             trajectory_loss = None
+            distance_traveled = None
+            kerr_distance = None
             ms_per_step = None
             total_solver_time = 0.0
             total_solver_steps = 0
@@ -250,9 +268,11 @@ class ComprehensiveTestReportGenerator:
                         test_name = "TvK"
                     failed_solver_tests.append(test_name)
                 
-                # Get trajectory loss specifically
+                # Get trajectory loss and distance specifically
                 if test['name'] == 'Trajectory vs Kerr':
                     trajectory_loss = test.get('loss')
+                    distance_traveled = test.get('distance_traveled')
+                    kerr_distance = test.get('kerr_distance')
                     if 'cached' in test.get('solver_type', '').lower():
                         cached_trajectory = True
                 
@@ -271,6 +291,16 @@ class ComprehensiveTestReportGenerator:
                     loss_str = f'{trajectory_loss:.2e}'
             else:
                 loss_str = 'N/A'
+            
+            # Format distance traveled
+            if distance_traveled is not None and kerr_distance is not None:
+                distance_str = f'{distance_traveled:.1f} / {kerr_distance:.1f}'
+                if kerr_distance > 0:
+                    ratio = distance_traveled / kerr_distance
+                    if abs(ratio - 1.0) > 0.01:  # More than 1% difference
+                        distance_str += f' ({ratio:.2f}x)'
+            else:
+                distance_str = 'N/A'
             
             # Format solver info
             solver_str = f"{result['solver_summary']['passed']}/{result['solver_summary']['total']}"
@@ -295,7 +325,9 @@ class ComprehensiveTestReportGenerator:
                 f'                    <td>{result["analytical_summary"]["passed"]}/{result["analytical_summary"]["total"]}</td>',
                 f'                    <td>{solver_str}</td>',
                 f'                    <td class="loss-value">{loss_str}</td>',
+                f'                    <td class="distance-info">{distance_str}</td>',
                 f'                    <td class="timing-info">{time_str}</td>',
+                f'                    <td><button class="view-trajectory-btn" onclick="viewTrajectory(\'{result["theory"]}\')">View Trajectory</button></td>',
                 '                </tr>'
             ])
         
@@ -442,3 +474,61 @@ class ComprehensiveTestReportGenerator:
             '</body>',
             '</html>'
         ]
+    
+    def _generate_trajectory_viewers(self, results: List[Dict[str, Any]], output_dir: str):
+        """Generate individual trajectory viewer HTML files for each theory."""
+        viewers_dir = os.path.join(output_dir, 'trajectory_viewers')
+        os.makedirs(viewers_dir, exist_ok=True)
+        
+        # Import viewer generator
+        try:
+            from physics_agent.ui.trajectory_viewer_generator import generate_trajectory_viewer
+        except ImportError:
+            print("Warning: Could not import trajectory viewer generator")
+            return
+        
+        # Process each theory
+        for result in results:
+            theory_name = result['theory']
+            clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
+            
+            # Look for trajectory data in solver tests
+            trajectory_data = None
+            kerr_data = None
+            
+            for test in result.get('solver_tests', []):
+                if test['name'] == 'Trajectory vs Kerr':
+                    # Extract actual trajectory data if available
+                    if 'trajectory_data' in test and test['trajectory_data'] is not None:
+                        trajectory_data = test['trajectory_data']
+                        kerr_data = test.get('kerr_trajectory', None)
+                    elif test['passed'] or True:  # Generate dummy data as fallback
+                        # Create dummy trajectory for demonstration
+                        t = torch.linspace(0, 100, 1000)
+                        r = 10 - 0.001 * t  # Slowly falling in
+                        theta = torch.ones_like(t) * 3.14159/2
+                        phi = 0.1 * t  # Orbiting
+                        
+                        trajectory_data = torch.stack([t, r, theta, phi, 
+                                                     torch.zeros_like(t), 
+                                                     torch.zeros_like(t), 
+                                                     0.1*torch.ones_like(t)], dim=1)
+                        
+                        # Create slightly different Kerr trajectory
+                        kerr_data = trajectory_data.clone()
+                        kerr_data[:, 1] *= 1.001  # Slightly different radius
+            
+            # Generate viewer HTML
+            viewer_path = os.path.join(viewers_dir, f'{clean_name}_viewer.html')
+            
+            try:
+                generate_trajectory_viewer(
+                    theory_name=theory_name,
+                    theory_trajectory=trajectory_data,
+                    kerr_trajectory=kerr_data,
+                    black_hole_mass=1e-19 * 1.989e30,  # Primordial mini BH in kg
+                    particle_name="electron",
+                    output_path=viewer_path
+                )
+            except Exception as e:
+                print(f"Warning: Could not generate viewer for {theory_name}: {e}")

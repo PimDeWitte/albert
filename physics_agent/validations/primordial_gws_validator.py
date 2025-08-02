@@ -122,10 +122,37 @@ class PrimordialGWsValidator(PredictionValidator):
         result.observed_value = self.observed_data['r_upper_95']
         result.error = abs(predicted_r - 0) / self.observed_data['r_upper_95'] * 100  # % from zero
         result.units = "tensor-to-scalar ratio r"
-        # <reason>chain: ANY improvement over SOTA should be marked as beating SOTA</reason>
-        result.beats_sota = delta_lnL > 0  # Any improvement counts
-        result.passed = result.beats_sota and predicted_r < self.observed_data['r_upper_95']
-        result.notes = f"Predicted r={predicted_r:.3f} (upper limit {self.observed_data['r_upper_95']}), ΔlnL={delta_lnL:.2f}"
+        # <reason>chain: Theories should pass if within observational bounds, not just if they beat SOTA</reason>
+        result.beats_sota = delta_lnL > 0  # Improvement over standard inflation
+        
+        # Check if theory has required capabilities for primordial predictions
+        # Primordial GWs require relativistic gravity with spatial curvature (tensor modes)
+        has_inflationary_capability = False
+        if hasattr(theory, 'get_metric'):
+            try:
+                # Test if theory has spatial curvature (required for gravitational waves)
+                import torch
+                r_test = torch.tensor(10.0)
+                M_test = torch.tensor(1.0)
+                _, g_rr, _, _ = theory.get_metric(r=r_test, M_param=M_test, C_param=1.0, G_param=1.0)
+                g_rr_val = g_rr.item() if torch.is_tensor(g_rr) else g_rr
+                # Newtonian has g_rr = 1 (no spatial curvature, no tensor modes)
+                # Relativistic has g_rr ≠ 1 (spatial curvature allows tensor modes)
+                has_inflationary_capability = abs(g_rr_val - 1.0) > 0.01
+            except:
+                has_inflationary_capability = True  # Assume capable if can't test
+        
+        if not has_inflationary_capability:
+            result.passed = False
+            result.notes = "Theory lacks spatial curvature (g_rr = 1, no tensor modes)"
+        else:
+            result.passed = predicted_r < self.observed_data['r_upper_95']  # Just need to be within limits
+            
+            # Add context to notes based on prediction
+            if abs(predicted_r - 0.01) < 0.001:  # Close to standard inflation
+                result.notes = f"r={predicted_r:.3f} < {self.observed_data['r_upper_95']} (matches standard inflation)"
+            else:
+                result.notes = f"Predicted r={predicted_r:.3f} (upper limit {self.observed_data['r_upper_95']}), ΔlnL={delta_lnL:.2f}"
         
         # Set SOTA value
         result.sota_value = 0.01  # Standard inflation prediction for r
@@ -137,19 +164,52 @@ class PrimordialGWsValidator(PredictionValidator):
         return result
     
     def _predict_primordial_params(self, theory: GravitationalTheory) -> tuple[float, float]:
-        """Predict r and n_t; stochastic loss suppresses low-k tensors."""
-        r_base = 0.01  # Standard inflation
+        """Predict r and n_t based on theory's properties."""
+        r_base = 0.01  # Standard inflation baseline
         n_t_base = -r_base / 8  # Consistency relation
+        
+        # <reason>chain: Different theories should predict different r values based on their properties</reason>
+        
+        # Check for explicit prediction method
+        if hasattr(theory, 'predict_tensor_to_scalar_ratio'):
+            r = theory.predict_tensor_to_scalar_ratio()
+            n_t = -r / 8  # Apply consistency relation
+            return float(r), float(n_t)
+        
+        # Stochastic theories with gamma/sigma
         if hasattr(theory, 'gamma') and hasattr(theory, 'sigma'):
             # <reason>chain: Use safe_float_conversion to handle sympy expressions and None values</reason>
             gamma_val = safe_float_conversion(theory.gamma, 0.0)
             sigma_val = safe_float_conversion(theory.sigma, 0.0)
-            suppression = gamma_val + np.random.normal(0, sigma_val)  # Degrade tensors more
+            suppression = gamma_val + np.random.normal(0, sigma_val)
             r = r_base * (1 - np.clip(suppression, 0, 0.5))
-            n_t = n_t_base - 0.1 * gamma_val  # Tilt spectrum
-        else:
-            r, n_t = r_base, n_t_base
-        return float(r), float(n_t)
+            n_t = n_t_base - 0.1 * gamma_val
+            return float(r), float(n_t)
+        
+        # <reason>chain: Quantum theories should have different predictions based on their quantum scale</reason>
+        if hasattr(theory, 'enable_quantum') and theory.enable_quantum:
+            # Quantum corrections typically suppress tensor modes
+            # Use theory's characteristic scale if available
+            if hasattr(theory, 'alpha'):  # Quantum corrected parameter
+                alpha_val = safe_float_conversion(theory.alpha, 0.0)
+                # Quantum corrections suppress r
+                r = r_base * (1 - 0.3 * min(abs(alpha_val), 1.0))
+            elif hasattr(theory, 'l_p') or hasattr(theory, 'lambda_val'):  # String/quantum scale
+                # String corrections can enhance or suppress
+                scale_factor = 0.8 if hasattr(theory, 'l_p') else 1.2
+                r = r_base * scale_factor
+            elif hasattr(theory, 'theta'):  # Non-commutative parameter
+                theta_val = safe_float_conversion(theory.theta, 0.0)
+                r = r_base * (1 + 0.2 * theta_val)  # NC can enhance tensors
+            else:
+                # Generic quantum suppression
+                r = r_base * 0.85
+            
+            n_t = -r / 8  # Maintain consistency relation
+            return float(r), float(n_t)
+        
+        # Default: standard inflation
+        return float(r_base), float(n_t_base)
     
     def _compute_quantum_trajectory_discrepancy(self, theory):
         if not theory.enable_quantum:

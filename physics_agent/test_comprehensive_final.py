@@ -294,9 +294,37 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
         kerr_hist, _, _ = engine.run_trajectory(kerr, r0_si, n_steps, dtau_si)
         
         loss = None
+        distance_traveled = None
+        kerr_distance = None
+        
         if kerr_hist is not None and len(kerr_hist) == len(hist):
             # MSE loss on radial coordinate
             loss = torch.mean((hist[:, 1] - kerr_hist[:, 1])**2).item()
+            
+            # Calculate distance traveled in 3D space
+            # Convert spherical to Cartesian for proper distance calculation
+            def spherical_to_cartesian(traj):
+                # traj shape: [steps, features] where features include [t, r, theta, phi, ...]
+                r = traj[:, 1]
+                theta = traj[:, 2]
+                phi = traj[:, 3]
+                
+                x = r * torch.sin(theta) * torch.cos(phi)
+                y = r * torch.sin(theta) * torch.sin(phi)
+                z = r * torch.cos(theta)
+                
+                return torch.stack([x, y, z], dim=1)
+            
+            # Calculate distances
+            theory_xyz = spherical_to_cartesian(hist)
+            kerr_xyz = spherical_to_cartesian(kerr_hist)
+            
+            # Distance traveled = sum of distances between consecutive points
+            theory_diffs = torch.diff(theory_xyz, dim=0)
+            kerr_diffs = torch.diff(kerr_xyz, dim=0)
+            
+            distance_traveled = torch.sum(torch.norm(theory_diffs, dim=1)).item()
+            kerr_distance = torch.sum(torch.norm(kerr_diffs, dim=1)).item()
         
         # Use the solver tag directly as it contains the actual solver info
         solver_type = solver_tag if solver_tag else "Unknown"
@@ -309,7 +337,11 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
             'exec_time': exec_time,
             'solver_time': solver_time,
             'num_steps': actual_steps,
-            'loss': loss
+            'loss': loss,
+            'distance_traveled': distance_traveled,
+            'kerr_distance': kerr_distance,
+            'trajectory_data': hist,  # Store actual trajectory data
+            'kerr_trajectory': kerr_hist  # Store Kerr baseline
         }
         
     except Exception as e:
@@ -405,21 +437,9 @@ def run_solver_test(theory, test_func, test_name, engine=None):
             if hasattr(theory, 'enable_quantum') and theory.enable_quantum:
                 solver_type = "Quantum-PI"  # Quantum Path Integral
             
-            # Special handling for GR-consistent theories
-            # They should pass if they match (not beat) the standard model
-            is_gr_baseline = theory.name in ['Schwarzschild', 'Kerr', 'Kerr-Newman', 'Newtonian Limit']
-            if is_gr_baseline and not result:
-                # Check if it failed because it matches ΛCDM (which is expected)
-                if 'does not improve on' in result_dict.get('notes', '').lower():
-                    result = True  # Pass because matching ΛCDM is correct for GR
-                    status = 'PASS'
-                    notes = 'Matches ΛCDM (expected for GR)'
-                else:
-                    status = 'FAIL'
-                    notes = result_dict.get('notes', '')
-            else:
-                status = 'PASS' if result else 'FAIL'
-                notes = result_dict.get('notes', '')
+            # The validators now handle theory-specific logic internally
+            status = 'PASS' if result else 'FAIL'
+            notes = result_dict.get('notes', '')
             
             return {
                 'name': test_name,
