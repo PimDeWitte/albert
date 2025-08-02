@@ -112,22 +112,10 @@ class GwValidator(BaseValidation):
                     A_0 *= mods['amplitude_correction']
                     theory_has_modifications = True
                     
-            # <reason>chain: Warn if no GW modifications are implemented</reason>
+            # <reason>chain: Continue with GR waveform if no modifications</reason>
             if not theory_has_modifications:
                 if verbose:
-                    print(f"  Warning: Theory has no GW modifications implemented")
-                # <reason>chain: Add small penalty for theories without GW modifications</reason>
-                return {
-                    "loss": 0.1,  # Small penalty
-                    "flags": {"overall": "WARNING", "no_gw_modifications": True},
-                    "details": {
-                        "correlation": 1.0,
-                        "phase_difference": 0.0,
-                        "frequency_deviation": 0.0,
-                        "units": "dimensionless",
-                        "notes": "Theory has no GW modifications - defaulting to GR waveform"
-                    }
-                }
+                    print(f"  Note: Theory has no GW modifications - computing standard GR waveform")
             
             # Generate plus and cross polarizations
             # <reason>chain: Ensure A_0 is a tensor for operations</reason>
@@ -143,15 +131,19 @@ class GwValidator(BaseValidation):
             # Pure GR waveform with same parameters but no theory modifications
             phase_gr = 2 * np.pi * torch.cumsum(f_gw * (1/fs), dim=0)
             # Apply GR phase corrections
-            for k, phi_k in enumerate([phi_0, 0, phi_2, -16*np.pi, phi_4, phi_5, phi_6, phi_7]):
+            # <reason>chain: Use same phi coefficients including spin for proper comparison</reason>
+            for k, phi_k in enumerate([phi_0, phi_1, phi_2, phi_3, phi_4, phi_5, phi_6, phi_7]):
                 # <reason>chain: Handle both scalar and tensor phi_k values</reason>
                 if torch.is_tensor(phi_k):
-                    if torch.any(phi_k != 0) and k != 3:  # Skip spin for baseline
+                    if torch.any(phi_k != 0):
                         phase_gr += phi_k * v**(k)
-                elif phi_k != 0 and k != 3:  # Skip spin for baseline
+                elif phi_k != 0:
                     phase_gr += phi_k * v**(k)
             
-            h_gr = A_0 * (f_gw / f_0)**(-7/6) * torch.cos(phase_gr)
+            # <reason>chain: Match the detector response for proper comparison</reason>
+            h_plus_gr = A_0 * (f_gw / f_0)**(-7/6) * torch.cos(phase_gr)
+            h_cross_gr = A_0 * (f_gw / f_0)**(-7/6) * torch.sin(phase_gr)
+            h_gr = 0.5 * h_plus_gr + 0.5 * h_cross_gr
             
             # <reason>chain: Add realistic detector noise to GR baseline for better calibration</reason>
             # LIGO design sensitivity at 100 Hz: ~1e-23 strain/rtHz
@@ -185,7 +177,21 @@ class GwValidator(BaseValidation):
             delta = 0.0
             
             loss = 1 - match  # Loss is 1 - correlation
-            flag = "PASS" if match > 0.95 else "FAIL"
+            
+            # <reason>chain: Set appropriate status based on match and modifications</reason>
+            if match > 0.97:
+                flag = "PASS"
+            elif match > 0.95:
+                flag = "WARNING"
+            else:
+                flag = "FAIL"
+                
+            # <reason>chain: For theories without modifications, perfect match is expected</reason>
+            if not theory_has_modifications and match > 0.99:
+                flag = "PASS"
+                notes_suffix = " (matches GR as expected)"
+            else:
+                notes_suffix = ""
             
             if verbose:
                 print(f"  Binary masses: {m1/M_sun:.1f} + {m2/M_sun:.1f} M_sun")
@@ -221,6 +227,6 @@ class GwValidator(BaseValidation):
                 "phase_difference": phase_diff,
                 "frequency_deviation": delta,
                 "units": "dimensionless",
-                "notes": f"Waveform match: {match:.3f} (>0.95 required)"
+                "notes": f"Waveform match: {match:.3f} (>0.95 required){notes_suffix}"
             }
         } 

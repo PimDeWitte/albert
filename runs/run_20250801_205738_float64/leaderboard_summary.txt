@@ -1,0 +1,34 @@
+COMPREHENSIVE THEORY EVALUATION LEADERBOARD
+================================================================================
+Total theories evaluated: 1
+Scoring system: Weighted evaluation across 8 dimensions
+
+TOP THEORIES BY UNIFIED SCORE (Comprehensive Evaluation):
+--------------------------------------------------------------------------------
+Rank  Theory                             Category    Score   Bonuses/Penalties        
+--------------------------------------------------------------------------------
+1     Einstein Asymmetric (α=0.0e+00)    quantum     0.4643  +perfect_conservation    
+
+
+COMPONENT SCORE LEADERS:
+--------------------------------------------------------------------------------
+Constraints (Conservation, Metrics)      Einstein Asymmetric (α=0.0e+00) (0.000)
+Observational (Quantum Tests)            Einstein Asymmetric (α=0.0e+00) (0.274)
+Predictions (CMB, PTA)                   Einstein Asymmetric (α=0.0e+00) (0.000)
+Trajectory Matching                      Einstein Asymmetric (α=0.0e+00) (0.000)
+Unification Potential                    Einstein Asymmetric (α=0.0e+00) (0.500)
+
+
+PERFORMANCE BY THEORY CATEGORY:
+--------------------------------------------------------------------------------
+Quantum      theories:   1 | Avg score: 0.464 | Best: Einstein Asymmetric (α=0.0e+00)
+
+
+OVERALL STATISTICS:
+--------------------------------------------------------------------------------
+Mean unified score: 0.464
+Std deviation: 0.000
+Score range: 0.464 - 0.464
+
+================================================================================
+Full details saved to: runs/run_20250801_205738_float64/leaderboard.json

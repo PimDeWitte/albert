@@ -42,13 +42,30 @@ class BlackHole:
 class BlackHoleLoader:
     """Loader for black hole configurations from JSON files."""
     
-    def __init__(self, base_dir: str = 'physics_agent/black_holes'):
+    def __init__(self, base_dir: str = None):
         """
         Initialize black hole loader.
         
         Args:
-            base_dir: Base directory containing black hole JSON files
+            base_dir: Base directory containing black hole JSON files. 
+                     If None, will search for the directory automatically.
         """
+        if base_dir is None:
+            # Try to find the black_holes directory
+            import os
+            possible_paths = [
+                'black_holes',  # When running from physics_agent/
+                'physics_agent/black_holes',  # When running from project root
+                os.path.join(os.path.dirname(__file__), 'black_holes'),  # Relative to this file
+            ]
+            for path in possible_paths:
+                if os.path.exists(path) and os.path.isdir(path):
+                    base_dir = path
+                    break
+            else:
+                # If not found, use default and let it fail with clear error
+                base_dir = 'physics_agent/black_holes'
+                
         self.base_dir = base_dir
         self.black_holes: Dict[str, BlackHole] = {}
         self.discover_black_holes()
@@ -56,11 +73,14 @@ class BlackHoleLoader:
     def discover_black_holes(self):
         """Discover and load all black hole configurations."""
         defaults_dir = os.path.join(self.base_dir, 'defaults')
-        if os.path.isdir(defaults_dir):
-            for filename in os.listdir(defaults_dir):
-                if filename.endswith('.json'):
-                    filepath = os.path.join(defaults_dir, filename)
-                    self._load_black_hole(filepath)
+        if not os.path.isdir(defaults_dir):
+            print(f"Warning: Black hole defaults directory not found at {defaults_dir}")
+            return
+            
+        for filename in os.listdir(defaults_dir):
+            if filename.endswith('.json'):
+                filepath = os.path.join(defaults_dir, filename)
+                self._load_black_hole(filepath)
     
     def _load_black_hole(self, filepath: str):
         """Load a single black hole configuration from JSON."""

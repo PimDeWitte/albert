@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trajectory Computation Flow</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .flow-container {
+            width: 100%;
+            height: 800px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .node {
+            cursor: pointer;
+        }
+        .node-rect {
+            fill: #3498db;
+            stroke: #2c3e50;
+            stroke-width: 2;
+        }
+        .node-text {
+            fill: white;
+            font-size: 14px;
+            text-anchor: middle;
+        }
+        .link {
+            fill: none;
+            stroke: #95a5a6;
+            stroke-width: 2;
+        }
+        .link-label {
+            font-size: 12px;
+            fill: #7f8c8d;
+        }
+        .highlight {
+            stroke: #e74c3c !important;
+            stroke-width: 4 !important;
+        }
+        .particle-animation {
+            fill: #e74c3c;
+            r: 8;
+        }
+        .control-panel {
+            margin-top: 20px;
+            text-align: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .info-box {
+            background-color: #ecf0f1;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        .solver-type {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+        .solver-4d { background-color: #27ae60; }
+        .solver-6d { background-color: #e67e22; }
+        .solver-quantum { background-color: #9b59b6; }
+        .code-snippet {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Trajectory Computation Flow</h1>
+        
+        <div class="flow-container" id="flow-diagram"></div>
+        
+        <div class="control-panel">
+            <button onclick="animateElectron()">Animate Electron</button>
+            <button onclick="animatePhoton()">Animate Photon</button>
+            <button onclick="animateProton()">Animate Proton</button>
+            <button onclick="animateQuantum()">Animate Quantum Particle</button>
+        </div>
+
+        <div class="info-box">
+            <h2>How It Works</h2>
+            <p>Click the buttons above to see how different particles flow through the solver selection process:</p>
+            <ul>
+                <li><span class="solver-type solver-4d">4D Solvers</span> - Used for symmetric spacetimes with conserved quantities (3-5x faster)</li>
+                <li><span class="solver-type solver-6d">6D Solvers</span> - Used for general spacetimes without symmetries</li>
+                <li><span class="solver-type solver-quantum">Quantum Solvers</span> - Used for quantum theories with path integral formulation</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h2>Example Code Flow</h2>
+            <div class="code-snippet">
+# theory_engine_core.py:720-732
+if theory_category == 'quantum' and use_quantum_trajectories:
+    # Use quantum path integrator
+    solver = QuantumPathIntegrator(model)
+elif model.has_conserved_quantities:
+    if particle.charge != 0:
+        solver = ConservedQuantityChargedGeodesicSolver(model)
+    elif particle.particle_type == 'massless':
+        solver = PhotonGeodesicSolver(model)
+    else:
+        solver = ConservedQuantityGeodesicSolver(model)
+else:
+    # Use 6D general solver
+    solver = GeneralRelativisticGeodesicSolver(model)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create the flow diagram
+        const width = 1350;
+        const height = 800;
+
+        const svg = d3.select("#flow-diagram")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Define nodes
+        const nodes = [
+            {id: "start", label: "Theory + Particle", x: 100, y: 400, width: 150, height: 60},
+            {id: "quantum_check", label: "Is Quantum?", x: 300, y: 400, width: 120, height: 60, type: "decision"},
+            
+            // Quantum path with PennyLane
+            {id: "quantum_branch", label: "🔬 QUANTUM PATH\nPennyLane Integration", x: 500, y: 100, width: 200, height: 60, color: "#e91e63"},
+            {id: "quantum_solver", label: "QuantumPathIntegrator", x: 300, y: 50, width: 200, height: 60, color: "#9b59b6"},
+            {id: "quantum_corrected", label: "QuantumCorrectedGeodesicSolver\n(PennyLane Circuits)", x: 700, y: 50, width: 250, height: 60, color: "#9b59b6"},
+            
+            // PennyLane components
+            {id: "pennylane_device", label: "qml.device\n'default.qubit'", x: 500, y: -50, width: 150, height: 50, color: "#ff5722"},
+            {id: "pennylane_circuit", label: "Quantum Circuit\nRY(pos), RZ(mom)", x: 700, y: -50, width: 180, height: 50, color: "#ff5722"},
+            {id: "pennylane_entangle", label: "Entanglement\nCNOT gates", x: 900, y: -50, width: 150, height: 50, color: "#ff5722"},
+            {id: "pennylane_measure", label: "Measurement\nexpval(PauliZ⊗PauliZ)", x: 1100, y: -50, width: 200, height: 50, color: "#ff5722"},
+            
+            // Path integral methods
+            {id: "pi_methods", label: "Path Integral\nMethods", x: 300, y: 150, width: 150, height: 50, color: "#673ab7"},
+            {id: "monte_carlo", label: "Monte Carlo\nSampling", x: 100, y: 150, width: 150, height: 40, color: "#7e57c2"},
+            {id: "wkb", label: "WKB\nApproximation", x: 300, y: 220, width: 150, height: 40, color: "#7e57c2"},
+            {id: "stationary", label: "Stationary\nPhase", x: 500, y: 150, width: 150, height: 40, color: "#7e57c2"},
+            
+            // Classical path
+            {id: "conserved_check", label: "Has Conserved\nQuantities?", x: 500, y: 400, width: 150, height: 60, type: "decision"},
+            {id: "particle_type_sym", label: "Particle Type?", x: 700, y: 300, width: 120, height: 60, type: "decision"},
+            {id: "particle_type_gen", label: "Particle Type?", x: 700, y: 500, width: 120, height: 60, type: "decision"},
+            {id: "csq", label: "ConservedQuantity\nGeodesicSolver", x: 900, y: 200, width: 180, height: 60, color: "#27ae60"},
+            {id: "cscq", label: "ConservedQuantityCharged\nGeodesicSolver", x: 900, y: 300, width: 220, height: 60, color: "#27ae60"},
+            {id: "pgs", label: "PhotonGeodesicSolver", x: 900, y: 400, width: 180, height: 60, color: "#27ae60"},
+            {id: "grs", label: "GeneralRelativistic\nGeodesicSolver", x: 900, y: 500, width: 180, height: 60, color: "#e67e22"},
+            {id: "cps", label: "ChargedParticle\nGeodesicSolver", x: 900, y: 600, width: 180, height: 60, color: "#e67e22"},
+            {id: "ugm", label: "UnifiedGravityModel\nGeodesicSolver", x: 900, y: 700, width: 180, height: 60, color: "#e67e22"},
+            {id: "integrate", label: "RK4 Integration\n+ Quantum Corrections", x: 1150, y: 400, width: 180, height: 60}
+        ];
+
+        // Define links
+        const links = [
+            {source: "start", target: "quantum_check"},
+            {source: "quantum_check", target: "quantum_branch", label: "Yes", highlight: true},
+            {source: "quantum_check", target: "conserved_check", label: "No"},
+            
+            // Quantum branch
+            {source: "quantum_branch", target: "quantum_solver"},
+            {source: "quantum_branch", target: "quantum_corrected"},
+            
+            // Path integral methods
+            {source: "quantum_solver", target: "pi_methods"},
+            {source: "pi_methods", target: "monte_carlo"},
+            {source: "pi_methods", target: "wkb"},
+            {source: "pi_methods", target: "stationary"},
+            
+            // PennyLane flow
+            {source: "quantum_corrected", target: "pennylane_device"},
+            {source: "pennylane_device", target: "pennylane_circuit"},
+            {source: "pennylane_circuit", target: "pennylane_entangle"},
+            {source: "pennylane_entangle", target: "pennylane_measure"},
+            
+            // Classical branch
+            {source: "conserved_check", target: "particle_type_sym", label: "Yes"},
+            {source: "conserved_check", target: "particle_type_gen", label: "No"},
+            {source: "particle_type_sym", target: "csq", label: "Neutral"},
+            {source: "particle_type_sym", target: "cscq", label: "Charged"},
+            {source: "particle_type_sym", target: "pgs", label: "Massless"},
+            {source: "particle_type_gen", target: "grs", label: "Neutral"},
+            {source: "particle_type_gen", target: "cps", label: "Charged"},
+            {source: "particle_type_gen", target: "ugm", label: "UGM"},
+            
+            // All paths lead to integration
+            {source: "monte_carlo", target: "integrate"},
+            {source: "wkb", target: "integrate"},
+            {source: "stationary", target: "integrate"},
+            {source: "pennylane_measure", target: "integrate"},
+            {source: "csq", target: "integrate"},
+            {source: "cscq", target: "integrate"},
+            {source: "pgs", target: "integrate"},
+            {source: "grs", target: "integrate"},
+            {source: "cps", target: "integrate"},
+            {source: "ugm", target: "integrate"}
+        ];
+
+        // Create node elements
+        const nodeGroups = svg.selectAll(".node")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.x}, ${d.y})`);
+
+        // Add rectangles for nodes
+        nodeGroups.append("rect")
+            .attr("class", "node-rect")
+            .attr("x", d => -d.width/2)
+            .attr("y", d => -d.height/2)
+            .attr("width", d => d.width)
+            .attr("height", d => d.height)
+            .attr("rx", d => d.type === "decision" ? 10 : 5)
+            .style("fill", d => d.color || (d.type === "decision" ? "#f39c12" : "#3498db"));
+
+        // Add text to nodes
+        nodeGroups.append("text")
+            .attr("class", "node-text")
+            .attr("y", 5)
+            .html(d => {
+                const lines = d.label.split('\n');
+                return lines.map((line, i) => 
+                    `<tspan x="0" dy="${i === 0 ? 0 : 1.2}em">${line}</tspan>`
+                ).join('');
+            });
+
+        // Create links
+        const linkPaths = svg.selectAll(".link")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d => {
+                const sourceNode = nodes.find(n => n.id === d.source);
+                const targetNode = nodes.find(n => n.id === d.target);
+                const sx = sourceNode.x + sourceNode.width/2;
+                const sy = sourceNode.y;
+                const tx = targetNode.x - targetNode.width/2;
+                const ty = targetNode.y;
+                return `M ${sx} ${sy} L ${tx} ${ty}`;
+            })
+            .style("stroke", d => d.highlight ? "#e91e63" : "#95a5a6")
+            .style("stroke-width", d => d.highlight ? 3 : 2);
+
+        // Add link labels
+        svg.selectAll(".link-label")
+            .data(links.filter(d => d.label))
+            .enter().append("text")
+            .attr("class", "link-label")
+            .attr("x", d => {
+                const sourceNode = nodes.find(n => n.id === d.source);
+                const targetNode = nodes.find(n => n.id === d.target);
+                return (sourceNode.x + targetNode.x) / 2;
+            })
+            .attr("y", d => {
+                const sourceNode = nodes.find(n => n.id === d.source);
+                const targetNode = nodes.find(n => n.id === d.target);
+                return (sourceNode.y + targetNode.y) / 2 - 5;
+            })
+            .attr("text-anchor", "middle")
+            .text(d => d.label);
+
+        // Animation functions
+        function animatePath(path) {
+            // Reset all highlights
+            linkPaths.classed("highlight", false);
+
+            // Create particle
+            const particle = svg.append("circle")
+                .attr("class", "particle-animation");
+
+            let pathIndex = 0;
+            
+            function moveParticle() {
+                if (pathIndex >= path.length - 1) {
+                    particle.remove();
+                    return;
+                }
+
+                const currentLink = links.find(l => 
+                    l.source === path[pathIndex] && l.target === path[pathIndex + 1]
+                );
+                
+                if (currentLink) {
+                    // Highlight the current path
+                    linkPaths.filter(d => d === currentLink).classed("highlight", true);
+
+                    const sourceNode = nodes.find(n => n.id === path[pathIndex]);
+                    const targetNode = nodes.find(n => n.id === path[pathIndex + 1]);
+
+                    particle
+                        .attr("cx", sourceNode.x)
+                        .attr("cy", sourceNode.y)
+                        .transition()
+                        .duration(800)
+                        .attr("cx", targetNode.x)
+                        .attr("cy", targetNode.y)
+                        .on("end", () => {
+                            pathIndex++;
+                            setTimeout(moveParticle, 200);
+                        });
+                }
+            }
+
+            moveParticle();
+        }
+
+        function animateElectron() {
+            // Electron: massive, charged, symmetric spacetime
+            const path = ["start", "quantum_check", "conserved_check", "particle_type_sym", "cscq", "integrate"];
+            animatePath(path);
+        }
+
+        function animatePhoton() {
+            // Photon: massless, neutral, symmetric spacetime
+            const path = ["start", "quantum_check", "conserved_check", "particle_type_sym", "pgs", "integrate"];
+            animatePath(path);
+        }
+
+        function animateProton() {
+            // Proton: massive, charged, general spacetime
+            const path = ["start", "quantum_check", "conserved_check", "particle_type_gen", "cps", "integrate"];
+            animatePath(path);
+        }
+
+        function animateQuantum() {
+            // Quantum particle with PennyLane
+            const path = ["start", "quantum_check", "quantum_branch", "quantum_corrected", "pennylane_device", "pennylane_circuit", "pennylane_entangle", "pennylane_measure", "integrate"];
+            animatePath(path);
+        }
+    </script>
+</body>
+</html>

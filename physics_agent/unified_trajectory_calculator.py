@@ -187,7 +187,20 @@ class UnifiedTrajectoryCalculator:
         y = y0
         
         # <reason>chain: Debug which solver is being used</reason>
-        print(f"    Using solver: {type(self.classical_solver).__name__}")
+        # Map old solver names to new names for display
+        solver_display_name = type(self.classical_solver).__name__
+        name_mapping = {
+            'GeodesicRK4Solver': 'ConservedQuantityGeodesicSolver',
+            'GeneralGeodesicRK4Solver': 'GeneralRelativisticGeodesicSolver',
+            'ChargedGeodesicRK4Solver': 'ChargedParticleGeodesicSolver',
+            'NullGeodesicRK4Solver': 'PhotonGeodesicSolver',
+            'UGMGeodesicRK4Solver': 'UnifiedGravityModelGeodesicSolver',
+            'SymmetricChargedGeodesicRK4Solver': 'ConservedQuantityChargedGeodesicSolver',
+            'QuantumGeodesicSimulator': 'QuantumCorrectedGeodesicSolver'
+        }
+        if solver_display_name in name_mapping:
+            solver_display_name = name_mapping[solver_display_name]
+        print(f"    Using solver: {solver_display_name}")
         
         # <reason>chain: Step size handling depends on solver type</reason>
         if isinstance(self.classical_solver, GeodesicRK4Solver):

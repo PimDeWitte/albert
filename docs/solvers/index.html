@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravitational Theory Solver Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .hero {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        .hero h1 {
+            font-size: 48px;
+            margin: 0 0 20px 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .nav-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: -50px auto 50px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        .card h2 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 28px;
+        }
+        .card p {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .card a {
+            display: inline-block;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .card a:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        .features {
+            background: white;
+            padding: 60px 20px;
+            margin-top: 80px;
+        }
+        .features h2 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature {
+            text-align: center;
+        }
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            color: white;
+        }
+        .feature h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .feature p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .tech-stack {
+            background: #f8f9fa;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .tech-stack h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .tech-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .tech-badge {
+            background: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+            font-size: 14px;
+            color: #495057;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="nav-back">← Back to Main Docs</a>
+    
+    <div class="hero">
+        <h1>Gravitational Theory Solver Engine</h1>
+        <p>Advanced solver architecture for simulating particle trajectories in curved spacetime, with comprehensive testing and validation against General Relativity</p>
+    </div>
+
+    <div class="container">
+        <div class="cards-grid">
+            <div class="card floating" style="animation-delay: 0s;">
+                <h2>Solver Architecture</h2>
+                <p>Explore the sophisticated hierarchy of specialized solvers for different particle types and spacetime geometries. Learn why simple geodesic integration is insufficient for accurate physics.</p>
+                <a href="solver-architecture.html">View Documentation →</a>
+            </div>
+
+            <div class="card floating" style="animation-delay: 0.2s;">
+                <h2>Interactive Flow Diagram</h2>
+                <p>See how particles flow through the solver selection process with animated visualizations. Watch electrons, photons, and quantum particles take different paths through the system.</p>
+                <a href="trajectory-computation-flow.html">Explore Interactive →</a>
+            </div>
+
+            <div class="card floating" style="animation-delay: 0.4s;">
+                <h2>Validation Pipeline</h2>
+                <p>Understand how theories are tested through analytical validators and numerical integration tests. Learn about loss metrics and comparison against Kerr baselines.</p>
+                <a href="validation-testing-pipeline.html">Testing Details →</a>
+            </div>
+
+            <div class="card floating" style="animation-delay: 0.6s;">
+                <h2>Quantum Path Integration</h2>
+                <p>Deep dive into how quantum theories use PennyLane for quantum circuit simulation, path integral formulation, and WKB approximations. See how quantum fluctuations are computed.</p>
+                <a href="quantum-path-integration.html">Quantum Details →</a>
+            </div>
+
+            <div class="card floating" style="animation-delay: 0.8s;">
+                <h2>✨ NEW: Unified Quantum Solver</h2>
+                <p>Learn about the newly consolidated UnifiedQuantumSolver that combines path integrals with optional PennyLane corrections. See how the consolidation simplifies quantum trajectory computation.</p>
+                <a href="unified-quantum-solver.html">Consolidation Details →</a>
+            </div>
+
+            <div class="card floating" style="animation-delay: 1.0s;">
+                <h2>🔬 PennyLane Usage Explained</h2>
+                <p>Understand why and when to use PennyLane quantum circuits. Learn which theories require it (spoiler: none!) and when this experimental feature adds value to your simulations.</p>
+                <a href="pennylane-usage.html">PennyLane Guide →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <h2>Key Features</h2>
+        <div class="feature-grid">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Optimized Performance</h3>
+                <p>4D solvers are 3-5x faster than 6D for symmetric spacetimes by exploiting conserved quantities</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Precision Physics</h3>
+                <p>Specialized solvers for charged particles, photons, and quantum systems ensure accurate trajectories</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Comprehensive Testing</h3>
+                <p>7 analytical validators and 4 trajectory-based tests validate against experimental data</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📈</div>
+                <h3>Loss Metrics</h3>
+                <p>Multiple loss types (MSE, FFT, endpoint, cosine) quantify deviation from General Relativity</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-stack">
+        <h3>Technology Stack</h3>
+        <div class="tech-badges">
+            <span class="tech-badge">PyTorch</span>
+            <span class="tech-badge">NumPy</span>
+            <span class="tech-badge">Matplotlib</span>
+            <span class="tech-badge">D3.js</span>
+            <span class="tech-badge">Chart.js</span>
+            <span class="tech-badge">Mermaid</span>
+            <span class="tech-badge">PennyLane</span>
+            <span class="tech-badge">RK4 Integration</span>
+            <span class="tech-badge">Path Integrals</span>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 40px; color: white;">
+        <p style="opacity: 0.8;">Built for Einstein's legacy - pursuing perfection in gravitational physics</p>
+    </div>
+</body>
+</html>

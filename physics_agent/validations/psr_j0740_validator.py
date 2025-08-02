@@ -193,7 +193,15 @@ class PsrJ0740Validator(BaseValidation):
         i_deg = obs_data['inclination']
         e = obs_data['eccentricity']
         rms_us = obs_data['timing_rms']  # seconds
-        tolerance = obs_data.get('tolerance', 3e-6)  # Default to 3 microseconds if not specified
+        # <reason>chain: Use realistic tolerance based on measurement uncertainty, not timing RMS</reason>
+        # The Shapiro delay itself can be much larger than timing RMS
+        # What matters is that we can measure it accurately
+        # Use 10% relative error as tolerance for Shapiro delay predictions
+        tolerance = obs_data.get('tolerance', None)
+        if tolerance is None:
+            # For PSR J0740, the Shapiro delay is ~18.7 μs
+            # A 10% tolerance allows 1.9 μs deviation, which is reasonable
+            tolerance = 2e-6  # 2 microseconds absolute tolerance
         
         # Semi-major axis from Kepler's third law
         M_total = M_p + M_c
@@ -253,13 +261,21 @@ class PsrJ0740Validator(BaseValidation):
                         flags['overall'] = 'FAIL'
                         flags['details'] = f"Inconsistent predictions: analytic vs numeric differ by {consistency*100:.1f}%"
                     else:
-                        # Check if delay is compatible with timing precision
-                        if max_delay > tolerance:
-                            loss = max_delay / tolerance - 1.0
+                        # <reason>chain: Check relative error instead of absolute comparison</reason>
+                        # GR predicts ~18.7 μs Shapiro delay for this system
+                        gr_shapiro_delay = 18.7e-6  # Expected GR value in seconds
+                        relative_error = abs(max_delay - gr_shapiro_delay) / gr_shapiro_delay
+                        
+                        if relative_error > 0.1:  # 10% relative error threshold
+                            loss = relative_error * 10  # Scale to ~1 for 10% error
+                            flags['overall'] = 'FAIL'
+                            flags['details'] = f"Shapiro delay {max_delay*1e6:.1f} μs deviates {relative_error*100:.1f}% from GR expectation"
+                        elif relative_error > 0.02:  # 2% warning threshold
+                            loss = relative_error
                             flags['overall'] = 'WARNING'
-                            flags['details'] = f"Shapiro delay {max_delay*1e6:.1f} μs exceeds tolerance {tolerance*1e6:.1f} μs"
+                            flags['details'] = f"Shapiro delay {max_delay*1e6:.1f} μs shows {relative_error*100:.1f}% deviation from GR"
                         else:
-                            flags['details'] = f"Shapiro delay {max_delay*1e6:.1f} μs within timing precision"
+                            flags['details'] = f"Shapiro delay {max_delay*1e6:.1f} μs matches GR within {relative_error*100:.1f}%"
                 
             # Add comparison to observed value
             details['observed_delay'] = rms_us  # Use timing RMS as proxy for detectability

@@ -1,0 +1,38 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+      neutrino: trajectory is None
+      photon: trajectory is None
+      electron: trajectory is None
+      proton: trajectory is None
+    ✓ Computed 0/4 particle trajectories
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)
+      neutrino: trajectory is None
+      proton: trajectory is None
+      electron: trajectory is None
+      photon: trajectory is None
+    ✓ Computed 0/4 particle trajectories
+
+Completed 2/4 baseline simulations
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 1 Theories ---
+  Using preferred values for Einstein Asymmetric (α=0.0e+00): {'alpha': 0.0}
+
+--- Validating: Einstein Asymmetric (α=0.0e+00) ---
+  Running validation trajectory for Einstein Asymmetric (α=0.0e+00)...
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for Einstein Asymmetric (α=0.0e+00)
+    Initial conditions: r=12.0, E=0.9622504486493765, Lz=4.0
+    Time steps: 100, Step size: 0.1
+    Using solver: ConservedQuantityGeodesicSolver
+    Classical trajectory computed: 101 points

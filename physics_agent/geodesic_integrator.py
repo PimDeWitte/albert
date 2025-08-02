@@ -12,9 +12,13 @@ Key Enhancements:
 - **Numerical Stability**: Enhanced error handling, 4-velocity normalization enforcement, and safeguards against singularities.
 
 Solvers:
-1. **GeodesicRK4Solver**: Optimized for static, axisymmetric spacetimes using conserved quantities (4D state space).
-2. **GeneralGeodesicRK4Solver**: Handles general spacetimes (6D state space).
-3. **UGMGeodesicRK4Solver**: Extends General solver for UGM, with gauge field computations and optional quantum corrections.
+1. **ConservedQuantityGeodesicSolver**: Optimized for static, axisymmetric spacetimes using conserved quantities (4D state space).
+2. **GeneralRelativisticGeodesicSolver**: Handles general spacetimes without symmetry assumptions (6D state space).
+3. **UnifiedGravityModelGeodesicSolver**: Extends General solver for UGM theory, with gauge field computations and optional quantum corrections.
+4. **ChargedParticleGeodesicSolver**: For charged particles with electromagnetic forces.
+5. **PhotonGeodesicSolver**: Specialized for null geodesics (massless particles).
+6. **ConservedQuantityChargedGeodesicSolver**: Combines conserved quantity optimization with charged particle dynamics.
+7. **QuantumCorrectedGeodesicSolver**: Adds quantum corrections using PennyLane circuit simulations.
 
 Initial Conditions Example (Schwarzschild circular orbit):
 ```python
@@ -25,7 +29,7 @@ G = 6.67430e-11  # m^3/kg/s^2
 r_phys = 1.496e11  # m (1 AU)
 
 # Convert to geometric units
-solver = GeodesicRK4Solver(model, M_phys, c, G)
+solver = ConservedQuantityGeodesicSolver(model, M_phys, c, G)
 r_geom = solver.to_geometric_length(r_phys)
 
 # Compute E, L for circular orbit (geometric units)
@@ -83,7 +87,7 @@ KAPPA_GEOM = 8 * math.pi  # In geometric units
 Tensor = torch.Tensor
 
 
-class GeodesicRK4Solver:
+class ConservedQuantityGeodesicSolver:
     """
     Optimized 4D RK4 integrator for geodesic equations in static, axisymmetric spacetimes.
     
@@ -421,7 +425,7 @@ def _compute_christoffel_symbols_impl(g: Tensor, coords: Tensor) -> Tensor:
     return Gamma
 
 
-class GeneralGeodesicRK4Solver:
+class GeneralRelativisticGeodesicSolver:
     """
     General-purpose 6D RK4 integrator for arbitrary spacetime metrics.
     
@@ -454,7 +458,7 @@ class GeneralGeodesicRK4Solver:
     
     Usage Example:
     ```python
-    solver = GeneralGeodesicRK4Solver(kerr_model, M_phys=M_sun)
+    solver = GeneralRelativisticGeodesicSolver(kerr_model, M_phys=M_sun)
     # Initial state: [t, r, φ, dt/dτ, dr/dτ, dφ/dτ]
     state = torch.tensor([0.0, 10.0, 0.0, 1.0, 0.0, 0.1])
     new_state = solver.rk4_step(state, h=0.01)
@@ -723,7 +727,7 @@ class GeneralGeodesicRK4Solver:
         return trajectory
 
 
-class ChargedGeodesicRK4Solver(GeneralGeodesicRK4Solver):
+class ChargedParticleGeodesicSolver(GeneralRelativisticGeodesicSolver):
     """
     RK4 integrator for charged particle geodesics, including Lorentz force.
     Extended for UGM unification with electromagnetic interactions.
@@ -781,7 +785,7 @@ class ChargedGeodesicRK4Solver(GeneralGeodesicRK4Solver):
         return torch.cat([velocities_3d, grav_accel_3d])
 
 
-class NullGeodesicRK4Solver(GeodesicRK4Solver):
+class PhotonGeodesicSolver(ConservedQuantityGeodesicSolver):
     """
     Specialized RK4 integrator for null geodesics (photons, gravitons, massless particles).
     
@@ -823,7 +827,7 @@ class NullGeodesicRK4Solver(GeodesicRK4Solver):
     
     Example Usage:
     ```python
-    solver = NullGeodesicRK4Solver(schwarzschild, M_phys=M_sun, impact_parameter=5.5)
+    solver = PhotonGeodesicSolver(schwarzschild, M_phys=M_sun, impact_parameter=5.5)
     # Initial state for incoming photon
     y0 = torch.tensor([0.0, 100.0, 0.0, -1.0])  # [t, r, φ, dr/dλ]
     deflection = solver.compute_deflection_angle(y0)
@@ -873,7 +877,7 @@ class NullGeodesicRK4Solver(GeodesicRK4Solver):
         return torch.stack([u_t, dr_dlambda, u_phi, d2r_dlambda2])
 
 
-class UGMGeodesicRK4Solver(GeneralGeodesicRK4Solver):
+class UnifiedGravityModelGeodesicSolver(GeneralRelativisticGeodesicSolver):
     """
     [EXPERIMENTAL] Advanced RK4 integrator for Unified Gravity Model (UGM).
     
@@ -924,7 +928,7 @@ class UGMGeodesicRK4Solver(GeneralGeodesicRK4Solver):
     
     Usage Example:
     ```python
-    ugm_solver = UGMGeodesicRK4Solver(
+    ugm_solver = UnifiedGravityModelGeodesicSolver(
         ugm_theory, 
         M_phys=M_sun,
         alpha_g=1/137,  # Gravitational fine structure
@@ -996,7 +1000,7 @@ class UGMGeodesicRK4Solver(GeneralGeodesicRK4Solver):
 
 
 
-class SymmetricChargedGeodesicRK4Solver(GeodesicRK4Solver):
+class ConservedQuantityChargedGeodesicSolver(ConservedQuantityGeodesicSolver):
     """
     RK4 integrator for charged particles in symmetric spacetimes.
     Uses 4D state space with conserved quantities like the symmetric solver,
@@ -1040,7 +1044,7 @@ if __name__ == "__main__":
     M_phys = M_sun  # Solar mass from constants
     
     # Create solver
-    solver = GeodesicRK4Solver(model, M_phys)
+    solver = ConservedQuantityGeodesicSolver(model, M_phys)
     
     # Set up circular orbit at r = 10 GM/c^2
     r_phys = 10 * schwarzschild_radius(M_phys) / 2  # 10 Schwarzschild radii (rs = 2GM/c^2)
@@ -1073,7 +1077,7 @@ from pennylane import numpy as pnp
 import sympy as sp
 from typing import Callable, List
 
-class QuantumGeodesicSimulator(GeneralGeodesicRK4Solver):
+class QuantumCorrectedGeodesicSolver(GeneralRelativisticGeodesicSolver):
     """
     Quantum geodesic simulator using Pennylane for state evolution.
     Evolves quantum state according to Hamiltonian derived from Lagrangian.

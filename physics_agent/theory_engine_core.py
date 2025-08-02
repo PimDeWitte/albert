@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
 Core Theory Engine - Handles gravitational theory simulation and evaluation
+
+DEFAULT BEHAVIOR: Runs comprehensive validation test for all theories.
+- Generates HTML scorecard with analytical and solver-based test results
+- Use --continue-after-test to also run full trajectory simulations
+- Use --skip-comprehensive-test to skip validation (not recommended)
+
 Extracted from self_discovery.py for better separation of concerns
 """
 from __future__ import annotations
@@ -15,6 +21,7 @@ import importlib
 import itertools
 import glob
 from datetime import datetime
+from typing import Union
 # import psutil  # Commented out - not needed for basic functionality
 try:
     from tqdm import tqdm  # <reason>chain: Progress bar library for better visual feedback</reason>
@@ -76,8 +83,8 @@ import multiprocessing
 import traceback
 
 from physics_agent.geodesic_integrator import (
-    GeodesicRK4Solver, GeneralGeodesicRK4Solver, ChargedGeodesicRK4Solver,
-    SymmetricChargedGeodesicRK4Solver, NullGeodesicRK4Solver, UGMGeodesicRK4Solver
+    ConservedQuantityGeodesicSolver, GeneralRelativisticGeodesicSolver, ChargedParticleGeodesicSolver,
+    ConservedQuantityChargedGeodesicSolver, PhotonGeodesicSolver, UnifiedGravityModelGeodesicSolver
 )
 from physics_agent.unified_trajectory_calculator import UnifiedTrajectoryCalculator
 from physics_agent.base_theory import GravitationalTheory, Tensor
@@ -242,7 +249,7 @@ class TheoryEngine:
         # <reason>chain: Use vacuum permittivity from constants module</reason>
         self.epsilon_0 = epsilon_0
 
-    def get_trajectory_cache_path(self, theory_name: str, r0: Tensor or float, n_steps: int, dtau: Tensor or float, dtype_str: str, **kwargs) -> str:
+    def get_trajectory_cache_path(self, theory_name: str, r0: Union[Tensor, float], n_steps: int, dtau: Union[Tensor, float], dtype_str: str, **kwargs) -> str:
         """
         Generates a unique path for a cached trajectory.
         <reason>chain: Delegate to cache module for better encapsulation</reason>
@@ -315,6 +322,16 @@ class TheoryEngine:
             **metric_kwargs
         )
         
+        # <reason>chain: Ensure all metric components are tensors to avoid type errors</reason>
+        if not isinstance(g_tt, torch.Tensor):
+            g_tt = torch.tensor(g_tt, dtype=self.dtype, device=self.device)
+        if not isinstance(g_rr, torch.Tensor):
+            g_rr = torch.tensor(g_rr, dtype=self.dtype, device=self.device)
+        if not isinstance(g_pp, torch.Tensor):
+            g_pp = torch.tensor(g_pp, dtype=self.dtype, device=self.device)
+        if not isinstance(g_tp, torch.Tensor):
+            g_tp = torch.tensor(g_tp, dtype=self.dtype, device=self.device)
+        
         # <reason>chain: Add debug output for Kerr metrics to diagnose issues</reason>
         if 'Kerr' in model.name and abs(g_tp) > NUMERICAL_THRESHOLDS['gtol']:
             if self.verbose:
@@ -344,13 +361,15 @@ class TheoryEngine:
                 if self.verbose:
                     print(f"  Estimated spin parameter a={a} from g_tp")
             
+            # <reason>chain: Ensure Omega is a tensor</reason>
+            if not isinstance(r, torch.Tensor):
+                r = torch.tensor(r, dtype=self.dtype, device=self.device)
             Omega = 1.0 / (r**1.5 + a)
             
             # <reason>chain: Validate Omega is reasonable</reason>
             if not torch.isfinite(Omega) or Omega <= 0 or Omega > 1.0:
                 if self.verbose:
-                    if self.verbose:
-                        print(f"  Warning: Invalid Omega={Omega} computed, using Keplerian approximation")
+                    print(f"  Warning: Invalid Omega={Omega} computed, using Keplerian approximation")
                 Omega = torch.sqrt(1.0 / r**3)
         
         # <reason>chain: Particle-specific normalization for 4-velocity</reason>
@@ -384,6 +403,9 @@ class TheoryEngine:
                     radial_factor = -0.4
                     photon_sphere_factor = 0.8
                 
+                # <reason>chain: Ensure norm_factor is a tensor before sqrt</reason>
+                if not isinstance(norm_factor, torch.Tensor):
+                    norm_factor = torch.tensor(norm_factor, dtype=self.dtype, device=self.device)
                 u_t = 1.0 / torch.sqrt(-norm_factor) * photon_sphere_factor
                 u_phi = Omega * u_t * angular_factor
                 u_r = radial_factor * torch.sqrt(1.0 / r0_geom)
@@ -398,8 +420,11 @@ class TheoryEngine:
                 # If positive or zero, set to small negative value
                 norm_factor = -epsilon
                 if self.verbose:
-                    if self.verbose:
-                        print(f"  Warning: norm_factor was non-negative ({norm_factor + epsilon}), set to -epsilon")
+                    print(f"  Warning: norm_factor was non-negative ({norm_factor + epsilon}), set to -epsilon")
+            
+            # <reason>chain: Ensure norm_factor is a tensor for torch.sqrt</reason>
+            if not isinstance(norm_factor, torch.Tensor):
+                norm_factor = torch.tensor(norm_factor, dtype=self.dtype, device=self.device)
             
             u_t = 1.0 / torch.sqrt(-norm_factor)
             u_phi = Omega * u_t
@@ -425,6 +450,10 @@ class TheoryEngine:
                 
                 if norm_factor >= 0:
                     norm_factor = -epsilon
+                
+                # <reason>chain: Ensure norm_factor is a tensor before sqrt</reason>
+                if not isinstance(norm_factor, torch.Tensor):
+                    norm_factor = torch.tensor(norm_factor, dtype=self.dtype, device=self.device)
                     
                 u_t = 1.0 / torch.sqrt(-norm_factor)
                 u_phi = Omega_modified * u_t
@@ -475,6 +504,10 @@ class TheoryEngine:
         
         # Convert to geometric units
         r0_geom = r0_si / self.length_scale
+        
+        # <reason>chain: Ensure r0_geom is a tensor for consistent calculations</reason>
+        if not isinstance(r0_geom, torch.Tensor):
+            r0_geom = torch.tensor(r0_geom, dtype=self.dtype, device=self.device)
         dtau_geom = DTau_si / self.time_scale
         
         y0_sym, y0_gen, _ = self.get_initial_conditions(model, torch.tensor([r0_geom], dtype=self.dtype, device=self.device).squeeze(), **kwargs)
@@ -492,10 +525,13 @@ class TheoryEngine:
         return hist_si, tag, kicks
         
     def run_multi_particle_trajectories(self, model: GravitationalTheory, r0_si: float, N_STEPS: int, DTau_si: float, 
-                                       theory_category: str = 'unknown', **kwargs) -> dict:
+                                       theory_category: str = 'unknown', max_parallel_workers: int = None, **kwargs) -> dict:
         """
         <reason>chain: Run trajectories for all available particles from defaults directory</reason>
         Dynamically loads all particles defined in physics_agent/particles/defaults/
+        
+        Args:
+            max_parallel_workers: Maximum number of parallel workers. If None, uses automatic memory-based limit.
         """
         particle_results = {}
         
@@ -504,6 +540,39 @@ class TheoryEngine:
         particle_names = self.particle_loader.get_available_particles()
         if self.verbose:
             print(f"  Testing all {len(particle_names)} available particles: {', '.join(particle_names)}")
+            
+        # <reason>chain: Estimate memory usage and warn for large trajectories</reason>
+        from physics_agent.gpu_optimization_config import estimate_memory_usage
+        traj_mem_gb, peak_mem_gb = estimate_memory_usage(
+            n_steps=N_STEPS,
+            batch_size=len(particle_names),
+            state_dim=4,  # Most common case
+            dtype=self.dtype
+        )
+        
+        # <reason>chain: Determine safe number of parallel workers based on memory</reason>
+        if max_parallel_workers is None:
+            try:
+                import psutil
+                available_memory_gb = psutil.virtual_memory().available / (1024**3)
+            except ImportError:
+                # <reason>chain: Fallback if psutil not installed</reason>
+                print("Warning: psutil not available for memory checking. Using conservative defaults.")
+                available_memory_gb = 8.0  # Conservative assumption
+            # Conservative: use at most 50% of available memory
+            safe_workers = max(1, int((available_memory_gb * 0.5) / peak_mem_gb))
+            max_parallel_workers = min(len(particle_names), safe_workers)
+            
+            if max_parallel_workers < len(particle_names):
+                print(f"  ⚠️  Memory constraint: Running {max_parallel_workers} particles in parallel (not all {len(particle_names)})")
+                print(f"      Estimated memory per particle: {peak_mem_gb:.2f} GB")
+                print(f"      Available memory: {available_memory_gb:.2f} GB")
+                
+        # <reason>chain: Warn about very long trajectories</reason>
+        if N_STEPS > 50000:
+            print(f"  ⚠️  Large trajectory warning: {N_STEPS} steps may require {traj_mem_gb:.2f} GB per particle")
+            if not kwargs.get('suppress_memory_warning', False):
+                print(f"      Consider using fewer steps or setting max_parallel_workers=1")
         
         # <reason>chain: Create progress bars for each particle with dedicated positions</reason>
         particle_pbars = {}
@@ -513,7 +582,7 @@ class TheoryEngine:
                 desc=f"    {particle_name}",
                 unit=" steps",
                 position=idx,  # Start from position 0
-                leave=True,  # <reason>chain: Keep progress bars visible after completion for debugging</reason>
+                leave=False,  # <reason>chain: Clean up progress bars after completion to avoid duplicates</reason>
                 ncols=100,
                 bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
             )
@@ -570,8 +639,6 @@ class TheoryEngine:
                 
                 # <reason>chain: Add timing info that bypasses stdout capture for debugging</reason>
                 start_time = time.time()
-                with results_lock:
-                    pbar.set_description(f"    {particle_name} [starting]")
                 
                 hist, tag, kicks = self.run_trajectory(
                     model, r0_si, N_STEPS, DTau_si,
@@ -598,6 +665,10 @@ class TheoryEngine:
                 print(f"\n      Error computing {particle_name} trajectory: {str(e)}")
                 if self.verbose:
                     print(f"      Traceback:\n{traceback.format_exc()}")
+                # <reason>chain: Also print to stderr to bypass stdout capture</reason>
+                sys.stderr.write(f"\n      ERROR: {particle_name} trajectory failed: {str(e)}\n")
+                if self.verbose:
+                    sys.stderr.write(f"{traceback.format_exc()}\n")
             finally:
                 # <reason>chain: Restore stdout</reason>
                 sys.stdout = old_stdout
@@ -632,23 +703,41 @@ class TheoryEngine:
                 }
             }
         
-        # <reason>chain: Run particle computations in parallel</reason>
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(particle_names)) as executor:
-            futures = []
+        # <reason>chain: Run particle computations in parallel with memory-aware limit</reason>
+        if max_parallel_workers == 1:
+            # <reason>chain: Sequential execution for minimal memory usage</reason>
+            print(f"  Running particles sequentially to minimize memory usage...")
             for particle_name in particle_names:
                 pbar = particle_pbars[particle_name]
-                future = executor.submit(compute_particle_trajectory, particle_name, pbar)
-                futures.append(future)
-            
-            # Collect results
-            for future in concurrent.futures.as_completed(futures):
-                particle_name, result = future.result()
+                _, result = compute_particle_trajectory(particle_name, pbar)
                 particle_results[particle_name] = result
                 
                 if self.verbose and result['trajectory'] is not None:
                     print(f"      Stored {particle_name} result with tag: {result['tag']}")
                 elif self.verbose and result['trajectory'] is None:
                     print(f"      Warning: Could not compute trajectory for {particle_name}")
+                    
+                # <reason>chain: Force garbage collection between particles for memory efficiency</reason>
+                import gc
+                gc.collect()
+        else:
+            # <reason>chain: Parallel execution with limited workers</reason>
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_parallel_workers) as executor:
+                futures = []
+                for particle_name in particle_names:
+                    pbar = particle_pbars[particle_name]
+                    future = executor.submit(compute_particle_trajectory, particle_name, pbar)
+                    futures.append(future)
+                
+                # Collect results
+                for future in concurrent.futures.as_completed(futures):
+                    particle_name, result = future.result()
+                    particle_results[particle_name] = result
+                    
+                    if self.verbose and result['trajectory'] is not None:
+                        print(f"      Stored {particle_name} result with tag: {result['tag']}")
+                    elif self.verbose and result['trajectory'] is None:
+                        print(f"      Warning: Could not compute trajectory for {particle_name}")
         
         # <reason>chain: Ensure all progress bars are properly finalized and closed</reason>
         import time
@@ -1060,7 +1149,7 @@ class TheoryEngine:
             elif is_ugm:
                 # <reason>chain: Always use UGM solver for Unified Gauge Model theories</reason>
                 # UGM needs special handling even for symmetric spacetimes due to gauge fields
-                solver = UGMGeodesicRK4Solver(model,
+                solver = UnifiedGravityModelGeodesicSolver(model,
                                             torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                             1.0, 1.0,
                                             enable_quantum_corrections=theory_category == 'quantum')
@@ -1069,7 +1158,7 @@ class TheoryEngine:
                 # Use null geodesic solver for photons
                 # Calculate impact parameter b = L/E for null geodesics
                 impact_param = Lz_geom.item() / E_geom.item() if E_geom.item() != 0 else Lz_geom.item()
-                solver = NullGeodesicRK4Solver(model, 
+                solver = PhotonGeodesicSolver(model, 
                                              torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                              1.0, 1.0,
                                              impact_parameter=impact_param)
@@ -1079,14 +1168,14 @@ class TheoryEngine:
                 # This handles electromagnetic interactions properly even in symmetric spacetimes
                 charge_geom = particle.charge / (self.C_T * self.length_scale).item()
                 mass_geom = particle.mass * self.c_si**2 / self.energy_scale
-                solver = SymmetricChargedGeodesicRK4Solver(model,
+                solver = ConservedQuantityChargedGeodesicSolver(model,
                                                          torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                                          1.0, 1.0,
                                                          q=charge_geom,
                                                          m=mass_geom)
                 tag = "symmetric_charged_solver_run"
             else:
-                solver = GeodesicRK4Solver(model, 
+                solver = ConservedQuantityGeodesicSolver(model, 
                                          torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                          1.0, 1.0,
                                          **optimization_kwargs)
@@ -1116,7 +1205,7 @@ class TheoryEngine:
             
             if is_ugm:
                 # <reason>chain: Use UGM solver for Unified Gauge Model theories</reason>
-                solver = UGMGeodesicRK4Solver(model,
+                solver = UnifiedGravityModelGeodesicSolver(model,
                                             torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                             1.0, 1.0,
                                             enable_quantum_corrections=theory_category == 'quantum')
@@ -1124,7 +1213,7 @@ class TheoryEngine:
             elif particle and particle.particle_type == 'massless':
                 # Use null geodesic solver for photons - but it derives from GeodesicRK4Solver
                 # so we need to use general solver with massless initial conditions
-                solver = GeneralGeodesicRK4Solver(model,
+                solver = GeneralRelativisticGeodesicSolver(model,
                                                 torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                                 1.0, 1.0,
                                                 **optimization_kwargs)
@@ -1133,7 +1222,7 @@ class TheoryEngine:
                 # Use charged particle solver for all charged particles
                 charge_geom = particle.charge / (self.C_T * self.length_scale).item()  # Convert to geometric units
                 mass_geom = particle.mass * self.c_si**2 / self.energy_scale  # Convert to geometric units
-                solver = ChargedGeodesicRK4Solver(model,
+                solver = ChargedParticleGeodesicSolver(model,
                                                 torch.tensor(1.0, device=self.device, dtype=self.dtype),
                                                 1.0, 1.0,
                                                 q=charge_geom,
@@ -2608,13 +2697,17 @@ def process_and_evaluate_theory(
             early_stopping=getattr(args, 'early_stop', False),
         test_mode=False,
         verbose=args.verbose,
-        no_cache=args.no_cache
+        no_cache=args.no_cache,
+        max_parallel_workers=getattr(args, 'max_parallel_workers', None)  # Add memory optimization
     )
     
     # <reason>chain: For quantum theories, also compute classical trajectories as baseline</reason>
     quantum_particle_results = None
-    if theory_category == 'quantum':
+    if theory_category == 'quantum' and not getattr(args, 'skip_quantum_pennylane', False):
         print(f"  Computing quantum trajectories with PennyLane solver for {model.name}...")
+        
+        # <reason>chain: Add memory constraint for quantum trajectories</reason>
+        max_quantum_workers = getattr(args, 'max_quantum_workers', 1)  # Default to sequential for quantum
         
         # Run again with PennyLane quantum solver
         quantum_particle_results = engine.run_multi_particle_trajectories(
@@ -2629,8 +2722,12 @@ def process_and_evaluate_theory(
             early_stopping=getattr(args, 'early_stop', False),
             test_mode=False,
             verbose=args.verbose,
-            no_cache=True  # Always disable cache for quantum to ensure we get different results
+            no_cache=True,  # Always disable cache for quantum to ensure we get different results
+            max_parallel_workers=max_quantum_workers,  # Limit parallelism for memory
+            suppress_memory_warning=True  # Don't warn again for quantum
         )
+    elif theory_category == 'quantum' and getattr(args, 'skip_quantum_pennylane', False):
+        print(f"  Skipping quantum PennyLane trajectories (--skip-quantum-pennylane flag set)")
     
     # Check if any particle trajectory succeeded
     successful_particles = {name: res for name, res in particle_results.items() 
@@ -3478,7 +3575,7 @@ def run_predictions_on_finalists(engine: TheoryEngine, main_run_dir: str, args: 
             # Method 1: Try to use the theory loader to find the theory by class name
             if 'class_name' in theory_info:
                 if not hasattr(engine, 'loader'):
-                    if verbose:
+                    if args.verbose:
                         print(f"  Warning: Engine has no loader attribute. Creating one...")
                     theories_dir = os.path.join(os.path.dirname(__file__), "theories")
                     engine.loader = TheoryLoader(theories_base_dir=theories_dir)
@@ -3517,7 +3614,7 @@ def run_predictions_on_finalists(engine: TheoryEngine, main_run_dir: str, args: 
                                 continue
             
             if theory is None:
-                if verbose:
+                if args.verbose:
                     print(f"  Warning: Could not reconstruct theory {theory_info['name']}")
                 continue
             
@@ -3735,6 +3832,7 @@ def get_available_resources():
     }
     
     try:
+        import psutil
         # Check CPU usage (average over 1 second)
         resources['cpu_percent'] = psutil.cpu_percent(interval=1)
         
@@ -3754,8 +3852,8 @@ def get_available_resources():
             resources['gpu_memory_available_gb'] = total_memory - allocated
             
     except Exception as e:
-        if verbose:
-            print(f"Warning: Could not check all system resources: {e}")
+        # <reason>chain: Silently ignore resource check errors as they're not critical</reason>
+        pass
         
     return resources
 
@@ -3960,7 +4058,7 @@ def main():
             elif torch.backends.mps.is_available():
                 device = "mps"
             else:
-                if verbose:
+                if args.verbose:
                     print("Warning: GPU requested but neither CUDA nor MPS available. Falling back to CPU.")
                 device = "cpu"
         elif args.final or args.cpu_f64:
@@ -3983,6 +4081,46 @@ def main():
     
     # <reason>chain: Print quantum configuration for clarity</reason>
     print(f"Quantum field content for quantum theories: {engine.quantum_field_content}")
+    
+    # Run comprehensive validation tests by default (disable with --skip-comprehensive-test)
+    run_comprehensive = not (hasattr(args, 'skip_comprehensive_test') and args.skip_comprehensive_test)
+    
+    if run_comprehensive:
+        print("\n" + "="*80)
+        print("Running Comprehensive Theory Validation Test First")
+        print("="*80)
+        
+        try:
+            # Import and run the comprehensive test
+            # <reason>chain: sys is already imported globally, don't shadow it</reason>
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from physics_agent.test_comprehensive_final import run_comprehensive_tests
+            
+            # Run the tests
+            test_results, json_file, html_file = run_comprehensive_tests()
+            
+            print("\n" + "="*80)
+            print("Comprehensive Test Complete")
+            print(f"Results saved to:")
+            print(f"  - JSON: {json_file}")
+            print(f"  - HTML: {html_file}")
+            print("="*80 + "\n")
+            
+            # Store test results path for later reference in leaderboard
+            engine.comprehensive_test_results = {
+                'json_file': json_file,
+                'html_file': html_file,
+                'test_results': test_results
+            }
+            
+            # By default, exit after comprehensive test unless --continue-after-test is set
+            if not (hasattr(args, 'continue_after_test') and args.continue_after_test):
+                print("\nComprehensive test complete. Use --continue-after-test to run full simulation afterwards.")
+                return
+            
+        except Exception as e:
+            print(f"\nWarning: Could not run comprehensive test: {e}")
+            print("Continuing with normal execution...\n")
     
     # --- Run Solver Calibration ---
     # <reason>chain: Calibrate solvers before running theories to ensure environment is properly configured</reason>
@@ -4283,7 +4421,7 @@ def main():
     import concurrent.futures
     from functools import partial
     
-    def run_baseline_with_progress(name_model_dir_pos, engine, r0_val, effective_steps, effective_dtau, no_cache):
+    def run_baseline_with_progress(name_model_dir_pos, engine, r0_val, effective_steps, effective_dtau, no_cache, args):
         """Run a single baseline theory for all particles"""
         name, model, theory_dir, position = name_model_dir_pos
         
@@ -4306,7 +4444,8 @@ def main():
                     quantum_interval=0,
                     quantum_beta=0.0,
                     no_cache=no_cache,
-                    verbose=False
+                    verbose=False,
+                    max_parallel_workers=getattr(args, 'max_parallel_workers', None)  # Add memory optimization
                 )
             finally:
                 sys.stdout = old_stdout  # Restore stdout
@@ -4366,7 +4505,8 @@ def main():
                 r0_val,
                 effective_steps,
                 effective_dtau,
-                args.no_cache
+                args.no_cache,
+                args
             )
             
             if success:
@@ -4443,7 +4583,7 @@ def main():
                     resources = get_available_resources()
                     print(f"  System resources: {resources['cpu_count']} CPUs, {resources['memory_available_gb']:.1f}GB RAM available")
                     if max_workers > resources['cpu_count']:
-                        if verbose:
+                        if args.verbose:
                             print(f"  Warning: Requested {max_workers} workers but only {resources['cpu_count']} CPUs available")
                 else:
                     # Auto-determine based on resources

@@ -1,0 +1,18 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Reissner-Nordström (q_e=0.50)
+    ✓ Computed 4/4 particle trajectories
+
+  Computing baseline: Kerr (a=0.50)
+      neutrino: trajectory is None
+      electron: trajectory is None
+      photon: trajectory is None
+      proton: trajectory is None
+    ✓ Computed 0/4 particle trajectories
+
+Warning: Baseline simulation failed for Kerr (a=0.50)
+
+  Computing baseline: Kerr-Newman (a=0.50, q_e=0.50)

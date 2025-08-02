@@ -45,6 +45,14 @@ PARALLELIZATION NOTE:
     p.add_argument("--gpu-f32", action="store_true", 
                    help="Run on GPU with float32 precision for speed. Uses CUDA if available, otherwise MPS (Apple Silicon).")
     
+    # Comprehensive test options (runs by default now)
+    p.add_argument('--skip-comprehensive-test', dest='skip_comprehensive_test', 
+                   action='store_true',
+                   help='Skip the comprehensive validation test (not recommended)')
+    p.add_argument('--continue-after-test', dest='continue_after_test',
+                   action='store_true',
+                   help='Continue with full simulation after comprehensive test')
+    
     # Theory selection arguments
     # <reason>chain: Allow running theories by category for unified theories like UGM</reason>
     p.add_argument("--category", type=str, default=None,
@@ -107,6 +115,14 @@ PARALLELIZATION NOTE:
                    help="Enable early stopping based on loss convergence (credit: Ben Geist)")
     p.add_argument("--no-baselines", action="store_true",
                    help="Skip baseline theory calculations (saves memory)")
+    
+    # Memory optimization arguments
+    p.add_argument("--max-parallel-workers", type=int, default=None,
+                   help="Maximum number of parallel particle workers (default: auto based on memory)")
+    p.add_argument("--max-quantum-workers", type=int, default=1,
+                   help="Maximum parallel workers for quantum PennyLane trajectories (default: 1 for memory safety)")
+    p.add_argument("--skip-quantum-pennylane", action="store_true",
+                   help="Skip quantum PennyLane trajectories (saves significant memory for long runs)")
     
     # Filtering arguments
     p.add_argument("--theory-filter", type=str, default=None, 

@@ -229,20 +229,20 @@ def create_geodesic_solver(theory: GravitationalTheory, M_phys: Tensor = None,
     elif M_phys is None:
         raise ValueError("Must provide either M_phys or M parameter")
         
-    # Check if we should use the new QuantumGeodesicSimulator (PennyLane-based)
-    if kwargs.get('use_pennylane_quantum', False) and is_quantum_theory(theory):
-        if kwargs.get('verbose', False):
-            print(f"Creating QuantumGeodesicSimulator (PennyLane) for {theory.name}")
-        from physics_agent.geodesic_integrator import QuantumGeodesicSimulator
-        # Filter out num_qubits from kwargs since it's a positional parameter
-        num_qubits = kwargs.pop('num_qubits', 4)
-        return QuantumGeodesicSimulator(theory, num_qubits, M_phys=M_phys, c=c, G=G, **kwargs)
-    
     # Check if quantum solver should be used
     if not force_classical and is_quantum_theory(theory):
         if kwargs.get('verbose', False):
-            print(f"Creating QuantumGeodesicSolver for {theory.name}")
-        return QuantumGeodesicSolver(theory, M_phys, c, G, **kwargs)
+            print(f"Creating UnifiedQuantumSolver for {theory.name}")
+        from physics_agent.unified_quantum_solver import UnifiedQuantumSolver
+        
+        # Extract quantum-specific parameters
+        num_qubits = kwargs.pop('num_qubits', 4)
+        use_pennylane = kwargs.pop('use_pennylane_quantum', True)
+        
+        return UnifiedQuantumSolver(theory, M_phys=M_phys, c=c, G=G,
+                                   num_qubits=num_qubits, 
+                                   use_pennylane=use_pennylane,
+                                   **kwargs)
     
     # Check theory type for specific classical solvers
     theory_name = theory.__class__.__name__.lower()

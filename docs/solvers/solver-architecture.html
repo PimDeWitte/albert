@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravitational Theory Solver Architecture</title>
+    <script src="https://unpkg.com/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 40px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        .highlight-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background-color: #fef9e7;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .code-section {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .solver-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .solver-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .metric-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-item {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+        }
+        .animated-section {
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes slide-in {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .slide-in {
+            animation: slide-in 0.5s ease-out;
+        }
+        .mermaid-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .flow-diagram {
+            margin: 30px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gravitational Theory Solver Architecture</h1>
+        
+        <div class="highlight-box">
+            <h2>Executive Summary</h2>
+            <p>The physics engine implements a sophisticated solver hierarchy to simulate particle trajectories in curved spacetime. The core insight is that <strong>geodesic equations for different particle types require specialized solvers</strong> to maintain numerical precision and physical accuracy. Simple geodesic integration is lossy, especially for charged particles, massless particles, and quantum systems.</p>
+        </div>
+
+        <h2>Solver Architecture Overview</h2>
+        
+        <div class="mermaid-container">
+            <div class="mermaid">
+                graph TB
+                    subgraph "TheoryEngine Core"
+                        TE[TheoryEngine<br/>Master Controller]
+                        TE --> |"Selects Solver"| SM[Solver Selection<br/>Based on Theory & Particle]
+                    end
+
+                    subgraph "Classical Solvers"
+                        SM --> |"Symmetric Spacetime"| SYM[4D State Space Solvers]
+                        SM --> |"General Spacetime"| GEN[6D State Space Solvers]
+                        
+                        SYM --> CSQ[ConservedQuantityGeodesicSolver<br/>"Uses E, Lz conservation"]
+                        SYM --> CSCQ[ConservedQuantityChargedGeodesicSolver<br/>"4D + electromagnetic forces"]
+                        SYM --> PGS[PhotonGeodesicSolver<br/>"Null geodesics, impact parameter"]
+                        
+                        GEN --> GRS[GeneralRelativisticGeodesicSolver<br/>"Full 6D phase space"]
+                        GEN --> CPS[ChargedParticleGeodesicSolver<br/>"6D + Lorentz force"]
+                        GEN --> UGM[UnifiedGravityModelGeodesicSolver<br/>"Gauge fields + quantum corrections"]
+                    end
+
+                    subgraph "Quantum Integration with PennyLane"
+                        SM --> |"Quantum Theory<br/>Detected"| QCHECK{"theory.category<br/>== 'quantum'?"}
+                        QCHECK -->|"Yes"| QUANT[Quantum Solvers]
+                        
+                        QUANT --> QPI[QuantumPathIntegrator<br/>"Path integral formulation"]
+                        QUANT --> QCGS[QuantumCorrectedGeodesicSolver<br/>"PennyLane circuit simulation"]
+                        
+                        QPI --> |"Monte Carlo"| MC[Sample Paths]
+                        QPI --> |"WKB"| WKB[Semiclassical]
+                        QPI --> |"Stationary Phase"| SP[Classical Path]
+                        
+                        QCGS --> PENNY[PennyLane Components]
+                        PENNY --> DEV[qml.device<br/>"default.qubit"]
+                        PENNY --> GATES[Quantum Gates<br/>RY, RZ, CNOT]
+                        PENNY --> MEAS[Measurements<br/>qml.expval()]
+                        
+                        SP --> |"Finds stationary path"| CSQ
+                    end
+
+                    style TE fill:#3498db,stroke:#2c3e50,stroke-width:2px,color:#fff
+                    style SM fill:#2ecc71,stroke:#27ae60,stroke-width:2px,color:#fff
+                    style SYM fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:#fff
+                    style GEN fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:#fff
+                    style QUANT fill:#9b59b6,stroke:#8e44ad,stroke-width:2px,color:#fff
+                    style QCGS fill:#e91e63,stroke:#c2185b,stroke-width:2px,color:#fff
+                    style PENNY fill:#ff5722,stroke:#d84315,stroke-width:2px,color:#fff
+                    style QPI fill:#9b59b6,stroke:#8e44ad,stroke-width:2px,color:#fff
+            </div>
+        </div>
+
+        <h2>Solver Selection Logic</h2>
+        
+        <div class="mermaid-container">
+            <div class="mermaid">
+                flowchart TD
+                    Start([Theory & Particle Input])
+                    Start --> Q1{Is Theory<br/>Quantum?}
+                    
+                    Q1 -->|Yes| QPATH["🔬 QUANTUM PATH 🔬<br/>PennyLane Integration"]
+                    Q1 -->|No| Q2{Has Conserved<br/>Quantities?}
+                    
+                    QPATH --> QOPT{Solver Choice}
+                    QOPT -->|Path Integral| QPI[QuantumPathIntegrator]
+                    QOPT -->|Circuit Sim| QCGS[QuantumCorrectedGeodesicSolver]
+                    
+                    QPI --> QMETH{Method?}
+                    QMETH -->|Monte Carlo| MCPATH["Sample 1000s paths<br/>Compute amplitudes"]
+                    QMETH -->|WKB| WKBPATH["Semiclassical<br/>S >> ℏ"]
+                    QMETH -->|Stationary| SPPATH["Find classical path<br/>δS = 0"]
+                    
+                    QCGS --> PLFLOW["PennyLane Flow"]
+                    PLFLOW --> PLDEV["Create Device<br/>qml.device('default.qubit', 4)"]
+                    PLDEV --> PLCIRC["Build Circuit<br/>qml.RY(pos), qml.RZ(mom)"]
+                    PLCIRC --> PLENT["Entangle<br/>qml.CNOT()"]
+                    PLENT --> PLMEAS["Measure<br/>qml.expval(PauliZ⊗PauliZ)"]
+                    PLMEAS --> QCORR["Apply Corrections<br/>to Classical Path"]
+                    
+                    Q2 -->|Yes| Q3{Particle Type?}
+                    Q2 -->|No| Q4{Particle Type?}
+                    
+                    Q3 -->|Massive Neutral| CSQ[ConservedQuantityGeodesicSolver]
+                    Q3 -->|Charged| CSCQ[ConservedQuantityChargedGeodesicSolver]
+                    Q3 -->|Massless| PGS[PhotonGeodesicSolver]
+                    
+                    Q4 -->|Massive Neutral| Q5{Is UGM<br/>Theory?}
+                    Q4 -->|Charged| CPS[ChargedParticleGeodesicSolver]
+                    
+                    Q5 -->|Yes| UGM[UnifiedGravityModelGeodesicSolver]
+                    Q5 -->|No| GRS[GeneralRelativisticGeodesicSolver]
+                    
+                    MCPATH --> RESULT[Quantum Trajectory]
+                    WKBPATH --> RESULT
+                    SPPATH --> RESULT
+                    QCORR --> RESULT
+                    CSQ --> RESULT2[Classical Trajectory]
+                    CSCQ --> RESULT2
+                    PGS --> RESULT2
+                    CPS --> RESULT2
+                    GRS --> RESULT2
+                    UGM --> RESULT2
+                    
+                    style Start fill:#34495e,stroke:#2c3e50,stroke-width:2px,color:#fff
+                    style QPATH fill:#e91e63,stroke:#ad1457,stroke-width:4px,color:#fff
+                    style QPI fill:#9b59b6,stroke:#8e44ad,stroke-width:2px,color:#fff
+                    style QCGS fill:#9b59b6,stroke:#8e44ad,stroke-width:2px,color:#fff
+                    style PLFLOW fill:#ff5722,stroke:#d84315,stroke-width:2px,color:#fff
+                    style PLDEV fill:#ff5722,stroke:#d84315,stroke-width:2px,color:#fff
+                    style PLCIRC fill:#ff5722,stroke:#d84315,stroke-width:2px,color:#fff
+                    style PLENT fill:#ff5722,stroke:#d84315,stroke-width:2px,color:#fff
+                    style PLMEAS fill:#ff5722,stroke:#d84315,stroke-width:2px,color:#fff
+                    style CSQ fill:#27ae60,stroke:#229954,stroke-width:2px,color:#fff
+                    style CSCQ fill:#27ae60,stroke:#229954,stroke-width:2px,color:#fff
+                    style PGS fill:#27ae60,stroke:#229954,stroke-width:2px,color:#fff
+                    style CPS fill:#e67e22,stroke:#d35400,stroke-width:2px,color:#fff
+                    style GRS fill:#e67e22,stroke:#d35400,stroke-width:2px,color:#fff
+                    style UGM fill:#e67e22,stroke:#d35400,stroke-width:2px,color:#fff
+                    style RESULT fill:#2196f3,stroke:#0d47a1,stroke-width:3px,color:#fff
+                    style RESULT2 fill:#4caf50,stroke:#1b5e20,stroke-width:3px,color:#fff
+            </div>
+        </div>
+
+        <h2>Detailed Solver Descriptions</h2>
+
+        <h3>4D State Space Solvers (Symmetric Spacetimes)</h3>
+        
+        <div class="solver-card slide-in">
+            <h3>ConservedQuantityGeodesicSolver</h3>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Use Case</td>
+                    <td>Stationary, axisymmetric spacetimes (Schwarzschild, Kerr, etc.)</td>
+                </tr>
+                <tr>
+                    <td>State Vector</td>
+                    <td><code>[t, r, φ, dr/dτ]</code> (4 dimensions)</td>
+                </tr>
+                <tr>
+                    <td>Key Feature</td>
+                    <td>Exploits conserved energy E and angular momentum Lz</td>
+                </tr>
+                <tr>
+                    <td>Implementation</td>
+                    <td><code>geodesic_integrator.py:133-384</code></td>
+                </tr>
+                <tr>
+                    <td>Performance</td>
+                    <td>~3-5x faster than 6D solvers due to reduced dimensionality</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="solver-card slide-in">
+            <h3>ConservedQuantityChargedGeodesicSolver</h3>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Use Case</td>
+                    <td>Charged particles in symmetric spacetimes</td>
+                </tr>
+                <tr>
+                    <td>State Vector</td>
+                    <td><code>[t, r, φ, dr/dτ]</code> + electromagnetic forces</td>
+                </tr>
+                <tr>
+                    <td>Key Feature</td>
+                    <td>Adds Lorentz force while maintaining 4D efficiency</td>
+                </tr>
+                <tr>
+                    <td>Implementation</td>
+                    <td><code>geodesic_integrator.py:1003-1037</code></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="solver-card slide-in">
+            <h3>PhotonGeodesicSolver</h3>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Use Case</td>
+                    <td>Massless particles (photons, gravitons)</td>
+                </tr>
+                <tr>
+                    <td>State Vector</td>
+                    <td><code>[t, r, φ, dr/dλ]</code> (λ = affine parameter)</td>
+                </tr>
+                <tr>
+                    <td>Key Feature</td>
+                    <td>Uses impact parameter b = L/E for null geodesics</td>
+                </tr>
+                <tr>
+                    <td>Implementation</td>
+                    <td><code>geodesic_integrator.py:788-877</code></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>6D State Space Solvers (General Spacetimes)</h3>
+
+        <div class="solver-card slide-in">
+            <h3>GeneralRelativisticGeodesicSolver</h3>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Use Case</td>
+                    <td>Non-symmetric spacetimes, no conserved quantities</td>
+                </tr>
+                <tr>
+                    <td>State Vector</td>
+                    <td><code>[t, r, φ, u^t, u^r, u^φ]</code> (full 4-velocity)</td>
+                </tr>
+                <tr>
+                    <td>Key Feature</td>
+                    <td>Computes Christoffel symbols on-the-fly</td>
+                </tr>
+                <tr>
+                    <td>Implementation</td>
+                    <td><code>geodesic_integrator.py:428-727</code></td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>Testing Framework</h2>
+
+        <div class="mermaid-container">
+            <div class="mermaid">
+                graph LR
+                    subgraph "Test Suite"
+                        TM[Test Manager]
+                        TM --> AT[Analytical Tests]
+                        TM --> ST[Solver Tests]
+                        TM --> TT[Trajectory Tests]
+                    end
+
+                    subgraph "Analytical Validators"
+                        AT --> MPV[Mercury Precession]
+                        AT --> LDV[Light Deflection]
+                        AT --> PSV[Photon Sphere]
+                        AT --> PPV[PPN Parameters]
+                    end
+
+                    subgraph "Trajectory Integration"
+                        TT --> TVK[Trajectory vs Kerr<br/>1000-step integration]
+                        TVK --> LC[Loss Calculator]
+                        LC --> MSE[MSE Loss]
+                        LC --> FFT[FFT Loss]
+                        LC --> EPL[Endpoint Loss]
+                    end
+
+                    style TM fill:#34495e,stroke:#2c3e50,stroke-width:2px,color:#fff
+                    style AT fill:#3498db,stroke:#2980b9,stroke-width:2px,color:#fff
+                    style TT fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:#fff
+                    style LC fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:#fff
+            </div>
+        </div>
+
+        <h3>Loss Metrics</h3>
+        
+        <div class="metric-list">
+            <div class="metric-item">
+                <h4>trajectory_mse</h4>
+                <p>Mean squared error of full trajectory comparing radial coordinates</p>
+            </div>
+            <div class="metric-item">
+                <h4>fft</h4>
+                <p>Frequency domain comparison to detect periodic deviations</p>
+            </div>
+            <div class="metric-item">
+                <h4>endpoint_mse</h4>
+                <p>Final position deviation to measure accumulated error</p>
+            </div>
+            <div class="metric-item">
+                <h4>cosine</h4>
+                <p>Angular similarity of trajectory shapes</p>
+            </div>
+        </div>
+
+        <h2>Visualization Pipeline</h2>
+
+        <div class="highlight-box">
+            <h3>What Gets Visualized</h3>
+            <ul>
+                <li><strong>3D Trajectories</strong>: Plotted in (x, y, z) coordinates where z represents time</li>
+                <li><strong>Event Horizon</strong>: Rendered as a black sphere at r = 2M</li>
+                <li><strong>Particle Types</strong>: Color-coded (electron=blue, photon=gold, proton=red, neutrino=green)</li>
+                <li><strong>Baseline Comparisons</strong>: Dashed lines showing Schwarzschild/Kerr trajectories</li>
+                <li><strong>Start/End Markers</strong>: Green circle for start, red square for end</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h3>Note on Dead Code</h3>
+            <p>The quantum uncertainty cloud visualization (<code>_add_quantum_uncertainty_cloud</code>) is present in the codebase but is never called. The documentation above only includes features that are actively used.</p>
+        </div>
+
+        <h2>Key Implementation Files</h2>
+
+        <div class="code-section">
+            <h4>Core Engine</h4>
+            <ul>
+                <li><code>theory_engine_core.py:670-1390</code> - Main trajectory runner with solver selection</li>
+                <li><code>theory_engine_core.py:2385-3108</code> - Theory evaluation and loss computation</li>
+            </ul>
+
+            <h4>Solvers</h4>
+            <ul>
+                <li><code>geodesic_integrator.py</code> - All classical geodesic solvers</li>
+                <li><code>quantum_path_integrator.py</code> - Quantum trajectory calculation</li>
+                <li><code>unified_trajectory_calculator.py</code> - Unified interface for all solvers</li>
+            </ul>
+
+            <h4>Testing</h4>
+            <ul>
+                <li><code>test_comprehensive_final.py</code> - Main test suite</li>
+                <li><code>test_geodesic_validator_comparison.py</code> - Schwarzschild baseline comparisons</li>
+                <li><code>loss_calculator.py</code> - Loss computation utilities</li>
+            </ul>
+
+            <h4>Visualization</h4>
+            <ul>
+                <li><code>theory_visualizer.py</code> - All plotting functions</li>
+            </ul>
+        </div>
+
+        <h2>Why Specialized Solvers?</h2>
+
+        <div class="highlight-box">
+            <ol>
+                <li><strong>Numerical Precision</strong>: Different particle types require different numerical treatments</li>
+                <li><strong>Physical Accuracy</strong>: Charged particles need electromagnetic forces, massless particles need null geodesics</li>
+                <li><strong>Computational Efficiency</strong>: 4D solvers are 3-5x faster for symmetric spacetimes</li>
+                <li><strong>Quantum Effects</strong>: Path integral formulation for quantum theories</li>
+                <li><strong>Validation</strong>: Each solver type can be validated against known analytical solutions</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                curve: 'basis'
+            }
+        });
+
+        // Add animation to solver cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('slide-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.solver-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
