@@ -34,6 +34,8 @@ from .cmb_power_spectrum_validator import CMBPowerSpectrumValidator
 from .pta_stochastic_gw_validator import PTAStochasticGWValidator
 from .primordial_gws_validator import PrimordialGWsValidator
 from .qed_precision_validator import QEDPrecisionValidator
+from .g_minus_2_validator import GMinus2Validator
+from .scattering_amplitude_validator import ScatteringAmplitudeValidator
 # <reason>chain: Removed unimplemented validators</reason>
 # from .future_detectors_validator import FutureDetectorsValidator
 # from .novel_signatures_validator import NovelSignaturesValidator
@@ -86,6 +88,8 @@ __all__ = [
     'LagrangianValidator',
     'PsrJ0740Validator',
     'QEDPrecisionValidator',
+    'GMinus2Validator',
+    'ScatteringAmplitudeValidator',
     'validator_registry',
     'performance_tracker'
 ] 

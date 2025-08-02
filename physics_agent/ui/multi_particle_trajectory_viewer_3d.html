@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{THEORY_NAME} - 3D Trajectory Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+        }
+        
+        .info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            max-width: 350px;
+        }
+        
+        h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        
+        .button {
+            background: #2980b9;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            background: #3498db;
+        }
+        
+        .button.active {
+            background: #e74c3c;
+        }
+        
+        .slider-container {
+            margin: 10px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            margin: 5px 0;
+        }
+        
+        .particle-toggle {
+            margin: 5px 0;
+        }
+        
+        .particle-toggle input {
+            margin-right: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        
+        .view-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div class="controls">
+        <h3>View Controls</h3>
+        <button class="button" onclick="setView('third')">Third Person</button>
+        <button class="button" onclick="setView('first')">First Person</button>
+        <button class="button" onclick="setView('top')">Top View</button>
+        <button class="button" onclick="setView('follow')">Follow Particle</button>
+        
+        <h3 style="margin-top: 20px;">Animation</h3>
+        <button class="button" id="playPauseBtn" onclick="toggleAnimation()">Pause</button>
+        <button class="button" onclick="resetAnimation()">Reset</button>
+        
+        <div class="slider-container">
+            <label>Speed: <span id="speedValue">1.0</span>x</label>
+            <input type="range" class="slider" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+        </div>
+        
+        <div class="slider-container">
+            <label>Time: <span id="timeValue">0</span>%</label>
+            <input type="range" class="slider" id="timeSlider" min="0" max="100" step="0.1" value="0">
+        </div>
+        
+        <h3 style="margin-top: 20px;">Particles</h3>
+        <div id="particleToggles"></div>
+    </div>
+    
+    <div class="info">
+        <h3>{THEORY_NAME}</h3>
+        <p>Black Hole Mass: {BLACK_HOLE_MASS} kg</p>
+        <p>Schwarzschild Radius: <span id="schwarzschildRadius"></span> M</p>
+        
+        <h3 style="margin-top: 15px;">Legend</h3>
+        <div id="legend"></div>
+        
+        <h3 style="margin-top: 15px;">Current State</h3>
+        <div id="currentState">
+            <p>Particle: <span id="currentParticle">-</span></p>
+            <p>Position: r = <span id="currentR">-</span> M</p>
+            <p>Time: <span id="currentTime">-</span> s</p>
+        </div>
+    </div>
+    
+    <div class="view-info" id="viewInfo">
+        Third Person View - Use mouse to orbit
+    </div>
+
+    <script>
+        // Theory data
+        const theoryName = '{THEORY_NAME}';
+        const blackHoleMass = {BLACK_HOLE_MASS};
+        const particleData = {PARTICLE_DATA_JSON};
+        
+        // Constants
+        const G = 6.67430e-11;
+        const c = 299792458;
+        const M = G * blackHoleMass / (c * c); // Geometric units
+        
+        // Three.js setup
+        let scene, camera, renderer, controls;
+        let blackHole, particles = {};
+        let trajectoryLines = {};
+        let currentPositions = {};
+        let animationTime = 0;
+        let isPlaying = true;
+        let animationSpeed = 1.0;
+        let currentView = 'third';
+        let activeParticle = 'electron';
+        
+        // Particle colors
+        const particleColors = {
+            electron: 0x3498db,
+            neutrino: 0xe74c3c,
+            photon: 0xf39c12,
+            proton: 0x2ecc71
+        };
+        
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000511);
+            scene.fog = new THREE.Fog(0x000511, 100, 1000);
+            
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                window.innerWidth / window.innerHeight,
+                0.1,
+                10000
+            );
+            
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+            directionalLight.position.set(50, 50, 50);
+            scene.add(directionalLight);
+            
+            // Create black hole
+            createBlackHole();
+            
+            // Create reference objects
+            createReferenceObjects();
+            
+            // Load trajectories
+            loadTrajectories();
+            
+            // Set initial camera position (scaled to see trajectories)
+            setView('third');
+            
+            // Create UI
+            createParticleToggles();
+            updateLegend();
+            
+            // Event listeners
+            window.addEventListener('resize', onWindowResize);
+            document.getElementById('speedSlider').addEventListener('input', updateSpeed);
+            document.getElementById('timeSlider').addEventListener('input', updateTimeFromSlider);
+            
+            // Start animation
+            animate();
+        }
+        
+        function createBlackHole() {
+            // Black hole (event horizon at 2M)
+            const geometry = new THREE.SphereGeometry(2, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x000000,
+                opacity: 0.9,
+                transparent: true
+            });
+            blackHole = new THREE.Mesh(geometry, material);
+            scene.add(blackHole);
+            
+            // Add glow effect
+            const glowGeometry = new THREE.SphereGeometry(2.5, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff0000,
+                opacity: 0.3,
+                transparent: true,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            blackHole.add(glow);
+        }
+        
+        function createReferenceObjects() {
+            // Photon sphere at 3M
+            const photonSphere = new THREE.RingGeometry(3, 3.1, 64);
+            const photonMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffa500,
+                opacity: 0.5,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            const photonRing = new THREE.Mesh(photonSphere, photonMaterial);
+            photonRing.rotation.x = Math.PI / 2;
+            scene.add(photonRing);
+            
+            // ISCO at 6M
+            const isco = new THREE.RingGeometry(6, 6.2, 64);
+            const iscoMaterial = new THREE.MeshBasicMaterial({
+                color: 0x9b59b6,
+                opacity: 0.3,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            const iscoRing = new THREE.Mesh(isco, iscoMaterial);
+            iscoRing.rotation.x = Math.PI / 2;
+            scene.add(iscoRing);
+            
+            // Grid helper for scale reference
+            const gridHelper = new THREE.GridHelper(100, 20, 0x444444, 0x222222);
+            scene.add(gridHelper);
+        }
+        
+        function loadTrajectories() {
+            Object.keys(particleData).forEach(particleName => {
+                const data = particleData[particleName];
+                if (!data.theory) return;
+                
+                // Create particle mesh
+                const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+                const material = new THREE.MeshPhongMaterial({
+                    color: particleColors[particleName],
+                    emissive: particleColors[particleName],
+                    emissiveIntensity: 0.5
+                });
+                const particle = new THREE.Mesh(geometry, material);
+                particles[particleName] = particle;
+                scene.add(particle);
+                
+                // Create trajectory line
+                const points = [];
+                const trajectory = data.theory;
+                
+                for (let i = 0; i < trajectory.r.length; i++) {
+                    const r = trajectory.r[i];
+                    const theta = trajectory.theta[i];
+                    const phi = trajectory.phi[i];
+                    
+                    // Convert spherical to Cartesian
+                    const x = r * Math.sin(theta) * Math.cos(phi);
+                    const y = r * Math.sin(theta) * Math.sin(phi);
+                    const z = r * Math.cos(theta);
+                    
+                    points.push(new THREE.Vector3(x, z, -y)); // Reorient for better view
+                }
+                
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: particleColors[particleName],
+                    opacity: 0.6,
+                    transparent: true
+                });
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                trajectoryLines[particleName] = line;
+                scene.add(line);
+                
+                // Store positions for animation
+                currentPositions[particleName] = points;
+            });
+        }
+        
+        function setView(viewType) {
+            currentView = viewType;
+            const viewInfo = document.getElementById('viewInfo');
+            
+            switch(viewType) {
+                case 'third':
+                    camera.position.set(30, 20, 30);
+                    camera.lookAt(0, 0, 0);
+                    controls.enabled = true;
+                    viewInfo.textContent = 'Third Person View - Use mouse to orbit';
+                    break;
+                    
+                case 'first':
+                    // First person from particle perspective
+                    controls.enabled = false;
+                    viewInfo.textContent = 'First Person View - Following ' + activeParticle;
+                    break;
+                    
+                case 'top':
+                    camera.position.set(0, 50, 0);
+                    camera.lookAt(0, 0, 0);
+                    controls.enabled = true;
+                    viewInfo.textContent = 'Top View';
+                    break;
+                    
+                case 'follow':
+                    controls.enabled = true;
+                    viewInfo.textContent = 'Following ' + activeParticle + ' - Use mouse to orbit';
+                    break;
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (isPlaying) {
+                animationTime += 0.001 * animationSpeed;
+                if (animationTime > 1) animationTime = 0;
+                
+                // Update time slider
+                document.getElementById('timeSlider').value = animationTime * 100;
+                document.getElementById('timeValue').textContent = (animationTime * 100).toFixed(1);
+            }
+            
+            // Update particle positions
+            Object.keys(particles).forEach(particleName => {
+                const particle = particles[particleName];
+                const positions = currentPositions[particleName];
+                
+                if (positions && positions.length > 0) {
+                    const index = Math.floor(animationTime * (positions.length - 1));
+                    const pos = positions[index];
+                    particle.position.copy(pos);
+                    
+                    // Update current state display
+                    if (particleName === activeParticle) {
+                        const r = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
+                        document.getElementById('currentParticle').textContent = particleName;
+                        document.getElementById('currentR').textContent = r.toFixed(2);
+                        document.getElementById('currentTime').textContent = (animationTime * 100).toFixed(1);
+                    }
+                }
+            });
+            
+            // Handle first person view
+            if (currentView === 'first' && particles[activeParticle]) {
+                const particle = particles[activeParticle];
+                camera.position.copy(particle.position);
+                camera.lookAt(0, 0, 0); // Look at black hole
+            } else if (currentView === 'follow' && particles[activeParticle]) {
+                const particle = particles[activeParticle];
+                controls.target.copy(particle.position);
+            }
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        function toggleAnimation() {
+            isPlaying = !isPlaying;
+            document.getElementById('playPauseBtn').textContent = isPlaying ? 'Pause' : 'Play';
+        }
+        
+        function resetAnimation() {
+            animationTime = 0;
+            document.getElementById('timeSlider').value = 0;
+            document.getElementById('timeValue').textContent = '0';
+        }
+        
+        function updateSpeed() {
+            animationSpeed = parseFloat(document.getElementById('speedSlider').value);
+            document.getElementById('speedValue').textContent = animationSpeed.toFixed(1);
+        }
+        
+        function updateTimeFromSlider() {
+            animationTime = parseFloat(document.getElementById('timeSlider').value) / 100;
+            document.getElementById('timeValue').textContent = (animationTime * 100).toFixed(1);
+        }
+        
+        function createParticleToggles() {
+            const container = document.getElementById('particleToggles');
+            
+            Object.keys(particleColors).forEach(particleName => {
+                const div = document.createElement('div');
+                div.className = 'particle-toggle';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = particleName + 'Toggle';
+                checkbox.checked = true;
+                checkbox.onchange = () => toggleParticle(particleName);
+                
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.textContent = particleName.charAt(0).toUpperCase() + particleName.slice(1);
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'activeParticle';
+                radio.value = particleName;
+                radio.checked = particleName === 'electron';
+                radio.onchange = () => { activeParticle = particleName; };
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                div.appendChild(radio);
+                container.appendChild(div);
+            });
+        }
+        
+        function toggleParticle(particleName) {
+            const visible = document.getElementById(particleName + 'Toggle').checked;
+            if (particles[particleName]) {
+                particles[particleName].visible = visible;
+            }
+            if (trajectoryLines[particleName]) {
+                trajectoryLines[particleName].visible = visible;
+            }
+        }
+        
+        function updateLegend() {
+            const container = document.getElementById('legend');
+            
+            Object.keys(particleColors).forEach(particleName => {
+                const div = document.createElement('div');
+                div.className = 'legend-item';
+                
+                const color = document.createElement('div');
+                color.className = 'legend-color';
+                color.style.backgroundColor = '#' + particleColors[particleName].toString(16).padStart(6, '0');
+                
+                const label = document.createElement('span');
+                label.textContent = particleName.charAt(0).toUpperCase() + particleName.slice(1);
+                
+                div.appendChild(color);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Display Schwarzschild radius
+        document.getElementById('schwarzschildRadius').textContent = (2 * M).toFixed(3);
+        
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

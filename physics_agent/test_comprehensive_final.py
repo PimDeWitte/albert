@@ -376,26 +376,42 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
         }
 
 def test_g_minus_2(theory):
-    validator = GMinus2Validator()
-    result = validator.validate(theory)
-    return {
-        'name': 'g-2 Muon',
-        'status': 'PASS' if result.passed else 'FAIL',
-        'passed': result.passed,
-        'loss': result.loss,
-        'notes': result.notes
-    }
+    try:
+        validator = GMinus2Validator()
+        result = validator.validate(theory)
+        return {
+            'name': 'g-2 Muon',
+            'status': 'PASS' if result.passed else 'FAIL',
+            'passed': result.passed,
+            'loss': getattr(result, 'loss', None),
+            'notes': getattr(result, 'notes', '')
+        }
+    except Exception as e:
+        return {
+            'name': 'g-2 Muon',
+            'status': 'ERROR',
+            'passed': False,
+            'error': str(e)[:200]
+        }
 
 def test_scattering_amplitude(theory):
-    validator = ScatteringAmplitudeValidator()
-    result = validator.validate(theory)
-    return {
-        'name': 'Scattering Amplitudes',
-        'status': 'PASS' if result.passed else 'FAIL',
-        'passed': result.passed,
-        'loss': result.loss,
-        'notes': result.notes
-    }
+    try:
+        validator = ScatteringAmplitudeValidator()
+        result = validator.validate(theory)
+        return {
+            'name': 'Scattering Amplitudes',
+            'status': 'PASS' if result.passed else 'FAIL',
+            'passed': result.passed,
+            'loss': getattr(result, 'loss', None),
+            'notes': getattr(result, 'notes', '')
+        }
+    except Exception as e:
+        return {
+            'name': 'Scattering Amplitudes',
+            'status': 'ERROR',
+            'passed': False,
+            'error': str(e)[:200]
+        }
 
 def run_solver_test(theory, test_func, test_name, engine=None):
     """Run a single solver-based test on a theory."""
@@ -1133,8 +1149,53 @@ def run_comprehensive_tests():
 
 def main():
     """Main entry point."""
+    # Create run directory
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_dir = f"runs/comprehensive_test_{timestamp}"
+    os.makedirs(run_dir, exist_ok=True)
+    print(f"Created run directory: {run_dir}")
+    
+    # Run tests
     results, json_file, html_file = run_comprehensive_tests()
-    return results
+    
+    # Generate multi-particle trajectory visualizations
+    print("\nGenerating trajectory visualizations for all particles...")
+    from physics_agent.generate_theory_trajectory_plots_multiparticle import generate_trajectory_visualizations_for_run
+    # Use the same number of steps as the trajectory tests (10000 by default)
+    viz_dir = generate_trajectory_visualizations_for_run(run_dir, n_steps=10000)
+    
+    # Generate 3D WebGL viewers
+    print("\nGenerating interactive 3D viewers...")
+    from physics_agent.generate_3d_viewers_for_run import generate_3d_viewers_for_run
+    generate_3d_viewers_for_run(run_dir)
+    
+    # Generate unified viewer
+    print("\nGenerating unified trajectory viewer...")
+    from physics_agent.generate_unified_3d_viewer import generate_unified_viewer
+    generate_unified_viewer(run_dir)
+    
+    # Move reports to run directory
+    import shutil
+    if os.path.exists(json_file):
+        shutil.move(json_file, os.path.join(run_dir, os.path.basename(json_file)))
+    if os.path.exists(html_file):
+        shutil.move(html_file, os.path.join(run_dir, os.path.basename(html_file)))
+    
+    # Generate the report again but this time in the run directory with proper paths
+    html_generator = ComprehensiveTestReportGenerator()
+    run_html_file = os.path.join(run_dir, os.path.basename(html_file))
+    html_generator.generate_report(results, run_html_file, run_dir)
+    
+    # Also copy to standard location
+    os.makedirs('physics_agent/reports', exist_ok=True)
+    latest_html = 'physics_agent/reports/latest_comprehensive_validation.html'
+    shutil.copy(run_html_file, latest_html)
+    
+    print(f"\nRun complete! Results saved to: {run_dir}")
+    print(f"View report: {run_html_file}")
+    print(f"View trajectory visualizations: {os.path.join(viz_dir, 'index.html')}")
+    
+    return results, run_dir
 
 if __name__ == "__main__":
-    results = main()
+    results, run_dir = main()

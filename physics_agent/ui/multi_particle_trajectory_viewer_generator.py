@@ -161,8 +161,15 @@ def generate_multi_particle_trajectory_viewer(
 ):
     """Generate an HTML viewer for multi-particle trajectory visualization."""
     
-    # Load template
-    template_path = os.path.join(os.path.dirname(__file__), 'multi_particle_trajectory_viewer.html')
+    # Load template - use fixed 3D version
+    template_path = os.path.join(os.path.dirname(__file__), 'multi_particle_trajectory_viewer_3d_fixed.html')
+    if not os.path.exists(template_path):
+        # Fallback to original 3D version
+        template_path = os.path.join(os.path.dirname(__file__), 'multi_particle_trajectory_viewer_3d.html')
+        if not os.path.exists(template_path):
+            # Fallback to 2D version
+            template_path = os.path.join(os.path.dirname(__file__), 'multi_particle_trajectory_viewer.html')
+    
     with open(template_path, 'r') as f:
         template = f.read()
     

@@ -163,9 +163,21 @@ Angular motion:
              fontsize=11, verticalalignment='top', fontfamily='monospace',
              bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
     
+    # Add theory description
+    try:
+        from physics_agent.trajectory_plot_descriptions import get_theory_description
+        theory_desc = get_theory_description(theory_name)
+        # Add description text box
+        fig.text(0.02, 0.02, theory_desc, transform=fig.transFigure, 
+                fontsize=9, verticalalignment='bottom',
+                bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8),
+                wrap=True)
+    except:
+        pass
+    
     # Overall title
     fig.suptitle(f'{theory_name} - Trajectory Visualization', fontsize=16, fontweight='bold')
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.15, 1, 0.96])  # Leave space for description
     
     # Save the plot
     safe_name = theory_name.replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')

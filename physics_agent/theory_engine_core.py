@@ -1600,6 +1600,8 @@ class TheoryEngine:
                 PhotonSphereValidator,
                 GwValidator,
                 PsrJ0740Validator,  # Now properly tested and validated
+                GMinus2Validator,
+                ScatteringAmplitudeValidator,
                 # HawkingValidator, CosmologyValidator removed - not tested
 
             )
@@ -1612,6 +1614,8 @@ class TheoryEngine:
                 PhotonSphereValidator(self),
                 GwValidator(self),
                 PsrJ0740Validator(self),  # Now properly tested and validated
+                GMinus2Validator(),  # Quantum validator but works for all theories
+                ScatteringAmplitudeValidator(),  # Quantum validator but works for all theories
                 # HawkingValidator(self), # Not tested
                 # CosmologyValidator(self), # Not tested
                 # PsrJ0740Validator(self) # Test exists but not in main suite

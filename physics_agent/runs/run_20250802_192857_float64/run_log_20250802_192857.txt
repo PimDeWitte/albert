@@ -1,0 +1,3 @@
+Computing 4 baselines sequentially...
+
+  Computing baseline: Schwarzschild

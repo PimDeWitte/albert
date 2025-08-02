@@ -2,6 +2,7 @@
 """
 Generate comprehensive HTML report for theory validation tests.
 This combines analytical and solver-based test results into a scientific scorecard.
+Version 2: Properly handles run directories and multi-particle visualizations.
 """
 
 import json
@@ -21,12 +22,12 @@ class ComprehensiveTestReportGenerator:
             'quantum': '#9b59b6'     # Purple
         }
         
-    def generate_report(self, results: List[Dict[str, Any]], output_file: str) -> str:
+    def generate_report(self, results: List[Dict[str, Any]], output_file: str, run_dir: str = None) -> str:
         """Generate comprehensive HTML report from test results."""
         html_lines = []
         
         # Add HTML header and CSS
-        html_lines.extend(self._generate_header())
+        html_lines.extend(self._generate_header(run_dir))
         
         # Add summary section
         html_lines.extend(self._generate_summary(results))
@@ -48,16 +49,18 @@ class ComprehensiveTestReportGenerator:
         with open(output_file, 'w') as f:
             f.write(html_content)
         
-        # Generate trajectory viewers
-        output_dir = os.path.dirname(output_file)
-        if not output_dir:
-            output_dir = '.'  # Current directory if no directory specified
-        self._generate_trajectory_viewers(results, output_dir)
-            
+        # Generate trajectory viewers if in run directory
+        if run_dir and os.path.exists(run_dir):
+            self._generate_trajectory_viewers(results, run_dir)
+        
         return output_file
     
-    def _generate_header(self) -> List[str]:
-        """Generate HTML header with CSS styling."""
+    def _generate_header(self, run_dir: str = None) -> List[str]:
+        """Generate HTML header with styles and scripts."""
+        # Determine if we're in a run directory to adjust paths
+        in_run_dir = run_dir is not None
+        viz_path = "trajectory_visualizations" if in_run_dir else "../trajectory_visualizations"
+        
         return [
             '<!DOCTYPE html>',
             '<html lang="en">',
@@ -65,33 +68,24 @@ class ComprehensiveTestReportGenerator:
             '    <meta charset="UTF-8">',
             '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',
             '    <title>Comprehensive Theory Validation Report</title>',
-            '    <script>',
-            '    function viewTrajectory(theoryName) {',
-            '        const cleanName = theoryName.replace(/[^a-zA-Z0-9]/g, "_");',
-            '        // Use multi-particle viewer for comprehensive view',
-            '        const viewerPath = "trajectory_viewers/" + cleanName + "_multi_particle_viewer.html";',
-            '        window.open(viewerPath, "_blank");',
-            '    }',
-            '    </script>',
             '    <style>',
-            '        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }',
-            '        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }',
+            '        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }',
+            '        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }',
             '        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; }',
             '        .timestamp { text-align: center; color: #7f8c8d; margin-bottom: 30px; }',
-            '        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }',
-            '        .summary-card { background: #ecf0f1; padding: 20px; border-radius: 8px; text-align: center; }',
-            '        .summary-card h3 { margin: 0 0 10px 0; color: #34495e; }',
-            '        .summary-card .value { font-size: 2em; font-weight: bold; color: #2c3e50; }',
-            '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; }',
+            '        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }',
+            '        .summary-card { background: #ecf0f1; padding: 20px; border-radius: 6px; text-align: center; }',
+            '        .summary-card h3 { margin: 0 0 10px 0; color: #34495e; font-size: 0.9em; text-transform: uppercase; }',
+            '        .summary-card .value { font-size: 2.5em; font-weight: bold; color: #3498db; }',
+            '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }',
             '        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }',
-            '        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ecf0f1; }',
-            '        th { background: #34495e; color: white; font-weight: 500; position: sticky; top: 0; z-index: 10; }',
-            '        tr:hover { background: #f8f9fa; }',
+            '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; }',
+            '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }',
+            '        tr:hover { background-color: #f8f9fa; }',
             '        .rank { font-weight: bold; text-align: center; }',
-            '        .theory-name { font-weight: 500; }',
-            '        .category-baseline { color: #2c3e50; }',
-            '        .category-classical { color: #3498db; }',
-            '        .category-quantum { color: #9b59b6; }',
+            '        .category-baseline { color: #2c3e50; font-weight: bold; }',
+            '        .category-classical { color: #3498db; font-weight: bold; }',
+            '        .category-quantum { color: #9b59b6; font-weight: bold; }',
             '        .score { text-align: center; font-weight: 500; }',
             '        .pass { color: #27ae60; }',
             '        .fail { color: #e74c3c; }',
@@ -132,21 +126,40 @@ class ComprehensiveTestReportGenerator:
             '    <script>',
             '        function viewTrajectory(theoryName) {',
             '            const safeName = theoryName.replace(/ /g, "_").replace(/[(),.]/g, "");',
-            '            const trajectoryPath = "../trajectory_visualizations/" + safeName + "_trajectory.png";',
-            '            const orbitPath = "../trajectory_visualizations/" + safeName + "_orbit.png";',
             '            ',
             '            const popup = document.getElementById("trajectory-popup");',
             '            const overlay = document.getElementById("popup-overlay");',
             '            const imageContainer = document.getElementById("trajectory-image-container");',
             '            const titleElement = document.getElementById("trajectory-title");',
             '            ',
-            '            titleElement.textContent = theoryName + " Trajectory Analysis";',
+            '            titleElement.textContent = theoryName + " - Multi-Particle Trajectories";',
+            '            ',
+            '            // Generate links for all particles',
+            '            const particles = ["electron", "neutrino", "photon", "proton"];',
+            '            let particleLinks = \'<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">\';',
+            '            ',
+            '            particles.forEach(particle => {',
+            f'                const trajectoryPath = `{viz_path}/${{safeName}}_${{particle}}_trajectory.png`;',
+            f'                const orbitPath = `{viz_path}/${{safeName}}_${{particle}}_orbit.png`;',
+            '                ',
+            '                particleLinks += `',
+            '                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">',
+            '                        <h4 style="margin-top: 0; color: #2c3e50;">${particle.charAt(0).toUpperCase() + particle.slice(1)}</h4>',
+            '                        <div style="margin-top: 10px;">',
+            '                            <a href="${trajectoryPath}" target="_blank" style="margin-right: 10px;">📊 Analysis</a>',
+            '                            <a href="${orbitPath}" target="_blank">🌐 Orbit</a>',
+            '                        </div>',
+            '                    </div>',
+            '                `;',
+            '            });',
+            '            ',
+            '            particleLinks += "</div>";',
+            '            ',
             '            imageContainer.innerHTML = `',
-            '                <img src="${trajectoryPath}" alt="${theoryName} trajectory" class="trajectory-image" onerror="this.src=\'../trajectory_visualizations/index.html\'">',
-            '                <div class="trajectory-links">',
-            '                    <a href="${trajectoryPath}" target="_blank">📊 Full Analysis</a>',
-            '                    <a href="${orbitPath}" target="_blank">🌐 Orbit View</a>',
-            '                    <a href="../trajectory_visualizations/index.html" target="_blank">🗂️ All Trajectories</a>',
+            '                ${particleLinks}',
+            '                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">',
+            f'                    <a href="{viz_path}/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>',
+            '                    <a href="trajectory_viewers/" + safeName + "_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em;">🌐 Interactive 3D Viewer</a>',
             '                </div>',
             '            `;',
             '            ',
@@ -190,12 +203,12 @@ class ComprehensiveTestReportGenerator:
             '            <div class="summary-card">',
             '                <h3>Analytical Tests</h3>',
             f'                <div class="value">{total_analytical_passed}/{total_analytical_tests}</div>',
-            f'                <div class="label">{total_analytical_passed/total_analytical_tests*100:.1f}% Pass Rate</div>',
+            '                <div class="label">Passed</div>',
             '            </div>',
             '            <div class="summary-card">',
             '                <h3>Solver Tests</h3>',
             f'                <div class="value">{total_solver_passed}/{total_solver_tests}</div>',
-            f'                <div class="label">{total_solver_passed/total_solver_tests*100:.1f}% Pass Rate</div>',
+            '                <div class="label">Passed</div>',
             '            </div>',
             '            <div class="summary-card">',
             '                <h3>Perfect Scores</h3>',
@@ -208,57 +221,13 @@ class ComprehensiveTestReportGenerator:
         return lines
     
     def _generate_rankings(self, results: List[Dict[str, Any]]) -> List[str]:
-        """Generate ranking tables."""
-        lines = []
+        """Generate the ranking table."""
+        lines = ['        <h2>Theory Rankings - Combined Score</h2>']
         
-        # Analytical rankings
-        lines.extend([
-            '        <h2>Rankings - Analytical Validators Only</h2>',
-            '        <table>',
-            '            <thead>',
-            '                <tr>',
-            '                    <th>Rank</th>',
-            '                    <th>Theory</th>',
-            '                    <th>Category</th>',
-            '                    <th>Score</th>',
-            '                    <th>Tests Passed</th>',
-            '                    <th>Failed Tests</th>',
-            '                </tr>',
-            '            </thead>',
-            '            <tbody>'
-        ])
-        
-        # Sort by analytical score
-        analytical_sorted = sorted(results, key=lambda x: x['analytical_summary']['success_rate'], reverse=True)
-        
-        for i, result in enumerate(analytical_sorted, 1):
-            failed_tests = [t['name'] for t in result['analytical_tests'] if not t['passed']]
-            failed_str = ', '.join(failed_tests) if failed_tests else 'None'
-            
-            lines.extend([
-                '                <tr>',
-                f'                    <td class="rank">{i}</td>',
-                f'                    <td class="theory-name">{result["theory"]}</td>',
-                f'                    <td class="category-{result["category"]}">{result["category"]}</td>',
-                f'                    <td class="score">{result["analytical_summary"]["success_rate"]*100:.1f}%</td>',
-                f'                    <td>{result["analytical_summary"]["passed"]}/{result["analytical_summary"]["total"]}</td>',
-                f'                    <td>{failed_str}</td>',
-                '                </tr>'
-            ])
+        # Sort by combined score
+        sorted_results = sorted(results, key=lambda x: -x['combined_summary']['success_rate'])
         
         lines.extend([
-            '            </tbody>',
-            '        </table>'
-        ])
-        
-        # Combined rankings
-        lines.extend([
-            '        <h2>Rankings - Combined (Analytical + Solver)</h2>',
-            '        <div class="note-box">',
-            '            <strong>Trajectory Loss:</strong> MSE loss vs Kerr baseline over 1000 steps<br>',
-            '            <strong>Test Conditions:</strong> Primordial Mini Black Hole (10⁻¹⁹ solar masses), electron particle, r=10M circular orbit<br>',
-            '            <strong>Note:</strong> Kerr baseline has 0.00 loss against itself by definition',
-            '        </div>',
             '        <table>',
             '            <thead>',
             '                <tr>',
@@ -267,34 +236,28 @@ class ComprehensiveTestReportGenerator:
             '                    <th>Category</th>',
             '                    <th>Combined Score</th>',
             '                    <th>Analytical</th>',
-            '                    <th>Solver (Failed Tests)</th>',
-            '                    <th>Trajectory Loss vs Kerr<br>(10000 steps)</th>',
-            '                    <th>Loss Progression<br>(1% / 50% / 99%)</th>',
-            '                    <th>Distance Traveled<br>(Theory / Kerr)</th>',
-            '                    <th>Solver Compute Time</th>',
+            '                    <th>Solver</th>',
+            '                    <th>Trajectory Loss</th>',
+            '                    <th>Progressive Loss (1%/50%/99%)</th>',
+            '                    <th>Distance Traveled</th>',
+            '                    <th>Solver Time</th>',
             '                    <th>Actions</th>',
             '                </tr>',
             '            </thead>',
             '            <tbody>'
         ])
         
-        # Sort by combined score
-        combined_sorted = sorted(results, key=lambda x: (-x['combined_summary']['success_rate'], 
-                                                         x['combined_summary'].get('complexity_score', float('inf'))))
-        
-        for i, result in enumerate(combined_sorted, 1):
-            # Get trajectory loss and timing info
+        for i, result in enumerate(sorted_results, 1):
+            # Extract solver test details
             trajectory_loss = None
             progressive_losses = None
             distance_traveled = None
             kerr_distance = None
-            ms_per_step = None
-            total_solver_time = 0.0
+            total_solver_time = 0
             total_solver_steps = 0
             cached_trajectory = False
-            
-            # Collect failed solver tests
             failed_solver_tests = []
+            
             for test in result.get('solver_tests', []):
                 if test['status'] not in ['SKIP', 'N/A'] and not test['passed']:
                     # Shorten test names
@@ -400,17 +363,12 @@ class ComprehensiveTestReportGenerator:
                                                         x['combined_summary'].get('complexity_score', float('inf'))))
         
         for result in sorted_results:
-            # Add link to trajectory visualization
-            safe_name = result["theory"].replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')
-            
             lines.extend([
                 f'            <div class="theory-detail">',
                 f'                <h3>{result["theory"]} <span class="category-{result["category"]}">({result["category"]})</span></h3>',
                 f'                <p>Combined Score: <strong>{result["combined_summary"]["success_rate"]*100:.1f}%</strong> ',
                 f'                ({result["combined_summary"]["passed"]}/{result["combined_summary"]["total"]} tests passed)</p>',
-                f'                <p><a href="../trajectory_visualizations/{safe_name}_trajectory.png" target="_blank">📊 View Trajectory Analysis</a> | ',
-                f'                <a href="../trajectory_visualizations/{safe_name}_orbit.png" target="_blank">🌐 View Orbit</a> | ',
-                f'                <button onclick="viewTrajectory(\'{result["theory"]}\')">🚀 Interactive 3D Viewer</button></p>',
+                f'                <p><button onclick="viewTrajectory(\'{result["theory"]}\')">🚀 View Multi-Particle Trajectories</button></p>',
                 '                <h4>Analytical Tests</h4>',
                 '                <div class="test-grid">'
             ])
@@ -434,87 +392,82 @@ class ComprehensiveTestReportGenerator:
                 
                 lines.append('                    </div>')
             
-            lines.extend([
-                '                </div>',
-                '                <h4>Solver-Based Tests</h4>',
-                '                <div class="test-grid">'
-            ])
+            lines.append('                </div>')
             
             # Solver test results
-            for test in result['solver_tests']:
-                if test['status'] == 'N/A':
-                    continue
-                    
-                # Handle SKIP status
-                if test['status'] == 'SKIP':
-                    status_class = 'warning'
-                else:
-                    status_class = 'pass' if test['passed'] else 'fail'
-                
+            if result.get('solver_tests'):
                 lines.extend([
-                    f'                    <div class="test-result {status_class}">',
-                    f'                        <div class="test-name">{test["name"]}</div>',
-                    f'                        <div class="test-details">Status: {test["status"]}</div>'
+                    '                <h4>Solver-Based Tests</h4>',
+                    '                <div class="test-grid">'
                 ])
                 
-                if test.get('solver_type'):
-                    lines.append(f'                        <div class="solver-info">Solver: {test["solver_type"]}</div>')
+                for test in result['solver_tests']:
+                    if test['status'] == 'SKIP':
+                        continue
+                        
+                    status_class = 'pass' if test['passed'] else 'fail'
+                    if test['status'] == 'WARNING':
+                        status_class = 'warning'
+                    
+                    lines.extend([
+                        f'                    <div class="test-result {status_class}">',
+                        f'                        <div class="test-name">{test["name"]}</div>',
+                        f'                        <div class="test-details">Status: {test["status"]}</div>'
+                    ])
+                    
+                    if test.get('solver_type'):
+                        lines.append(f'                        <div class="solver-info">Solver: {test["solver_type"]}</div>')
+                    
+                    if test.get('loss') is not None:
+                        lines.append(f'                        <div class="test-details">Loss: {test["loss"]:.4e}</div>')
+                    
+                    if test.get('exec_time') is not None and test['status'] not in ['SKIP', 'N/A']:
+                        exec_time = test['exec_time']
+                        solver_time = test.get('solver_time', 0)
+                        if 'cached' in test.get('solver_type', '').lower():
+                            lines.append(f'                        <div class="timing-info">Using cached trajectory</div>')
+                        else:
+                            lines.append(f'                        <div class="timing-info">Time: {exec_time:.3f}s (solver: {solver_time:.3f}s)</div>')
+                    
+                    if test.get('num_steps', 0) > 0:
+                        lines.append(f'                        <div class="test-details">Steps: {test["num_steps"]}</div>')
+                    
+                    lines.append('                    </div>')
                 
-                # Add notes for skipped tests
-                if test.get('notes'):
-                    lines.append(f'                        <div class="test-details">{test["notes"]}</div>')
-                
-                if test.get('loss') is not None:
-                    # Special case for Kerr showing exactly 0.00
-                    if result['theory'] == 'Kerr' and test['name'] == 'Trajectory vs Kerr' and test['loss'] < 1e-10:
-                        lines.append(f'                        <div class="test-details">Loss vs Kerr: <span class="loss-value">0.00</span></div>')
-                    else:
-                        lines.append(f'                        <div class="test-details">Loss vs Kerr: <span class="loss-value">{test["loss"]:.2e}</span></div>')
-                
-                if test.get('num_steps', 0) > 0 and test.get('solver_time', 0) > 0:
-                    # Don't show misleading timing for cached results
-                    if 'cached' not in test.get('solver_type', '').lower():
-                        ms_per_step = test['solver_time'] / test['num_steps'] * 1000
-                        lines.append(f'                        <div class="timing-info">Time: {test["solver_time"]:.3f}s ({ms_per_step:.1f}ms/step)</div>')
-                    else:
-                        lines.append(f'                        <div class="timing-info">Using cached trajectory</div>')
-                
-                lines.append('                    </div>')
+                lines.append('                </div>')
             
-            lines.extend([
-                '                </div>',
-                '            </div>'
-            ])
+            lines.append('            </div>')
         
-        lines.append('        </div>')
         return lines
     
     def _generate_test_descriptions(self) -> List[str]:
-        """Generate test descriptions and legend."""
+        """Generate test methodology descriptions."""
         return [
             '        <div class="legend">',
-            '            <h4>Test Descriptions</h4>',
+            '            <h4>Test Methodology</h4>',
             '            <div class="legend-grid">',
             '                <div>',
-            '                    <h5>Analytical Validators</h5>',
+            '                    <strong>Analytical Tests:</strong>',
             '                    <ul>',
-            '                        <li><strong>Mercury Precession:</strong> Weak-field perihelion advance</li>',
-            '                        <li><strong>Light Deflection:</strong> PPN γ parameter calculation</li>',
-            '                        <li><strong>Photon Sphere:</strong> Circular photon orbit radius</li>',
-            '                        <li><strong>PPN Parameters:</strong> Post-Newtonian expansion coefficients</li>',
-            '                        <li><strong>COW Interferometry:</strong> Gravitational phase shift</li>',
-            '                        <li><strong>Gravitational Waves:</strong> Waveform generation</li>',
-            '                        <li><strong>PSR J0740:</strong> Shapiro time delay</li>',
+            '                        <li>Mercury Precession</li>',
+            '                        <li>Light Deflection</li>',
+            '                        <li>Photon Sphere</li>',
+            '                        <li>PPN Parameters</li>',
+            '                        <li>COW Interferometry</li>',
+            '                        <li>Gravitational Waves</li>',
+            '                        <li>PSR J0740+6620</li>',
             '                    </ul>',
             '                </div>',
             '                <div>',
-            '                    <h5>Solver-Based Tests</h5>',
+            '                    <strong>Solver-Based Tests:</strong>',
             '                    <ul>',
-            '                        <li><strong>Trajectory vs Kerr:</strong> 1000-step integration with MSE loss</li>',
-            '                        <li><strong>Circular Orbit:</strong> Orbital period calculation</li>',
-            '                        <li><strong>CMB Power Spectrum:</strong> Cosmological perturbation evolution</li>',
-            '                        <li><strong>Primordial GWs:</strong> Tensor mode propagation</li>',
-            '                        <li><strong>Quantum Geodesic Sim:</strong> 2-qubit quantum corrections</li>',
+            '                        <li>Trajectory vs Kerr (10k steps)</li>',
+            '                        <li>Circular Orbit Conservation</li>',
+            '                        <li>Quantum Geodesic Simulation</li>',
+            '                        <li>g-2 Muon Anomaly</li>',
+            '                        <li>Scattering Amplitudes</li>',
+            '                        <li>CMB Power Spectrum</li>',
+            '                        <li>Primordial GWs</li>',
             '                    </ul>',
             '                </div>',
             '            </div>',
@@ -545,54 +498,28 @@ class ComprehensiveTestReportGenerator:
         viewers_dir = os.path.join(output_dir, 'trajectory_viewers')
         os.makedirs(viewers_dir, exist_ok=True)
         
-        # Import both viewer generators
         try:
-            from physics_agent.ui.trajectory_viewer_generator import generate_trajectory_viewer
-            from physics_agent.ui.multi_particle_trajectory_viewer_generator import generate_multi_particle_viewer_from_run
-        except ImportError as e:
-            print(f"Warning: Could not import trajectory viewer generators: {e}")
+            from physics_agent.ui.multi_particle_trajectory_viewer_generator import (
+                generate_multi_particle_viewer_from_run,
+                generate_multi_particle_trajectory_viewer
+            )
+        except ImportError:
+            print("Warning: Could not import multi-particle trajectory viewer generator")
             return
         
-        # Try to find the run directory
-        # Assuming we're in a report directory, the run directory should be the parent
-        run_dir = os.path.dirname(output_dir)
-        if not os.path.exists(run_dir) or 'run_' not in run_dir:
-            # Try to find a recent run directory
-            parent_dir = os.path.dirname(output_dir) if output_dir != '.' else '.'
-            
-            # Also check the runs directory
-            if os.path.exists('runs'):
-                run_dirs = [d for d in os.listdir('runs') if d.startswith('run_') and os.path.isdir(os.path.join('runs', d))]
-                if run_dirs:
-                    parent_dir = 'runs'
-            elif os.path.exists(parent_dir):
-                run_dirs = [d for d in os.listdir(parent_dir) if d.startswith('run_') and os.path.isdir(os.path.join(parent_dir, d))]
-            else:
-                run_dirs = []
-            if run_dirs:
-                run_dirs.sort(reverse=True)  # Get most recent
-                run_dir = os.path.join(parent_dir, run_dirs[0])
-            else:
-                # This is expected when running comprehensive tests standalone
-                run_dir = None
-        
-        # Skip viewer generation if no run directory found
-        if not run_dir:
-            print("Info: Skipping trajectory viewer generation (no run directory found - this is normal for standalone tests)")
-            return
-        
-        # Process each theory
         for result in results:
             theory_name = result['theory']
+            
+            # Clean theory name for file naming
             clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
             
             # Generate multi-particle viewer
-            if run_dir:
+            if output_dir:
                 try:
                     viewer_path = os.path.join(viewers_dir, f'{clean_name}_multi_particle_viewer.html')
                     generate_multi_particle_viewer_from_run(
                         theory_name=theory_name,
-                        run_dir=run_dir,
+                        run_dir=output_dir,
                         output_path=viewer_path,
                         black_hole_mass=9.945e13  # Primordial mini BH in kg
                     )
@@ -606,37 +533,19 @@ class ComprehensiveTestReportGenerator:
             
             for test in result.get('solver_tests', []):
                 if test['name'] == 'Trajectory vs Kerr':
-                    # Extract actual trajectory data if available
-                    if 'trajectory_data' in test and test['trajectory_data'] is not None:
-                        trajectory_data = test['trajectory_data']
-                        kerr_data = test.get('kerr_trajectory', None)
-                    elif test['passed'] or True:  # Generate dummy data as fallback
-                        # Create dummy trajectory for demonstration
-                        t = torch.linspace(0, 100, 1000)
-                        r = 10 - 0.001 * t  # Slowly falling in
-                        theta = torch.ones_like(t) * 3.14159/2
-                        phi = 0.1 * t  # Orbiting
-                        
-                        trajectory_data = torch.stack([t, r, theta, phi, 
-                                                     torch.zeros_like(t), 
-                                                     torch.zeros_like(t), 
-                                                     0.1*torch.ones_like(t)], dim=1)
-                        
-                        # Create slightly different Kerr trajectory
-                        kerr_data = trajectory_data.clone()
-                        kerr_data[:, 1] *= 1.001  # Slightly different radius
+                    trajectory_data = test.get('trajectory_data')
+                    kerr_data = test.get('kerr_trajectory')
+                    break
             
-            # Generate single-particle viewer HTML as fallback
-            viewer_path = os.path.join(viewers_dir, f'{clean_name}_viewer.html')
-            
-            try:
-                generate_trajectory_viewer(
-                    theory_name=theory_name,
-                    theory_trajectory=trajectory_data,
-                    kerr_trajectory=kerr_data,
-                    black_hole_mass=9.945e13,  # Primordial mini BH in kg
-                    particle_name="electron",
-                    output_path=viewer_path
-                )
-            except Exception as e:
-                print(f"Warning: Could not generate viewer for {theory_name}: {e}")
+            if trajectory_data is not None:
+                try:
+                    viewer_path = os.path.join(viewers_dir, f'{clean_name}_trajectory_viewer.html')
+                    generate_multi_particle_trajectory_viewer(
+                        theory_trajectory=trajectory_data,
+                        kerr_trajectory=kerr_data,
+                        theory_name=theory_name,
+                        output_path=viewer_path,
+                        black_hole_mass=9.945e13  # Primordial mini BH
+                    )
+                except Exception as e:
+                    print(f"Warning: Could not generate trajectory viewer for {theory_name}: {e}")
