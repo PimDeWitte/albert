@@ -104,6 +104,7 @@ from physics_agent.update_checker import check_on_startup  # Add new import
 # <reason>chain: Import comprehensive report generator for detailed HTML reports</reason>
 from physics_agent.run_logger import generate_comprehensive_summary
 from physics_agent.validations.comprehensive_report_generator import ComprehensiveReportGenerator
+# from physics_agent.ui.leaderboard_html_generator import LeaderboardHTMLGenerator  # Now integrated into comprehensive report
 # <reason>chain: Import theory utility functions</reason>
 from physics_agent.theory_utils import get_preferred_values
 # Leaderboard functionality now integrated into comprehensive test report
@@ -3323,10 +3324,11 @@ def generate_leaderboard(main_run_dir: str):
     }
     
     # Generate HTML leaderboard
-    html_generator = LeaderboardHTMLGenerator()
-    html_path = html_generator.generate_leaderboard(main_run_dir)
-    if html_path:
-        print(f"  HTML leaderboard generated: {html_path}")
+    # Note: LeaderboardHTMLGenerator functionality is now integrated into comprehensive report
+    # html_generator = LeaderboardHTMLGenerator()
+    # html_path = html_generator.generate_leaderboard(main_run_dir)
+    # if html_path:
+    #     print(f"  HTML leaderboard generated: {html_path}")
     
     # Sort by different criteria
     rankings = {
@@ -4167,7 +4169,7 @@ def main():
             # Import and run the comprehensive test
             # <reason>chain: sys is already imported globally, don't shadow it</reason>
             sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            from physics_agent.test_comprehensive_final import run_comprehensive_tests
+            from physics_agent.evaluation import run_comprehensive_tests
             
             # Run the tests
             test_results, json_file, html_file = run_comprehensive_tests()

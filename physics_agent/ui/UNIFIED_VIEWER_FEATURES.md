@@ -74,7 +74,7 @@ The new unified multi-particle viewer provides a single, comprehensive visualiza
 
 ### For Developers
 ```python
-from physics_agent.ui.unified_multi_particle_viewer_generator import (
+from physics_agent.ui.renderer import (
     generate_unified_multi_particle_viewer
 )
 

@@ -14,6 +14,17 @@
 
 ---
 
+## ✨ What's New
+
+### Latest Updates
+- **Unified Multi-Particle Viewer**: All theories in one interactive 3D visualization
+- **Comprehensive Validation by Default**: Automatic testing of all theories against 10 validators
+- **Improved Performance**: PyTorch tensor caching provides up to 29,000x speedup
+- **Scientifically Accurate Visualization**: Flamm's paraboloid embedding for spacetime curvature
+- **Cleaner Architecture**: Renamed modules for clarity (`evaluation.py`, `renderer.py`)
+
+---
+
 ## 🚀 Quick Start
 
 ```bash
@@ -25,14 +36,16 @@ git clone https://github.com/pimdewitte/albert.git
 cd albert
 ./setup_unified.sh
 
-# Run all theories (standard run)
+# Run all theories (comprehensive validation + visualization)
 albert run
 
 # Run with specific options
-albert run --steps 1000
-albert run --theory-filter "ugm"
-albert run --gpu-f32
-albert run --enable-sweeps
+albert run --steps 1000                     # Custom step count
+albert run --theory-filter "ugm"            # Run only UGM theories
+albert run --gpu-f32                        # GPU acceleration
+albert run --enable-sweeps                  # Parameter optimization
+albert run --skip-comprehensive-test        # Skip validation (not recommended)
+albert run --continue-after-test            # Run full sim after validation
 
 # Configure Albert (API keys, etc.)
 albert setup
@@ -55,8 +68,16 @@ sudo ln -s $(pwd)/albert /usr/local/bin/albert
 Albert provides a unified CLI with multiple subcommands:
 
 ### `albert run` - Run Theory Simulations
+
+#### Default Behavior
+By default, `albert run` executes a comprehensive validation workflow:
+1. **Calibration**: Tests solver accuracy against known solutions
+2. **Validation**: Runs 10 core tests on all theories
+3. **Visualization**: Generates interactive 3D viewer and reports
+4. **Ranking**: Creates leaderboard with scores and predictions
+
 ```bash
-# Run all theories with default settings
+# Run all theories with default settings (recommended)
 albert run
 
 # Run specific theories
@@ -67,8 +88,8 @@ albert run --candidates                     # Include candidate theories
 # Performance options
 albert run --gpu-f32                        # GPU with float32
 albert run --cpu-f64                        # CPU with float64
-albert run --max-steps 10000                # Maximum simulation steps (may stop at event horizon)
-albert run --radius 15.0                    # Starting radius in Schwarzschild radii (default: 6.0)
+albert run --max-steps 10000                # Maximum simulation steps
+albert run --radius 15.0                    # Starting radius (default: 6.0 Rs)
 albert run --no-cache                       # Force recomputation
 
 # Parameter sweeps
@@ -81,6 +102,7 @@ albert run --close-orbit                    # Use 6RS orbit (stronger fields)
 albert run --early-stop                     # Enable convergence detection
 albert run --experimental                   # Enable quantum kicks
 albert run --verbose                        # Detailed logging
+albert run --test                           # Pre-run environment tests
 ```
 
 ### `albert discover` - AI Theory Discovery
@@ -281,12 +303,39 @@ Future extensions will include:
 
 ---
 
+## 🎨 Visualization System
+
+Albert generates comprehensive visualizations for all theories:
+
+### Unified Multi-Particle Viewer
+The advanced 3D viewer shows all theories in one interactive interface:
+- **Theory Selection**: Dropdown to switch between all theories
+- **Spacetime Grid**: Scientifically accurate Flamm's paraboloid embedding
+- **4 Particles**: Electron, proton, neutrino, photon trajectories
+- **Camera Controls**: Third-person, top-down, or mount to particle
+- **Live Information**: Time dilation, spatial curvature, particle states
+
+### Generated Outputs
+After running `albert run`, find these in `physics_agent/runs/comprehensive_test_*/`:
+- `comprehensive_theory_validation_*.html` - Full test report with rankings
+- `trajectory_viewers/unified_multi_particle_viewer_advanced.html` - Interactive 3D viewer
+- `trajectory_visualizations/` - 2D plots for each theory
+- Theory directories with individual results
+
+### Key Components
+- **`physics_agent/evaluation.py`** - Comprehensive validation suite
+- **`physics_agent/ui/renderer.py`** - Unified viewer generator
+- **`physics_agent/comprehensive_test_report_generator_v2.py`** - Report generator
+
+---
+
 ## 📚 Documentation
 
 - [Technical Paper](docs/paper.html) - Geodesic solver development
 - [Validators](docs/validators.html) - All validation tests explained
 - [Self Discovery](docs/self_discovery.html) - AI theory generation
 - [API Reference](https://albert.so/documentation.html) - Full documentation
+- [Unified Viewer Guide](physics_agent/UNIFIED_VIEWER_DOCUMENTATION.md) - 3D visualization
 
 ---
 
@@ -305,46 +354,43 @@ This project continues Einstein's quest for unification. Special thanks to:
 
 ```mermaid
 flowchart TD
-    START[main Entry Point] --> PARSE[Parse CLI Arguments]
+    START[albert run] --> PARSE[Parse CLI Arguments]
     PARSE --> SETUP[Setup Execution Mode]
     SETUP --> DEVICE[Determine Device & Dtype<br/>GPU/CPU, float32/float64]
     DEVICE --> ENGINE[Create TheoryEngine Instance]
-    ENGINE --> LOADER[Create TheoryLoader<br/>theories_base_dir=physics_agent/theories]
     
-    LOADER --> DISCOVER[Discover Theories<br/>loader.discover_theories]
-    DISCOVER --> WALK[Walk Directory Tree<br/>os.walk]
-    WALK --> FINDTHEORY{Find theory.py files?}
+    ENGINE --> COMPREHENSIVE{Skip Comprehensive Test?}
+    COMPREHENSIVE -->|No (Default)| EVALUATION[Run evaluation.py<br/>Comprehensive Validation]
+    COMPREHENSIVE -->|Yes| DISCOVER[Discover Theories]
     
-    FINDTHEORY -->|Yes| LOADCLASS[Dynamic Code Loading<br/>importlib.util]
-    LOADCLASS --> INSPECT[Inspect Module<br/>Find GravitationalTheory subclasses]
-    INSPECT --> STORE[Store Theory Class]
-    STORE --> WALK
+    EVALUATION --> CALIBRATE[Solver Calibration<br/>Test numerical accuracy]
+    CALIBRATE --> VALIDATORS[Run 10 Core Validators<br/>All theories tested]
+    VALIDATORS --> VISUALIZE[Generate Visualizations<br/>renderer.py]
+    VISUALIZE --> REPORT[HTML Report & Rankings]
+    REPORT --> UNIFIED[Unified Multi-Particle Viewer<br/>All theories in one 3D view]
+    UNIFIED --> COMPLETE{Continue After Test?}
+    COMPLETE -->|No (Default)| END[End]
+    COMPLETE -->|Yes| DISCOVER
     
-    FINDTHEORY -->|No| NEXTDIR[Continue Directory Walk]
-    NEXTDIR --> WALK
-    
-    WALK -->|Complete| FILTER[Apply Theory Filter]
-    FILTER --> PHASE0[PHASE 0: Baseline Simulation<br/>Run Kerr & Kerr-Newman]
+    DISCOVER --> LOADER[Create TheoryLoader]
+    LOADER --> PHASE0[PHASE 0: Baseline Simulation<br/>Kerr & Kerr-Newman]
     
     PHASE0 --> PHASE1[PHASE 1: Theory Validation]
     PHASE1 --> THEORY_LOOP{For each theory}
     
     THEORY_LOOP --> HASSWEEP{Has parameter sweep?}
     HASSWEEP -->|Yes| SWEEP[Multiprocessing<br/>ProcessPoolExecutor]
-    HASSWEEP -->|No| VALIDATE[Run Validators]
+    HASSWEEP -->|No| TRAJECTORY[Compute Trajectory]
     
-    VALIDATE --> CONSTRAINTS[Constraint Validators]
-    CONSTRAINTS --> OBSERVATIONAL[Observational Validators]
-    OBSERVATIONAL --> QUANTUM{Is quantum theory?}
-    QUANTUM -->|Yes| QUANTUM_VAL[Quantum Validators]
-    
-    THEORY_LOOP -->|Complete| PHASE2[PHASE 2: Full Trajectories]
+    THEORY_LOOP -->|Complete| PHASE2[PHASE 2: Full Analysis]
     PHASE2 --> PHASE3[PHASE 3: Predictions]
-    PHASE3 --> LEADERBOARD[Generate Leaderboard]
-    LEADERBOARD --> END[End]
+    PHASE3 --> LEADERBOARD[Generate Final Leaderboard]
+    LEADERBOARD --> END
     
     style START fill:#90EE90
     style END fill:#FFB6C1
+    style EVALUATION fill:#87CEEB
+    style UNIFIED fill:#87CEEB
     style PHASE0 fill:#FFE4B5
     style PHASE1 fill:#FFE4B5
     style PHASE2 fill:#FFE4B5

@@ -1553,13 +1553,22 @@ def main():
     except Exception as e:
         print(f"Warning: Failed to generate 3D viewers: {str(e)}")
     
-    # Generate unified viewer
-    print("\nGenerating unified trajectory viewer...")
+    # Generate unified multi-particle viewer with advanced features
+    print("\nGenerating unified multi-particle viewer...")
     try:
-        from physics_agent.generate_unified_3d_viewer import generate_unified_viewer
-        generate_unified_viewer(run_dir)
+        from physics_agent.ui.unified_multi_particle_viewer_generator import generate_unified_multi_particle_viewer
+        viewers_dir = os.path.join(run_dir, 'trajectory_viewers')
+        os.makedirs(viewers_dir, exist_ok=True)
+        
+        viewer_path = os.path.join(viewers_dir, 'unified_multi_particle_viewer_advanced.html')
+        generate_unified_multi_particle_viewer(
+            run_dir=run_dir,
+            output_path=viewer_path,
+            black_hole_mass=9.945e13  # Primordial mini BH in kg
+        )
+        print(f"Generated unified viewer: {viewer_path}")
     except Exception as e:
-        print(f"Warning: Failed to generate unified viewer: {str(e)}")
+        print(f"Warning: Failed to generate unified multi-particle viewer: {str(e)}")
     
     # Move reports to run directory
     import shutil

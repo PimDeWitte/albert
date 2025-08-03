@@ -5,7 +5,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from test_comprehensive_final import test_trajectory_vs_kerr, save_particle_trajectories_to_run
+from evaluation import test_trajectory_vs_kerr, save_particle_trajectories_to_run
 from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
 from physics_agent.theories.defaults.baselines.kerr import Kerr
 from physics_agent.theory_engine_core import TheoryEngine

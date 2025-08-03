@@ -107,7 +107,7 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph "Test Suite (test_comprehensive_final.py)"
+    subgraph "Test Suite (evaluation.py)"
         TM[Test Manager]
         TM --> AT[Analytical Tests]
         TM --> ST[Solver Tests]
@@ -223,7 +223,7 @@ graph TD
 - `unified_trajectory_calculator.py` - Unified interface for all solvers
 
 ### Testing
-- `test_comprehensive_final.py` - Main test suite combining analytical and solver tests
+- `evaluation.py` - Main test suite combining analytical and solver tests
 - `test_geodesic_validator_comparison.py` - Schwarzschild baseline comparisons
 - `loss_calculator.py` - Loss computation utilities
 

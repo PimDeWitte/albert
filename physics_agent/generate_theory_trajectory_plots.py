@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, '.')
 
 from physics_agent.theory_engine_core import TheoryEngine
-from physics_agent.test_comprehensive_final import ALL_THEORIES
+from physics_agent.evaluation import ALL_THEORIES
 
 def create_trajectory_plots(hist, theory_name, engine, output_dir):
     """Create and save trajectory visualization plots for a theory."""

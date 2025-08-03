@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Run comprehensive validation tests on all theories.
-This replaces the deleted test_comprehensive_final.py
+This is an alternative to evaluation.py for validation testing
 """
 
 import sys

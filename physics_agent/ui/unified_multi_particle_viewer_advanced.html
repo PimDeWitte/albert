@@ -1001,16 +1001,26 @@
         }
         
         function mountCamera(particleName) {
+            const observerIndicator = scene.getObjectByName('observerIndicator');
+            
             if (mountedParticle === particleName) {
                 // Unmount
                 mountedParticle = null;
                 setView('third');
                 document.getElementById('particleTensorInfo').style.display = 'none';
+                // Show observer indicator when unmounting
+                if (observerIndicator) {
+                    observerIndicator.visible = true;
+                }
             } else {
                 // Mount
                 mountedParticle = particleName;
                 document.getElementById('particleTensorInfo').style.display = 'block';
                 updateTensorInfo();
+                // Hide observer indicator when mounting camera to particle
+                if (observerIndicator) {
+                    observerIndicator.visible = false;
+                }
             }
             
             // Update UI

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trajectory Visualizations</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        h1 { color: #333; }
+        .theory-section { background: white; margin: 20px 0; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .theory-title { color: #2c3e50; margin-bottom: 15px; }
+        .particle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .particle-card { background: #f8f9fa; padding: 15px; border-radius: 6px; }
+        .particle-name { font-weight: bold; color: #34495e; margin-bottom: 10px; }
+        .viz-links { display: flex; gap: 15px; }
+        .viz-links a { color: #3498db; text-decoration: none; }
+        .viz-links a:hover { text-decoration: underline; }
+        .timestamp { color: #7f8c8d; font-size: 0.9em; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Trajectory Visualizations</h1>
+    <div class="theory-section">
+        <h2 class="theory-title">Aalto Gauge Gravity g=1.00</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Aalto_Gauge_Gravity_g=1.00_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Aalto_Gauge_Gravity_g=1.00_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Aalto_Gauge_Gravity_g=1.00_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Aalto_Gauge_Gravity_g=1.00_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Aalto_Gauge_Gravity_g=1.00_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Aalto_Gauge_Gravity_g=1.00_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Aalto_Gauge_Gravity_g=1.00_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Aalto_Gauge_Gravity_g=1.00_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Asymptotic Safety Λ as=1.0e+18 GeV</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Asymptotic_Safety_Λ_as=1.0e+18_GeV_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">CDT k₀=2.2 k₄=0.6</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="CDT_k₀=2.2_k₄=0.6_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="CDT_k₀=2.2_k₄=0.6_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="CDT_k₀=2.2_k₄=0.6_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="CDT_k₀=2.2_k₄=0.6_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="CDT_k₀=2.2_k₄=0.6_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="CDT_k₀=2.2_k₄=0.6_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="CDT_k₀=2.2_k₄=0.6_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="CDT_k₀=2.2_k₄=0.6_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Einstein Teleparallel τ=0.000</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Einstein_Teleparallel_τ=0.000_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Einstein_Teleparallel_τ=0.000_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Einstein_Teleparallel_τ=0.000_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Einstein_Teleparallel_τ=0.000_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Einstein_Teleparallel_τ=0.000_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Einstein_Teleparallel_τ=0.000_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Einstein_Teleparallel_τ=0.000_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Einstein_Teleparallel_τ=0.000_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Kerr-Newman a=0.00 q e=0.00</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr-Newman_a=0.00_q_e=0.00_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Kerr a=0.00</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Kerr_a=0.00_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr_a=0.00_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Kerr_a=0.00_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr_a=0.00_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Kerr_a=0.00_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr_a=0.00_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Kerr_a=0.00_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Kerr_a=0.00_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Loop Quantum Gravity γ=0.2375</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Loop_Quantum_Gravity_γ=0.2375_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Newtonian Limit</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Newtonian_Limit_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Newtonian_Limit_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Newtonian_Limit_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Newtonian_Limit_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Newtonian_Limit_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Newtonian_Limit_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Newtonian_Limit_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Newtonian_Limit_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Non-Commutative Geometry θ=1.00</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Non-Commutative_Geometry_θ=1.00_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Non-Commutative_Geometry_θ=1.00_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Non-Commutative_Geometry_θ=1.00_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Non-Commutative_Geometry_θ=1.00_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Non-Commutative_Geometry_θ=1.00_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Non-Commutative_Geometry_θ=1.00_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Non-Commutative_Geometry_θ=1.00_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Non-Commutative_Geometry_θ=1.00_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Quantum Corrected α=+0.01</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Quantum_Corrected_α=+0.01_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Quantum_Corrected_α=+0.01_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Quantum_Corrected_α=+0.01_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Quantum_Corrected_α=+0.01_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Quantum_Corrected_α=+0.01_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Quantum_Corrected_α=+0.01_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Quantum_Corrected_α=+0.01_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Quantum_Corrected_α=+0.01_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Schwarzschild</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Schwarzschild_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Schwarzschild_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Schwarzschild_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Schwarzschild_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Schwarzschild_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Schwarzschild_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Schwarzschild_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Schwarzschild_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Spinor-Conformal QG λ=0.00</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Spinor-Conformal_QG_λ=0.00_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Spinor-Conformal_QG_λ=0.00_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Spinor-Conformal_QG_λ=0.00_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Spinor-Conformal_QG_λ=0.00_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Spinor-Conformal_QG_λ=0.00_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Spinor-Conformal_QG_λ=0.00_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Spinor-Conformal_QG_λ=0.00_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Spinor-Conformal_QG_λ=0.00_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">String Theory α'=1.0e-66</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="String_Theory_α'=1.0e-66_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="String_Theory_α'=1.0e-66_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="String_Theory_α'=1.0e-66_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="String_Theory_α'=1.0e-66_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="String_Theory_α'=1.0e-66_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="String_Theory_α'=1.0e-66_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="String_Theory_α'=1.0e-66_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="String_Theory_α'=1.0e-66_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Twistor Theory λ=0.10</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Twistor_Theory_λ=0.10_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Twistor_Theory_λ=0.10_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Twistor_Theory_λ=0.10_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Twistor_Theory_λ=0.10_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Twistor_Theory_λ=0.10_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Twistor_Theory_λ=0.10_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Twistor_Theory_λ=0.10_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Twistor_Theory_λ=0.10_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theory-section">
+        <h2 class="theory-title">Yukawa λ=10.00 RS</h2>
+        <div class="particle-grid">
+            <div class="particle-card">
+                <div class="particle-name">Electron</div>
+                <div class="viz-links">
+                    <a href="Yukawa_λ=10.00_RS_electron_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Yukawa_λ=10.00_RS_electron_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Neutrino</div>
+                <div class="viz-links">
+                    <a href="Yukawa_λ=10.00_RS_neutrino_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Yukawa_λ=10.00_RS_neutrino_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Photon</div>
+                <div class="viz-links">
+                    <a href="Yukawa_λ=10.00_RS_photon_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Yukawa_λ=10.00_RS_photon_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+            <div class="particle-card">
+                <div class="particle-name">Proton</div>
+                <div class="viz-links">
+                    <a href="Yukawa_λ=10.00_RS_proton_trajectory.png" target="_blank">📊 Full Analysis</a>
+                    <a href="Yukawa_λ=10.00_RS_proton_orbit.png" target="_blank">🌐 Orbit View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="timestamp">Generated: 2025-08-03 18:35:39</div>
+</body>
+</html>

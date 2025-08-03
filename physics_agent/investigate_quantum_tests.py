@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import traceback
 from theory_engine_core import TheoryEngine
-from test_comprehensive_final import test_g_minus_2, test_scattering_amplitude
+from evaluation import test_g_minus_2, test_scattering_amplitude
 
 # Import some theories to test
 from theories.defaults.baselines.schwarzschild import Schwarzschild

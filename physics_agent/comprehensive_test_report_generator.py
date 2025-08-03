@@ -255,7 +255,6 @@ class ComprehensiveTestReportGenerator:
             '                    <th>Combined Score</th>',
             '                    <th>Analytical</th>',
             '                    <th>Solver</th>',
-            '                    <th class="tooltip">Trajectory Loss<span class="tooltiptext">Mean squared error between this theory\'s trajectory and Kerr baseline. Lower is better, with 0.00 being perfect match.</span></th>',
             '                    <th class="tooltip">Distance & Divergence<span class="tooltiptext">Distance: Total path length in black hole radii (M = GM/c²)<br>Divergence: How error accumulates along trajectory<br>• Start (1% of path)<br>• Mid (50% of path)<br>• End (99% of path)<br>• Avg (mean divergence)</span></th>',
             '                    <th>Solver Time</th>',
             '                    <th>Actions</th>',

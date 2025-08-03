@@ -160,7 +160,7 @@ class ComprehensiveTestReportGenerator:
             '                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">',
             f'                    <a href="{viz_path}/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>',
             '                    <a href="trajectory_viewers/" + safeName + "_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🌐 Interactive 3D Viewer</a>',
-            '                    <a href="trajectory_viewers/unified_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em;">🌍 Unified Viewer (All Theories)</a>',
+            '                    <a href="trajectory_viewers/unified_multi_particle_viewer_advanced.html" target="_blank" style="font-size: 1.1em;">🌍 Unified Viewer (All Theories)</a>',
             '                </div>',
             '            `;',
             '            ',
@@ -509,7 +509,7 @@ class ComprehensiveTestReportGenerator:
         os.makedirs(viewers_dir, exist_ok=True)
         
         try:
-            from physics_agent.ui.unified_multi_particle_viewer_generator import (
+            from physics_agent.ui.renderer import (
                 generate_unified_multi_particle_viewer
             )
         except ImportError:
@@ -518,7 +518,7 @@ class ComprehensiveTestReportGenerator:
         
         # Generate unified viewer for all theories
         try:
-            unified_viewer_path = os.path.join(viewers_dir, 'unified_multi_particle_viewer.html')
+            unified_viewer_path = os.path.join(viewers_dir, 'unified_multi_particle_viewer_advanced.html')
             generate_unified_multi_particle_viewer(
                 run_dir=output_dir,
                 output_path=unified_viewer_path,
