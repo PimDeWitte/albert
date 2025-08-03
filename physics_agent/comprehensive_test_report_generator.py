@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Dict, List, Any
 import torch
 import numpy as np
+import html
 
 class ComprehensiveTestReportGenerator:
     """Generate HTML reports for comprehensive theory validation."""
@@ -40,6 +41,10 @@ class ComprehensiveTestReportGenerator:
         
         # Add test descriptions
         html_lines.extend(self._generate_test_descriptions())
+        
+        # Add log section if available
+        if run_dir:
+            html_lines.extend(self._generate_log_section(results, run_dir))
         
         # Add footer
         html_lines.extend(self._generate_footer())
@@ -79,7 +84,7 @@ class ComprehensiveTestReportGenerator:
             '        .summary-card .value { font-size: 2.5em; font-weight: bold; color: #3498db; }',
             '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }',
             '        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }',
-            '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; }',
+            '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; }',
             '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }',
             '        tr:hover { background-color: #f8f9fa; }',
             '        .rank { font-weight: bold; text-align: center; }',
@@ -118,6 +123,19 @@ class ComprehensiveTestReportGenerator:
             '        .trajectory-popup.show { display: block; }',
             '        .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }',
             '        .popup-overlay.show { display: block; }',
+            '        /* Tooltip styles */',
+            '        .tooltip { position: relative; display: inline-block; cursor: help; }',
+            '        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }',
+            '        .tooltiptext { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 12px; line-height: 1.4; }',
+            '        .tooltiptext::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent; }',
+            '        .distance-divergence { font-size: 0.85em; line-height: 1.5; }',
+            '        .distance-divergence strong { color: #34495e; font-size: 0.9em; }',
+            '        .progressive-loss-label { color: #666; font-size: 0.85em; font-weight: normal; }',
+            '        /* Log viewer styles */',
+            '        .log-section { margin-top: 40px; }',
+            '        .log-viewer { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 12px; line-height: 1.5; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }',
+            '        .log-toggle { background: #666; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }',
+            '        .log-toggle:hover { background: #777; }',
             '        .popup-close { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }',
             '        .trajectory-image { max-width: 100%; height: auto; }',
             '        .trajectory-links { margin-top: 15px; }',
@@ -237,9 +255,8 @@ class ComprehensiveTestReportGenerator:
             '                    <th>Combined Score</th>',
             '                    <th>Analytical</th>',
             '                    <th>Solver</th>',
-            '                    <th>Trajectory Loss</th>',
-            '                    <th>Progressive Loss (1%/50%/99%)</th>',
-            '                    <th>Distance Traveled</th>',
+            '                    <th class="tooltip">Trajectory Loss<span class="tooltiptext">Mean squared error between this theory\'s trajectory and Kerr baseline. Lower is better, with 0.00 being perfect match.</span></th>',
+            '                    <th class="tooltip">Distance & Divergence<span class="tooltiptext">Distance: Total path length in black hole radii (M = GM/c²)<br>Divergence: How error accumulates along trajectory<br>• Start (1% of path)<br>• Mid (50% of path)<br>• End (99% of path)<br>• Avg (mean divergence)</span></th>',
             '                    <th>Solver Time</th>',
             '                    <th>Actions</th>',
             '                </tr>',
@@ -306,16 +323,7 @@ class ComprehensiveTestReportGenerator:
             else:
                 loss_str = 'N/A'
             
-            # Format distance traveled
-            if distance_traveled is not None and kerr_distance is not None:
-                # Distances are now in geometric units (M)
-                distance_str = f'{distance_traveled:.1f}M / {kerr_distance:.1f}M'
-                if kerr_distance > 0:
-                    ratio = distance_traveled / kerr_distance
-                    if abs(ratio - 1.0) > 0.01:  # More than 1% difference
-                        distance_str += f' ({ratio:.2f}x)'
-            else:
-                distance_str = 'N/A'
+
             
             # Format solver info
             solver_str = f"{result['solver_summary']['passed']}/{result['solver_summary']['total']}"
@@ -333,11 +341,31 @@ class ComprehensiveTestReportGenerator:
             else:
                 time_str = 'N/A'
             
-            # Format progressive losses
-            if progressive_losses:
-                prog_loss_str = f'{progressive_losses["1%"]:.2e} / {progressive_losses["50%"]:.2e} / {progressive_losses["99%"]:.2e}'
+            # Combine distance and progressive losses
+            if distance_traveled is not None and kerr_distance is not None:
+                # Distances are in geometric units (M = GM/c², black hole radii)
+                combined_str = f'<strong>Distance:</strong> <span class="tooltip">{distance_traveled:.1f} <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span>'
+                combined_str += f' / {kerr_distance:.1f} <small>M</small>'
+                if kerr_distance > 0:
+                    ratio = distance_traveled / kerr_distance
+                    if abs(ratio - 1.0) > 0.01:  # More than 1% difference
+                        if ratio > 1.0:
+                            combined_str += f' <span style="color: #e74c3c;">({ratio:.2f}× longer)</span>'
+                        else:
+                            combined_str += f' <span style="color: #f39c12;">({ratio:.2f}× shorter)</span>'
+                
+                # Add progressive losses if available
+                if progressive_losses:
+                    # Calculate average of the three values
+                    avg_loss = (progressive_losses["1%"] + progressive_losses["50%"] + progressive_losses["99%"]) / 3
+                    
+                    combined_str += '<br><strong>Divergence:</strong><br>'
+                    combined_str += f'<span class="progressive-loss-label">Start:</span> {progressive_losses["1%"]:.2e}<br>'
+                    combined_str += f'<span class="progressive-loss-label">Mid:</span> {progressive_losses["50%"]:.2e}<br>'
+                    combined_str += f'<span class="progressive-loss-label">End:</span> {progressive_losses["99%"]:.2e}<br>'
+                    combined_str += f'<span class="progressive-loss-label">Avg:</span> {avg_loss:.2e}'
             else:
-                prog_loss_str = 'N/A'
+                combined_str = 'N/A'
             
             lines.extend([
                 '                <tr>',
@@ -348,8 +376,7 @@ class ComprehensiveTestReportGenerator:
                 f'                    <td>{result["analytical_summary"]["passed"]}/{result["analytical_summary"]["total"]}</td>',
                 f'                    <td>{solver_str}</td>',
                 f'                    <td class="loss-value">{loss_str}</td>',
-                f'                    <td class="loss-progression">{prog_loss_str}</td>',
-                f'                    <td class="distance-info">{distance_str}</td>',
+                f'                    <td class="distance-divergence">{combined_str}</td>',
                 f'                    <td class="timing-info">{time_str}</td>',
                 f'                    <td><button class="view-trajectory-btn" onclick="viewTrajectory(\'{result["theory"]}\')">View Trajectory</button></td>',
                 '                </tr>'
@@ -486,6 +513,71 @@ class ComprehensiveTestReportGenerator:
             '            instead of misleading timing values. Actual solver performance is only measured for freshly computed trajectories.',
             '        </div>'
         ]
+    
+    def _generate_log_section(self, results: List[Dict[str, Any]], run_dir: str) -> List[str]:
+        """Generate log section with test output."""
+        lines = [
+            '        <div class="log-section">',
+            '            <h2>Test Execution Logs</h2>',
+        ]
+        
+        # Try to find the main test log
+        test_log_path = None
+        for filename in os.listdir(run_dir):
+            if filename.endswith('.log') or filename.startswith('test_output'):
+                test_log_path = os.path.join(run_dir, filename)
+                break
+        
+        if test_log_path and os.path.exists(test_log_path):
+            try:
+                with open(test_log_path, 'r') as f:
+                    log_content = f.read()
+                
+                lines.extend([
+                    '            <button class="log-toggle" onclick="toggleLog(\'main-log\')">Toggle Full Test Log</button>',
+                    '            <div id="main-log" class="log-viewer" style="display: none;">',
+                    f'{html.escape(log_content)}',
+                    '            </div>'
+                ])
+            except Exception as e:
+                lines.append(f'            <p>Could not load test log: {e}</p>')
+        
+        # Add per-theory logs if available
+        lines.append('            <h3>Individual Theory Logs</h3>')
+        
+        for result in results:
+            theory_name = result['theory']
+            safe_name = theory_name.replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')
+            
+            # Look for theory-specific log files
+            theory_log_found = False
+            for test in result.get('solver_tests', []):
+                if 'log' in test:
+                    theory_log_found = True
+                    lines.extend([
+                        f'            <h4>{theory_name}</h4>',
+                        f'            <button class="log-toggle" onclick="toggleLog(\'{safe_name}-log\')">Toggle {theory_name} Log</button>',
+                        f'            <div id="{safe_name}-log" class="log-viewer" style="display: none;">',
+                        f'{html.escape(test["log"])}',
+                        '            </div>'
+                    ])
+                    break
+        
+        lines.extend([
+            '            <script>',
+            '            function toggleLog(logId) {',
+            '                var log = document.getElementById(logId);',
+            '                if (log.style.display === "none") {',
+            '                    log.style.display = "block";',
+            '                } else {',
+            '                    log.style.display = "none";',
+            '                }',
+            '            }',
+            '            </script>',
+            '        </div>'
+        ])
+        
+        return lines
     
     def _generate_footer(self) -> List[str]:
         """Generate HTML footer."""

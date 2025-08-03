@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Multi-Particle Trajectory Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            max-width: 350px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            color: #4a9eff;
+        }
+        
+        .theory-selector {
+            margin: 10px 0;
+        }
+        
+        .theory-selector select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: white;
+            border: 1px solid #333;
+            font-size: 14px;
+        }
+        
+        .button {
+            background: #2980b9;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            background: #3498db;
+        }
+        
+        .button.active {
+            background: #e74c3c;
+        }
+        
+        .button.primary {
+            background: #27ae60;
+        }
+        
+        .button.mounted {
+            background: #f39c12;
+        }
+        
+        .slider-container {
+            margin: 10px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            margin: 5px 0;
+        }
+        
+        .particle-control {
+            background: #1a1a1a;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+        
+        .particle-control.primary {
+            border-color: #27ae60;
+        }
+        
+        .particle-control.mounted {
+            border-color: #f39c12;
+        }
+        
+        .particle-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .particle-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .particle-toggle {
+            margin-right: 10px;
+        }
+        
+        .particle-toggle input {
+            margin-right: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        
+        .spacetime-info {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border: 1px solid #333;
+        }
+        
+        .tensor-info {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border: 1px solid #333;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .view-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            display: none;
+            border: 1px solid #4a9eff;
+            max-width: 300px;
+        }
+        
+        .object-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            max-width: 350px;
+        }
+        
+        .grid-toggle {
+            margin: 10px 0;
+        }
+        
+        .degrees-of-freedom {
+            margin-top: 10px;
+            padding: 10px;
+            background: #2a2a2a;
+            border-radius: 4px;
+        }
+        
+        .dof-item {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        
+        /* Scrollbar styling */
+        .controls::-webkit-scrollbar,
+        .info::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .controls::-webkit-scrollbar-track,
+        .info::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        .controls::-webkit-scrollbar-thumb,
+        .info::-webkit-scrollbar-thumb {
+            background: #4a9eff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div class="controls">
+        <h3>Theory Selection</h3>
+        <div class="theory-selector">
+            <select id="theorySelect">
+                <option value="">Select Theory...</option>
+            </select>
+        </div>
+        
+        <h3 style="margin-top: 20px;">View Controls</h3>
+        <button class="button" onclick="setView('third')">Third Person</button>
+        <button class="button" onclick="setView('top')">Top View</button>
+        <button class="button" onclick="resetCamera()">Reset View</button>
+        
+        <div class="grid-toggle">
+            <label>
+                <input type="checkbox" id="gridToggle" checked onchange="toggleSpacetimeGrid()">
+                Show Spacetime Grid
+            </label>
+        </div>
+        
+        <h3 style="margin-top: 20px;">Animation</h3>
+        <button class="button" id="playPauseBtn" onclick="toggleAnimation()">Pause</button>
+        <button class="button" onclick="resetAnimation()">Reset</button>
+        
+        <div class="slider-container">
+            <label>Speed: <span id="speedValue">1.0</span>x</label>
+            <input type="range" class="slider" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+        </div>
+        
+        <div class="slider-container">
+            <label>Time: <span id="timeValue">0</span>%</label>
+            <input type="range" class="slider" id="timeSlider" min="0" max="100" step="0.1" value="0">
+        </div>
+        
+        <h3 style="margin-top: 20px;">Particles</h3>
+        <div id="particleControls"></div>
+    </div>
+    
+    <div class="info">
+        <h3 id="theoryNameDisplay">No Theory Selected</h3>
+        <p>Black Hole Mass: <span id="blackHoleMass">{BLACK_HOLE_MASS}</span> kg</p>
+        <p>Schwarzschild Radius: <span id="schwarzschildRadius"></span> M</p>
+        
+        <div class="spacetime-info">
+            <h4>Spacetime at Camera</h4>
+            <p>Distance from BH: <span id="cameraDistance">-</span> M</p>
+            <p>Proper Time Factor: <span id="properTimeFactor">-</span></p>
+            <p>Spatial Curvature: <span id="spatialCurvature">-</span></p>
+            <p id="spacetimeDescription">Move camera to see spacetime effects</p>
+        </div>
+        
+        <h3 style="margin-top: 15px;">Legend</h3>
+        <div id="legend"></div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #1a1a1a; border-radius: 6px;">
+            <h4 style="margin: 0 0 10px 0; color: #4a9eff;">Spacetime Grid Visualization</h4>
+            <p style="font-size: 12px; margin: 5px 0;">
+                <strong>Green Grid:</strong> Flamm's paraboloid - the proper embedding of Schwarzschild spacetime<br>
+                <strong>Curvature Formula:</strong> z = 2√(2M(r-2M)) where M = GM/c²<br>
+                <strong>Grid Density:</strong> Logarithmic spacing - denser near black hole for detail<br>
+                <strong>Funnel Shape:</strong> Shows how space is curved into the black hole<br>
+                <strong>Key Radii:</strong> Red = Event Horizon (2M), Orange = Photon Sphere (3M), Yellow = ISCO (6M)<br>
+                <strong>Note:</strong> This is a 2D spatial slice embedded in 3D to visualize curvature
+            </p>
+        </div>
+        
+        <div id="particleTensorInfo" class="tensor-info" style="display: none;">
+            <h4>Particle State</h4>
+            <div id="tensorContent"></div>
+            <div class="degrees-of-freedom">
+                <h5>Degrees of Freedom</h5>
+                <div id="dofContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="view-info" id="viewInfo">
+        Third Person View - Use mouse to orbit
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+    <div class="object-info" id="objectInfo"></div>
+
+    <script>
+        // Run data containing all theories
+        const runData = {RUN_DATA_JSON};
+        const blackHoleMass = {BLACK_HOLE_MASS};
+        
+        // Constants
+        const G = 6.67430e-11;
+        const c = 299792458;
+        const M_physical = G * blackHoleMass / (c * c); // Geometric units in meters
+        const M = 1.0; // Use normalized units for visualization
+        
+        // Three.js setup
+        let scene, camera, renderer, controls;
+        let blackHole, particles = {};
+        let trajectoryLines = {};
+        let currentPositions = {};
+        let animationTime = 0;
+        let isPlaying = true;
+        let animationSpeed = 1.0;
+        let currentView = 'third';
+        let primaryParticle = 'electron';
+        let mountedParticle = null;
+        let currentTheory = null;
+        let spacetimeGrid = null;
+        let raycaster, mouse;
+        let hoveredObject = null;
+        let selectedObject = null;
+        
+        // Particle colors
+        const particleColors = {
+            electron: 0x3498db,
+            neutrino: 0xe74c3c,
+            photon: 0xf39c12,
+            proton: 0x2ecc71
+        };
+        
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000814);
+            
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                window.innerWidth / window.innerHeight,
+                0.1,
+                5000  // Increased far plane to prevent clipping
+            );
+            
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            
+            // Controls - always orbit around the black hole
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 5;
+            controls.maxDistance = 1000;  // Increased max distance
+            controls.target.set(0, 0, 0); // Always focus on black hole
+            controls.enablePan = false; // Disable panning to keep focus on black hole
+            
+            // Raycaster for mouse interactions
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 2);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(50, 50, 50);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            
+            // Add point light for better black hole visibility
+            const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+            
+            // Create black hole
+            createBlackHole();
+            
+            // Create spacetime grid
+            createSpacetimeGrid();
+            
+            // Add observer reference frame indicator
+            const observerGeometry = new THREE.ConeGeometry(2, 5, 4);
+            const observerMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                transparent: true,
+                opacity: 0.5
+            });
+            const observerIndicator = new THREE.Mesh(observerGeometry, observerMaterial);
+            observerIndicator.name = 'observerIndicator';
+            scene.add(observerIndicator);
+            
+            // Add axes helper for orientation at proper scale
+            const axesHelper = new THREE.AxesHelper(50);
+            scene.add(axesHelper);
+            
+            // Setup UI
+            populateTheorySelector();
+            
+            // Event listeners
+            window.addEventListener('resize', onWindowResize);
+            document.getElementById('speedSlider').addEventListener('input', updateSpeed);
+            document.getElementById('timeSlider').addEventListener('input', updateTimeFromSlider);
+            document.getElementById('theorySelect').addEventListener('change', onTheoryChange);
+            
+            // Mouse events
+            renderer.domElement.addEventListener('mousemove', onMouseMove);
+            renderer.domElement.addEventListener('click', onMouseClick);
+            
+            // Update Schwarzschild radius display
+            document.getElementById('schwarzschildRadius').textContent = (2 * M).toFixed(3) + ' (scaled)';
+            
+            // Set initial camera position
+            setView('third');
+            
+            // Load first theory by default
+            const firstTheory = document.getElementById('theorySelect').querySelector('option:not([value=""])');
+            if (firstTheory) {
+                document.getElementById('theorySelect').value = firstTheory.value;
+                loadTheory(firstTheory.value);
+            }
+            
+            // Start animation
+            animate();
+        }
+        
+        function createBlackHole() {
+            // Create realistic black hole with event horizon
+            // Scale up for visibility
+            const bhRadius = 2 * M; // Event horizon at 2M
+            const geometry = new THREE.SphereGeometry(bhRadius, 64, 64);
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0x000000,
+                metalness: 1,
+                roughness: 0,
+                opacity: 0.95,
+                transparent: true
+            });
+            
+            blackHole = new THREE.Mesh(geometry, material);
+            blackHole.name = 'Black Hole';
+            blackHole.userData = {
+                type: 'blackhole',
+                mass: blackHoleMass,
+                schwarzschildRadius: 2 * M
+            };
+            blackHole.position.set(0, 0, 0);
+            scene.add(blackHole);
+            
+            // Add glow effect around black hole
+            const glowGeometry = new THREE.SphereGeometry(bhRadius * 1.2, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff4400,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            blackHole.add(glow);
+            
+            // Add thin accretion disk hint
+            const diskGeometry = new THREE.RingGeometry(2.5 * M, 4 * M, 64);
+            const diskMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff6600,
+                side: THREE.DoubleSide,
+                opacity: 0.3,
+                transparent: true
+            });
+            const disk = new THREE.Mesh(diskGeometry, diskMaterial);
+            disk.rotation.x = Math.PI / 2;
+            disk.name = 'Accretion Disk';
+            blackHole.add(disk);
+            
+            // Add photon sphere indicator
+            const photonSphereGeometry = new THREE.RingGeometry(3 * M - 0.05, 3 * M + 0.05, 64);
+            const photonSphereMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffff00,
+                side: THREE.DoubleSide,
+                opacity: 0.3,
+                transparent: true
+            });
+            const photonSphere = new THREE.Mesh(photonSphereGeometry, photonSphereMaterial);
+            photonSphere.rotation.x = Math.PI / 2;
+            photonSphere.name = 'Photon Sphere';
+            blackHole.add(photonSphere);
+        }
+        
+        function createSpacetimeGrid() {
+            // Create spacetime grid showing Schwarzschild metric curvature
+            spacetimeGrid = new THREE.Group();
+            spacetimeGrid.name = 'Spacetime Grid';
+            
+            // Grid parameters - denser near black hole for better curvature visualization
+            const innerRadius = 2.5;  // Just outside event horizon
+            const outerRadius = 150;
+            const radialLines = 24;   // Number of radial lines
+            const circularLines = 40; // Number of circular lines
+            
+            // Create radial lines (like spokes of a wheel)
+            for (let i = 0; i < radialLines; i++) {
+                const angle = (i / radialLines) * Math.PI * 2;
+                const points = [];
+                
+                // Sample more densely near the black hole
+                for (let r = innerRadius; r <= outerRadius; r *= 1.08) {
+                    // Calculate embedding height using Flamm's paraboloid
+                    // z = 2*sqrt(2M(r-2M)) for the Schwarzschild metric
+                    const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+                    
+                    points.push(new THREE.Vector3(
+                        r * Math.cos(angle),
+                        height * 2,  // Scale up for visibility
+                        r * Math.sin(angle)
+                    ));
+                }
+                
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: 0x00ff00,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const line = new THREE.Line(geometry, material);
+                spacetimeGrid.add(line);
+            }
+            
+            // Create circular lines (concentric circles at different radii)
+            for (let i = 0; i < circularLines; i++) {
+                // Logarithmic spacing for circles - denser near black hole
+                const t = i / (circularLines - 1);
+                const r = innerRadius * Math.pow(outerRadius / innerRadius, t);
+                
+                const points = [];
+                const segments = 64;
+                
+                // Calculate embedding height for this radius
+                const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+                
+                for (let j = 0; j <= segments; j++) {
+                    const angle = (j / segments) * Math.PI * 2;
+                    points.push(new THREE.Vector3(
+                        r * Math.cos(angle),
+                        height * 2,  // Scale up for visibility
+                        r * Math.sin(angle)
+                    ));
+                }
+                
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: 0x00ff00,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const line = new THREE.Line(geometry, material);
+                spacetimeGrid.add(line);
+            }
+            
+            // Add special radius indicators with strong colors
+            const keyRadii = [
+                { r: 2, name: 'Event Horizon', color: 0xff0000, linewidth: 3 },
+                { r: 3, name: 'Photon Sphere', color: 0xffaa00, linewidth: 2 },
+                { r: 6, name: 'ISCO', color: 0xffff00, linewidth: 2 }
+            ];
+            
+            keyRadii.forEach(({r, name, color, linewidth}) => {
+                const points = [];
+                const segments = 128;
+                const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+                
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    points.push(new THREE.Vector3(
+                        r * Math.cos(angle),
+                        height * 2,
+                        r * Math.sin(angle)
+                    ));
+                }
+                
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: color,
+                    opacity: 1.0,
+                    transparent: false,
+                    linewidth: linewidth
+                });
+                const circle = new THREE.Line(geometry, material);
+                circle.name = name;
+                spacetimeGrid.add(circle);
+            });
+            
+            // Add coordinate labels
+            const labelPositions = [10, 20, 50, 100];
+            labelPositions.forEach(r => {
+                // Create label showing radius
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 128;
+                canvas.height = 64;
+                context.fillStyle = 'white';
+                context.font = '32px Arial';
+                context.fillText(`${r}M`, 10, 40);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMaterial = new THREE.SpriteMaterial({ 
+                    map: texture, 
+                    opacity: 0.8,
+                    color: 0x00ff00
+                });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                
+                // Position label on the grid at angle 0
+                const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+                sprite.position.set(r, height * 2 + 5, 0);
+                sprite.scale.set(5, 2.5, 1);
+                spacetimeGrid.add(sprite);
+                
+                // Also add label at 90 degrees
+                const sprite2 = sprite.clone();
+                sprite2.position.set(0, height * 2 + 5, r);
+                spacetimeGrid.add(sprite2);
+            });
+            
+            scene.add(spacetimeGrid);
+            
+            // The grid is now static - shows the intrinsic curvature of spacetime
+            // No observer-dependent effects
+        }
+        
+        function updateSpacetimeGrid() {
+            // Since the grid is now static and shows intrinsic curvature,
+            // we only need to update the spacetime info display
+            const cameraPos = camera.position;
+            const observerR = cameraPos.length();
+            updateSpacetimeInfo(observerR);
+        }
+        
+        function updateSpacetimeInfo(r) {
+            const rs = 2 * M;
+            const properTimeFactor = Math.sqrt(Math.max(0, 1 - rs / r));
+            const spatialCurvature = rs / (2 * r * r);
+            
+            document.getElementById('cameraDistance').textContent = r.toFixed(2);
+            document.getElementById('properTimeFactor').textContent = properTimeFactor.toFixed(4);
+            document.getElementById('spatialCurvature').textContent = spatialCurvature.toExponential(2);
+            
+            // Update description based on distance with scientific details
+            let description = '';
+            const timeDilationPercent = ((1 - properTimeFactor) * 100).toFixed(1);
+            const escapeVelocity = Math.sqrt(2 * rs / r);  // As fraction of c
+            
+            if (r < 3 * M) {
+                description = `DANGER: Near photon sphere (r = 3M)! Time dilation: ${timeDilationPercent}%. ` +
+                    `Light can orbit here. Grid shows extreme curvature - Flamm's paraboloid embedding depth maximum.`;
+            } else if (r < 6 * M) {
+                description = `Strong field regime: Inside ISCO (r = 6M). Time dilation: ${timeDilationPercent}%. ` +
+                    `No stable orbits exist. Grid curvature shows deep gravitational well. Escape velocity: ${(escapeVelocity * 100).toFixed(1)}% of c.`;
+            } else if (r < 20 * M) {
+                description = `Moderate field: Time dilation: ${timeDilationPercent}%. ` +
+                    `Grid shows significant curvature - the funnel shape of Flamm's paraboloid is clearly visible.`;
+            } else if (r < 50 * M) {
+                description = `Weak-moderate field: Time dilation: ${timeDilationPercent}%. ` +
+                    `Grid shows gentle spacetime curvature. Radial distances stretched by factor √(1 - rs/r) = ${(1/Math.sqrt(1-rs/r)).toFixed(3)}.`;
+            } else {
+                description = `Weak field: Nearly flat spacetime. Time dilation: ${timeDilationPercent}%. ` +
+                    `Grid approaches Minkowski space. Curvature effects ~ rs/r = ${(rs/r).toFixed(4)}.`;
+            }
+            
+            document.getElementById('spacetimeDescription').innerHTML = description;
+        }
+        
+        function populateTheorySelector() {
+            const select = document.getElementById('theorySelect');
+            
+            // Group theories by category
+            const categories = {};
+            for (const [theoryName, data] of Object.entries(runData)) {
+                const category = data.category || 'other';
+                if (!categories[category]) {
+                    categories[category] = [];
+                }
+                categories[category].push(theoryName);
+            }
+            
+            // Add options grouped by category
+            for (const [category, theories] of Object.entries(categories)) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = category.charAt(0).toUpperCase() + category.slice(1);
+                
+                theories.sort().forEach(theory => {
+                    const option = document.createElement('option');
+                    option.value = theory;
+                    option.textContent = theory;
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            }
+        }
+        
+        function onTheoryChange(event) {
+            const theoryName = event.target.value;
+            if (!theoryName) return;
+            
+            loadTheory(theoryName);
+        }
+        
+        function loadTheory(theoryName) {
+            currentTheory = theoryName;
+            const theoryData = runData[theoryName];
+            
+            if (!theoryData) {
+                console.error('Theory data not found:', theoryName);
+                return;
+            }
+            
+            // Update display
+            document.getElementById('theoryNameDisplay').textContent = theoryName;
+            
+            // Clear existing particles and trajectories
+            clearVisualization();
+            
+            // Reset animation time
+            animationTime = 0;
+            document.getElementById('timeSlider').value = 0;
+            updateTimeDisplay();
+            
+            // Load particle data
+            const particleData = theoryData.particles || {};
+            
+            // Create particle controls and visualizations
+            createParticleControls(particleData);
+            
+            // Load trajectories
+            console.log('Loading trajectories for', Object.keys(particleData).length, 'particles');
+            for (const [particleName, data] of Object.entries(particleData)) {
+                if (data && data.positions) {
+                    console.log(`Creating visualization for ${particleName} with ${data.positions.length} points`);
+                    createParticleVisualization(particleName, data);
+                }
+            }
+            
+            // Auto-adjust camera to fit all trajectories
+            if (Object.keys(trajectoryLines).length > 0) {
+                console.log('Fitting camera to scene with', Object.keys(trajectoryLines).length, 'trajectories');
+                fitCameraToScene();
+            } else {
+                console.log('No trajectories created!');
+            }
+            
+            // Update legend
+            updateLegend();
+        }
+        
+        function clearVisualization() {
+            // Remove existing particles and trajectories
+            for (const name in particles) {
+                if (particles[name]) {
+                    scene.remove(particles[name]);
+                    // Dispose of geometry and materials
+                    if (particles[name].geometry) particles[name].geometry.dispose();
+                    if (particles[name].material) particles[name].material.dispose();
+                }
+            }
+            for (const name in trajectoryLines) {
+                if (trajectoryLines[name]) {
+                    scene.remove(trajectoryLines[name]);
+                    if (trajectoryLines[name].geometry) trajectoryLines[name].geometry.dispose();
+                    if (trajectoryLines[name].material) trajectoryLines[name].material.dispose();
+                }
+                
+                // Also remove the tube geometry
+                const tube = scene.getObjectByName(name + '_trajectory_tube');
+                if (tube) {
+                    scene.remove(tube);
+                    if (tube.geometry) tube.geometry.dispose();
+                    if (tube.material) tube.material.dispose();
+                }
+            }
+            
+            particles = {};
+            trajectoryLines = {};
+            currentPositions = {};
+        }
+        
+        function createParticleControls(particleData) {
+            const container = document.getElementById('particleControls');
+            container.innerHTML = '';
+            
+            for (const [particleName, data] of Object.entries(particleData)) {
+                const control = document.createElement('div');
+                control.className = 'particle-control';
+                if (particleName === primaryParticle) {
+                    control.classList.add('primary');
+                }
+                
+                control.innerHTML = `
+                    <div class="particle-name">${particleName.charAt(0).toUpperCase() + particleName.slice(1)}</div>
+                    <div class="particle-toggle">
+                        <input type="checkbox" id="toggle_${particleName}" checked onchange="toggleParticle('${particleName}')">
+                        <label for="toggle_${particleName}">Show</label>
+                    </div>
+                    <div class="particle-actions">
+                        <button class="button small" onclick="makePrimary('${particleName}')">Make Primary</button>
+                        <button class="button small" onclick="mountCamera('${particleName}')">Mount Camera</button>
+                    </div>
+                `;
+                
+                container.appendChild(control);
+            }
+        }
+        
+        function createParticleVisualization(particleName, data) {
+            // Create particle scaled for visibility at orbit distances
+            const geometry = new THREE.SphereGeometry(1, 16, 16);
+            const material = new THREE.MeshPhongMaterial({
+                color: particleColors[particleName] || 0xffffff,
+                emissive: particleColors[particleName] || 0xffffff,
+                emissiveIntensity: 0.5
+            });
+            
+            const particle = new THREE.Mesh(geometry, material);
+            particle.name = particleName;
+            particle.userData = {
+                type: 'particle',
+                name: particleName,
+                trajectory: data
+            };
+            
+            // Add a glowing effect for better visibility
+            const glowGeometry = new THREE.SphereGeometry(2, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: particleColors[particleName] || 0xffffff,
+                transparent: true,
+                opacity: 0.3
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            particle.add(glow);
+            
+            particles[particleName] = particle;
+            scene.add(particle);
+            
+            // Create trajectory line following curved spacetime
+            if (data.positions && data.positions.length > 0) {
+                const points = [];
+                console.log(`First position for ${particleName}: r=${data.positions[0][0]}, phi=${data.positions[0][1]}`);
+                for (let i = 0; i < data.positions.length; i++) {
+                    const pos = data.positions[i];
+                    const r = pos[0]; // Already in geometric units from data extraction
+                    const phi = pos[1];
+                    
+                    // Calculate position on curved spacetime surface
+                    const x = r * Math.cos(phi);
+                    const z = r * Math.sin(phi);
+                    
+                    // Apply Flamm's paraboloid embedding - same as grid
+                    const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+                    const y = height * 2;  // Scale up for visibility, same as grid
+                    
+                    points.push(new THREE.Vector3(x, y, z));
+                }
+                console.log(`Created ${points.length} points for ${particleName} trajectory on curved surface`);
+                
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                // Use LineSegments for better visibility
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: particleColors[particleName] || 0xffffff,
+                    opacity: 1.0,
+                    transparent: false
+                });
+                
+                // Also create a tube geometry for better visibility
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeometry = new THREE.TubeGeometry(curve, points.length, 0.3, 8, false);
+                const tubeMaterial = new THREE.MeshBasicMaterial({
+                    color: particleColors[particleName] || 0xffffff,
+                    opacity: 0.6,
+                    transparent: true
+                });
+                
+                // Add both line and tube for visibility
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                line.name = particleName + '_trajectory';
+                trajectoryLines[particleName] = line;
+                scene.add(line);
+                
+                const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+                tube.name = particleName + '_trajectory_tube';
+                scene.add(tube);
+            }
+            
+            // Set initial position
+            if (data.positions && data.positions.length > 0) {
+                const pos = data.positions[0];
+                updateParticlePosition(particleName, pos);
+                
+                // Add particle name label
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256;
+                canvas.height = 64;
+                context.fillStyle = 'white';
+                context.font = '48px Arial';
+                context.fillText(particleName, 10, 50);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMaterial = new THREE.SpriteMaterial({ map: texture, opacity: 0.8 });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.scale.set(10, 2.5, 1);
+                sprite.position.set(0, 5, 0);
+                particle.add(sprite);
+            }
+        }
+        
+        function updateParticlePosition(particleName, position) {
+            const particle = particles[particleName];
+            if (!particle) return;
+            
+            const r = position[0]; // Already in geometric units from data extraction
+            const phi = position[1];
+            
+            // Position particle on curved spacetime surface
+            particle.position.x = r * Math.cos(phi);
+            particle.position.z = r * Math.sin(phi);
+            
+            // Apply Flamm's paraboloid embedding - same as trajectory
+            const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+            particle.position.y = height * 2;  // Scale up for visibility
+            
+            currentPositions[particleName] = position;
+        }
+        
+        function toggleParticle(particleName) {
+            const checkbox = document.getElementById(`toggle_${particleName}`);
+            const particle = particles[particleName];
+            const trajectory = trajectoryLines[particleName];
+            
+            if (particle) particle.visible = checkbox.checked;
+            if (trajectory) trajectory.visible = checkbox.checked;
+            
+            // Also toggle the tube if it exists
+            const tube = scene.getObjectByName(particleName + '_trajectory_tube');
+            if (tube) tube.visible = checkbox.checked;
+        }
+        
+        function makePrimary(particleName) {
+            primaryParticle = particleName;
+            
+            // Update UI
+            document.querySelectorAll('.particle-control').forEach(control => {
+                control.classList.remove('primary');
+            });
+            
+            const controls = document.getElementById('particleControls').children;
+            for (const control of controls) {
+                if (control.querySelector('.particle-name').textContent.toLowerCase() === particleName) {
+                    control.classList.add('primary');
+                    break;
+                }
+            }
+            
+            // Update Schwarzschild radius based on particle mass
+            updateSchwarzschildRadius(particleName);
+        }
+        
+        function updateSchwarzschildRadius(particleName) {
+            // This would calculate the actual Schwarzschild radius for the particle
+            // For now, we'll show the black hole's radius
+            document.getElementById('schwarzschildRadius').textContent = (2 * M).toFixed(3);
+        }
+        
+        function mountCamera(particleName) {
+            if (mountedParticle === particleName) {
+                // Unmount
+                mountedParticle = null;
+                setView('third');
+                document.getElementById('particleTensorInfo').style.display = 'none';
+            } else {
+                // Mount
+                mountedParticle = particleName;
+                document.getElementById('particleTensorInfo').style.display = 'block';
+                updateTensorInfo();
+            }
+            
+            // Update UI
+            document.querySelectorAll('.particle-control').forEach(control => {
+                control.classList.remove('mounted');
+            });
+            
+            if (mountedParticle) {
+                const controls = document.getElementById('particleControls').children;
+                for (const control of controls) {
+                    if (control.querySelector('.particle-name').textContent.toLowerCase() === particleName) {
+                        control.classList.add('mounted');
+                        break;
+                    }
+                }
+            }
+        }
+        
+        function updateTensorInfo() {
+            if (!mountedParticle || !currentTheory) return;
+            
+            const theoryData = runData[currentTheory];
+            const particleData = theoryData.particles[mountedParticle];
+            
+            if (!particleData) return;
+            
+            // Calculate current state based on animation time
+            const timeIndex = Math.floor(animationTime * (particleData.positions.length - 1));
+            const position = particleData.positions[Math.min(timeIndex, particleData.positions.length - 1)];
+            const velocity = particleData.velocities ? particleData.velocities[timeIndex] : [0, 0];
+            
+            // Display tensor components
+            const tensorContent = document.getElementById('tensorContent');
+            tensorContent.innerHTML = `
+                <p><strong>Position:</strong> r = ${position[0].toFixed(3)} M, φ = ${position[1].toFixed(3)} rad</p>
+                <p><strong>Velocity:</strong> ṙ = ${velocity[0].toFixed(3)}, φ̇ = ${velocity[1].toFixed(3)}</p>
+                <p><strong>4-Velocity:</strong> uᵘ = (${1}, ${velocity[0].toFixed(3)}, 0, ${velocity[1].toFixed(3)})</p>
+                <p><strong>Metric:</strong> gₜₜ = ${(1 - 2*M/position[0]).toFixed(4)}</p>
+            `;
+            
+            // Display degrees of freedom
+            const dofContent = document.getElementById('dofContent');
+            dofContent.innerHTML = `
+                <div class="dof-item">• Radial motion: ${Math.abs(velocity[0]) > 0.01 ? 'Active' : 'Constrained'}</div>
+                <div class="dof-item">• Angular motion: ${Math.abs(velocity[1]) > 0.01 ? 'Active' : 'Constrained'}</div>
+                <div class="dof-item">• Energy: Conserved</div>
+                <div class="dof-item">• Angular momentum: Conserved</div>
+            `;
+        }
+        
+        function toggleSpacetimeGrid() {
+            const checkbox = document.getElementById('gridToggle');
+            if (spacetimeGrid) {
+                spacetimeGrid.visible = checkbox.checked;
+            }
+        }
+        
+        function onMouseMove(event) {
+            // Calculate mouse position in normalized device coordinates
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // Update raycaster
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Check for intersections
+            const objects = [...Object.values(particles), blackHole].filter(obj => obj && obj.visible);
+            const intersects = raycaster.intersectObjects(objects);
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                if (object !== hoveredObject) {
+                    hoveredObject = object;
+                    showTooltip(event, object);
+                }
+                updateTooltipPosition(event);
+            } else {
+                hoveredObject = null;
+                hideTooltip();
+            }
+        }
+        
+        function onMouseClick(event) {
+            if (hoveredObject) {
+                selectedObject = hoveredObject;
+                showObjectInfo(selectedObject);
+            }
+        }
+        
+        function showTooltip(event, object) {
+            const tooltip = document.getElementById('tooltip');
+            
+            if (object.userData.type === 'particle') {
+                tooltip.innerHTML = `
+                    <strong>${object.name.charAt(0).toUpperCase() + object.name.slice(1)}</strong><br>
+                    Click for detailed information
+                `;
+            } else if (object.userData.type === 'blackhole') {
+                tooltip.innerHTML = `
+                    <strong>Black Hole</strong><br>
+                    Mass: ${blackHoleMass.toExponential(2)} kg<br>
+                    Schwarzschild Radius: ${(2 * M).toFixed(3)} M<br>
+                    Click for more details
+                `;
+            }
+            
+            tooltip.style.display = 'block';
+            updateTooltipPosition(event);
+        }
+        
+        function updateTooltipPosition(event) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.left = (event.clientX + 15) + 'px';
+            tooltip.style.top = (event.clientY - 15) + 'px';
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+        
+        function showObjectInfo(object) {
+            const info = document.getElementById('objectInfo');
+            
+            if (object.userData.type === 'particle') {
+                const theoryData = runData[currentTheory];
+                const particleData = theoryData.particles[object.name];
+                
+                info.innerHTML = `
+                    <h3>${object.name.charAt(0).toUpperCase() + object.name.slice(1)} Properties</h3>
+                    <p><strong>Theory:</strong> ${currentTheory}</p>
+                    <p><strong>Trajectory Points:</strong> ${particleData.positions.length}</p>
+                    <p><strong>Current Position:</strong> r = ${currentPositions[object.name][0].toFixed(3)} M</p>
+                    <p><strong>Particle Type:</strong> ${getParticleType(object.name)}</p>
+                    <p><strong>Key Features:</strong> ${getParticleFeatures(object.name)}</p>
+                    <button class="button" onclick="closeObjectInfo()">Close</button>
+                `;
+            } else if (object.userData.type === 'blackhole') {
+                info.innerHTML = `
+                    <h3>Black Hole Information</h3>
+                    <p><strong>Type:</strong> Primordial Mini Black Hole</p>
+                    <p><strong>Mass:</strong> ${blackHoleMass.toExponential(2)} kg</p>
+                    <p><strong>Schwarzschild Radius:</strong> ${(2 * M).toFixed(3)} M</p>
+                    <p><strong>Event Horizon:</strong> r = ${(2 * M).toFixed(3)} M</p>
+                    <p><strong>Photon Sphere:</strong> r = ${(3 * M).toFixed(3)} M</p>
+                    <p><strong>ISCO:</strong> r = ${(6 * M).toFixed(3)} M</p>
+                    <button class="button" onclick="closeObjectInfo()">Close</button>
+                `;
+            }
+            
+            info.style.display = 'block';
+        }
+        
+        function closeObjectInfo() {
+            document.getElementById('objectInfo').style.display = 'none';
+        }
+        
+        function getParticleType(name) {
+            const types = {
+                electron: 'Fermion (Lepton)',
+                neutrino: 'Fermion (Lepton)',
+                photon: 'Boson (Gauge)',
+                proton: 'Fermion (Baryon)'
+            };
+            return types[name] || 'Unknown';
+        }
+        
+        function getParticleFeatures(name) {
+            const features = {
+                electron: 'Charged, massive, stable',
+                neutrino: 'Neutral, nearly massless, weakly interacting',
+                photon: 'Massless, travels at c, electromagnetic',
+                proton: 'Charged, massive, stable (in most theories)'
+            };
+            return features[name] || 'Standard particle';
+        }
+        
+        function setView(viewType) {
+            currentView = viewType;
+            
+            switch (viewType) {
+                case 'third':
+                    // Position camera to see typical orbits at ~100 M
+                    camera.position.set(150, 100, 150);
+                    camera.lookAt(0, 0, 0);
+                    controls.target.set(0, 0, 0);
+                    controls.enabled = true;
+                    controls.update();
+                    document.getElementById('viewInfo').textContent = 'Third Person View - Use mouse to orbit';
+                    break;
+                    
+                case 'top':
+                    camera.position.set(0, 200, 0);
+                    camera.lookAt(0, 0, 0);
+                    controls.target.set(0, 0, 0);
+                    controls.enabled = true;
+                    controls.update();
+                    document.getElementById('viewInfo').textContent = 'Top View - Looking down at orbital plane';
+                    break;
+            }
+        }
+        
+        function resetCamera() {
+            setView(currentView);
+        }
+        
+        function toggleAnimation() {
+            isPlaying = !isPlaying;
+            document.getElementById('playPauseBtn').textContent = isPlaying ? 'Pause' : 'Play';
+        }
+        
+        function resetAnimation() {
+            animationTime = 0;
+            document.getElementById('timeSlider').value = 0;
+            updateTimeDisplay();
+        }
+        
+        function updateSpeed(event) {
+            animationSpeed = parseFloat(event.target.value);
+            document.getElementById('speedValue').textContent = animationSpeed.toFixed(1);
+        }
+        
+        function updateTimeFromSlider(event) {
+            animationTime = parseFloat(event.target.value) / 100;
+            updateTimeDisplay();
+        }
+        
+        function updateTimeDisplay() {
+            document.getElementById('timeValue').textContent = (animationTime * 100).toFixed(1);
+            document.getElementById('timeSlider').value = animationTime * 100;
+        }
+        
+        function updateLegend() {
+            const legendDiv = document.getElementById('legend');
+            legendDiv.innerHTML = '';
+            
+            for (const [name, color] of Object.entries(particleColors)) {
+                if (particles[name]) {
+                    const item = document.createElement('div');
+                    item.className = 'legend-item';
+                    
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color';
+                    colorBox.style.backgroundColor = `#${color.toString(16).padStart(6, '0')}`;
+                    
+                    const label = document.createElement('span');
+                    label.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+                    
+                    item.appendChild(colorBox);
+                    item.appendChild(label);
+                    legendDiv.appendChild(item);
+                }
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (isPlaying && currentTheory) {
+                animationTime += 0.001 * animationSpeed;
+                if (animationTime > 1) {
+                    animationTime = 0;
+                }
+                updateTimeDisplay();
+                
+                // Update particle positions
+                const theoryData = runData[currentTheory];
+                for (const [particleName, data] of Object.entries(theoryData.particles || {})) {
+                    if (data && data.positions && particles[particleName]) {
+                        const index = Math.floor(animationTime * (data.positions.length - 1));
+                        const position = data.positions[Math.min(index, data.positions.length - 1)];
+                        updateParticlePosition(particleName, position);
+                    }
+                }
+                
+                // Update tensor info if camera is mounted
+                if (mountedParticle) {
+                    updateTensorInfo();
+                    
+                    // Follow mounted particle but keep black hole in view
+                    const particle = particles[mountedParticle];
+                    if (particle) {
+                        // Get particle position in r, phi coordinates
+                        const pos = currentPositions[mountedParticle];
+                        if (pos) {
+                            const r = pos[0];
+                            const phi = pos[1];
+                            
+                            // Place camera behind and above the particle on the curved surface
+                            const cameraR = r + 10;
+                            const cameraPhi = phi - 0.2; // Slightly behind
+                            
+                            // Calculate camera position on curved surface
+                            const cameraX = cameraR * Math.cos(cameraPhi);
+                            const cameraZ = cameraR * Math.sin(cameraPhi);
+                            const cameraHeight = cameraR > 2 ? -2 * Math.sqrt(2 * M * (cameraR - 2 * M)) : 0;
+                            
+                            camera.position.set(
+                                cameraX,
+                                cameraHeight * 2 + 20, // Above the curved surface
+                                cameraZ
+                            );
+                            
+                            // Always look at the black hole center
+                            camera.lookAt(0, -10, 0); // Look at bottom of the well
+                            controls.target.set(0, -10, 0);
+                        }
+                    }
+                }
+            }
+            
+            // Always update spacetime grid to show dynamic curvature
+            updateSpacetimeGrid();
+            
+            // Update observer indicator to show camera position
+            const observerIndicator = scene.getObjectByName('observerIndicator');
+            if (observerIndicator) {
+                observerIndicator.position.copy(camera.position);
+                observerIndicator.lookAt(0, 0, 0);
+                observerIndicator.rotateX(Math.PI / 2); // Point cone toward black hole
+            }
+            
+            // Update controls (but keep target on black hole)
+            controls.target.set(0, 0, 0);
+            controls.update();
+            
+            renderer.render(scene, camera);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function fitCameraToScene() {
+            // Calculate bounding box of all trajectories
+            const box = new THREE.Box3();
+            
+            // Include black hole
+            if (blackHole) {
+                box.expandByObject(blackHole);
+            }
+            
+            // Include all trajectory lines
+            for (const line of Object.values(trajectoryLines)) {
+                if (line && line.visible) {
+                    box.expandByObject(line);
+                }
+            }
+            
+            if (!box.isEmpty()) {
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                
+                // Position camera to see entire scene
+                const distance = maxDim * 2;
+                camera.position.set(distance * 0.8, distance * 0.6, distance * 0.8);
+                camera.lookAt(center);
+                
+                // Update controls
+                controls.target.copy(center);
+                controls.update();
+            }
+        }
+        
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

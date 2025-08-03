@@ -160,7 +160,7 @@ class ComprehensiveTestReportGenerator:
             '                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">',
             f'                    <a href="{viz_path}/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>',
             '                    <a href="trajectory_viewers/" + safeName + "_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🌐 Interactive 3D Viewer</a>',
-            '                    <a href="trajectory_viewers/unified_trajectory_viewer.html" target="_blank" style="font-size: 1.1em;">🌍 Unified Viewer (All Theories)</a>',
+            '                    <a href="trajectory_viewers/unified_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em;">🌍 Unified Viewer (All Theories)</a>',
             '                </div>',
             '            `;',
             '            ',
@@ -324,11 +324,13 @@ class ComprehensiveTestReportGenerator:
                 solver_str += f" ({','.join(failed_solver_tests)})"
             
             # Format timing
-            if cached_trajectory:
-                time_str = 'Cached'
-            elif total_solver_steps > 0 and total_solver_time > 0:
+            # <reason>chain: Use accumulated timing which now includes cached trajectories with metrics</reason>
+            if total_solver_steps > 0 and total_solver_time > 0:
                 ms_per_step = total_solver_time / total_solver_steps * 1000
                 time_str = f'{total_solver_time:.3f}s ({ms_per_step:.1f}ms/step)'
+            elif cached_trajectory:
+                # Only show "Cached" for old-style caches without timing metadata
+                time_str = 'Cached (no metrics)'
             else:
                 time_str = 'N/A'
             
@@ -502,58 +504,49 @@ class ComprehensiveTestReportGenerator:
         ]
     
     def _generate_trajectory_viewers(self, results: List[Dict[str, Any]], output_dir: str):
-        """Generate individual trajectory viewer HTML files for each theory."""
+        """Generate unified trajectory viewer for the entire run."""
         viewers_dir = os.path.join(output_dir, 'trajectory_viewers')
         os.makedirs(viewers_dir, exist_ok=True)
         
         try:
-            from physics_agent.ui.multi_particle_trajectory_viewer_generator import (
-                generate_multi_particle_viewer_from_run,
-                generate_multi_particle_trajectory_viewer
+            from physics_agent.ui.unified_multi_particle_viewer_generator import (
+                generate_unified_multi_particle_viewer
             )
         except ImportError:
-            print("Warning: Could not import multi-particle trajectory viewer generator")
+            print("Warning: Could not import unified multi-particle viewer generator")
             return
         
-        for result in results:
-            theory_name = result['theory']
+        # Generate unified viewer for all theories
+        try:
+            unified_viewer_path = os.path.join(viewers_dir, 'unified_multi_particle_viewer.html')
+            generate_unified_multi_particle_viewer(
+                run_dir=output_dir,
+                output_path=unified_viewer_path,
+                black_hole_mass=9.945e13  # Primordial mini BH in kg
+            )
+            print(f"Generated unified multi-particle viewer: {unified_viewer_path}")
+        except Exception as e:
+            print(f"Error generating unified viewer: {e}")
             
-            # Clean theory name for file naming
-            clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
+        # Also generate individual viewers for backward compatibility
+        try:
+            from physics_agent.ui.multi_particle_trajectory_viewer_generator import (
+                generate_multi_particle_viewer_from_run
+            )
             
-            # Generate multi-particle viewer
-            if output_dir:
+            for result in results:
+                theory_name = result['theory']
+                clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
+                
                 try:
                     viewer_path = os.path.join(viewers_dir, f'{clean_name}_multi_particle_viewer.html')
                     generate_multi_particle_viewer_from_run(
                         theory_name=theory_name,
                         run_dir=output_dir,
                         output_path=viewer_path,
-                        black_hole_mass=9.945e13  # Primordial mini BH in kg
-                    )
-                    continue  # Skip single-particle viewer if multi-particle succeeds
-                except Exception as e:
-                    print(f"Warning: Could not generate multi-particle viewer for {theory_name}: {e}")
-            
-            # Fallback to single particle viewer
-            trajectory_data = None
-            kerr_data = None
-            
-            for test in result.get('solver_tests', []):
-                if test['name'] == 'Trajectory vs Kerr':
-                    trajectory_data = test.get('trajectory_data')
-                    kerr_data = test.get('kerr_trajectory')
-                    break
-            
-            if trajectory_data is not None:
-                try:
-                    viewer_path = os.path.join(viewers_dir, f'{clean_name}_trajectory_viewer.html')
-                    generate_multi_particle_trajectory_viewer(
-                        theory_trajectory=trajectory_data,
-                        kerr_trajectory=kerr_data,
-                        theory_name=theory_name,
-                        output_path=viewer_path,
-                        black_hole_mass=9.945e13  # Primordial mini BH
+                        black_hole_mass=9.945e13
                     )
                 except Exception as e:
-                    print(f"Warning: Could not generate trajectory viewer for {theory_name}: {e}")
+                    print(f"Warning: Could not generate viewer for {theory_name}: {e}")
+        except:
+            pass

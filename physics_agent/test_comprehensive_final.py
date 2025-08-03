@@ -313,22 +313,25 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
                 # Handle both tuple and dict return formats
                 if isinstance(result, tuple):
                     if len(result) == 3:
-                        electron_traj, electron_tag, _ = result
+                        electron_traj, electron_tag, electron_step_times = result
                     else:
                         electron_traj, electron_tag = result
+                        electron_step_times = []
                 else:
                     electron_traj = result['trajectory']
                     electron_tag = result['tag']
+                    electron_step_times = result.get('step_times', [])
             except Exception as e:
                 print(f"    ✗ electron: error - {str(e)}")
-                electron_traj, electron_tag = None, 'error'
+                electron_traj, electron_tag, electron_step_times = None, 'error', []
             
             # Run all particles sequentially to avoid parallel execution issues
             particle_results = {
                 'electron': {
                     'trajectory': electron_traj,
                     'tag': electron_tag,
-                    'particle_name': 'electron'
+                    'particle_name': 'electron',
+                    'step_times': electron_step_times
                 }
             }
             
@@ -346,24 +349,28 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
                     # Handle both tuple and dict return formats
                     if isinstance(result, tuple):
                         if len(result) == 3:
-                            traj, tag, _ = result
+                            traj, tag, step_times = result
                         else:
                             traj, tag = result
+                            step_times = []
                     else:
                         traj = result['trajectory']
                         tag = result['tag']
+                        step_times = result.get('step_times', [])
                         
                     particle_results[particle_name] = {
                         'trajectory': traj,
                         'tag': tag,
-                        'particle_name': particle_name
+                        'particle_name': particle_name,
+                        'step_times': step_times
                     }
                 except Exception as e:
                     print(f"    ✗ {particle_name}: error - {str(e)}")
                     particle_results[particle_name] = {
                         'trajectory': None,
                         'tag': 'error',
-                        'particle_name': particle_name
+                        'particle_name': particle_name,
+                        'step_times': []
                     }
             
             # Restore verbose setting
@@ -453,7 +460,7 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
             
         hist = electron_data['trajectory']
         solver_tag = electron_data['tag']
-        step_times = electron_data.get('kicks', [])
+        step_times = electron_data.get('step_times', [])
         
         # Calculate actual solver time from step times
         # Fix for cached trajectories - they have very low step times
@@ -1482,8 +1489,44 @@ def main():
     os.makedirs(run_dir, exist_ok=True)
     print(f"Created run directory: {run_dir}")
     
-    # Run tests
-    results, json_file, html_file = run_comprehensive_tests()
+    # Set up logging to capture output
+    log_file = os.path.join(run_dir, "test_output.log")
+    
+    # Run tests with logging
+    import subprocess
+    import sys
+    
+    # If running with tee, just run normally
+    if 'tee' in ' '.join(sys.argv):
+        results, json_file, html_file = run_comprehensive_tests()
+    else:
+        # Capture output to log file
+        class TeeLogger:
+            def __init__(self, file_path):
+                self.terminal = sys.stdout
+                self.log = open(file_path, 'w')
+            
+            def write(self, message):
+                self.terminal.write(message)
+                self.log.write(message)
+                self.log.flush()
+            
+            def flush(self):
+                self.terminal.flush()
+                self.log.flush()
+            
+            def close(self):
+                self.log.close()
+        
+        logger = TeeLogger(log_file)
+        old_stdout = sys.stdout
+        sys.stdout = logger
+        
+        try:
+            results, json_file, html_file = run_comprehensive_tests()
+        finally:
+            sys.stdout = old_stdout
+            logger.close()
     
     # Save all particle trajectories from test results
     print("\nSaving all particle trajectories from test results...")

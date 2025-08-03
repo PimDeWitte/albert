@@ -72,7 +72,33 @@ def load_particle_trajectories(run_dir: str, theory_name: str) -> Dict[str, Dict
     # Common particle names
     particle_names = ['electron', 'neutrino', 'photon', 'proton']
     
-    # Try to find theory directory
+    # First, check for the new structure: run_dir/particle_trajectories/TheoryName_particle_trajectory.pt
+    particle_traj_dir = os.path.join(run_dir, 'particle_trajectories')
+    if os.path.exists(particle_traj_dir):
+        # Load from the new flat structure
+        safe_theory_name = theory_name.replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')
+        
+        for particle_name in particle_names:
+            filename = f"{safe_theory_name}_{particle_name}_trajectory.pt"
+            filepath = os.path.join(particle_traj_dir, filename)
+            
+            if os.path.exists(filepath):
+                try:
+                    data = torch.load(filepath, map_location='cpu')
+                    if isinstance(data, dict) and 'trajectory' in data:
+                        trajectory = data['trajectory']
+                    else:
+                        trajectory = data
+                    
+                    traj_data = extract_trajectory_data(trajectory)
+                    particle_data[particle_name] = traj_data
+                except Exception as e:
+                    print(f"Error loading {filepath}: {e}")
+        
+        if particle_data:
+            return particle_data
+    
+    # Fall back to old structure: try to find theory directory
     theory_dir = None
     for subdir in os.listdir(run_dir):
         if theory_name.replace(' ', '_') in subdir or theory_name in subdir:
