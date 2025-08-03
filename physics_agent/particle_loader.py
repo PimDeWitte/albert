@@ -20,7 +20,10 @@ class Particle:
         }
 
 class ParticleLoader:
-    def __init__(self, base_dir='physics_agent/particles'):
+    def __init__(self, base_dir=None):
+        if base_dir is None:
+            # Use absolute path relative to this file's location
+            base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'particles')
         self.base_dir = base_dir
         self.particles: Dict[str, Particle] = {}
         self.discover_particles()
@@ -28,16 +31,28 @@ class ParticleLoader:
     def discover_particles(self):
         defaults_dir = os.path.join(self.base_dir, 'defaults')
         if os.path.isdir(defaults_dir):
-            for filename in os.listdir(defaults_dir):
-                if filename.endswith('.json'):
-                    filepath = os.path.join(defaults_dir, filename)
-                    self._load_particle(filepath)
+            particle_files = [f for f in os.listdir(defaults_dir) if f.endswith('.json')]
+            # print(f"Found {len(particle_files)} particle files in {defaults_dir}")
+            for filename in particle_files:
+                filepath = os.path.join(defaults_dir, filename)
+                self._load_particle(filepath)
+            # Debug: print loaded particles
+            if len(self.particles) == 0:
+                print(f"Warning: No particles loaded from {defaults_dir}")
+                print(f"  Files found: {particle_files}")
+        else:
+            print(f"Warning: Particle defaults directory not found: {defaults_dir}")
+            print(f"  Base dir: {self.base_dir}")
+            print(f"  Current working directory: {os.getcwd()}")
     
     def _load_particle(self, filepath: str):
-        with open(filepath, 'r') as f:
-            data = json.load(f)
-            particle = Particle(**data)
-            self.particles[particle.name.lower()] = particle
+        try:
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+                particle = Particle(**data)
+                self.particles[particle.name.lower()] = particle
+        except Exception as e:
+            print(f"Error loading particle from {filepath}: {e}")
             
     def get_particle(self, name: str = None) -> Particle:
         if name is None:

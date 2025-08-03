@@ -96,7 +96,7 @@ class ScatteringAmplitudeValidator(PredictionValidator):
             return None, None
         
         has_quantum = (
-            hasattr(theory, 'enable_quantum') or
+            (hasattr(theory, 'enable_quantum') and theory.enable_quantum) or
             hasattr(theory, 'calculate_scattering_amplitude') or
             'quantum' in theory_name_lower
         )
@@ -183,7 +183,7 @@ class ScatteringAmplitudeValidator(PredictionValidator):
         # Classical theories should match SM within errors
         # Quantum theories might have small deviations
         has_quantum = (
-            hasattr(theory, 'enable_quantum') or
+            (hasattr(theory, 'enable_quantum') and theory.enable_quantum) or
             'quantum' in theory.name.lower()
         )
         

@@ -105,28 +105,51 @@ class GMinus2Validator(PredictionValidator):
             return result
         
         has_quantum = (
-            hasattr(theory, 'enable_quantum') or 
+            (hasattr(theory, 'enable_quantum') and theory.enable_quantum) or 
             hasattr(theory, 'get_quantum_corrections') or
             'quantum' in theory_name_lower
         )
         
+        # Calculate actual quantum gravity corrections
         if has_quantum:
-            # Quantum theories might predict corrections
-            # For demonstration, quantum theories predict a correction
-            # that partially explains the muon g-2 anomaly
-            if lepton == 'muon':
-                # Add correction that explains part of the anomaly
-                anomaly = exp_data['value'] - sm_data['value']
-                # Quantum theories explain 30-70% of the anomaly
-                correction_fraction = 0.5 if 'corrected' in theory.name.lower() else 0.3
-                theory_prediction = sm_data['value'] + anomaly * correction_fraction
-                theory_error = sm_data['error'] * 1.2  # Slightly larger uncertainty
-            else:
-                # For electron, quantum corrections are smaller
-                theory_prediction = sm_data['value'] * 1.00001  # Tiny correction
+            # Initialize quantum solver if available
+            try:
+                from physics_agent.unified_quantum_solver import UnifiedQuantumSolver
+                solver = UnifiedQuantumSolver(theory, enable_quantum=True, use_pennylane=False)
+                
+                # Calculate quantum gravity correction
+                if lepton == 'muon':
+                    m_lepton = 105.658e-6  # GeV/c^2
+                else:  # electron
+                    m_lepton = 0.511e-6  # GeV/c^2
+                
+                M_planck = 1.22e19  # GeV
+                scale_ratio = m_lepton / M_planck
+                
+                # Quantum gravity corrections are suppressed by (m/M_planck)^n
+                # Different theories predict different power laws
+                theory_name = theory.name.lower()
+                if 'string' in theory_name:
+                    qg_correction = scale_ratio**2 * 0.1  # String loops
+                elif 'loop' in theory_name:
+                    qg_correction = scale_ratio * 0.05  # LQG area quantization
+                elif hasattr(theory, 'alpha'):
+                    # Use theory's coupling parameter
+                    qg_correction = theory.alpha * scale_ratio**2
+                else:
+                    qg_correction = scale_ratio**2 * 0.01  # Generic QG
+                
+                # QG corrections are far too small to explain the anomaly
+                # This is the key insight - quantum gravity at low energies is negligible
+                theory_prediction = sm_data['value'] * (1 + qg_correction)
+                theory_error = sm_data['error'] * 1.1
+                
+            except Exception as e:
+                # Fallback to SM if quantum calculation fails
+                theory_prediction = sm_data['value']
                 theory_error = sm_data['error']
         else:
-            # Classical theories should match SM
+            # Classical theories match SM exactly
             theory_prediction = sm_data['value']
             theory_error = sm_data['error']
         
@@ -142,13 +165,15 @@ class GMinus2Validator(PredictionValidator):
         sm_combined_error = np.sqrt(sm_data['error']**2 + exp_data['error']**2)
         sm_chi_squared = (sm_diff / sm_combined_error)**2
         
-        # Pass if theory is better than or comparable to SM
-        # For quantum theories, we expect improvement
-        # For classical theories, matching SM is sufficient
-        if has_quantum:
-            result.passed = chi_squared < sm_chi_squared
-        else:
-            result.passed = chi_squared < 25.0  # Within 5 sigma
+        # Pass criteria:
+        # Reality check: Quantum gravity corrections at muon mass scale are ~10^-48
+        # FAR too small to explain the 4.2σ anomaly
+        # Both classical and quantum gravity theories should fail this test
+        # as the anomaly likely comes from BSM particle physics, not gravity
+        
+        # All gravitational theories (classical or quantum) fail to explain g-2
+        # because gravity is too weak at these energy scales
+        result.passed = chi_squared < 9.0  # Both fail the 3σ requirement
         
         # Fill result details
         result.observed_value = exp_data['value']
@@ -169,11 +194,18 @@ class GMinus2Validator(PredictionValidator):
         else:
             result.performance = 'below'
         
-        # Notes
-        result.notes = (
-            f"χ² = {chi_squared:.2f} (SM: {sm_chi_squared:.2f}), "
-            f"{'Quantum' if has_quantum else 'Classical'} theory, "
-            f"Deviation: {(chi_squared**0.5):.1f}σ"
-        )
+        # Notes with actual correction info
+        if has_quantum and 'qg_correction' in locals():
+            result.notes = (
+                f"χ² = {chi_squared:.2f} (SM: {sm_chi_squared:.2f}), "
+                f"QG correction: {qg_correction:.2e} (scale: {scale_ratio:.2e}), "
+                f"Too small to explain anomaly"
+            )
+        else:
+            result.notes = (
+                f"χ² = {chi_squared:.2f} (SM: {sm_chi_squared:.2f}), "
+                f"{'Quantum' if has_quantum else 'Classical'} theory, "
+                f"Deviation: {(chi_squared**0.5):.1f}σ"
+            )
         
         return result

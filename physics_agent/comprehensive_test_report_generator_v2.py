@@ -284,12 +284,19 @@ class ComprehensiveTestReportGenerator:
                     if 'cached' in test.get('solver_type', '').lower():
                         cached_trajectory = True
                 
-                # Accumulate solver timing (excluding cached and non-trajectory tests)
+                # Accumulate solver timing (including cached trajectories with metrics)
+                # <reason>chain: Include cached trajectories with metrics in timing calculations</reason>
                 if (test.get('num_steps', 0) > 0 and test.get('solver_time', 0) > 0 
-                    and 'cached' not in test.get('solver_type', '').lower()
                     and test['name'] in ['Trajectory vs Kerr', 'Circular Orbit']):
-                    total_solver_time += test['solver_time']
-                    total_solver_steps += test['num_steps']
+                    # Include cached trajectories if they have timing data
+                    if test.get('solver_type', '').endswith('(cached)'):
+                        # This is a cached trajectory with metrics
+                        total_solver_time += test['solver_time']
+                        total_solver_steps += test['num_steps']
+                    elif 'cached' not in test.get('solver_type', '').lower():
+                        # Regular non-cached trajectory
+                        total_solver_time += test['solver_time']
+                        total_solver_steps += test['num_steps']
             
             # Format loss - special case for Kerr showing exactly 0.00
             if trajectory_loss is not None:

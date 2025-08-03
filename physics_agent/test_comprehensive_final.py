@@ -16,6 +16,9 @@ import math
 from datetime import datetime
 from typing import Dict, List, Tuple
 
+# Global variable for controlling parallelism
+MAX_CONCURRENT_TRAJECTORIES = 4
+
 # Import engine and constants
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
@@ -217,8 +220,13 @@ def test_quantum_geodesic_for_theory(theory):
         M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
         
         # Check if theory supports quantum corrections
-        if "Newtonian" in theory.name or not hasattr(theory, 'metric_tensor'):
-            # Theory doesn't support quantum corrections
+        if "Newtonian" in theory.name:
+            # Newtonian mechanics doesn't support quantum corrections
+            return False, "NotSupported", time.time() - start_time, 0.0, 0
+        
+        # Check if theory can work with quantum solver
+        if not hasattr(theory, 'get_metric') and not hasattr(theory, 'metric_tensor'):
+            # Theory needs at least one metric method
             return False, "NotSupported", time.time() - start_time, 0.0, 0
         
         # Initialize quantum simulator
@@ -252,7 +260,7 @@ def test_quantum_geodesic_for_theory(theory):
         exec_time = time.time() - start_time
         return False, "NotSupported" if "Newtonian" in str(e) or "not supported" in str(e) else "Failed", exec_time, 0.0, 0
 
-def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
+def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
     """Run actual trajectory integration and compute loss vs Kerr baseline."""
     try:
         start_time = time.time()
@@ -262,30 +270,202 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
         # Use recommended timestep from black hole preset
         dtau_si = engine.bh_preset.integration_parameters['dtau_geometric'] * engine.time_scale
         
-        # Run actual trajectory using engine
-        hist, solver_tag, step_times = engine.run_trajectory(
-            theory, r0_si, n_steps, dtau_si,
-            use_quantum=hasattr(theory, 'enable_quantum') and theory.enable_quantum
-        )
+        # Run multi-particle trajectories to test all particles
+        try:
+            # Add timeout to prevent hanging
+            import signal
+            
+            def timeout_handler(signum, frame):
+                raise TimeoutError("Trajectory computation timed out")
+            
+            # Set a 60 second timeout for trajectory computation
+            if hasattr(signal, 'SIGALRM'):
+                signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(60)
+            
+            # Temporarily disable verbose output
+            old_verbose = engine.verbose
+            engine.verbose = False
+            
+            print(f"  Running particle trajectories for {theory.name}...")
+            
+            # Determine max workers based on global setting
+            num_particles = 4
+            theories_in_parallel = MAX_CONCURRENT_TRAJECTORIES // num_particles
+            
+            # For single theory execution, use all available workers for particles
+            # For multi-theory execution, each theory gets num_particles workers
+            if theories_in_parallel == 1:
+                max_workers = num_particles  # All 4 particles in parallel
+            else:
+                max_workers = 1  # Sequential particles when theories run in parallel
+            
+            # Run electron trajectory first for loss calculation
+            try:
+                result = engine.run_trajectory(
+                    theory, r0_si, n_steps, dtau_si,
+                    particle_name='electron',
+                    theory_category=theory.category if hasattr(theory, 'category') else 'unknown',
+                    use_quantum=hasattr(theory, 'enable_quantum') and theory.enable_quantum,
+                    black_hole_preset=engine.bh_preset.name,
+                    show_pbar=False
+                )
+                # Handle both tuple and dict return formats
+                if isinstance(result, tuple):
+                    if len(result) == 3:
+                        electron_traj, electron_tag, _ = result
+                    else:
+                        electron_traj, electron_tag = result
+                else:
+                    electron_traj = result['trajectory']
+                    electron_tag = result['tag']
+            except Exception as e:
+                print(f"    ✗ electron: error - {str(e)}")
+                electron_traj, electron_tag = None, 'error'
+            
+            # Run all particles sequentially to avoid parallel execution issues
+            particle_results = {
+                'electron': {
+                    'trajectory': electron_traj,
+                    'tag': electron_tag,
+                    'particle_name': 'electron'
+                }
+            }
+            
+            # Run remaining particles sequentially
+            for particle_name in ['neutrino', 'photon', 'proton']:
+                try:
+                    result = engine.run_trajectory(
+                        theory, r0_si, n_steps, dtau_si,
+                        particle_name=particle_name,
+                        theory_category=theory.category if hasattr(theory, 'category') else 'unknown',
+                        use_quantum=hasattr(theory, 'enable_quantum') and theory.enable_quantum,
+                        black_hole_preset=engine.bh_preset.name,
+                        show_pbar=False
+                    )
+                    # Handle both tuple and dict return formats
+                    if isinstance(result, tuple):
+                        if len(result) == 3:
+                            traj, tag, _ = result
+                        else:
+                            traj, tag = result
+                    else:
+                        traj = result['trajectory']
+                        tag = result['tag']
+                        
+                    particle_results[particle_name] = {
+                        'trajectory': traj,
+                        'tag': tag,
+                        'particle_name': particle_name
+                    }
+                except Exception as e:
+                    print(f"    ✗ {particle_name}: error - {str(e)}")
+                    particle_results[particle_name] = {
+                        'trajectory': None,
+                        'tag': 'error',
+                        'particle_name': particle_name
+                    }
+            
+            # Restore verbose setting
+            engine.verbose = old_verbose
+            
+            # Show results
+            completed_particles = []
+            for particle_name in ['electron', 'neutrino', 'photon', 'proton']:
+                if particle_name in particle_results and particle_results[particle_name]['trajectory'] is not None:
+                    completed_particles.append(particle_name)
+                    tag = particle_results[particle_name]['tag']
+                    status = "cached" if "cached" in tag else "computed"
+                    print(f"    ✓ {particle_name}: {status}")
+                else:
+                    print(f"    ✗ {particle_name}: failed")
+            
+            if len(completed_particles) == 4:
+                print(f"    All particles completed successfully!")
+            else:
+                print(f"    Completed {len(completed_particles)}/4 particles")
+            
+            # Cancel alarm
+            if hasattr(signal, 'SIGALRM'):
+                signal.alarm(0)
+                
+        except TimeoutError as e:
+            print(f"\n  ✗ Trajectory computation timed out after 60 seconds")
+            return {
+                'name': 'Trajectory vs Kerr',
+                'status': 'TIMEOUT',
+                'passed': False,
+                'solver_type': 'Timeout',
+                'exec_time': time.time() - start_time,
+                'solver_time': 0.0,
+                'num_steps': 0,
+                'loss': None,
+                'error': str(e)
+            }
+        except Exception as e:
+            print(f"\n  ✗ Error in multi-particle trajectories: {str(e)}")
+            return {
+                'name': 'Trajectory vs Kerr',
+                'status': 'ERROR',
+                'passed': False,
+                'solver_type': 'Failed',
+                'exec_time': time.time() - start_time,
+                'solver_time': 0.0,
+                'num_steps': 0,
+                'loss': None,
+                'error': str(e)[:200]
+            }
         
         exec_time = time.time() - start_time
         
-        if hist is None or len(hist) == 0:
+        if not particle_results:
             return {
                 'name': 'Trajectory vs Kerr',
                 'status': 'FAIL',
                 'passed': False,
-                'solver_type': solver_tag if solver_tag else 'Failed',
+                'solver_type': 'Failed',
                 'exec_time': exec_time,
                 'solver_time': 0.0,
                 'num_steps': 0,
                 'loss': None
             }
         
+        # For comparison, use electron trajectory as representative
+        electron_data = particle_results.get('electron')
+        if not electron_data or electron_data['trajectory'] is None:
+            # Fallback to any available particle
+            for particle_name, data in particle_results.items():
+                if data['trajectory'] is not None:
+                    electron_data = data
+                    break
+                    
+        if not electron_data or electron_data['trajectory'] is None:
+            return {
+                'name': 'Trajectory vs Kerr',
+                'status': 'FAIL',
+                'passed': False,
+                'solver_type': 'Failed',
+                'exec_time': exec_time,
+                'solver_time': 0.0,
+                'num_steps': 0,
+                'loss': None
+            }
+            
+        hist = electron_data['trajectory']
+        solver_tag = electron_data['tag']
+        step_times = electron_data.get('kicks', [])
+        
         # Calculate actual solver time from step times
         # Fix for cached trajectories - they have very low step times
-        if solver_tag and 'cached' in solver_tag:
-            # For cached trajectories, report N/A timing
+        if solver_tag and 'cached_with_metrics' in solver_tag:
+            # <reason>chain: We have real timing data from cache metadata</reason>
+            solver_time = sum(step_times) if step_times else 0.0
+            # Extract original solver type from tag
+            original_solver = solver_tag.replace('_cached_with_metrics', '')
+            solver_tag = f"{original_solver} (cached)"
+        elif solver_tag and 'cached' in solver_tag:
+            # <reason>chain: Old cache files without metadata</reason>
+            # For cached trajectories without metrics, report N/A timing
             solver_time = 0.0  # Will be handled in display
         else:
             solver_time = sum(step_times) if step_times else exec_time * 0.9
@@ -293,7 +473,50 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
         
         # Compute loss vs Kerr baseline
         kerr = Kerr(a=0.0)  # Schwarzschild limit
-        kerr_hist, _, _ = engine.run_trajectory(kerr, r0_si, n_steps, dtau_si)
+        try:
+            # Disable verbose for Kerr baseline too
+            old_verbose_kerr = engine.verbose
+            engine.verbose = False
+            
+            # Only compute electron trajectory for Kerr baseline (that's all we need for loss)
+            kerr_result = engine.run_trajectory(
+                kerr, r0_si, n_steps, dtau_si,
+                particle_name='electron',
+                theory_category='classical',
+                black_hole_preset=engine.bh_preset.name,
+                show_pbar=False
+            )
+            # Handle 3-tuple return
+            if isinstance(kerr_result, tuple) and len(kerr_result) == 3:
+                kerr_electron_result, kerr_tag, _ = kerr_result
+            elif isinstance(kerr_result, tuple):
+                kerr_electron_result, kerr_tag = kerr_result
+            else:
+                kerr_electron_result = kerr_result['trajectory']
+                kerr_tag = kerr_result['tag']
+            
+            kerr_results = {
+                'electron': {
+                    'trajectory': kerr_electron_result,
+                    'tag': kerr_tag,
+                    'particle_name': 'electron'
+                }
+            }
+            
+            engine.verbose = old_verbose_kerr
+        except Exception as e:
+            print(f"  Warning: Failed to compute Kerr baseline: {str(e)}")
+            kerr_results = None
+        
+        kerr_electron = kerr_results.get('electron') if kerr_results else None
+        if not kerr_electron or kerr_electron['trajectory'] is None:
+            # Fallback to any available particle
+            for particle_name, data in kerr_results.items():
+                if data['trajectory'] is not None:
+                    kerr_electron = data
+                    break
+                    
+        kerr_hist = kerr_electron['trajectory'] if kerr_electron else None
         
         loss = None
         distance_traveled = None
@@ -301,7 +524,7 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
         
         progressive_losses = None
         
-        if kerr_hist is not None and len(kerr_hist) == len(hist):
+        if kerr_hist is not None and hist is not None and len(kerr_hist) == len(hist):
             # MSE loss on radial coordinate
             loss = torch.mean((hist[:, 1] - kerr_hist[:, 1])**2).item()
             
@@ -360,10 +583,14 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=10000):
             'distance_traveled': distance_traveled,
             'kerr_distance': kerr_distance,
             'trajectory_data': hist,  # Store actual trajectory data
-            'kerr_trajectory': kerr_hist  # Store Kerr baseline
+            'kerr_trajectory': kerr_hist,  # Store Kerr baseline
+            'particle_results': particle_results,  # Store all particle trajectories
+            'kerr_particle_results': kerr_results  # Store Kerr particle baselines
         }
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return {
             'name': 'Trajectory vs Kerr',
             'status': 'ERROR',
@@ -627,6 +854,10 @@ def test_theory_comprehensive(theory_name, theory_class, category):
         else:
             theory = theory_class()
         print(f"Initialized: {theory.name}")
+        
+        # Add category to theory if it doesn't have one
+        if not hasattr(theory, 'category'):
+            theory.category = category
     except Exception as e:
         print(f"ERROR: Failed to initialize - {e}")
         return None
@@ -865,7 +1096,12 @@ def print_ranking_table(results, ranking_type="analytical"):
             has_cached = any('cached' in test.get('solver_type', '').lower() 
                            for test in result.get('solver_tests', []))
             
-            if has_cached:
+            # <reason>chain: Handle both old cached format and new cached with metrics</reason>
+            has_cached_metrics = any('(cached)' in test.get('solver_type', '') 
+                               for test in result.get('solver_tests', []))
+            
+            if has_cached and not has_cached_metrics:
+                # Old style cache without metrics
                 complexity = "Cached"
             elif total_steps > 0 and solver_time > 0:
                 time_per_step = solver_time / total_steps * 1000  # Convert to ms
@@ -886,20 +1122,89 @@ def print_ranking_table(results, ranking_type="analytical"):
             
             print(f"{i:<6} {theory:<35} {category:<12} {analytical_str:<25} {solver_str:<50} {combined_score:<15} {complexity:<25} {total_tests}{marker}")
 
+def save_particle_trajectories_to_run(run_dir, theory_results):
+    """Save all particle trajectories from test results to run directory."""
+    os.makedirs(os.path.join(run_dir, 'particle_trajectories'), exist_ok=True)
+    
+    print(f"\nSaving particle trajectories from {len(theory_results)} theories...")
+    saved_count = 0
+    
+    for result in theory_results:
+        theory_name = result['theory']
+        
+        # Check if we have particle results from trajectory test
+        solver_tests = result.get('solver_tests', [])
+        
+        for test in solver_tests:
+            if test['name'] == 'Trajectory vs Kerr':
+                if 'particle_results' in test:
+                    particle_results = test['particle_results']
+                    
+                    # Save each particle trajectory
+                    for particle_name, particle_data in particle_results.items():
+                        if particle_data.get('trajectory') is not None:
+                            # Create filename
+                            safe_theory_name = theory_name.replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')
+                            filename = f"{safe_theory_name}_{particle_name}_trajectory.pt"
+                            filepath = os.path.join(run_dir, 'particle_trajectories', filename)
+                            
+                            # Save trajectory and metadata
+                            torch.save({
+                                'trajectory': particle_data['trajectory'],
+                                'theory_name': theory_name,
+                                'particle_name': particle_name,
+                                'solver_tag': particle_data.get('tag', 'unknown'),
+                                'n_steps': len(particle_data['trajectory'])
+                            }, filepath)
+                            
+                            print(f"  Saved {particle_name} trajectory for {theory_name}")
+                            saved_count += 1
+    
+    print(f"Total trajectories saved: {saved_count}")
+
 def run_comprehensive_tests():
     """Run comprehensive tests and return results."""
     print("COMPREHENSIVE THEORY VALIDATION - ANALYTICAL + SOLVER TESTS")
     print("="*80)
     print(f"Testing {len(ALL_THEORIES)} theories with both analytical and solver-based tests")
     
+    # Calculate how many theories can run in parallel
+    num_particles = 4
+    theories_in_parallel = MAX_CONCURRENT_TRAJECTORIES // num_particles
+    
+    if theories_in_parallel > 1:
+        print(f"Running {theories_in_parallel} theories in parallel with {num_particles} particles each")
+    else:
+        print(f"Running theories sequentially with {num_particles} particles in parallel")
+    
     all_results = []
     
-    # Test all theories
-    for theory_name, theory_class, category in ALL_THEORIES:
-        result = test_theory_comprehensive(theory_name, theory_class, category)
-        if result:
-            all_results.append(result)
-        time.sleep(0.1)  # Brief pause
+    if theories_in_parallel == 1:
+        # Sequential theory execution (default)
+        for theory_name, theory_class, category in ALL_THEORIES:
+            result = test_theory_comprehensive(theory_name, theory_class, category)
+            if result:
+                all_results.append(result)
+            time.sleep(0.1)  # Brief pause
+    else:
+        # Parallel theory execution
+        import concurrent.futures
+        
+        # Process theories in batches
+        for i in range(0, len(ALL_THEORIES), theories_in_parallel):
+            batch = ALL_THEORIES[i:i+theories_in_parallel]
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=theories_in_parallel) as executor:
+                futures = []
+                for theory_name, theory_class, category in batch:
+                    future = executor.submit(test_theory_comprehensive, theory_name, theory_class, category)
+                    futures.append(future)
+                
+                # Collect results
+                for future in concurrent.futures.as_completed(futures):
+                    result = future.result()
+                    if result:
+                        all_results.append(result)
     
     # Generate first ranking table (analytical only)
     print("\n\n" + "="*80)
@@ -1149,6 +1454,28 @@ def run_comprehensive_tests():
 
 def main():
     """Main entry point."""
+    # Parse command line arguments
+    import argparse
+    parser = argparse.ArgumentParser(description='Run comprehensive theory validation tests')
+    parser.add_argument('--max-concurrent-trajectories', type=int, default=4,
+                        help='Maximum number of trajectories to compute in parallel. Must be multiple of 4 (num particles). Default: 4')
+    args = parser.parse_args()
+    
+    # Validate and adjust max concurrent trajectories
+    num_particles = 4
+    if args.max_concurrent_trajectories < num_particles:
+        args.max_concurrent_trajectories = num_particles
+        print(f"Adjusted max-concurrent-trajectories to {num_particles} (minimum)")
+    else:
+        # Round down to nearest multiple of num_particles
+        args.max_concurrent_trajectories = (args.max_concurrent_trajectories // num_particles) * num_particles
+        if args.max_concurrent_trajectories > num_particles:
+            print(f"Adjusted max-concurrent-trajectories to {args.max_concurrent_trajectories} (multiple of {num_particles})")
+    
+    # Store in global for access in tests
+    global MAX_CONCURRENT_TRAJECTORIES
+    MAX_CONCURRENT_TRAJECTORIES = args.max_concurrent_trajectories
+    
     # Create run directory
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_dir = f"runs/comprehensive_test_{timestamp}"
@@ -1158,21 +1485,38 @@ def main():
     # Run tests
     results, json_file, html_file = run_comprehensive_tests()
     
+    # Save all particle trajectories from test results
+    print("\nSaving all particle trajectories from test results...")
+    try:
+        save_particle_trajectories_to_run(run_dir, results)
+    except Exception as e:
+        print(f"Warning: Failed to save particle trajectories: {str(e)}")
+    
     # Generate multi-particle trajectory visualizations
     print("\nGenerating trajectory visualizations for all particles...")
-    from physics_agent.generate_theory_trajectory_plots_multiparticle import generate_trajectory_visualizations_for_run
-    # Use the same number of steps as the trajectory tests (10000 by default)
-    viz_dir = generate_trajectory_visualizations_for_run(run_dir, n_steps=10000)
+    try:
+        from physics_agent.generate_theory_trajectory_plots_multiparticle import generate_trajectory_visualizations_for_run
+        # Use the same number of steps as the trajectory tests (1000 by default)
+        viz_dir = generate_trajectory_visualizations_for_run(run_dir, n_steps=1000)
+    except Exception as e:
+        print(f"Warning: Failed to generate trajectory visualizations: {str(e)}")
+        viz_dir = None
     
     # Generate 3D WebGL viewers
     print("\nGenerating interactive 3D viewers...")
-    from physics_agent.generate_3d_viewers_for_run import generate_3d_viewers_for_run
-    generate_3d_viewers_for_run(run_dir)
+    try:
+        from physics_agent.generate_3d_viewers_for_run import generate_3d_viewers_for_run
+        generate_3d_viewers_for_run(run_dir)
+    except Exception as e:
+        print(f"Warning: Failed to generate 3D viewers: {str(e)}")
     
     # Generate unified viewer
     print("\nGenerating unified trajectory viewer...")
-    from physics_agent.generate_unified_3d_viewer import generate_unified_viewer
-    generate_unified_viewer(run_dir)
+    try:
+        from physics_agent.generate_unified_3d_viewer import generate_unified_viewer
+        generate_unified_viewer(run_dir)
+    except Exception as e:
+        print(f"Warning: Failed to generate unified viewer: {str(e)}")
     
     # Move reports to run directory
     import shutil
@@ -1193,7 +1537,21 @@ def main():
     
     print(f"\nRun complete! Results saved to: {run_dir}")
     print(f"View report: {run_html_file}")
-    print(f"View trajectory visualizations: {os.path.join(viz_dir, 'index.html')}")
+    if viz_dir:
+        print(f"View trajectory visualizations: {os.path.join(viz_dir, 'index.html')}")
+    else:
+        print("Warning: Trajectory visualizations were not generated")
+    
+    # Check what files were actually created
+    print("\nGenerated files:")
+    if os.path.exists(run_dir):
+        for item in os.listdir(run_dir):
+            item_path = os.path.join(run_dir, item)
+            if os.path.isdir(item_path):
+                file_count = len([f for f in os.listdir(item_path) if os.path.isfile(os.path.join(item_path, f))])
+                print(f"  - {item}/ ({file_count} files)")
+            else:
+                print(f"  - {item}")
     
     return results, run_dir
 

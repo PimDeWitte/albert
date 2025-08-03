@@ -7,6 +7,8 @@ class Kerr(GravitationalTheory):
     Kerr metric for a rotating, uncharged black hole.
     <reason>chain: The Kerr metric describes the geometry of spacetime around a rotating, uncharged mass.</reason>
     """
+    
+    category = "classical"  # Classical solution to Einstein equations
 
     def __init__(self, a: float = 0.5):
         """

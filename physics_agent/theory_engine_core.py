@@ -574,6 +574,8 @@ class TheoryEngine:
                 print(f"      Consider using fewer steps or setting max_parallel_workers=1")
         
         # <reason>chain: Create progress bars for each particle with dedicated positions</reason>
+        # <reason>chain: Respect show_pbar parameter from kwargs</reason>
+        show_outer_pbar = kwargs.get('show_pbar', True)  # Default to True for backward compatibility
         particle_pbars = {}
         for idx, particle_name in enumerate(particle_names):
             particle_pbars[particle_name] = tqdm(
@@ -583,7 +585,8 @@ class TheoryEngine:
                 position=idx,  # Start from position 0
                 leave=False,  # <reason>chain: Clean up progress bars after completion to avoid duplicates</reason>
                 ncols=100,
-                bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
+                bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]',
+                disable=not show_outer_pbar  # <reason>chain: Disable progress bar if requested</reason>
             )
         
         # <reason>chain: Use ThreadPoolExecutor for parallel particle computation</reason>
@@ -618,9 +621,10 @@ class TheoryEngine:
             
             particle_progress_callback = make_progress_callback(pbar)
             
-            # <reason>chain: Filter out show_pbar and progress_callback from kwargs to avoid duplicates</reason>
+            # <reason>chain: Filter out progress_callback and show_pbar from kwargs to avoid duplicates</reason>
+            # <reason>chain: We'll handle show_pbar explicitly below</reason>
             filtered_kwargs = {k: v for k, v in kwargs.items() 
-                             if k not in ['show_pbar', 'progress_callback', 'callback_interval']}
+                             if k not in ['progress_callback', 'callback_interval', 'show_pbar']}
             
             # Run trajectory with particle properties
             # <reason>chain: Capture stdout to prevent thread output interference</reason>
@@ -639,6 +643,9 @@ class TheoryEngine:
                 # <reason>chain: Add timing info that bypasses stdout capture for debugging</reason>
                 start_time = time.time()
                 
+                # <reason>chain: Use show_pbar from kwargs if provided, otherwise disable</reason>
+                show_inner_pbar = kwargs.get('show_pbar', False)
+                
                 hist, tag, kicks = self.run_trajectory(
                     model, r0_si, N_STEPS, DTau_si,
                     particle_name=particle_name,
@@ -648,7 +655,7 @@ class TheoryEngine:
                     particle_type=particle.particle_type,
                     progress_callback=particle_progress_callback,
                     callback_interval=callback_interval,
-                    show_pbar=False,  # <reason>chain: Disable inner progress bar to avoid conflicts with outer progress bars</reason>
+                    show_pbar=show_inner_pbar,  # <reason>chain: Respect outer show_pbar setting</reason>
                     **filtered_kwargs
                 )
                 
@@ -870,8 +877,11 @@ class TheoryEngine:
         
         if not no_cache:
             # <reason>chain: Pass N_STEPS to enable loading partial trajectories from longer runs</reason>
-            hist = self.cache.load_trajectory(cache_path, self.device, max_steps=N_STEPS)
-            if hist is not None:
+            # <reason>chain: Load with metadata to get performance metrics</reason>
+            cache_result = self.cache.load_trajectory(cache_path, self.device, max_steps=N_STEPS, load_metadata=True,
+                                                 suppress_output=kwargs.get('suppress_output', False))
+            if cache_result is not None and cache_result[0] is not None:
+                hist, metadata = cache_result
                 # Convert from SI to geometric units
                 hist_geom = hist.clone()
                 hist_geom[:,0] /= self.time_scale  # t
@@ -880,7 +890,22 @@ class TheoryEngine:
                 
                 # <reason>chain: Store cache path info for later copying</reason>
                 self._last_cache_path_used = cache_path
-                return hist_geom, "cached_trajectory", []
+                
+                # <reason>chain: Extract performance metrics from metadata if available</reason>
+                if metadata is not None:
+                    solver_type = metadata.get('solver_type', 'cached_trajectory')
+                    avg_time_per_step = metadata.get('time_per_step', 0.0)
+                    num_steps = metadata.get('num_steps', len(hist_geom))
+                    # Generate step times from metadata
+                    step_times = [avg_time_per_step] * num_steps
+                    # Mark solver type to indicate cached but with real metrics
+                    solver_tag = f"{solver_type}_cached_with_metrics"
+                else:
+                    # No metadata, fall back to old behavior
+                    step_times = []
+                    solver_tag = "cached_trajectory"
+                
+                return hist_geom, solver_tag, step_times
         
         # <reason>chain: Use quantum trajectory calculator for quantum theories if enabled</reason>
         # Skip UnifiedTrajectoryCalculator if using PennyLane quantum solver
@@ -1303,6 +1328,9 @@ class TheoryEngine:
         # <reason>chain: Initialize flag for early termination tracking</reason>
         self._last_trajectory_terminated_early = False
         
+        # <reason>chain: Track integration start time for performance metrics</reason>
+        integration_start_time = time.time()
+        
         # Create progress bar with time estimates
         pbar = tqdm(range(N_STEPS), 
                    desc=pbar_desc,
@@ -1469,9 +1497,15 @@ class TheoryEngine:
         # <reason>chain: Close progress bar and show final summary</reason>
         pbar.close()
         if verbose and show_pbar:
-            total_time = time.time() - pbar.start_t
+            total_time = time.time() - integration_start_time
             avg_time_per_step = total_time / (i + 1) if i > 0 else 0
             print(f"  Integration completed: {i+1}/{N_STEPS} steps in {total_time:.1f}s ({avg_time_per_step*1000:.2f}ms/step)")
+        
+        # <reason>chain: Collect timing statistics for metadata</reason>
+        # Note: pbar.start_t is not always available, so calculate from stored start time
+        total_integration_time = time.time() - integration_start_time
+        actual_steps = i + 1
+        avg_time_per_step = total_integration_time / actual_steps if actual_steps > 0 else 0
         
         # Save to cache if not in test mode
         if not no_cache and not test_mode:
@@ -1480,11 +1514,38 @@ class TheoryEngine:
             hist_si[:,0] *= self.time_scale  # t
             hist_si[:,1] *= self.length_scale  # r
             # theta (column 2) and phi (column 3) are already dimensionless - no conversion needed
-            torch.save(hist_si, cache_path)
+            
+            # <reason>chain: Create metadata with performance metrics</reason>
+            metadata = {
+                'solver_type': tag,
+                'total_time': total_integration_time,
+                'solver_time': total_integration_time,  # For now, assume all time is solver time
+                'num_steps': actual_steps,
+                'requested_steps': N_STEPS,
+                'time_per_step': avg_time_per_step,
+                'time_per_step_ms': avg_time_per_step * 1000,
+                'theory_name': model.name,
+                'integration_params': {
+                    'r0_si': float(r0_geom * self.length_scale) if torch.is_tensor(r0_geom) else float(r0_geom * self.length_scale),
+                    'dtau_si': float(dtau_geom * self.time_scale) if torch.is_tensor(dtau_geom) else float(dtau_geom * self.time_scale),
+                    'adaptive_stepping': adaptive_stepping,
+                    'quantum_interval': quantum_interval,
+                    'quantum_beta': quantum_beta.item() if isinstance(quantum_beta, torch.Tensor) else float(quantum_beta) if quantum_beta is not None else 0.0
+                },
+                'timestamp': time.time(),
+                'software_version': getattr(self.cache, 'SOFTWARE_VERSION', '1.0.0')
+            }
+            
+            # <reason>chain: Use enhanced save_trajectory with metadata</reason>
+            self.cache.save_trajectory(hist_si, cache_path, self.dtype, metadata=metadata)
             if verbose:
-                    print(f"Trajectory cached to: {cache_path}")
+                    print(f"Trajectory cached to: {cache_path} with performance metadata")
         
-        return hist, tag, quantum_kicks_indices
+        # <reason>chain: Return step times as list of per-step times for compatibility</reason>
+        # Generate synthetic step times based on average
+        step_times = [avg_time_per_step] * actual_steps
+        
+        return hist, tag, step_times
 
     def run_all_validations(self, theory: GravitationalTheory, hist: torch.Tensor, y0_general: torch.Tensor, categories: list[str] | None = None) -> dict:
         """Runs all specified validations on a theory."""

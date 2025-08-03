@@ -14,11 +14,20 @@ from physics_agent.ui.extract_trajectory_data_3d import extract_trajectory_data_
 def generate_unified_viewer(run_dir: str):
     """Generate unified 3D viewer for all trajectories in a run."""
     
-    # Find cache directory
-    cache_base_dir = 'physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole'
+    # First try to use particle trajectories from the run directory
+    particle_traj_dir = os.path.join(run_dir, 'particle_trajectories')
+    use_run_trajectories = os.path.exists(particle_traj_dir) and len(os.listdir(particle_traj_dir)) > 0
+    
+    if use_run_trajectories:
+        # Use trajectories from run directory
+        print(f"Using particle trajectories from run directory: {particle_traj_dir}")
+        cache_base_dir = particle_traj_dir
+    else:
+        # Fallback to cache directory
+        cache_base_dir = 'cache/trajectories/1.0.0/Primordial_Mini_Black_Hole'
     
     if not os.path.exists(cache_base_dir):
-        print(f"Cache directory not found: {cache_base_dir}")
+        print(f"Trajectory directory not found: {cache_base_dir}")
         return
     
     # Black hole parameters (primordial mini)
@@ -35,49 +44,49 @@ def generate_unified_viewer(run_dir: str):
     # Process each cache file
     for cache_file in cache_files:
         # Parse filename to extract theory and particle info
-        parts = cache_file.replace('.pt', '').split('_')
-        
-        # Skip if not enough parts
-        if len(parts) < 3:
-            continue
-            
-        # Extract theory name (everything before the hash)
-        theory_parts = []
-        particle_type = None
-        
-        # Look for particle indicators
-        for part in parts:
-            if part in ['electron', 'neutrino', 'photon', 'proton']:
-                particle_type = part
-                break
-            elif any(p in part.lower() for p in ['electron', 'neutrino', 'photon', 'proton']):
-                for p in ['electron', 'neutrino', 'photon', 'proton']:
-                    if p in part.lower():
-                        particle_type = p
-                        break
-                break
+        if use_run_trajectories:
+            # Simple format: TheoryName_particle_trajectory.pt
+            parts = cache_file.replace('_trajectory.pt', '').split('_')
+            if len(parts) >= 2:
+                particle_type = parts[-1]
+                theory_name = '_'.join(parts[:-1])
             else:
-                theory_parts.append(part)
+                continue
+        else:
+            # Complex cache format with hashes
+            parts = cache_file.replace('.pt', '').split('_')
+            
+            # Skip if not enough parts
+            if len(parts) < 3:
+                continue
+                
+            # Extract theory name (everything before the hash)
+            theory_parts = []
+            particle_type = None
+            
+            # Look for particle indicators
+            for part in parts:
+                if part in ['electron', 'neutrino', 'photon', 'proton']:
+                    particle_type = part
+                    break
+                elif any(p in part.lower() for p in ['electron', 'neutrino', 'photon', 'proton']):
+                    for p in ['electron', 'neutrino', 'photon', 'proton']:
+                        if p in part.lower():
+                            particle_type = p
+                            break
+                    break
+                else:
+                    theory_parts.append(part)
         
-        # If no particle type found, check the hash
-        if not particle_type:
-            # Use hash to determine particle type based on known patterns
-            hash_part = parts[-3] if len(parts) > 3 else None
-            if hash_part:
-                particle_hashes = {
-                    '53712288c4a7e7b9': 'electron',
-                    '12c9bd24f5b7a4f2': 'neutrino',
-                    '0c891ee2c3b1e764': 'photon',
-                    '8c08fdf8bc0dc306': 'proton',
-                    'bf068f498a320c19': 'electron',
-                    '1c67d507d3e4605f': 'neutrino',
-                    'ad61c62c22f5fb22': 'photon',
-                    '33cd4c15da8cc5d7': 'proton'
-                }
-                particle_type = particle_hashes.get(hash_part, 'electron')
-        
-        # Reconstruct theory name
-        theory_name = '_'.join(theory_parts[:2]) if len(theory_parts) > 1 else theory_parts[0] if theory_parts else 'Unknown'
+        if not use_run_trajectories:
+            # With new cache format, particle name should be in the filename
+            # Format: Theory_particle_hash_steps_N.pt
+            if not particle_type:
+                print(f"Warning: Could not determine particle type from filename: {cache_file}")
+                continue
+            
+            # Reconstruct theory name from parts before particle name
+            theory_name = '_'.join(theory_parts) if theory_parts else 'Unknown'
         
         # Load trajectory
         try:

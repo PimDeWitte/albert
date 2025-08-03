@@ -9,7 +9,7 @@ import torch
 import hashlib
 import shutil
 from pathlib import Path
-from typing import Optional, Union, Dict, Any
+from typing import Optional, Union, Dict, Any, Tuple
 from torch import Tensor
 
 # Import constants that affect trajectory computation
@@ -72,13 +72,17 @@ class TrajectoryCache:
         # <reason>chain: Sanitize theory name for filesystem compatibility</reason>
         sanitized_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', theory_name)
         
-        # <reason>chain: Include all parameters except n_steps in hash to avoid cache collisions</reason>
+        # <reason>chain: Include all parameters except n_steps and particle_name in hash to avoid cache collisions</reason>
+        # <reason>chain: particle_name will be included in filename directly for easy lookup</reason>
         extra_params = {
             'r0': r0_val,
             'dtau': dtau_val,
             'dtype': dtype_str
         }
-        for key in ['run_to_horizon', 'horizon_threshold', 'particle_name', 
+        # Extract particle_name separately for filename
+        particle_name = kwargs.get('particle_name', None)
+        
+        for key in ['run_to_horizon', 'horizon_threshold', 
             'particle_mass', 'particle_charge', 'particle_spin', 'particle_type',
             'quantum_interval', 'quantum_beta', 'y0_general', 'singularity_threshold']:
             if key in kwargs and kwargs[key] is not None:
@@ -141,9 +145,13 @@ class TrajectoryCache:
             str(sorted(extra_params.items())).encode()
         ).hexdigest()[:16]  # Use 16 characters for good uniqueness
         
-        # <reason>chain: Format: (theory)_(params_hash)_steps_(n_steps).pt</reason>
+        # <reason>chain: Format: (theory)_[particle]_(params_hash)_steps_(n_steps).pt</reason>
         # <reason>chain: The _steps suffix allows fetching partial trajectories from longer runs</reason>
-        filename = f"{sanitized_name}_{param_hash}_steps_{n_steps}.pt"
+        # <reason>chain: Particle name is included in filename for easy lookup</reason>
+        if particle_name:
+            filename = f"{sanitized_name}_{particle_name}_{param_hash}_steps_{n_steps}.pt"
+        else:
+            filename = f"{sanitized_name}_{param_hash}_steps_{n_steps}.pt"
         
         # <reason>chain: Organize cache by black hole preset for clarity</reason>
         # Create subdirectory for black hole preset if provided
@@ -159,19 +167,23 @@ class TrajectoryCache:
             return os.path.join(self.trajectories_dir, filename)
         
     def load_trajectory(self, cache_path: str, device: torch.device, 
-                       max_steps: Optional[int] = None) -> Optional[Tensor]:
+                       max_steps: Optional[int] = None, 
+                       load_metadata: bool = False, **kwargs) -> Union[Optional[Tensor], Tuple[Optional[Tensor], Optional[Dict]]]:
         """
-        Load a cached trajectory from disk.
+        Load a cached trajectory from disk, optionally with metadata.
         <reason>chain: Separate loading logic for better error handling</reason>
         <reason>chain: Supports loading partial trajectories from longer cache files</reason>
+        <reason>chain: Added metadata loading for performance metrics</reason>
         
         Args:
             cache_path: Path to cache file
             device: PyTorch device to load tensor to
             max_steps: Maximum number of steps to load (None = load all)
+            load_metadata: If True, also load metadata and return as tuple
             
         Returns:
-            Loaded trajectory tensor or None if loading fails
+            If load_metadata=False: Loaded trajectory tensor or None
+            If load_metadata=True: Tuple of (trajectory, metadata_dict) or (None, None)
         """
         if not os.path.exists(cache_path):
             # <reason>chain: Try to find a longer trajectory we can use</reason>
@@ -180,36 +192,65 @@ class TrajectoryCache:
                 if longer_cache:
                     cache_path = longer_cache
                 else:
+                    if load_metadata:
+                        return None, None
                     return None
             else:
+                if load_metadata:
+                    return None, None
                 return None
             
         try:
-            print(f"Loading cached trajectory from: {cache_path}")
+            # Only print if not suppressed
+            if not kwargs.get('suppress_output', False):
+                print(f"Loading cached trajectory from: {cache_path}")
             trajectory = torch.load(cache_path, map_location=device)
             
             # <reason>chain: Return only the requested number of steps if specified</reason>
             if max_steps is not None and trajectory.shape[0] > max_steps:
-                print(f"  Truncating trajectory from {trajectory.shape[0]} to {max_steps} steps")
+                if not kwargs.get('suppress_output', False):
+                    print(f"  Truncating trajectory from {trajectory.shape[0]} to {max_steps} steps")
                 trajectory = trajectory[:max_steps]
-                
-            return trajectory
+            
+            if load_metadata:
+                # <reason>chain: Try to load companion metadata file</reason>
+                metadata_path = cache_path.replace('.pt', '_metadata.json')
+                metadata = None
+                if os.path.exists(metadata_path):
+                    try:
+                        import json
+                        with open(metadata_path, 'r') as f:
+                            metadata = json.load(f)
+                        if not kwargs.get('suppress_output', False):
+                            print(f"  Loaded metadata from: {metadata_path}")
+                    except Exception as e:
+                        if not kwargs.get('suppress_output', False):
+                            print(f"  Warning: Failed to load metadata: {e}")
+                return trajectory, metadata
+            else:
+                return trajectory
         except Exception as e:
-            print(f"Warning: Failed to load cache: {e}")
+            if not kwargs.get('suppress_output', False):
+                print(f"Warning: Failed to load cache: {e}")
+            if load_metadata:
+                return None, None
             return None
             
     def save_trajectory(self, 
                        trajectory: Tensor, 
                        cache_path: str,
-                       dtype: torch.dtype) -> bool:
+                       dtype: torch.dtype,
+                       metadata: Optional[Dict[str, Any]] = None) -> bool:
         """
-        Save a computed trajectory to cache.
+        Save a computed trajectory to cache with optional metadata.
         <reason>chain: Separate saving logic with proper error handling</reason>
+        <reason>chain: Added metadata parameter to store timing/complexity information</reason>
         
         Args:
             trajectory: Trajectory tensor to save
             cache_path: Path where to save the cache file
             dtype: Data type to save tensor as
+            metadata: Optional metadata dictionary containing timing info
             
         Returns:
             True if save successful, False otherwise
@@ -223,7 +264,16 @@ class TrajectoryCache:
             
             # <reason>chain: Convert to specified dtype before saving</reason>
             torch.save(trajectory.to(dtype=dtype), cache_path)
-            print(f"Saved trajectory to cache: {cache_path}")
+            
+            # <reason>chain: Save metadata to companion JSON file if provided</reason>
+            if metadata is not None:
+                import json
+                metadata_path = cache_path.replace('.pt', '_metadata.json')
+                with open(metadata_path, 'w') as f:
+                    json.dump(metadata, f, indent=2)
+                print(f"Saved trajectory and metadata to cache: {cache_path}")
+            else:
+                print(f"Saved trajectory to cache: {cache_path}")
             return True
         except Exception as e:
             print(f"Warning: Failed to save cache: {e}")
@@ -245,17 +295,22 @@ class TrajectoryCache:
         base_dir = os.path.dirname(requested_path)
         filename = os.path.basename(requested_path)
         
-        # Parse the filename pattern: (theory)_(hash)_steps_(N).pt
+        # Parse the filename pattern: (theory)_[particle]_(hash)_steps_(N).pt
         import re
-        match = re.match(r'(.+)_([a-f0-9]+)_steps_(\d+)\.pt$', filename)
-        if not match:
-            return None
+        # Try new format with particle name first
+        match = re.match(r'(.+)_([a-zA-Z]+)_([a-f0-9]+)_steps_(\d+)\.pt$', filename)
+        if match:
+            theory_name, particle_name, param_hash, requested_steps = match.groups()
+            pattern = f"{theory_name}_{particle_name}_{param_hash}_steps_*.pt"
+        else:
+            # Fallback to old format without particle: (theory)_(hash)_steps_(N).pt
+            match = re.match(r'(.+)_([a-f0-9]+)_steps_(\d+)\.pt$', filename)
+            if not match:
+                return None
+            theory_name, param_hash, requested_steps = match.groups()
+            pattern = f"{theory_name}_{param_hash}_steps_*.pt"
             
-        theory_name, param_hash, requested_steps = match.groups()
         requested_steps = int(requested_steps)
-        
-        # Look for files with same theory and hash but more steps
-        pattern = f"{theory_name}_{param_hash}_steps_*.pt"
         
         try:
             import glob

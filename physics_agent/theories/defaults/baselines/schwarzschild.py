@@ -7,6 +7,8 @@ class Schwarzschild(GravitationalTheory):
     Schwarzschild metric for a non-rotating, uncharged black hole.
     This is the simplest solution to the Einstein field equations.
     """
+    
+    category = "classical"  # Classical solution to Einstein equations
 
     def __init__(self, kappa: float = 0.0):
         """

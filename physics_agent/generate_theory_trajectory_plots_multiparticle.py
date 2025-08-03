@@ -263,6 +263,12 @@ def generate_trajectory_visualizations_for_run(run_dir, n_steps=2000):
     particle_loader = ParticleLoader()
     particles = ['electron', 'neutrino', 'photon', 'proton']
     
+    # Debug: print available particles
+    available = particle_loader.get_available_particles()
+    print(f"Available particles in loader: {available}")
+    if len(available) == 0:
+        print("ERROR: No particles loaded! Check particle files.")
+    
     # Initialize all theories
     all_theories = []
     for theory_name, theory_class, category in ALL_THEORIES:
@@ -293,12 +299,16 @@ def generate_trajectory_visualizations_for_run(run_dir, n_steps=2000):
             
             # Check cache first
             cache_dir = os.path.join(os.path.dirname(__file__), 'cache/trajectories/1.0.0/Primordial_Mini_Black_Hole')
-            cache_pattern = f"{theory_name.replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')}_"
+            theory_clean = theory_name.replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')
             
             cached_trajectory = None
             if os.path.exists(cache_dir):
+                # Look for files with new format: Theory_particle_hash_steps_N.pt
                 for cache_file in os.listdir(cache_dir):
-                    if cache_file.startswith(cache_pattern) and cache_file.endswith('.pt'):
+                    # Check if file matches theory and particle
+                    if (theory_clean in cache_file and 
+                        f"_{particle_name}_" in cache_file and
+                        cache_file.endswith('.pt')):
                         cache_path = os.path.join(cache_dir, cache_file)
                         try:
                             data = torch.load(cache_path, map_location='cpu')
