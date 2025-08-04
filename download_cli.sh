@@ -95,31 +95,7 @@ print_banner() {
 EOF
     echo -e "${NC}"
     
-    # Print memorial text
-    echo -e "${BOLD}${YELLOW}"
-    echo "                                      In Memory of Albert Einstein"
-    echo "                                            1879 - 1955"
-    echo -e "${NC}"
-    echo ""
-    echo -e "${BLUE}\"${NC}I believe in intuitions and inspirations. I sometimes feel that I am right."
-    echo "I do not know that I am. When two expeditions of scientists, financed by the"
-    echo "Royal Academy, went forth to test my theory of relativity, I was convinced"
-    echo "that their conclusions would tally with my hypothesis. I was not surprised"
-    echo "when the eclipse of May 29, 1919, confirmed my intuitions. I would have been"
-    echo "surprised if I had been wrong.${BLUE}\"${NC}"
-    echo ""
-    echo -e "${YELLOW}\"Then you trust more to your imagination than to your knowledge?\"${NC}"
-    echo ""
-    echo -e "${BLUE}\"${NC}I am enough of the artist to draw freely upon my imagination."
-    echo "Imagination is more important than knowledge. Knowledge is limited."
-    echo "Imagination encircles the world.${BLUE}\"${NC}"
-    echo ""
-    echo -e "${YELLOW}— Albert Einstein (1879-1955)${NC}"
-    echo -e "${YELLOW}From an interview with George Sylvester Viereck, 1929${NC}"
-    echo ""
-    echo -e "${BOLD}A L B E R T${NC} - Self-Discovering Physics Agent"
-    echo "Continuing Einstein's quest for a unified theory of everything"
-    echo ""
+
 }
 
 print_status() {
