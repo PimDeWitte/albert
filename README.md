@@ -1,92 +1,171 @@
 # 🌌 Albert: Physics at The Speed of AI
 
-## A Timely Agent for Gravitational Theory Research
+<div align="center">
+  <img src="docs/sketch.png" alt="Albert Einstein Sketch" width="200"/>
+  
+  **A timely agent for gravitational theory research**
+  
+  [![GitHub](https://img.shields.io/badge/GitHub-View%20Code-blue?logo=github)](https://github.com/pimdewitte/albert)
+  [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord)](https://discord.gg/xdybbSk5)
+  [![Status](https://img.shields.io/badge/Status-Research%20Preview-yellow)]()
+  
+  *One engine to model everything. In code. Rooted in the laws of physics.*
+</div>
 
-Albert is an advanced physics engine and evaluation framework that tests gravitational theories against experimental data and theoretical constraints. It provides comprehensive analytical validation, numerical trajectory integration, and beautiful interactive visualizations for understanding how different theories of gravity behave.
+---
 
 ## 🚀 Quick Start
 
-### Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/albertai/albert.git
+# One-line installation
+curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash
+
+# Clone and setup
+git clone https://github.com/pimdewitte/albert.git
 cd albert
+./setup_unified.sh
 
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Basic Usage
-
-```bash
-# Run comprehensive evaluation on all theories
+# Run all theories (standard run)
 albert run
 
-# Include candidate theories from the candidates/ folder
-albert run --candidates
+# Run with specific options
+albert run --max-steps 100000
+albert run --theories schwarzschild kerr
+albert run --theories schwarzschild --black-hole-preset stellar_mass
+albert run --category quantum
 
-# Evaluate only candidate theories
-albert run --candidates-only
+# Configure Albert (API keys, etc.)
+albert setup
 
-# Filter theories by name
-albert run --theory-filter "quantum"
+# Discover new theories automatically
+albert discover --initial "unified field theory"
 
-# Run with longer trajectories for more detailed analysis
-albert run --max-steps 10000
+# Discover variations of an existing theory
+albert discover --from-theory theories/quantum_corrected
 
-# Run pre-flight tests to ensure solver correctness
-albert run --test
+# Optional: Make albert available globally
+sudo ln -s $(pwd)/albert /usr/local/bin/albert
+# Now you can use 'albert' from anywhere
 ```
 
-## 📊 What Albert Does
+---
 
-Albert evaluates gravitational theories through:
+## 🎯 Command Line Interface
 
-### 1. **Analytical Validation Tests**
-- Mercury perihelion precession
-- Light deflection by the Sun
-- Photon sphere radius
-- Parameterized Post-Newtonian (PPN) parameters
-- Gravitational wave propagation
-- Neutron star constraints (PSR J0740)
-- Quantum effects (g-2 anomaly)
-- Scattering amplitudes
+Albert provides a unified CLI with multiple subcommands:
 
-### 2. **Trajectory-Based Tests**
-- Kerr baseline comparison (rotating black holes)
-- Schwarzschild comparison (non-rotating black holes)
-- Circular orbit stability
-- ISCO (Innermost Stable Circular Orbit) analysis
-- Conserved quantity preservation
-- Precession accuracy
+### `albert run` - Run Theory Simulations
+```bash
+# Run all theories with default settings
+albert run
 
-### 3. **Interactive Visualizations**
-- 3D trajectory viewers with WebGPU rendering
-- Real-time theory comparison dashboards
-- Analytical vs numerical test results
-- Leaderboard rankings with sortable metrics
-- Parameter sweep visualizations
+# Run specific theories
+albert run --theories schwarzschild kerr        # Multiple theories
+albert run --category quantum                    # Run category
+albert run --candidates                          # Include candidates
 
-## 🏆 Theory Evaluation & Ranking
+# Black hole configurations
+albert run --black-hole-preset stellar_mass      # 10 solar masses
+albert run --black-hole-preset primordial_mini   # Default: quantum scale
+albert run --black-hole-preset sagittarius_a_star # Galactic center
 
-The evaluation system produces two key rankings:
+# Particle simulations
+albert run --particles electron photon neutrino  # Multi-particle
+albert run --particles proton                    # Specific particle
 
-1. **Analytical Score**: Based on how well theories match experimental observations
-2. **Combined Score**: Weighted combination of analytical (70%) and trajectory (30%) tests
+# Performance options
+albert run --device cuda --dtype float32         # GPU acceleration
+albert run --device cpu --dtype float64          # Max precision
+albert run --max-steps 1000000                   # Million-step trajectories
+albert run --no-cache                            # Force recomputation
 
-Results are presented in an interactive HTML report with:
-- Comprehensive test summaries
-- Individual theory performance cards
-- Trajectory visualizations
-- Loss metrics and comparisons
-- Detailed breakdowns of each test
+# Advanced options
+albert run --validators-only                     # Skip trajectory computation
+albert run --max-parallel-workers 16             # Parallel processing
+albert run --test                                # Run pre-flight tests
+```
 
-## 🔬 Candidate Theory System
+### `albert discover` - AI Theory Discovery
+```bash
+# Start discovery with default settings
+albert discover
 
-Albert supports a unique candidate theory workflow:
+# Discovery with initial prompt
+albert discover --initial "unified field theory with torsion"
 
-### Directory Structure
+# Improve existing theory
+albert discover --from-theory theories/quantum_corrected
+
+# Continuous monitoring mode
+albert discover --self-monitor
+```
+
+### `albert setup` - Configuration
+```bash
+# Interactive setup wizard
+albert setup
+```
+
+### Other Commands
+```bash
+albert validate path/to/theory.py    # Validate specific theory
+albert test                         # Run environment tests
+albert --help                       # Show all commands
+```
+
+---
+
+## 📊 Complete Validator Reference
+
+Albert uses 14 comprehensive validators to test gravitational theories against experimental data:
+
+### Analytical Validators (7)
+- **Mercury Precession**: 43.98 arcsec/century (100% pass rate)
+- **Light Deflection**: 1.75 arcsec at solar limb (100% pass rate)
+- **Photon Sphere**: r = 3M for Schwarzschild (100% pass rate)
+- **PPN Parameters**: γ = β = 1 for GR (100% pass rate)
+- **COW Interferometry**: Neutron phase shift in gravity (100% pass rate)
+- **Gravitational Waves**: LIGO/Virgo waveform matching (100% pass rate)
+- **PSR J0740**: Shapiro time delay in binary pulsars (100% pass rate)
+
+### Solver-Based Validators (7)
+- **Trajectory vs Kerr**: Geodesic comparison (100% pass rate)
+- **Circular Orbit**: ISCO radius & orbital frequency (93.8% pass rate)
+- **Quantum Geodesic Sim**: 2-qubit quantum simulation (96.9% pass rate)
+- **g-2 Anomaly**: Muon magnetic moment (40.6% pass rate)
+- **Scattering Amplitude**: Tree-level graviton exchange (68.8% pass rate)
+- **CMB Power Spectrum**: Planck satellite constraints (71.9% pass rate)
+- **Primordial GWs**: B-mode polarization (93.8% pass rate)
+
+---
+
+## 🧬 Self-Discovery System
+
+Albert uses AI to generate and test new gravitational theories automatically:
+
+### How It Works
+1. **AI Generation**: LLM generates novel theory code based on prompts
+2. **Validation**: Theories tested against 14 comprehensive validators
+3. **Ranking**: Top performers promoted to candidate status
+4. **Storage**: Candidates saved with full results and metadata
+5. **Review**: Community can review and submit via pull requests
+
+### Discovery Modes
+```bash
+# Basic discovery
+albert discover
+
+# Guided discovery with physics hints
+albert discover --initial "incorporate holographic principle"
+
+# Theory improvement
+albert discover --from-theory theories/quantum_corrected
+
+# Continuous discovery with monitoring
+albert discover --self-monitor
+```
+
+### Candidate Theory System
 ```
 physics_agent/theories/candidates/
 ├── proposed/     # Theories awaiting review
@@ -94,164 +173,270 @@ physics_agent/theories/candidates/
 └── rejected/     # Theories that didn't pass validation
 ```
 
-### Working with Candidates
+---
 
-```bash
-# Include proposed candidates in evaluation
-albert run --candidates
+## ⚡ Performance Features
 
-# Test all candidate statuses
-albert run --candidates --candidates-status all
+### PyTorch Tensor Caching
+- **First run**: Full geodesic integration (minutes)
+- **Cached runs**: Near-instant load (8.6ms)
+- **Speedup**: Up to 29,323x for million-step trajectories
+- **Storage**: ~30MB per trajectory
 
-# Test only new candidates
-albert run --candidates-only --candidates-status new
-```
+### Performance Benchmarks
+| Trajectory Steps | Integration Time | Cached Load | Speedup    |
+|-----------------|------------------|-------------|------------|
+| 10,000          | 2.75 s          | 2.5 ms      | 1,110x     |
+| 100,000         | 25.80 s         | 2.4 ms      | 10,674x    |
+| 1,000,000       | 4m 12.7s        | 8.6 ms      | 29,323x    |
 
-Candidates that score in the top 10 can be submitted via pull request for community review and potential promotion to the main theory collection.
-
-## 🎯 Advanced Features
-
-### Self-Discovery Mode
-```bash
-albert discover
-```
-Automatically generates and tests new theoretical variations using AI-guided exploration.
-
-```bash
-# Guide discovery toward specific physics
-albert discover --initial "explore quantum corrections to the metric"
-
-# Start from an existing theory
-albert discover --from-theory theories/quantum_corrected
-```
-
-The self-discovery system:
-- Uses AI to generate novel gravitational theories
-- Evaluates them against experimental data
-- Automatically promotes promising candidates
-- Provides PR instructions for community review
-
-### Parameter Sweeps
-For theories with tunable parameters, use advanced mode:
-```bash
-# Enable parameter sweeps
-albert run-advanced --enable-sweeps
-
-# Sweep only specific parameters
-albert run-advanced --sweep-only gamma
-
-# Control sweep parallelization
-albert run-advanced --enable-sweeps --sweep-workers 8
-```
-
-### Theory Validation
-```bash
-albert validate path/to/theory.py
-```
-Validates a single theory file for correctness and compatibility.
-
-### Environment Testing
-```bash
-albert test
-```
-Runs comprehensive solver and environment tests to ensure numerical accuracy.
-
-### Longer Trajectories
-For more detailed analysis, increase the integration steps:
-```bash
-albert run --max-steps 50000
-```
-
-### Parallel Processing
-Control computational resources:
-```bash
-albert run --max-parallel-workers 8
-```
-
-## 📈 Understanding the Results
-
-After running evaluation, you'll find:
-
-1. **HTML Report** (`runs/comprehensive_test_*/comprehensive_theory_validation_*.html`)
-   - Interactive dashboards
-   - Theory comparison charts
-   - Detailed test breakdowns
-
-2. **Trajectory Viewers** (`runs/comprehensive_test_*/trajectories/`)
-   - Individual 3D visualizations for each theory
-   - Side-by-side comparisons with baselines
-
-3. **JSON Data** (`runs/comprehensive_test_*/theory_validation_*.json`)
-   - Raw numerical results
-   - Complete test metrics
-
-## 🔧 Architecture Overview
-
-### Core Components
-
-- **evaluation.py**: Main evaluation engine orchestrating all tests
-- **geodesic_integrator.py**: Numerical integration solvers for different spacetimes
-- **validations/**: Analytical test implementations
-- **theories/**: Collection of gravitational theories
-- **ui/**: WebGPU-based 3D visualization components
-
-### Solver Hierarchy
-
-Albert uses specialized solvers optimized for different scenarios:
-- 4D solvers for spherically symmetric spacetimes (faster)
-- 6D solvers for general spacetimes
-- Quantum-corrected solvers for theories with quantum effects
-- Conserved quantity tracking for numerical stability
-
-## 🌟 Key Innovations
-
-1. **Theory as Code**: Each gravitational theory is implemented as Python code with clear physics
-2. **Comprehensive Validation**: Both analytical and numerical tests ensure physical accuracy
-3. **Beautiful Visualizations**: WebGPU-powered 3D renderers for intuitive understanding
-4. **Candidate System**: Democratic process for discovering and validating new theories
-5. **High Precision**: Careful numerical methods preserve conservation laws
-
-## 📚 Documentation
-
-- [Solver Architecture](docs/solvers/index.html) - Deep dive into the numerical methods
-- [Validation Pipeline](docs/validators.html) - How theories are tested
-- [Self-Discovery](docs/self_discovery.html) - AI-guided theory exploration
-- [Scoring System](docs/scoring.html) - How theories are ranked
-
-## 🤝 Contributing
-
-We welcome contributions! Whether it's:
-- New gravitational theories
-- Additional validation tests
-- Visualization improvements
-- Documentation enhancements
-
-See the [contribution guidelines](CONTRIBUTING.md) for details.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🎓 Citations
-
-If you use Albert in your research, please cite:
-```bibtex
-@software{albert2024,
-  title = {Albert: Physics at The Speed of AI},
-  author = {Albert AI Team},
-  year = {2024},
-  url = {https://github.com/albertai/albert}
-}
-```
-
-## 🚧 Current Status
-
-Albert is under active development. Current focus areas:
-- Expanding the theory collection
-- Adding more experimental constraints
-- Improving visualization performance
-- Enhancing the self-discovery system
+### Parallel Computing
+- Parameter sweeps run in parallel
+- Auto-detects optimal worker count
+- GPU support (CUDA, MPS for Apple Silicon)
+- Adaptive precision (float32/float64)
 
 ---
 
-*Built for Einstein's legacy - pursuing perfection in gravitational physics*
+## 🌠 Black Hole Configurations
+
+| Preset | Mass | Schwarzschild Radius | Use Case | Command |
+|--------|------|---------------------|----------|---------|
+| `primordial_mini` ⭐ | 10¹⁵ kg | 1.5 pm | Quantum gravity research | `--black-hole-preset primordial_mini` |
+| `stellar_mass` | 10 M☉ | 29.5 km | Standard astrophysics | `--black-hole-preset stellar_mass` |
+| `laboratory_micro` | 10⁸ kg | 1.5×10⁻¹⁹ m | Extreme quantum regime | `--black-hole-preset laboratory_micro` |
+| `intermediate_mass` | 1000 M☉ | 2953 km | Globular clusters | `--black-hole-preset intermediate_mass` |
+| `sagittarius_a_star` | 4.15×10⁶ M☉ | 1.2×10¹⁰ m | Galactic center | `--black-hole-preset sagittarius_a_star` |
+
+⭐ Default: `primordial_mini` enables larger timesteps and quantum effects
+
+---
+
+## 🔬 Particle Types
+
+| Particle | Type | Mass | Charge | Spin | Orbital Behavior |
+|----------|------|------|---------|------|-----------------|
+| `electron` ⭐ | Massive | 9.1×10⁻³¹ kg | -e | 1/2 | Elliptical precessing |
+| `photon` | Massless | 0 | 0 | 1 | Gravitational lensing |
+| `neutrino` | Nearly massless | < 0.12 eV/c² | 0 | 1/2 | Near-null geodesic |
+| `proton` | Massive | 1.67×10⁻²⁷ kg | +e | 1/2 | Stable circular |
+
+⭐ Default particle
+
+---
+
+## 🚀 Creating Your Own Theory
+
+1. **Create theory file**: `theories/my_theory/theory.py`
+2. **Define your metric**:
+```python
+from physics_agent.base_theory import GravitationalTheory, Tensor
+import torch
+
+class MyTheory(GravitationalTheory):
+    def __init__(self):
+        super().__init__(
+            name="My Theory",
+            description="Novel gravitational theory",
+            category="quantum"  # or "classical", "emergent", "baseline"
+        )
+    
+    def get_metric(self, r, M, C, G):
+        # Define your g_μν components
+        g_tt = -(1 - 2*G*M/(C**2 * r))
+        g_rr = 1/(1 - 2*G*M/(C**2 * r))
+        # ... define all components
+        return Tensor("metric", [...])
+```
+
+3. **Run validation**:
+```bash
+albert run --theories "My Theory"
+```
+
+---
+
+## 🏆 Solver Architecture
+
+### Primary Integration Methods
+- **Dormand-Prince 8(7)**: 8th order with adaptive step control
+  - Error tolerance: 10⁻¹² relative, 10⁻¹⁴ absolute
+  - 13 Runge-Kutta stages per step
+  - Performance: 47.3ms for 1,024 steps
+
+- **Symplectic Integrators**: Energy-preserving for periodic orbits
+  - Energy drift: < 10⁻¹⁵ over 10⁶ orbits
+  - 4th and 6th order implementations
+
+- **Implicit Methods**: For extreme curvature near horizons
+  - A-stable and L-stable
+  - Newton-Raphson convergence
+
+---
+
+## 🌍 The Vision: Open World Model
+
+Albert is building toward a unified physics engine where:
+- Every physical law is implemented and validated
+- All experimental data is digitized and accessible
+- Theories can be tested against all known physics
+- Synthetic data generation for games and training
+
+Currently supports:
+- **32 gravitational theories** including GR, quantum corrections, UGM
+- **14 validation tests** from solar system to quantum scales
+- **Multi-particle simulations** with different quantum numbers
+- **WebGPU visualization** for interactive exploration
+
+Future extensions:
+- Fluid dynamics solvers
+- Quantum field theory
+- Condensed matter physics
+- Statistical mechanics
+- Plasma physics
+
+---
+
+## 👥 Contributing
+
+### For Physicists
+- Add new validators for your field
+- Implement experimental datasets
+- Verify theoretical predictions
+- Contribute new baseline theories
+
+### For Engineers
+- Optimize solvers with torch.compile
+- Implement GPU kernels
+- Add visualization tools
+- Improve caching system
+
+### For Everyone
+- Test new theories
+- Report bugs
+- Improve documentation
+- Join discussions on Discord
+
+---
+
+## 📚 Documentation
+
+- [Introduction & System](docs/introduction.html) - Architecture overview
+- [Solvers & Validators](docs/solvers_validators.html) - Testing framework
+- [Cache System](docs/cache.html) - Performance optimization
+- [API Reference](https://albert.so/documentation.html) - Full documentation
+
+---
+
+## 🙏 Acknowledgments
+
+This project continues Einstein's quest for unification. Special thanks to:
+- Partanen & Tulkki (2025) for the UGM framework
+- The open-source physics community
+- Everyone who believes in open science
+
+---
+
+## 📊 Architecture Diagrams
+
+### Theory Engine Core Execution Flow
+
+```mermaid
+flowchart TD
+    START[albert run] --> PARSE[Parse CLI Arguments]
+    PARSE --> SETUP[Setup Execution Mode]
+    SETUP --> DEVICE[Determine Device & Dtype<br/>GPU/CPU, float32/float64]
+    DEVICE --> ENGINE[Create TheoryEngine Instance]
+    ENGINE --> LOADER[Load 32 Theories<br/>baseline/classical/quantum/emergent]
+    
+    LOADER --> FILTER[Apply Filters<br/>--theories, --category, --candidates]
+    FILTER --> PHASE0[PHASE 0: Baseline Tests<br/>Schwarzschild & Kerr]
+    
+    PHASE0 --> PHASE1[PHASE 1: Theory Validation<br/>14 Validators × 32 Theories]
+    PHASE1 --> CACHE{Check Cache?}
+    
+    CACHE -->|Hit<br/>8.6ms| LOAD[Load Tensor]
+    CACHE -->|Miss<br/>4+ min| INTEGRATE[Geodesic Integration<br/>RK8/Symplectic/Implicit]
+    
+    INTEGRATE --> SAVE[Save to Cache]
+    SAVE --> VALIDATE
+    LOAD --> VALIDATE[Run Validators]
+    
+    VALIDATE --> PHASE2[PHASE 2: Full Trajectories<br/>Multi-particle simulations]
+    PHASE2 --> PHASE3[PHASE 3: Predictions<br/>Novel physics tests]
+    PHASE3 --> LEADERBOARD[Generate Results<br/>HTML Report + 3D Viz]
+    LEADERBOARD --> END[Complete]
+    
+    style START fill:#90EE90
+    style END fill:#FFB6C1
+    style CACHE fill:#FFE4B5
+    style INTEGRATE fill:#FF6B6B
+    style LOAD fill:#4ECDC4
+```
+
+### Self-Discovery Flow
+
+```mermaid
+graph TD
+    A[🤖 LLM Generation<br/>AI generates novel theories] -->|Python code| B[🔬 Validation<br/>14 comprehensive tests]
+    B --> C{Pass Rate?}
+    C -->|> 85%| D[🏆 Top Performer<br/>Promoted to candidate]
+    C -->|< 85%| E[❌ Rejected<br/>Logged for analysis]
+    
+    D --> F[📁 Candidate Storage<br/>theories/candidates/new/]
+    F --> G[📊 Metadata<br/>• Test results<br/>• Trajectories<br/>• Performance metrics]
+    G --> H[🌿 Git Workflow<br/>Create PR]
+    H --> I[👥 Community Review<br/>Physics validation]
+    
+    E --> J[🔄 Feedback Loop<br/>Improve prompts]
+    J --> A
+```
+
+### Cache Architecture
+
+```mermaid
+graph LR
+    A[Trajectory Request] --> B{Cache Key<br/>SHA256 Hash}
+    B --> C[Parameter Set<br/>• Theory name<br/>• Black hole preset<br/>• Particle type<br/>• Integration steps<br/>• Numerical params]
+    
+    C --> D{Cache Lookup}
+    D -->|Found| E[Load PyTorch Tensor<br/>8.6ms]
+    D -->|Not Found| F[Compute Trajectory<br/>4+ minutes]
+    
+    F --> G[Save to Cache<br/>~30MB for 1M steps]
+    G --> H[Return Result]
+    E --> H
+    
+    style E fill:#4ECDC4
+    style F fill:#FF6B6B
+```
+
+---
+
+## Prerequisites
+
+- **Python**: 3.9+
+- **GPU**: NVIDIA (CUDA), Apple Silicon (MPS), or CPU fallback
+- **API Key**: xAI/Grok (recommended) or experimental support for other providers
+
+## Configuration
+
+Albert uses AI to generate new theories. Get your API key:
+
+### Primary Provider (Recommended)
+- **xAI/Grok**: https://x.ai/api
+
+### Experimental Providers
+- OpenAI, Anthropic, Google Gemini (limited support)
+
+Run the setup wizard:
+```bash
+albert setup
+```
+
+---
+
+<div align="center">
+  <i>"I want to know God's thoughts. The rest are details."</i><br>
+  — Albert Einstein
+</div>
