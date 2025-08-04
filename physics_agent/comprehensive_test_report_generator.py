@@ -83,9 +83,10 @@ class ComprehensiveTestReportGenerator:
             '        .summary-card h3 { margin: 0 0 10px 0; color: #34495e; font-size: 0.9em; text-transform: uppercase; }',
             '        .summary-card .value { font-size: 2.5em; font-weight: bold; color: #3498db; }',
             '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }',
-            '        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }',
-            '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; }',
+            '        table { width: auto; max-width: 100%; border-collapse: collapse; margin-bottom: 30px; margin-left: auto; margin-right: auto; }',
+            '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; white-space: nowrap; }',
             '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; vertical-align: middle; }',
+            '        td.rank, td.score, td.timing-info { white-space: nowrap; }',
             '        tr:hover { background-color: #f8f9fa; }',
             '        .rank { font-weight: bold; text-align: center; }',
             '        .category-baseline { color: #2c3e50; font-weight: bold; }',
@@ -129,8 +130,8 @@ class ComprehensiveTestReportGenerator:
             '        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }',
             '        .tooltiptext { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 12px; line-height: 1.4; }',
             '        .tooltiptext::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent; }',
-            '        .distance-divergence { font-size: 0.85em; line-height: 1.5; }',
-            '        .distance-divergence strong { color: #34495e; font-size: 0.9em; }',
+                    '        .distance-divergence { font-size: 0.85em; line-height: 1.3; }',
+        '        .distance-divergence strong { color: #34495e; font-size: 0.9em; }',
             '        .progressive-loss-label { color: #666; font-size: 0.85em; font-weight: normal; }',
             '        /* Log viewer styles */',
             '        .log-section { margin-top: 40px; }',
@@ -359,11 +360,9 @@ class ComprehensiveTestReportGenerator:
                     # Calculate average of the three values
                     avg_loss = (progressive_losses["1%"] + progressive_losses["50%"] + progressive_losses["99%"]) / 3
                     
-                    combined_str += '<br><strong>Divergence:</strong><br>'
-                    combined_str += f'<span class="progressive-loss-label">Start:</span> {progressive_losses["1%"]:.2e}<br>'
-                    combined_str += f'<span class="progressive-loss-label">Mid:</span> {progressive_losses["50%"]:.2e}<br>'
-                    combined_str += f'<span class="progressive-loss-label">End:</span> {progressive_losses["99%"]:.2e}<br>'
-                    combined_str += f'<span class="progressive-loss-label">Avg:</span> {avg_loss:.2e}'
+                    combined_str += '<br><strong>Divergence:</strong> '
+                    combined_str += f'{progressive_losses["1%"]:.1e} → {progressive_losses["50%"]:.1e} → {progressive_losses["99%"]:.1e}'
+                    combined_str += f' <span style="color: #666; font-size: 0.85em;">(avg: {avg_loss:.1e})</span>'
             else:
                 combined_str = '<span class="not-available">N/A</span>'
             
