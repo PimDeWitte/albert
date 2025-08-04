@@ -464,7 +464,7 @@
                             <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
                                 <div class="flex items-stretch">
                                     <div class="flex-1 p-4">
-                                        <code id="modal-install-command" class="text-ink font-mono text-sm break-all select-all">curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash</code>
+                                        <code id="modal-install-command" class="text-ink font-mono text-sm break-all select-all">curl -fsSL https://albert.so/install | bash</code>
                                     </div>
                                     <button 
                                         onclick="copyModalCommand()" 
@@ -726,9 +726,9 @@
                     <div class="relative group">
                         <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
                             <div class="flex items-stretch">
-                                <div class="flex-1 p-4 space-y-1">
-                                    <div id="homepage-install-command" class="font-mono text-sm">
-                                        <span class="text-accent">curl -fsSL</span> <span class="text-ink">https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh</span> <span class="text-muted">| bash</span>
+                                <div class="flex-1 p-3 sm:p-4 space-y-1">
+                                    <div id="homepage-install-command" class="font-mono text-base sm:text-lg whitespace-nowrap">
+                                        <span class="select-all"><span class="text-accent">curl -fsSL</span> <span class="text-ink">https://albert.so/install</span> <span class="text-muted">| bash</span></span>
                                     </div>
                                 </div>
                                 <button 
@@ -1934,7 +1934,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
 
         // Copy homepage command function
         function copyHomepageCommand() {
-            const command = 'curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash';
+            const command = 'curl -fsSL https://albert.so/install | bash';
             navigator.clipboard.writeText(command).then(() => {
                 // Show check icon
                 document.getElementById('homepage-copy-icon').classList.add('hidden');

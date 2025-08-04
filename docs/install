@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# Albert Installation Script
+# This script downloads and executes the main installation script from GitHub
+#
+# Usage: curl -fsSL https://albert.so/install | bash
+
+set -e  # Exit on error
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Print colored output
+print_status() {
+    echo -e "${GREEN}[ALBERT]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+# Main installation
+print_status "Starting Albert installation..."
+
+# Download and execute the main installation script
+curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash
+
+# The main script will handle the rest of the installation
