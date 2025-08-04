@@ -85,7 +85,7 @@ class ComprehensiveTestReportGenerator:
             '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }',
             '        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }',
             '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; }',
-            '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }',
+            '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; vertical-align: middle; }',
             '        tr:hover { background-color: #f8f9fa; }',
             '        .rank { font-weight: bold; text-align: center; }',
             '        .category-baseline { color: #2c3e50; font-weight: bold; }',
@@ -108,6 +108,7 @@ class ComprehensiveTestReportGenerator:
             '        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }',
     
             '        .timing-info { color: #7f8c8d; font-size: 0.85em; margin-top: 5px; }',
+        '        .not-available { color: #7f8c8d; font-style: italic; text-align: center; }',
             '        .note-box { background: #fff9c4; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #fbc02d; }',
             '        .legend { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; }',
             '        .legend h4 { margin-top: 0; color: #34495e; }',
@@ -364,7 +365,7 @@ class ComprehensiveTestReportGenerator:
                     combined_str += f'<span class="progressive-loss-label">End:</span> {progressive_losses["99%"]:.2e}<br>'
                     combined_str += f'<span class="progressive-loss-label">Avg:</span> {avg_loss:.2e}'
             else:
-                combined_str = 'N/A'
+                combined_str = '<span class="not-available">N/A</span>'
             
             lines.extend([
                 '                <tr>',

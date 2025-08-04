@@ -322,9 +322,9 @@
         </div>
     </div>
     
-    <div class="view-info" id="viewInfo">
-        Third Person View - Use mouse to orbit
-    </div>
+            <div class="view-info" id="viewInfo">
+            Top View - Looking down at orbital plane
+        </div>
     
     <div class="tooltip" id="tooltip"></div>
     
@@ -453,14 +453,17 @@
             // Update Schwarzschild radius display
             document.getElementById('schwarzschildRadius').textContent = (2 * M).toFixed(3) + ' (scaled)';
             
-            // Set initial camera position
-            setView('third');
+            // Set initial camera position to top-down view
+            setView('top');
             
-            // Load first theory by default
+            // Load Kerr-Newman as default if available, otherwise first theory
+            const kerrNewmanOption = document.getElementById('theorySelect').querySelector('option[value="Kerr-Newman"]');
             const firstTheory = document.getElementById('theorySelect').querySelector('option:not([value=""])');
-            if (firstTheory) {
-                document.getElementById('theorySelect').value = firstTheory.value;
-                loadTheory(firstTheory.value);
+            const defaultTheory = kerrNewmanOption || firstTheory;
+            
+            if (defaultTheory) {
+                document.getElementById('theorySelect').value = defaultTheory.value;
+                loadTheory(defaultTheory.value);
             }
             
             // Start animation
