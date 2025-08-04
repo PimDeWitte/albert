@@ -346,6 +346,13 @@
                 grid-template-columns: 1fr !important;
             }
             
+            /* Einstein detail elements on mobile */
+            #einstein-asymmetric-detail,
+            #einstein-connection-detail,
+            #einstein-field-detail {
+                font-size: 0.75rem !important;
+            }
+            
             /* Adjust padding for mobile */
             .px-4, .px-6, .px-8 {
                 padding-left: 1rem !important;
@@ -1617,7 +1624,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                 <div class="max-w-7xl mx-auto">
                    
                     <h3 class="text-5xl lg:text-7xl font-display font-bold text-center text-accent mb-8">
-                        A World Model Rooted in Physics
+                        Towards merging physics, machine learning, and games into one open engine
                     </h3>
                     
                     <p class="text-2xl text-center font-serif text-ink mb-20 max-w-4xl mx-auto">
@@ -1661,41 +1668,47 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                         
                     <!-- Code Example -->
                     <div class="bg-codeBg rounded-3xl p-8 mb-20 shadow-inner border border-code-border max-w-4xl mx-auto">
-                        <h5 class="text-xl font-bold text-accent mb-6">From Gravitational Theories to Everything</h5>
-                        <pre class="text-sm font-mono text-ink whitespace-pre-wrap"><span class="text-muted"># The framework is universal</span>
-<span class="text-accent">class</span> <span class="text-warning">PhysicsTheory</span>:
+                        <h5 class="text-xl font-bold text-accent mb-6">From Gravity to Game Physics: A Concrete Roadmap</h5>
+                        <pre class="text-sm font-mono text-ink whitespace-pre-wrap"><span class="text-muted"># Today: Gravitational theories using specific metric tensors</span>
+<span class="text-accent">class</span> <span class="text-warning">GravitationalTheory</span>:
+    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, M): <span class="text-muted"># Schwarzschild example</span>
+        <span class="text-accent">return</span> torch.diag([-( 1 - 2*M/r), 1/(1 - 2*M/r), r**2, r**2])
+
+<span class="text-muted"># Next: Extract the base physics framework</span>
+<span class="text-accent">class</span> <span class="text-warning">BaseTheory</span>:
     <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self): <span class="text-accent">pass</span>
     <span class="text-accent">def</span> <span class="text-success">derive_equations</span>(self): <span class="text-accent">pass</span>
-    <span class="text-accent">def</span> <span class="text-success">solve</span>(self): <span class="text-accent">pass</span>
+    <span class="text-accent">def</span> <span class="text-success">integrate</span>(self, dt): <span class="text-accent">pass</span>
 
-<span class="text-accent">class</span> <span class="text-warning">FluidDynamics</span>(<span class="text-warning">PhysicsTheory</span>):
+<span class="text-muted"># Then: Add fluid dynamics for atmospheric modeling</span>
+<span class="text-accent">class</span> <span class="text-warning">FluidDynamics</span>(<span class="text-warning">BaseTheory</span>):
     <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self):
-        <span class="text-accent">return</span> self.kinetic - self.pressure
+        <span class="text-accent">return</span> self.kinetic_energy - self.pressure_work
     
-<span class="text-accent">class</span> <span class="text-warning">QuantumField</span>(<span class="text-warning">PhysicsTheory</span>):
-    <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self):
-        <span class="text-accent">return</span> self.yang_mills + self.matter
-    
-<span class="text-accent">class</span> <span class="text-warning">GravitationalTheory</span>(<span class="text-warning">PhysicsTheory</span>):
-    <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self):
-        <span class="text-accent">return</span> self.einstein_hilbert + self.matter
+    <span class="text-accent">def</span> <span class="text-success">navier_stokes</span>(self, velocity, pressure):
+        <span class="text-accent">return</span> -torch.grad(pressure) + self.viscosity * laplacian(velocity)
 
-<span class="text-muted"># Future: Unified world model</span>
-<span class="text-accent">class</span> <span class="text-warning">WorldModel</span>(<span class="text-warning">PhysicsTheory</span>):
-    theories = [<span class="text-warning">FluidDynamics</span>(), <span class="text-warning">QuantumField</span>(), <span class="text-warning">GravitationalTheory</span>()]
-    
-    <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self):
-        <span class="text-accent">return</span> sum(t.compute_action() <span class="text-accent">for</span> t <span class="text-accent">in</span> self.theories)</pre>
+<span class="text-muted"># Example: Simple space game with real orbital mechanics</span>
+<span class="text-accent">class</span> <span class="text-warning">SpaceSimGame</span>:
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self):
+        self.gravity = <span class="text-warning">NewtonianGravity</span>()  <span class="text-muted"># Start simple</span>
+        self.spacecraft = <span class="text-warning">RigidBody</span>(mass=1000)
+        
+    <span class="text-accent">def</span> <span class="text-success">update</span>(self, dt):
+        <span class="text-muted"># Real physics: F = GMm/r²</span>
+        force = self.gravity.compute_force(self.spacecraft.position)
+        self.spacecraft.integrate(force, dt)  <span class="text-muted"># Symplectic!</span></pre>
                     </div>
                     
                     <!-- The Future -->
                     <div class="text-center">
-                        <h4 class="text-4xl font-bold text-accent mb-8">Build the World Model</h4>
+                        <h4 class="text-4xl font-bold text-accent mb-8">Towards an Open World Engine</h4>
                         
                         <p class="text-xl font-serif text-ink mb-12 max-w-3xl mx-auto">
-                            A fully differential PyTorch-based engine where physics, machine learning, 
-                            and virtual worlds converge. Where every equation is code, every theory is 
-                            testable, and reality itself becomes computable.
+                            Starting with gravitational physics, we're building a general differential 
+                            physics engine. Next steps: fluid dynamics for weather simulation, rigid body 
+                            physics for robotics, and eventually simple games with realistic physics. 
+                            Each component thoroughly tested, fully differentiable, PyTorch native.
                         </p>
                         
                         <div class="flex flex-col sm:flex-row gap-4 justify-center">
