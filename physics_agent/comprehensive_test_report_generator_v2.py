@@ -80,7 +80,7 @@ class ComprehensiveTestReportGenerator:
             '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }',
             '        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }',
             '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; }',
-            '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }',
+            '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; vertical-align: middle; }',
             '        tr:hover { background-color: #f8f9fa; }',
             '        .rank { font-weight: bold; text-align: center; }',
             '        .category-baseline { color: #2c3e50; font-weight: bold; }',
@@ -103,6 +103,7 @@ class ComprehensiveTestReportGenerator:
             '        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }',
             '        .loss-value { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }',
             '        .timing-info { color: #7f8c8d; font-size: 0.85em; margin-top: 5px; }',
+        '        .not-available { color: #7f8c8d; font-style: italic; text-align: center; }',
             '        .note-box { background: #fff9c4; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #fbc02d; }',
             '        .legend { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; }',
             '        .legend h4 { margin-top: 0; color: #34495e; }',
@@ -305,7 +306,7 @@ class ComprehensiveTestReportGenerator:
                 else:
                     loss_str = f'{trajectory_loss:.2e}'
             else:
-                loss_str = 'N/A'
+                loss_str = '<span class="not-available">N/A</span>'
             
             # Format distance traveled
             if distance_traveled is not None and kerr_distance is not None:
@@ -316,7 +317,7 @@ class ComprehensiveTestReportGenerator:
                     if abs(ratio - 1.0) > 0.01:  # More than 1% difference
                         distance_str += f' ({ratio:.2f}x)'
             else:
-                distance_str = 'N/A'
+                distance_str = '<span class="not-available">N/A</span>'
             
             # Format solver info
             solver_str = f"{result['solver_summary']['passed']}/{result['solver_summary']['total']}"
@@ -332,13 +333,13 @@ class ComprehensiveTestReportGenerator:
                 # Only show "Cached" for old-style caches without timing metadata
                 time_str = 'Cached (no metrics)'
             else:
-                time_str = 'N/A'
+                time_str = '<span class="not-available">N/A</span>'
             
             # Format progressive losses
             if progressive_losses:
                 prog_loss_str = f'{progressive_losses["1%"]:.2e} / {progressive_losses["50%"]:.2e} / {progressive_losses["99%"]:.2e}'
             else:
-                prog_loss_str = 'N/A'
+                prog_loss_str = '<span class="not-available">N/A</span>'
             
             lines.extend([
                 '                <tr>',

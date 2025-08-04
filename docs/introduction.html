@@ -189,13 +189,13 @@
     
     <div class="hero-section">
         <h2 style="color: white; margin-top: 0;">What is Albert?</h2>
-        <p>Albert is a cutting-edge physics engine built on PyTorch that enables researchers to test and validate gravitational theories against experimental data. It simulates particle trajectories in curved spacetime, implements quantum corrections, and provides comprehensive validation against 21+ experimental tests including gravitational waves, solar system dynamics, and quantum phenomena.</p>
+        <p>Albert is a differential physics research engine built on PyTorch that enables researchers to test and validate physical theories against experimental data. It simulates particle trajectories in curved spacetime with high precision and provides comprehensive validation against experimental tests including gravitational waves, solar system dynamics, and precision measurements.</p>
         
         <div class="capabilities-box" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
             <h3 style="color: white;">Core Capabilities</h3>
             <ul style="color: white;">
                 <li>Geodesic integration in arbitrary curved spacetimes</li>
-                <li>32 gravitational theories including GR, quantum corrections, and emergent gravity</li>
+                <li>Multiple gravitational theories including GR variants and alternative formulations</li>
                 <li>Multi-particle simulations (electron, muon, photon, neutrino)</li>
                 <li>Automatic caching with up to 29,000× speedup</li>
                 <li>Comprehensive validation suite with analytical and numerical tests</li>
@@ -226,7 +226,7 @@ pip install -r requirements.txt</div>
 python -m physics_agent.theory_engine_core --theories schwarzschild
 
 <span class="comment"># Test multiple theories</span>
-python -m physics_agent.theory_engine_core --theories schwarzschild kerr quantum</div>
+python -m physics_agent.theory_engine_core --theories schwarzschild kerr modified_gravity</div>
             </div>
             
             <div class="step">
@@ -420,9 +420,9 @@ python -m physics_agent.evaluation --category quantum</div>
             <strong>Why primordial_mini is default:</strong>
             <ul style="margin-top: 10px; margin-bottom: 0;">
                 <li>Allows larger timesteps (0.1 vs 0.01) for faster computation</li>
-                <li>Quantum effects become significant at subatomic scales</li>
+                <li>Extreme curvature regime tests numerical stability</li>
                 <li>Orbital periods in femtoseconds enable quick testing</li>
-                <li>Ideal for exploring quantum gravity phenomena</li>
+                <li>Ideal for testing solver accuracy in strong fields</li>
             </ul>
         </div>
         
@@ -557,7 +557,7 @@ results = engine.run_multi_particle_trajectories(
             
             <div class="feature-card">
                 <h3>Validation Framework</h3>
-                <p>Comprehensive testing against analytical solutions, numerical convergence, quantum corrections, and experimental data from LIGO, solar system, and particle physics.</p>
+                <p>Comprehensive testing against analytical solutions, numerical convergence, and experimental data from LIGO, solar system observations, atomic clocks, and astrophysical measurements.</p>
             </div>
             
             <div class="feature-card">

@@ -8,15 +8,15 @@
     
     <!-- Primary Meta Tags -->
     <meta name="title" content="Albert - Differential PyTorch Physics Engine for Testing Theories">
-    <meta name="description" content="A differential PyTorch-based physics engine for testing gravitational theories. Run simulations, validate against 21 experimental tests, and explore quantum gravity.">
-    <meta name="keywords" content="quantum gravity, physics engine, gravitational theories, Einstein, general relativity, unified field theory, PyTorch physics, differential physics">
+    <meta name="description" content="A differential PyTorch-based physics research engine for testing physical theories. Run high-precision simulations, validate against experimental data, and explore new physics models where data is rich.">
+    <meta name="keywords" content="physics engine, differential equations, gravitational theories, general relativity, experimental validation, PyTorch physics, differential physics, research tools">
     <meta name="author" content="Albert Project">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://albert.so/">
     <meta property="og:title" content="Albert - Differential PyTorch Physics Engine">
-    <meta property="og:description" content="A differential PyTorch-based physics engine for testing gravitational theories. Run simulations, validate against 21 experimental tests, and explore quantum gravity.">
+    <meta property="og:description" content="A differential PyTorch-based physics research engine for testing physical theories. Run high-precision simulations, validate against experimental data, and explore new physics models where data is rich.">
     <meta property="og:image" content="https://albert.so/docs/sketch.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -26,7 +26,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://albert.so/">
     <meta property="twitter:title" content="Albert - Differential PyTorch Physics Engine">
-    <meta property="twitter:description" content="A differential PyTorch-based physics engine for testing gravitational theories. Run simulations, validate against 21 experimental tests, and explore quantum gravity.">
+    <meta property="twitter:description" content="A differential PyTorch-based physics research engine for testing physical theories. Run high-precision simulations, validate against experimental data, and explore new physics models where data is rich.">
     <meta property="twitter:image" content="https://albert.so/docs/sketch.png">
     
     <!-- Additional Meta Tags -->
@@ -844,10 +844,10 @@
                                         <span class="text-accent font-bold">1</span>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-ink mb-1">Define Your Metric</h5>
+                                        <h5 class="font-bold text-ink mb-1">Define Your Theory</h5>
                                         <p class="text-sm text-muted">
-                                            Write your gravitational theory as Python code. Include quantum corrections, 
-                                            torsion terms, or any modifications to Einstein's equations.
+                                            Write your physical theory as Python code. Implement metric tensors, 
+                                            field equations, or modifications to established theories for systematic testing.
                                         </p>
                                     </div>
                                 </div>
@@ -936,10 +936,11 @@
                     <div class="max-w-4xl mx-auto space-y-6 mb-16">
                        
                         <p class="text-lg font-serif text-ink">
-                            Before going to trajectory calculations, each theory faces a brutal gauntlet of 21 tests. Classical tests that Einstein passed. 
-                            Quantum tests that probe the intersection of gravity and quantum mechanics. 
+                            Before going to trajectory calculations, each theory faces a comprehensive suite of experimental validation tests. These include classical tests that general relativity passes with high precision, 
+                            from Mercury's perihelion precession to gravitational wave signatures. 
                             
-                            Eventually, inspired by world modeling research and deep learning, we measure the trajectory loss of quantum gravity theories against general relativity with different particles approaching the event horizon of a black hole, using QED.
+                            The engine's differential architecture enables systematic exploration of theory modifications and their observable consequences. While quantum gravity remains an open challenge with vanishingly small observable effects at astrophysical scales, 
+                            this framework excels at testing theories where rich experimental data exists.
 
                         </p>
                     </div>
@@ -1169,7 +1170,7 @@
 <span class="text-accent">from</span> physics_agent.theories.einstein_asymmetric <span class="text-accent">import</span> EinsteinAsymmetric
 
 <span class="text-accent">class</span> <span class="text-warning">EinsteinAsymmetric</span>(<span class="text-warning">GravitationalTheory</span>):
-    <span class="text-muted">"""Einstein's final attempt: asymmetric metric to unify gravity + EM"""</span>
+    <span class="text-muted">"""Historical theory: Einstein's asymmetric field approach to unification"""</span>
     
     <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, alpha: float = 0.0):
         <span class="text-muted"># Asymmetric metric components</span>
@@ -1445,13 +1446,13 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                         
                         <!-- Key Innovation -->
                         <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-2xl p-8 mt-8 max-w-4xl mx-auto">
-                            <h5 class="text-xl font-bold text-accent mb-3">Why This Matters</h5>
+                            <h5 class="text-xl font-bold text-accent mb-3">Implementation in Albert</h5>
                             <p class="text-lg font-serif text-ink">
-                                UGM is fully renormalizable—no infinities plague the quantum calculations. 
-                                It seamlessly integrates with the Standard Model because both use gauge symmetries. 
-                                The geodesic solver architecture was designed from day one to handle this 
-                                tetrad formalism, making Albert the first framework to implement and test 
-                                the complete Partanen-Tulkki theory against real experimental data.
+                                UGM represents an alternative approach to gravity based on gauge symmetries, 
+                                though like all quantum gravity proposals, it faces significant observational challenges. 
+                                The geodesic solver architecture handles tetrad formalism and gauge fields, 
+                                enabling systematic comparison with general relativity. This implementation demonstrates 
+                                Albert's flexibility in testing diverse theoretical frameworks against experimental data.
                             </p>
                         </div>
                                     </div>
@@ -1502,8 +1503,8 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                                                             <div class="text-sm font-mono text-success">✓ Measured: (3.61 ± 1.60) × 10⁻¹⁷</div>
                                                         </div>
                                                         <p class="text-sm text-muted">
-                                                            This measurement probes the quantum-gravitational interface with 
-                                                            unprecedented precision—like measuring a hair's width from the moon.
+                                                            This measurement tests gravitational time dilation with 
+                                                            extraordinary precision—demonstrating the framework's ability to validate theories against cutting-edge experiments.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -2200,17 +2201,17 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
             
             // Theory code that will be typed
             const step1Code = [
-                '# The key innovation: quantum corrections to spacetime',
+                '# Example: Modified gravity with additional parameter',
                 '',
                 'def metric_tensor(self, r, M):',
                 '    # Start with Einstein\'s solution',
                 '    rs = 2 * G * M / c**2',
                 '    ',
-                '    # Add quantum correction term',
-                '    quantum_term = alpha * ℏ / r**2',
+                '    # Add modification term',
+                '    correction = alpha * (rs/r)**2',
                 '    ',
-                '    g_tt = -(1 - rs/r + quantum_term)',
-                '    g_rr = 1 / (1 - rs/r + quantum_term)',
+                '    g_tt = -(1 - rs/r + correction)',
+                '    g_rr = 1 / (1 - rs/r + correction)',
                 '    ',
                 '    return g_tt, g_rr, g_θθ, g_φφ'
             ];

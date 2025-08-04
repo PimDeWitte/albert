@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: base  
-**Last Updated**: 2025-08-03T21:35:40.770426
+**Last Updated**: 2025-08-04T10:20:30.161841
 
 ## Improved Predictions
 
@@ -154,6 +154,4 @@ All numerical values, formulas, and computational methods are documented above.
 
 1. Original theory implementation: `theory_baselines_kerr_newman`
 2. Validation framework: `physics_agent/validations/`
-3. Observational data: See sources above
-ations/`
 3. Observational data: See sources above
