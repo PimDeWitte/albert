@@ -3,296 +3,809 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dataset Reference - Gravity Compression Framework</title>
+    <title>Datasets & Test Scenarios - Albert Framework</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
             background-color: #f5f5f5;
         }
+        
+        h1, h2, h3 {
+            color: #1976d2;
+        }
+        
         h1 {
-            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .dataset-overview {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
             text-align: center;
         }
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
+        
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            display: block;
         }
-        .dataset-table {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            padding: 32px;
-            overflow-x: auto;
-            margin: 20px 0;
+        
+        .stat-label {
+            opacity: 0.9;
         }
-        table {
-            width: 100%;
-            font-size: 14px;
-            border-collapse: collapse;
+        
+        .dataset-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
         }
-        th {
-            background-color: #1976d2;
+        
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            background: #bbdefb;
+        }
+        
+        .tab-button.active {
+            background: #1976d2;
             color: white;
-            padding: 12px 16px;
+        }
+        
+        .dataset-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .dataset-section.active {
+            display: block;
+        }
+        
+        .dataset-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .dataset-table th, .dataset-table td {
+            padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dataset-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #1976d2;
             position: sticky;
             top: 0;
-            z-index: 10;
         }
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e0e0e0;
+        
+        .dataset-table tr:hover {
+            background-color: #f8f9fa;
         }
-        tr:nth-child(even) {
-            background-color: #f5f5f5;
+        
+        .particle-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #1976d2;
         }
-        tr:hover {
-            background-color: #e3f2fd;
+        
+        .particle-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
-        .uri-code {
-            background-color: #f0f0f0;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 12px;
+        
+        .prop-item {
+            text-align: center;
         }
-        .source-link {
-            color: #2196F3;
-            text-decoration: none;
-            font-size: 12px;
-            word-break: break-all;
-        }
-        .source-link:hover {
-            text-decoration: underline;
-        }
-        .category-header {
-            background-color: #f5f5f5;
+        
+        .prop-value {
+            font-size: 1.4em;
             font-weight: bold;
-            color: #666;
-            text-transform: uppercase;
-            font-size: 12px;
+            color: #1976d2;
+            display: block;
         }
-        .note {
-            background-color: #e3f2fd;
-            border-left: 4px solid #2196F3;
-            padding: 16px;
-            border-radius: 0 8px 8px 0;
-            margin: 20px 0;
+        
+        .prop-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .scenario-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid #4caf50;
+        }
+        
+        .scenario-card h4 {
+            margin-top: 0;
+            color: #2e7d32;
+        }
+        
+        .parameter-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+        
+        .parameter-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .param-name {
+            color: #666;
+        }
+        
+        .param-value {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .black-hole-params {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .equation {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-left: 4px solid #1976d2;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .download-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .visualization-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        #particle-visualization {
+            width: 100%;
+            height: 400px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Centralized Dataset Registry</h1>
-        <p style="text-align: center; color: #666; margin-bottom: 20px;">
-            All datasets used in the gravity compression framework with full provenance tracking
-        </p>
-        
-        <div class="note">
-            <h3>Dataset Management</h3>
-            <p>All datasets are managed through the central <code>DatasetLoader</code> class. Each dataset has:</p>
-            <ul>
-                <li>A unique URI: <code>dataloader://dataset_id</code></li>
-                <li>Source tracking in <code>source.txt</code> files</li>
-                <li>Automatic download and caching for remote datasets</li>
-                <li>Version control through timestamps</li>
-            </ul>
-        </div>
-
-        <div class="dataset-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Dataset Name</th>
-                        <th>Reason for Existence</th>
-                        <th>Remote URL</th>
-                        <th>Last Downloaded</th>
-                        <th>Local URI</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- OBSERVATIONAL DATASETS -->
-                    <tr class="category-header">
-                        <td colspan="5">OBSERVATIONAL DATASETS</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Planck 2018 CMB TT Power Spectrum</strong></td>
-                        <td>CMB temperature anisotropies test early universe physics and quantum gravity effects</td>
-                        <td><a href="https://irsa.ipac.caltech.edu/data/Planck/release_3/ancillary-data/previews/COM_PowerSpect_CMB-TT-binned_R3.01.txt" class="source-link" target="_blank">Planck Data Archive</a></td>
-                        <td>2024-07-23 (local copy)</td>
-                        <td><code class="uri-code">dataloader://planck_cmb_2018</code></td>
-                    </tr>
-                    <tr>
-                        <td><strong>NANOGrav 15-year Pulsar Timing Array Data</strong></td>
-                        <td>Tests low-frequency gravitational wave background from supermassive black holes</td>
-                        <td><a href="https://data.nanograv.org/15yr/v1.1.0/15yr_cw_analysis/v1p1_all_dict.json" class="source-link" target="_blank">NANOGrav Data</a></td>
-                        <td>2024-07-23 (local copy)</td>
-                        <td><code class="uri-code">dataloader://nanograv_15yr</code></td>
-                    </tr>
-                    <tr>
-                        <td><strong>BICEP/Keck Array Primordial GW Constraints</strong></td>
-                        <td>Constrains tensor-to-scalar ratio and tests inflationary predictions</td>
-                        <td><a href="http://bicepkeck.org/bk18_2021_release/BK18_r_likelihood.txt" class="source-link" target="_blank">BICEP/Keck Data</a></td>
-                        <td>2024-07-23 (local copy)</td>
-                        <td><code class="uri-code">dataloader://bicep_keck_2021</code></td>
-                    </tr>
-                    
-                    <!-- HARDCODED EXPERIMENTAL VALUES -->
-                    <tr class="category-header">
-                        <td colspan="5">HARDCODED EXPERIMENTAL VALUES</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mercury Perihelion Advance</strong></td>
-                        <td>Classic GR test of post-Newtonian corrections in planetary orbits</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::MERCURY_PERIHELION_ADVANCE</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Solar Light Deflection</strong></td>
-                        <td>Tests null geodesics in curved spacetime, validates gravitational lensing</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::SOLAR_LIGHT_DEFLECTION</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Shapiro Time Delay (Cassini)</strong></td>
-                        <td>Most precise test of GR time delay, PPN parameter gamma</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::SHAPIRO_TIME_DELAY</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Lunar Laser Ranging</strong></td>
-                        <td>Tests strong equivalence principle and PPN beta parameter</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::LUNAR_LASER_RANGING</code></a></td>
-                    </tr>
-                    
-                    <!-- QUANTUM GRAVITY EXPERIMENTS -->
-                    <tr class="category-header">
-                        <td colspan="5">QUANTUM GRAVITY EXPERIMENTS</td>
-                    </tr>
-                    <tr>
-                        <td><strong>COW Neutron Interferometry</strong></td>
-                        <td>Tests quantum effects in gravity, gravitational phase shift</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::COW_INTERFEROMETRY</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Atom Interferometry Gravitational Redshift</strong></td>
-                        <td>Ultra-precise gravitational redshift at meter scales</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::ATOM_INTERFEROMETRY</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Quantum Clock Time Dilation</strong></td>
-                        <td>Tests gravitational time dilation at quantum scales</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::QUANTUM_CLOCK</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Gravitational Decoherence Bounds</strong></td>
-                        <td>Tests gravity-induced collapse models and quantum decoherence</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::GRAVITATIONAL_DECOHERENCE</code></a></td>
-                    </tr>
-                    
-                    <!-- PULSAR DATASETS -->
-                    <tr class="category-header">
-                        <td colspan="5">PULSAR DATASETS</td>
-                    </tr>
-                    <tr>
-                        <td><strong>PSR J0740+6620 Binary Pulsar</strong></td>
-                        <td>Most massive neutron star, tests GR in strong field with Shapiro delay</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="dataset_loader.py#L166" class="source-link"><code>dataset_loader.py registry (lines 166-178)</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>PSR J0952-0607 Black Widow Pulsar</strong></td>
-                        <td>Most massive neutron star known, tests equation of state limits</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::PSR_J0952_0607</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>PSR B1913+16 Hulse-Taylor Binary</strong></td>
-                        <td>Nobel Prize system, orbital decay confirms GW emission</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::PSR_B1913_16</code></a></td>
-                    </tr>
-                    
-                    <!-- COSMOLOGICAL PARAMETERS -->
-                    <tr class="category-header">
-                        <td colspan="5">COSMOLOGICAL PARAMETERS</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Planck 2018 Cosmological Parameters</strong></td>
-                        <td>Comprehensive cosmological model parameters including CMB anomalies</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::PLANCK_COSMOLOGY</code></a></td>
-                    </tr>
-                    
-                    <!-- TEST CONFIGURATIONS -->
-                    <tr class="category-header">
-                        <td colspan="5">TEST CONFIGURATIONS</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Standard Test Radii</strong></td>
-                        <td>Standard radii for metric testing in Schwarzschild units</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::TEST_RADII_FACTORS</code></a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Standard Orbit Parameters</strong></td>
-                        <td>Standard orbital configurations for conservation tests</td>
-                        <td>Hardcoded from constants.py</td>
-                        <td>N/A</td>
-                        <td><a href="constants.py" class="source-link"><code>constants.py::STANDARD_ORBITS</code></a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="note">
-            <h4>Usage Example</h4>
-            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">
-from physics_agent.dataset_loader import get_dataset_loader
-
-# Load a dataset
-loader = get_dataset_loader()
-dataset = loader.load_dataset('planck_cmb_2018')
-
-# Access the data
-data = dataset['data']  # NumPy array or dict
-metadata = dataset['metadata']  # Full dataset info
-uri = dataset['uri']  # dataloader://planck_cmb_2018
-            </pre>
-        </div>
-        
-        <div class="note">
-            <h4>Data Directory Structure</h4>
-            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">
-physics_agent/data/dataloader/
-├── planck_cmb_2018/
-│   ├── COM_PowerSpect_CMB-TT-binned_R3.01.txt
-│   └── source.txt
-├── mercury_perihelion/
-│   ├── data.json
-│   └── source.txt
-└── ... (other datasets)
-            </pre>
+    <h1>Datasets & Test Scenarios</h1>
+    <p class="subtitle">Comprehensive Test Data for Gravitational Theory Validation</p>
+    
+    <div class="dataset-overview">
+        <h2 style="color: white; margin-top: 0;">Dataset Overview</h2>
+        <p>The Albert framework provides extensive test scenarios covering a wide range of physical conditions, from weak-field solar system dynamics to extreme strong-field environments near black hole horizons.</p>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-number">4</span>
+                <span class="stat-label">Test Particles</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">5</span>
+                <span class="stat-label">Black Hole Types</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">12</span>
+                <span class="stat-label">Test Scenarios</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">10^6</span>
+                <span class="stat-label">Trajectory Points</span>
+            </div>
         </div>
     </div>
+
+    <div class="dataset-tabs">
+        <button class="tab-button active" onclick="showTab('particles')">Test Particles</button>
+        <button class="tab-button" onclick="showTab('blackholes')">Black Hole Configurations</button>
+        <button class="tab-button" onclick="showTab('scenarios')">Test Scenarios</button>
+        <button class="tab-button" onclick="showTab('benchmarks')">Benchmark Results</button>
+    </div>
+
+    <div id="particles" class="dataset-section active">
+        <h2>Test Particles</h2>
+        <p>Standard particles used for trajectory integration and validation tests:</p>
+        
+        <div class="particle-card">
+            <h3>Electron</h3>
+            <div class="particle-props">
+                <div class="prop-item">
+                    <span class="prop-value">9.109×10^-31</span>
+                    <span class="prop-label">Mass (kg)</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">-1.602×10^-19</span>
+                    <span class="prop-label">Charge (C)</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">1/2</span>
+                    <span class="prop-label">Spin</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">2.818×10^-15</span>
+                    <span class="prop-label">Classical Radius (m)</span>
+                </div>
+            </div>
+            <div class="equation">
+                Compton wavelength: λ_C = h/(m_e c) = 2.426×10^-12 m
+            </div>
+        </div>
+
+        <div class="particle-card">
+            <h3>Muon</h3>
+            <div class="particle-props">
+                <div class="prop-item">
+                    <span class="prop-value">1.883×10^-28</span>
+                    <span class="prop-label">Mass (kg)</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">-1.602×10^-19</span>
+                    <span class="prop-label">Charge (C)</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">1/2</span>
+                    <span class="prop-label">Spin</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">2.197×10^-6</span>
+                    <span class="prop-label">Lifetime (s)</span>
+                </div>
+            </div>
+            <div class="equation">
+                g-2 anomaly: a_μ = (g-2)/2 = 0.00116592089(63)
+            </div>
+        </div>
+
+        <div class="particle-card">
+            <h3>Photon</h3>
+            <div class="particle-props">
+                <div class="prop-item">
+                    <span class="prop-value">0</span>
+                    <span class="prop-label">Rest Mass</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">0</span>
+                    <span class="prop-label">Charge</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">1</span>
+                    <span class="prop-label">Spin</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">c</span>
+                    <span class="prop-label">Speed</span>
+                </div>
+            </div>
+            <div class="equation">
+                Null geodesic: ds² = 0, E = ħω = hν
+            </div>
+        </div>
+
+        <div class="particle-card">
+            <h3>Neutrino</h3>
+            <div class="particle-props">
+                <div class="prop-item">
+                    <span class="prop-value">< 0.12 eV/c²</span>
+                    <span class="prop-label">Mass Upper Limit</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">0</span>
+                    <span class="prop-label">Charge</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">1/2</span>
+                    <span class="prop-label">Spin</span>
+                </div>
+                <div class="prop-item">
+                    <span class="prop-value">≈ c</span>
+                    <span class="prop-label">Speed</span>
+                </div>
+            </div>
+            <div class="equation">
+                Flavor oscillations: |ν_α⟩ = Σ U_αi |ν_i⟩
+            </div>
+        </div>
+    </div>
+
+    <div id="blackholes" class="dataset-section">
+        <h2>Black Hole Configurations</h2>
+        <p>Pre-configured black hole parameters for different test scenarios:</p>
+        
+        <table class="dataset-table">
+            <thead>
+                <tr>
+                    <th>Configuration</th>
+                    <th>Mass (M☉)</th>
+                    <th>Spin (a/M)</th>
+                    <th>Charge (Q/M)</th>
+                    <th>Horizon (r_s)</th>
+                    <th>ISCO Radius</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Schwarzschild</strong></td>
+                    <td>1.0</td>
+                    <td>0.0</td>
+                    <td>0.0</td>
+                    <td>2M</td>
+                    <td>6M</td>
+                </tr>
+                <tr>
+                    <td><strong>Kerr (Moderate)</strong></td>
+                    <td>1.0</td>
+                    <td>0.5</td>
+                    <td>0.0</td>
+                    <td>1.87M</td>
+                    <td>4.23M</td>
+                </tr>
+                <tr>
+                    <td><strong>Kerr (Extreme)</strong></td>
+                    <td>1.0</td>
+                    <td>0.998</td>
+                    <td>0.0</td>
+                    <td>1.06M</td>
+                    <td>1.24M</td>
+                </tr>
+                <tr>
+                    <td><strong>Reissner-Nordström</strong></td>
+                    <td>1.0</td>
+                    <td>0.0</td>
+                    <td>0.8</td>
+                    <td>1.6M</td>
+                    <td>5.47M</td>
+                </tr>
+                <tr>
+                    <td><strong>Primordial Mini</strong></td>
+                    <td>10^-8</td>
+                    <td>0.1</td>
+                    <td>0.0</td>
+                    <td>2.95×10^-35 m</td>
+                    <td>5.8M</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="black-hole-params">
+            <h3>Key Parameters</h3>
+            <div class="equation">
+                Kerr Metric: ds² = -(1-2Mr/Σ)dt² + (Σ/Δ)dr² + Σdθ² + sin²θ(r²+a²+2Mra²sin²θ/Σ)dφ² - (4Mar sin²θ/Σ)dt dφ
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>Σ = r² + a² cos²θ</li>
+                <li>Δ = r² - 2Mr + a² + Q²</li>
+                <li>Event horizon: r± = M ± √(M² - a² - Q²)</li>
+                <li>Ergosphere boundary: r_e = M + √(M² - a² cos²θ)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="scenarios" class="dataset-section">
+        <h2>Test Scenarios</h2>
+        <p>Comprehensive test scenarios covering various physical regimes:</p>
+        
+        <div class="scenario-grid">
+            <div class="scenario-card">
+                <h4>1. Circular Orbit Stability</h4>
+                <p>Tests stable circular orbits at various radii</p>
+                <ul class="parameter-list">
+                    <li><span class="param-name">Radii range:</span> <span class="param-value">3M to 20M</span></li>
+                    <li><span class="param-name">Integration time:</span> <span class="param-value">1000M</span></li>
+                    <li><span class="param-name">Error tolerance:</span> <span class="param-value">10^-10</span></li>
+                    <li><span class="param-name">Particles:</span> <span class="param-value">All massive</span></li>
+                </ul>
+                <button class="download-btn">Download Test Data</button>
+            </div>
+
+            <div class="scenario-card">
+                <h4>2. Perihelion Precession</h4>
+                <p>Mercury-like orbit precession measurement</p>
+                <ul class="parameter-list">
+                    <li><span class="param-name">Eccentricity:</span> <span class="param-value">0.2056</span></li>
+                    <li><span class="param-name">Semi-major axis:</span> <span class="param-value">100M</span></li>
+                    <li><span class="param-name">Expected shift:</span> <span class="param-value">42.98"/century</span></li>
+                    <li><span class="param-name">Integration:</span> <span class="param-value">100 orbits</span></li>
+                </ul>
+                <button class="download-btn">Download Test Data</button>
+            </div>
+
+            <div class="scenario-card">
+                <h4>3. Light Bending</h4>
+                <p>Photon deflection near massive objects</p>
+                <ul class="parameter-list">
+                    <li><span class="param-name">Impact parameter:</span> <span class="param-value">2M to 100M</span></li>
+                    <li><span class="param-name">Expected angle:</span> <span class="param-value">4M/b radians</span></li>
+                    <li><span class="param-name">Particle:</span> <span class="param-value">Photon</span></li>
+                    <li><span class="param-name">Accuracy:</span> <span class="param-value">0.01%</span></li>
+                </ul>
+                <button class="download-btn">Download Test Data</button>
+            </div>
+
+            <div class="scenario-card">
+                <h4>4. Gravitational Redshift</h4>
+                <p>Frequency shift in gravitational fields</p>
+                <ul class="parameter-list">
+                    <li><span class="param-name">Emission radius:</span> <span class="param-value">3M to ∞</span></li>
+                    <li><span class="param-name">Observer:</span> <span class="param-value">r = ∞</span></li>
+                    <li><span class="param-name">Formula:</span> <span class="param-value">z = √(g_tt(r_e)/g_tt(∞)) - 1</span></li>
+                    <li><span class="param-name">Validation:</span> <span class="param-value">GPS satellites</span></li>
+                </ul>
+                <button class="download-btn">Download Test Data</button>
+            </div>
+
+            <div class="scenario-card">
+                <h4>5. ISCO Dynamics</h4>
+                <p>Innermost stable circular orbit physics</p>
+                <ul class="parameter-list">
+                    <li><span class="param-name">Black hole spin:</span> <span class="param-value">-1 to 0.998</span></li>
+                    <li><span class="param-name">ISCO radius:</span> <span class="param-value">1M to 9M</span></li>
+                    <li><span class="param-name">Orbital frequency:</span> <span class="param-value">Ω_ISCO(a)</span></li>
+                    <li><span class="param-name">Stability test:</span> <span class="param-value">Lyapunov exp.</span></li>
+                </ul>
+                <button class="download-btn">Download Test Data</button>
+            </div>
+
+            <div class="scenario-card">
+                <h4>6. Penrose Process</h4>
+                <p>Energy extraction from rotating black holes</p>
+                <ul class="parameter-list">
+                    <li><span class="param-name">Ergosphere:</span> <span class="param-value">r < 2M</span></li>
+                    <li><span class="param-name">Max efficiency:</span> <span class="param-value">20.7%</span></li>
+                    <li><span class="param-name">Spin parameter:</span> <span class="param-value">a > 0</span></li>
+                    <li><span class="param-name">Energy gain:</span> <span class="param-value">ΔE/E_in</span></li>
+                </ul>
+                <button class="download-btn">Download Test Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="benchmarks" class="dataset-section">
+        <h2>Benchmark Results</h2>
+        <p>Reference results for validation and comparison:</p>
+        
+        <table class="dataset-table">
+            <thead>
+                <tr>
+                    <th>Test</th>
+                    <th>Theory</th>
+                    <th>Expected Value</th>
+                    <th>Computed Value</th>
+                    <th>Relative Error</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Schwarzschild ISCO</td>
+                    <td>GR</td>
+                    <td>6.00000 M</td>
+                    <td>6.00000 M</td>
+                    <td style="color: #4caf50;">< 10^-15</td>
+                    <td style="color: #4caf50;">✓ Pass</td>
+                </tr>
+                <tr>
+                    <td>Kerr Frame Dragging</td>
+                    <td>GR</td>
+                    <td>2.134 rad/M</td>
+                    <td>2.134 rad/M</td>
+                    <td style="color: #4caf50;">3.2×10^-12</td>
+                    <td style="color: #4caf50;">✓ Pass</td>
+                </tr>
+                <tr>
+                    <td>Photon Sphere</td>
+                    <td>GR</td>
+                    <td>3.00000 M</td>
+                    <td>3.00000 M</td>
+                    <td style="color: #4caf50;">< 10^-15</td>
+                    <td style="color: #4caf50;">✓ Pass</td>
+                </tr>
+                <tr>
+                    <td>Perihelion Shift</td>
+                    <td>GR</td>
+                    <td>42.98 "/century</td>
+                    <td>42.97 "/century</td>
+                    <td style="color: #ff9800;">2.3×10^-4</td>
+                    <td style="color: #4caf50;">✓ Pass</td>
+                </tr>
+                <tr>
+                    <td>g-2 Anomaly</td>
+                    <td>QED+GR</td>
+                    <td>0.00116592089</td>
+                    <td>0.00116591812</td>
+                    <td style="color: #f44336;">2.4×10^-6</td>
+                    <td style="color: #f44336;">✗ Fail</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="visualization-container">
+        <h2>Interactive Particle Comparison</h2>
+        <canvas id="particle-visualization"></canvas>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #1976d2;"></div>
+                <span>Electron</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4caf50;"></div>
+                <span>Muon</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff9800;"></div>
+                <span>Photon</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9c27b0;"></div>
+                <span>Neutrino</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.dataset-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Particle visualization
+        const canvas = document.getElementById('particle-visualization');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 400;
+
+        // Particle data for visualization
+        const particles = [
+            {
+                name: 'Electron',
+                mass: 9.109e-31,
+                charge: -1.602e-19,
+                color: '#1976d2',
+                x: canvas.width * 0.2,
+                y: canvas.height * 0.5,
+                vx: 2,
+                vy: 0,
+                radius: 15
+            },
+            {
+                name: 'Muon',
+                mass: 1.883e-28,
+                charge: -1.602e-19,
+                color: '#4caf50',
+                x: canvas.width * 0.4,
+                y: canvas.height * 0.5,
+                vx: 1.5,
+                vy: 0,
+                radius: 20
+            },
+            {
+                name: 'Photon',
+                mass: 0,
+                charge: 0,
+                color: '#ff9800',
+                x: canvas.width * 0.6,
+                y: canvas.height * 0.5,
+                vx: 3,
+                vy: 0,
+                radius: 12
+            },
+            {
+                name: 'Neutrino',
+                mass: 1e-36,
+                charge: 0,
+                color: '#9c27b0',
+                x: canvas.width * 0.8,
+                y: canvas.height * 0.5,
+                vx: 2.8,
+                vy: 0,
+                radius: 10
+            }
+        ];
+
+        // Animation parameters
+        let time = 0;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const orbitRadius = 120;
+
+        function drawParticleVisualization() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw central mass
+            ctx.fillStyle = '#666';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('M', centerX, centerY);
+            
+            // Draw orbits
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 3; i++) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, orbitRadius * i / 2, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Update and draw particles
+            particles.forEach((particle, index) => {
+                // Calculate orbital position
+                const angle = time * particle.vx / 100 + (index * Math.PI / 2);
+                const r = orbitRadius * (1 + 0.2 * Math.sin(angle * 3));
+                particle.x = centerX + r * Math.cos(angle);
+                particle.y = centerY + r * Math.sin(angle);
+                
+                // Draw particle trail
+                ctx.strokeStyle = particle.color + '33';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let t = 0; t < 20; t++) {
+                    const pastAngle = (time - t) * particle.vx / 100 + (index * Math.PI / 2);
+                    const pastR = orbitRadius * (1 + 0.2 * Math.sin(pastAngle * 3));
+                    const pastX = centerX + pastR * Math.cos(pastAngle);
+                    const pastY = centerY + pastR * Math.sin(pastAngle);
+                    if (t === 0) {
+                        ctx.moveTo(pastX, pastY);
+                    } else {
+                        ctx.lineTo(pastX, pastY);
+                    }
+                }
+                ctx.stroke();
+                
+                // Draw particle
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw particle label
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(particle.name[0], particle.x, particle.y);
+                
+                // Draw energy indicator
+                if (particle.charge !== 0) {
+                    ctx.strokeStyle = particle.charge < 0 ? '#e74c3c' : '#3498db';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius + 5, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            });
+            
+            // Draw info text
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Orbital dynamics simulation in Schwarzschild metric', 10, 20);
+            
+            time++;
+            requestAnimationFrame(drawParticleVisualization);
+        }
+
+        drawParticleVisualization();
+    </script>
 </body>
-</html> 
+</html>

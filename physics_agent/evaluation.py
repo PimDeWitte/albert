@@ -347,10 +347,15 @@ def test_quantum_geodesic_for_theory(theory):
         exec_time = time.time() - start_time
         return False, "NotSupported" if "Newtonian" in str(e) or "not supported" in str(e) else "Failed", exec_time, 0.0, 0
 
-def test_trajectory_vs_kerr(theory, engine, n_steps=1000):
+def test_trajectory_vs_kerr(theory, engine, n_steps=None):
     """Run actual trajectory integration and compute loss vs Kerr baseline."""
     try:
         start_time = time.time()
+        
+        # Use default if not specified
+        if n_steps is None:
+            from physics_agent.geodesic_integrator import DEFAULT_NUM_STEPS
+            n_steps = DEFAULT_NUM_STEPS
         
         # Initial conditions for circular orbit at r=10M
         r0_si = 10 * engine.length_scale  # Use engine's length scale

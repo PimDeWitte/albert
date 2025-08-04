@@ -18,15 +18,23 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  albert run                    # Run all theories in the theories folder
-  albert run --theory-filter ugm  # Run only UGM theories
-  albert run --steps 1000       # Run with custom step count
-  albert run --test             # Run with pre-run environment tests
-  albert test                   # Run environment/solver tests
-  albert validate theories/mytheory/theory.py  # Validate a specific theory
-  albert setup                  # Configure Albert instance
-  albert discover               # Start self-discovery mode
-  albert benchmark              # Run model benchmarks
+  albert run                           # Evaluate all theories with analytical and trajectory tests
+  albert run --candidates              # Include candidate theories from candidates/ folder
+  albert run --candidates-only         # Evaluate only candidate theories
+  albert run --theory-filter "kerr"    # Run only theories matching "kerr"
+  albert run --max-steps 10000         # Run with longer trajectories
+  albert run --test                    # Run pre-flight tests before evaluation
+  
+  albert run-advanced --enable-sweeps  # Run with parameter sweeps (advanced mode)
+  albert run-advanced --sweep-only gamma  # Sweep only specific parameter
+  
+  albert discover                      # Start AI-powered self-discovery mode
+  albert discover --initial "quantum"  # Guide discovery toward quantum theories
+  
+  albert test                          # Run environment/solver tests
+  albert validate theories/mytheory.py # Validate a specific theory file
+  albert setup                         # Configure Albert instance
+  albert benchmark                     # Run model benchmarks
 
 For more information on each command, use: albert <command> --help
         """
@@ -34,18 +42,45 @@ For more information on each command, use: albert <command> --help
     
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
-    # Run command - runs theories
+    # Run command - runs comprehensive evaluation
     run_parser = subparsers.add_parser(
         'run', 
-        help='Run gravitational theory simulations',
-        description='Run all theories in the theories folder with comprehensive validation'
+        help='Run comprehensive theory evaluation and ranking',
+        description='Evaluate all theories against analytical and trajectory-based tests with interactive visualizations'
     )
     
-    # Import CLI arguments from cli.py and add them to run_parser
+    # Add evaluation-specific arguments
+    run_parser.add_argument('--candidates', action='store_true',
+                          help='Include candidate theories from candidates/ folder')
+    run_parser.add_argument('--candidates-status', choices=['proposed', 'new', 'rejected', 'all'],
+                          default='proposed', help='Which candidate theories to include (default: proposed)')
+    run_parser.add_argument('--candidates-only', action='store_true',
+                          help='Run ONLY candidate theories (excludes regular theories)')
+    run_parser.add_argument('--theory-filter', type=str, default=None,
+                          help='Filter theories by name (substring match)')
+    run_parser.add_argument('--max-steps', type=int, default=None,
+                          help='Maximum simulation steps (default: 1000, use 10000+ for longer trajectories)')
+    run_parser.add_argument('--max-parallel-workers', type=int, default=4,
+                          help='Maximum parallel workers for trajectory computation')
+    run_parser.add_argument('--test', action='store_true',
+                          help='Run pre-flight environment tests before evaluation')
+    
+    # Note about parameter sweeps
+    run_parser.add_argument('--enable-sweeps', action='store_true',
+                          help='Note: Parameter sweeps not yet supported in evaluation mode. Use theory_engine_core directly.')
+    
+    # Advanced command - runs theory_engine_core directly
+    advanced_parser = subparsers.add_parser(
+        'run-advanced', 
+        help='Run theories with full parameter sweep support',
+        description='Advanced mode with parameter sweeps using theory_engine_core directly'
+    )
+    
+    # Import CLI arguments from cli.py for advanced mode
     from physics_agent.cli import get_cli_parser
     cli_parser = get_cli_parser()
     
-    # Copy all arguments from the original parser to our run subcommand
+    # Copy all arguments from the original parser to advanced subcommand
     for action in cli_parser._actions:
         if action.dest == 'help':  # Skip help action
             continue
@@ -61,7 +96,6 @@ For more information on each command, use: albert <command> --help
             kwargs['action'] = 'store'
             if action.type is not None:
                 kwargs['type'] = action.type
-            # Add other attributes for store actions
             if hasattr(action, 'nargs') and action.nargs is not None:
                 kwargs['nargs'] = action.nargs
             if hasattr(action, 'choices') and action.choices is not None:
@@ -70,12 +104,9 @@ For more information on each command, use: albert <command> --help
                 kwargs['metavar'] = action.metavar
         elif action.__class__.__name__ in ['StoreTrueAction', '_StoreTrueAction']:
             kwargs['action'] = 'store_true'
-            # store_true doesn't accept nargs, type, etc.
         elif action.__class__.__name__ in ['StoreFalseAction', '_StoreFalseAction']:
             kwargs['action'] = 'store_false'
-            # store_false doesn't accept nargs, type, etc.
         else:
-            # For other action types, just use store with appropriate settings
             kwargs['action'] = 'store'
             if hasattr(action, 'type') and action.type is not None:
                 kwargs['type'] = action.type
@@ -84,14 +115,7 @@ For more information on each command, use: albert <command> --help
             if hasattr(action, 'choices') and action.choices is not None:
                 kwargs['choices'] = action.choices
             
-        run_parser.add_argument(*action.option_strings, **kwargs)
-    
-    # Add --test flag for pre-run environment tests
-    run_parser.add_argument(
-        '--test', 
-        action='store_true',
-        help='Run pre-run environment tests to verify solver correctness (recommended)'
-    )
+        advanced_parser.add_argument(*action.option_strings, **kwargs)
     
     # Setup command
     setup_parser = subparsers.add_parser(
@@ -188,22 +212,47 @@ For more information on each command, use: albert <command> --help
         else:
             print("💡 Tip: Use --test flag to run pre-run environment tests to ensure solver correctness\n")
         
-        # Run the theory engine
+        # Run the evaluation
+        from physics_agent.evaluation import main as run_evaluation
+        
+        # Set max steps globally if specified
+        if args.max_steps:
+            import physics_agent.geodesic_integrator as gi
+            gi.DEFAULT_NUM_STEPS = args.max_steps
+        
+        # Convert namespace to list for evaluation
+        sys.argv = ['albert-run']  # Set program name
+        
+        # Add all the arguments
+        for key, value in vars(args).items():
+            if key not in ['command'] and value is not None:
+                if isinstance(value, bool):
+                    if value:
+                        sys.argv.append(f'--{key.replace("_", "-")}')
+                else:
+                    sys.argv.append(f'--{key.replace("_", "-")}')
+                    sys.argv.append(str(value))
+        
+        # Run evaluation and get results
+        results, run_dir = run_evaluation()
+        print(f"\n📊 Evaluation complete! Results saved to: {run_dir}")
+        
+    elif args.command == 'run-advanced':
+        # Run theory_engine_core directly for full parameter sweep support
         from physics_agent.theory_engine_core import main as run_theories
         from physics_agent.cli import get_cli_parser
         
         # Convert namespace to list for theory_engine_core
-        # Get the default values from the parser
         cli_parser = get_cli_parser()
         defaults = {}
         for action in cli_parser._actions:
             if action.dest != 'help':
                 defaults[action.dest] = action.default
         
-        sys.argv = ['albert-run']  # Set program name
-        # Add all the arguments back, but only if they were explicitly set
+        sys.argv = ['albert-run-advanced']  # Set program name
+        # Add all the arguments back
         for key, value in vars(args).items():
-            if key not in ['command', 'test'] and value is not None:
+            if key not in ['command'] and value is not None:
                 # Skip if it's a default value (not explicitly set by user)
                 if key in defaults and value == defaults[key]:
                     continue

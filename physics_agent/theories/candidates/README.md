@@ -25,12 +25,23 @@ Where:
 
 To run all candidates along with regular theories:
 ```bash
-python -m physics_agent.theory_engine_core --candidates
+albert run --candidates
+```
+
+To test only candidate theories:
+```bash
+albert run --candidates-only
+```
+
+To test candidates with a specific status:
+```bash
+albert run --candidates --candidates-status new     # Only new candidates
+albert run --candidates --candidates-status rejected # Include rejected ones
 ```
 
 To test a specific candidate:
 ```bash
-python -m physics_agent.theory_engine_core --theory-filter "c_20240115_abc12345"
+albert run --theory-filter "c_20240115_abc12345"
 ```
 
 ## Contributing Candidates

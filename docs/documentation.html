@@ -61,33 +61,6 @@
             border-bottom-color: white;
         }
         
-        /* Research preview notice */
-        .research-notice {
-            background-color: #FFF3CD;
-            border: 1px solid #FFEAA7;
-            color: #856404;
-            padding: 12px 20px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        /* On mobile, make research notice disappear on scroll */
-        @media (max-width: 768px) {
-            .research-notice.scrolled {
-                transform: translateY(-100%);
-                transition: transform 0.3s ease;
-            }
-        }
-        
-        .research-notice svg {
-            flex-shrink: 0;
-        }
-        
         /* Content area */
         .content {
             flex: 1;
@@ -115,11 +88,6 @@
             border: none;
         }
         
-        /* Loading indicator - hidden */
-        .loading {
-            display: none;
-        }
-        
         /* Loading text in tabs */
         .tab .loading-text {
             font-size: 12px;
@@ -137,11 +105,6 @@
                 padding: 10px 16px;
                 font-size: 14px;
             }
-            
-            .research-notice {
-                font-size: 12px;
-                padding: 10px 15px;
-            }
         }
     </style>
 </head>
@@ -149,94 +112,29 @@
     <div class="header">
         <h1>Albert Documentation</h1>
         <div class="tabs">
-            <button class="tab" data-tab="validators">Validators <span class="loading-text"></span></button>
-            <button class="tab" data-tab="system-diagram">System Diagram <span class="loading-text"></span></button>
-            <button class="tab" data-tab="solvers">Solvers <span class="loading-text"></span></button>
-            <button class="tab" data-tab="datasets">Datasets <span class="loading-text"></span></button>
-            <button class="tab" data-tab="discovery">Self-Discovery <span class="loading-text"></span></button>
-            <button class="tab" data-tab="scoring">Scoring <span class="loading-text"></span></button>
-            <button class="tab" data-tab="cache">Cache <span class="loading-text"></span></button>
-            <button class="tab active" data-tab="leaderboard">Leaderboard <span class="loading-text"></span></button>
+            <button class="tab active" data-tab="introduction">Introduction & System</button>
+            <button class="tab" data-tab="solvers-validators">Solvers & Validators</button>
+            <button class="tab" data-tab="cache">Cache System</button>
         </div>
-    </div>
-    
-    <div class="research-notice">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-        </svg>
-        <span>
-            <strong>Research Preview:</strong> This is an early research preview of Albert. While the code is openly available, it has only been shared with a select group of researchers and early testers. Features and APIs may change significantly.
-        </span>
     </div>
     
     <div class="content">
-        <div id="validators-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Validators...</p>
-            </div>
-            <iframe data-src="validators.html" onload="hideLoading('validators')"></iframe>
+        <div id="introduction-container" class="iframe-container active">
+            <iframe src="introduction.html"></iframe>
         </div>
         
-        <div id="system-diagram-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading System Diagram...</p>
-            </div>
-            <iframe data-src="flowchart.html" onload="hideLoading('system-diagram')"></iframe>
-        </div>
-        
-        <div id="solvers-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Solvers...</p>
-            </div>
-            <iframe data-src="paper.html" onload="hideLoading('solvers')"></iframe>
-        </div>
-        
-        <div id="datasets-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Datasets...</p>
-            </div>
-            <iframe data-src="dataset_table.html" onload="hideLoading('datasets')"></iframe>
-        </div>
-        
-        <div id="discovery-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Self-Discovery System...</p>
-            </div>
-            <iframe data-src="self_discovery.html" onload="hideLoading('discovery')"></iframe>
-        </div>
-        <div id="scoring-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Scoring...</p>
-            </div>
-            <iframe data-src="scoring.html" onload="hideLoading('scoring')"></iframe>
+        <div id="solvers-validators-container" class="iframe-container">
+            <iframe data-src="solvers_validators.html"></iframe>
         </div>
         
         <div id="cache-container" class="iframe-container">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Cache System...</p>
-            </div>
-            <iframe data-src="cache.html" onload="hideLoading('cache')"></iframe>
-        </div>
-        
-        <div id="leaderboard-container" class="iframe-container active">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading Leaderboard...</p>
-            </div>
-            <iframe src="https://albert.so/latest_run/run_results_unified.html" onload="hideLoading('leaderboard')"></iframe>
+            <iframe data-src="cache.html"></iframe>
         </div>
     </div>
     
     <script>
         // Tab switching functionality
-        function switchTab(tabName, updateUrl = true) {
+        function switchTab(tabName) {
             // Update active tab
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.classList.remove('active'));
@@ -255,21 +153,8 @@
             // Lazy load iframe if not already loaded
             const iframe = document.querySelector(`#${tabName}-container iframe`);
             if (iframe.hasAttribute('data-src') && !iframe.src) {
-                // Show loading text in tab
-                const loadingSpan = targetTab.querySelector('.loading-text');
-                if (loadingSpan) {
-                    loadingSpan.textContent = '[loading..]';
-                }
-                
                 iframe.src = iframe.getAttribute('data-src');
                 iframe.removeAttribute('data-src');
-            }
-            
-            // Update URL if requested
-            if (updateUrl) {
-                const url = new URL(window.location);
-                url.searchParams.set('tab', tabName);
-                history.pushState({ tab: tabName }, '', url);
             }
         }
         
@@ -284,68 +169,7 @@
                     }
                 });
             });
-            
-            // Check URL parameters on load
-            const urlParams = new URLSearchParams(window.location.search);
-            const tabParam = urlParams.get('tab');
-            const validTabs = ['validators', 'system-diagram', 'solvers', 'datasets', 'discovery', 'scoring', 'cache', 'leaderboard'];
-            
-            if (tabParam && validTabs.includes(tabParam)) {
-                switchTab(tabParam, false); // Don't update URL on initial load
-            } else {
-                // Default to leaderboard if no valid tab specified
-                const url = new URL(window.location);
-                url.searchParams.set('tab', 'leaderboard');
-                history.replaceState({ tab: 'leaderboard' }, '', url);
-            }
-            
-            // Show loading text for leaderboard since it loads immediately
-            const leaderboardTab = document.querySelector('.tab[data-tab="leaderboard"]');
-            if (leaderboardTab) {
-                const loadingSpan = leaderboardTab.querySelector('.loading-text');
-                if (loadingSpan) {
-                    loadingSpan.textContent = '[loading..]';
-                }
-            }
         });
-        
-        // Hide loading indicator when iframe loads
-        window.hideLoading = function(tabName) {
-            // Clear loading text from tab
-            const tab = document.querySelector(`.tab[data-tab="${tabName}"]`);
-            if (tab) {
-                const loadingSpan = tab.querySelector('.loading-text');
-                if (loadingSpan) {
-                    loadingSpan.textContent = '';
-                }
-            }
-        }
-        
-        // Handle browser back/forward navigation
-        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.tab) {
-                switchTab(event.state.tab, false); // Don't update URL on popstate
-            }
-        });
-        
-        // Hide research notice on mobile when scrolling
-        let lastScrollTop = 0;
-        window.addEventListener('scroll', function() {
-            if (window.innerWidth <= 768) {
-                const notice = document.querySelector('.research-notice');
-                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-                
-                if (currentScroll > lastScrollTop && currentScroll > 50) {
-                    // Scrolling down
-                    notice.classList.add('scrolled');
-                } else {
-                    // Scrolling up
-                    notice.classList.remove('scrolled');
-                }
-                
-                lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-            }
-        }, false);
     </script>
 </body>
-</html> 
+</html>

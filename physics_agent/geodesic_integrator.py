@@ -80,6 +80,9 @@ DTYPE = torch.float64  # Double precision for numerical stability
 device = torch.device("cpu")  
 EPSILON = MACHINE_EPSILON['float64'] * 100
 
+# Default integration parameters
+DEFAULT_NUM_STEPS = 1000  # Can be overridden via CLI with --max-steps
+
 # UGM-specific constants
 KAPPA_GEOM = 8 * math.pi  # In geometric units
 

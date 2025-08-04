@@ -1,566 +1,257 @@
 # 🌌 Albert: Physics at The Speed of AI
 
-<div align="center">
-  <img src="docs/sketch.png" alt="Albert Einstein Sketch" width="200"/>
-  
-  **A timely agent for gravitational theory research**
-  
-  [![GitHub](https://img.shields.io/badge/GitHub-View%20Code-blue?logo=github)](https://github.com/pimdewitte/albert)
-  [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord)](https://discord.gg/xdybbSk5)
-  [![Status](https://img.shields.io/badge/Status-Research%20Preview-yellow)]()
-  
-  *One engine to model everything. In code. Rooted in the laws of physics.*
-</div>
+## A Timely Agent for Gravitational Theory Research
 
----
-
-## ✨ What's New
-
-### Latest Updates
-- **Unified Multi-Particle Viewer**: All theories in one interactive 3D visualization
-- **Comprehensive Validation by Default**: Automatic testing of all theories against 10 validators
-- **Improved Performance**: PyTorch tensor caching provides up to 29,000x speedup
-- **Scientifically Accurate Visualization**: Flamm's paraboloid embedding for spacetime curvature
-- **Cleaner Architecture**: Renamed modules for clarity (`evaluation.py`, `renderer.py`)
-
----
+Albert is an advanced physics engine and evaluation framework that tests gravitational theories against experimental data and theoretical constraints. It provides comprehensive analytical validation, numerical trajectory integration, and beautiful interactive visualizations for understanding how different theories of gravity behave.
 
 ## 🚀 Quick Start
 
-```bash
-# One-line installation
-curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash
+### Installation
 
-# Clone and setup
-git clone https://github.com/pimdewitte/albert.git
+```bash
+# Clone the repository
+git clone https://github.com/albertai/albert.git
 cd albert
-./setup_unified.sh
 
-# Run all theories (comprehensive validation + visualization)
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Basic Usage
+
+```bash
+# Run comprehensive evaluation on all theories
 albert run
 
-# Run with specific options
-albert run --steps 1000                     # Custom step count
-albert run --theory-filter "ugm"            # Run only UGM theories
-albert run --gpu-f32                        # GPU acceleration
-albert run --enable-sweeps                  # Parameter optimization
-albert run --skip-comprehensive-test        # Skip validation (not recommended)
-albert run --continue-after-test            # Run full sim after validation
+# Include candidate theories from the candidates/ folder
+albert run --candidates
 
-# Configure Albert (API keys, etc.)
-albert setup
+# Evaluate only candidate theories
+albert run --candidates-only
 
-# Discover new theories automatically
-albert discover --initial "unified field theory"
+# Filter theories by name
+albert run --theory-filter "quantum"
 
-# Discover variations of an existing theory
-albert discover --from theories/einstein_unified/theory.py
+# Run with longer trajectories for more detailed analysis
+albert run --max-steps 10000
 
-# Optional: Make albert available globally
-sudo ln -s $(pwd)/albert /usr/local/bin/albert
-# Now you can use 'albert' from anywhere
+# Run pre-flight tests to ensure solver correctness
+albert run --test
 ```
 
----
+## 📊 What Albert Does
 
-## 🎯 Command Line Interface
+Albert evaluates gravitational theories through:
 
-Albert provides a unified CLI with multiple subcommands:
+### 1. **Analytical Validation Tests**
+- Mercury perihelion precession
+- Light deflection by the Sun
+- Photon sphere radius
+- Parameterized Post-Newtonian (PPN) parameters
+- Gravitational wave propagation
+- Neutron star constraints (PSR J0740)
+- Quantum effects (g-2 anomaly)
+- Scattering amplitudes
 
-### `albert run` - Run Theory Simulations
+### 2. **Trajectory-Based Tests**
+- Kerr baseline comparison (rotating black holes)
+- Schwarzschild comparison (non-rotating black holes)
+- Circular orbit stability
+- ISCO (Innermost Stable Circular Orbit) analysis
+- Conserved quantity preservation
+- Precession accuracy
 
-#### Default Behavior
-By default, `albert run` executes a comprehensive validation workflow:
-1. **Calibration**: Tests solver accuracy against known solutions
-2. **Validation**: Runs 10 core tests on all theories
-3. **Visualization**: Generates interactive 3D viewer and reports
-4. **Ranking**: Creates leaderboard with scores and predictions
+### 3. **Interactive Visualizations**
+- 3D trajectory viewers with WebGPU rendering
+- Real-time theory comparison dashboards
+- Analytical vs numerical test results
+- Leaderboard rankings with sortable metrics
+- Parameter sweep visualizations
 
-```bash
-# Run all theories with default settings (recommended)
-albert run
+## 🏆 Theory Evaluation & Ranking
 
-# Run specific theories
-albert run --theory-filter "kerr"           # Run Kerr theory
-albert run --category ugm                   # Run all UGM theories
-albert run --candidates                     # Include candidate theories
+The evaluation system produces two key rankings:
 
-# Performance options
-albert run --gpu-f32                        # GPU with float32
-albert run --cpu-f64                        # CPU with float64
-albert run --max-steps 10000                # Maximum simulation steps
-albert run --radius 15.0                    # Starting radius (default: 6.0 Rs)
-albert run --no-cache                       # Force recomputation
+1. **Analytical Score**: Based on how well theories match experimental observations
+2. **Combined Score**: Weighted combination of analytical (70%) and trajectory (30%) tests
 
-# Parameter sweeps
-albert run --enable-sweeps                  # Enable parameter sweeps
-albert run --sweep-only gamma               # Sweep only gamma parameter
-albert run --sweep-workers 8                # Set parallel workers
+Results are presented in an interactive HTML report with:
+- Comprehensive test summaries
+- Individual theory performance cards
+- Trajectory visualizations
+- Loss metrics and comparisons
+- Detailed breakdowns of each test
 
-# Advanced options
-albert run --close-orbit                    # Use 6RS orbit (stronger fields)
-albert run --early-stop                     # Enable convergence detection
-albert run --experimental                   # Enable quantum kicks
-albert run --verbose                        # Detailed logging
-albert run --test                           # Pre-run environment tests
+## 🔬 Candidate Theory System
+
+Albert supports a unique candidate theory workflow:
+
+### Directory Structure
+```
+physics_agent/theories/candidates/
+├── proposed/     # Theories awaiting review
+├── new/          # Recently discovered theories
+└── rejected/     # Theories that didn't pass validation
 ```
 
-### `albert discover` - AI Theory Discovery
+### Working with Candidates
+
 ```bash
-# Start discovery with default settings
+# Include proposed candidates in evaluation
+albert run --candidates
+
+# Test all candidate statuses
+albert run --candidates --candidates-status all
+
+# Test only new candidates
+albert run --candidates-only --candidates-status new
+```
+
+Candidates that score in the top 10 can be submitted via pull request for community review and potential promotion to the main theory collection.
+
+## 🎯 Advanced Features
+
+### Self-Discovery Mode
+```bash
 albert discover
-
-# Discovery with initial prompt
-albert discover --initial "unified field theory with torsion"
-
-# Improve existing theory
-albert discover --from theories/einstein_unified/theory.py
-
-# Continuous monitoring mode
-albert discover --self-monitor
 ```
+Automatically generates and tests new theoretical variations using AI-guided exploration.
 
-### `albert setup` - Configuration
 ```bash
-# Interactive setup wizard
-albert setup
+# Guide discovery toward specific physics
+albert discover --initial "explore quantum corrections to the metric"
+
+# Start from an existing theory
+albert discover --from-theory theories/quantum_corrected
 ```
 
-### Other Commands
+The self-discovery system:
+- Uses AI to generate novel gravitational theories
+- Evaluates them against experimental data
+- Automatically promotes promising candidates
+- Provides PR instructions for community review
+
+### Parameter Sweeps
+For theories with tunable parameters, use advanced mode:
 ```bash
-albert validate theories/my_theory/theory.py  # Validate specific theory
-albert --help                                 # Show all commands
+# Enable parameter sweeps
+albert run-advanced --enable-sweeps
+
+# Sweep only specific parameters
+albert run-advanced --sweep-only gamma
+
+# Control sweep parallelization
+albert run-advanced --enable-sweeps --sweep-workers 8
 ```
 
-### Understanding Event Horizon Behavior
-When running simulations, trajectories may terminate early when reaching the event horizon (r = 2M):
-- **17% completion**: Particle reached event horizon after 17,000/100,000 steps
-- **100% completion**: Particle completed all steps without reaching event horizon
-
-To control this behavior:
+### Theory Validation
 ```bash
-albert run --radius 6.0    # Default: likely to reach event horizon
-albert run --radius 15.0   # More stable orbit, longer before horizon
-albert run --radius 30.0   # Very stable, may never reach horizon
+albert validate path/to/theory.py
 ```
+Validates a single theory file for correctness and compatibility.
 
-Progress bars will show "Event Horizon Reached" when terminating early.
-
----
-
-## 📊 Complete Validator Reference
-
-Albert uses 10 core validators to test gravitational theories against experimental data:
-
-### Constraint Validators (Must Pass)
-- **Conservation**: Energy/angular momentum < 1e-12 drift
-- **Metric Properties**: Signature, smoothness, asymptotic limits
-
-### Observational Validators  
-- **Mercury Precession**: 42.98 ± 0.04 arcsec/century
-- **Light Deflection**: 1.7509 ± 0.0003 arcsec  
-- **PPN Parameters**: γ = 1.000 ± 0.002, β = 1.000 ± 0.003
-- **Photon Sphere**: Black hole shadow size (EHT)
-- **Gravitational Waves**: LIGO/Virgo waveform match > 0.95
-
-### Quantum Validators
-- **COW Interferometry**: Neutron phase shift tests (quantum theories only)
-
-### Prediction Validators (Phase 3)
-- **CMB Power Spectrum**: Planck 2018 anomalies (χ²/dof)
-- **Primordial GWs**: Tensor-to-scalar ratio (r < 0.032)
-
----
-
-## 🧬 Self-Discovery System
-
-Albert uses AI to generate and test new gravitational theories automatically:
-
-### How It Works
-1. **AI Generation**: LLM generates novel theory code based on prompts
-2. **Validation**: Theories tested against 10 core validators
-3. **Ranking**: Top performers promoted to candidate status
-4. **Storage**: Candidates saved with full results and metadata
-5. **Review**: Community can review and submit via pull requests
-
-### Discovery Modes
+### Environment Testing
 ```bash
-# Basic discovery
-albert discover
-
-# Guided discovery with physics hints
-albert discover --initial "incorporate holographic principle"
-
-# Theory improvement
-albert discover --from theories/quantum_corrected/theory.py
-
-# Continuous discovery with monitoring
-albert discover --self-monitor
+albert test
 ```
+Runs comprehensive solver and environment tests to ensure numerical accuracy.
 
----
-
-## ⚡ Performance Features
-
-### PyTorch Tensor Caching
-- **First run**: Full computation (minutes)
-- **Cached runs**: Near-instant (milliseconds)
-- **Speedup**: Up to 29,000x for large trajectories
-- **Storage**: ~30MB per trajectory
-
-### Parallel Computing
-- Parameter sweeps run in parallel
-- Auto-detects optimal worker count
-- GPU support for float32 operations
-- MPS support for Apple Silicon
-
-### Optimization Settings
+### Longer Trajectories
+For more detailed analysis, increase the integration steps:
 ```bash
-# Maximum performance
-albert run --gpu-f32 --enable-sweeps --sweep-workers 16
-
-# Maximum precision
-albert run --cpu-f64 --steps 1000000
-
-# Quick testing
-albert run --max-steps 100 --theory-filter "test"
-
-# Event horizon experiments
-albert run --radius 6.0                     # Default: spiral to event horizon
-albert run --radius 15.0                    # Longer trajectory before horizon
-albert run --radius 30.0                    # Very stable orbit
+albert run --max-steps 50000
 ```
 
----
-
-## 🚀 Creating Your Own Theory
-
-1. **Create theory file**: `theories/my_theory/theory.py`
-2. **Define your metric**:
-```python
-from physics_agent.base_theory import GravitationalTheory, Tensor
-import torch
-
-class MyTheory(GravitationalTheory):
-    def __init__(self):
-        super().__init__(
-            name="My Theory",
-            description="Novel gravitational theory",
-            category="quantum"  # or "classical", "ugm"
-        )
-    
-    def get_metric(self, r, M, C, G):
-        # Define your g_μν components
-        g_tt = -(1 - 2*G*M/(C**2 * r))
-        g_rr = 1/(1 - 2*G*M/(C**2 * r))
-        # ... define all components
-        return Tensor("metric", [...])
-```
-
-3. **Run validation**:
+### Parallel Processing
+Control computational resources:
 ```bash
-albert run --theory-filter "My Theory"
+albert run --max-parallel-workers 8
 ```
 
----
+## 📈 Understanding the Results
 
-## 🌍 The Vision: Open World Model
+After running evaluation, you'll find:
 
-Albert is building toward a unified physics engine where:
-- Every physical law is implemented and validated
-- All experimental data is digitized and accessible
-- Theories can be tested against all known physics
-- Synthetic data generation for games and training
+1. **HTML Report** (`runs/comprehensive_test_*/comprehensive_theory_validation_*.html`)
+   - Interactive dashboards
+   - Theory comparison charts
+   - Detailed test breakdowns
 
-Future extensions will include:
-- Fluid dynamics solvers
-- Quantum field theory
-- Condensed matter physics
-- Statistical mechanics
-- Plasma physics
+2. **Trajectory Viewers** (`runs/comprehensive_test_*/trajectories/`)
+   - Individual 3D visualizations for each theory
+   - Side-by-side comparisons with baselines
 
----
+3. **JSON Data** (`runs/comprehensive_test_*/theory_validation_*.json`)
+   - Raw numerical results
+   - Complete test metrics
 
-## 👥 Contributing
+## 🔧 Architecture Overview
 
-### For Physicists
-- Add new validators for your field
-- Implement experimental datasets
-- Verify theoretical predictions
-- Contribute new baseline theories
+### Core Components
 
-### For Engineers
-- Optimize solvers with torch.compile
-- Implement GPU kernels
-- Add visualization tools
-- Improve caching system
+- **evaluation.py**: Main evaluation engine orchestrating all tests
+- **geodesic_integrator.py**: Numerical integration solvers for different spacetimes
+- **validations/**: Analytical test implementations
+- **theories/**: Collection of gravitational theories
+- **ui/**: WebGPU-based 3D visualization components
 
-### For Everyone
-- Test new theories
-- Report bugs
-- Improve documentation
-- Join discussions on Discord
+### Solver Hierarchy
 
----
+Albert uses specialized solvers optimized for different scenarios:
+- 4D solvers for spherically symmetric spacetimes (faster)
+- 6D solvers for general spacetimes
+- Quantum-corrected solvers for theories with quantum effects
+- Conserved quantity tracking for numerical stability
 
-## 🎨 Visualization System
+## 🌟 Key Innovations
 
-Albert generates comprehensive visualizations for all theories:
-
-### Unified Multi-Particle Viewer
-The advanced 3D viewer shows all theories in one interactive interface:
-- **Theory Selection**: Dropdown to switch between all theories
-- **Spacetime Grid**: Scientifically accurate Flamm's paraboloid embedding
-- **4 Particles**: Electron, proton, neutrino, photon trajectories
-- **Camera Controls**: Third-person, top-down, or mount to particle
-- **Live Information**: Time dilation, spatial curvature, particle states
-
-### Generated Outputs
-After running `albert run`, find these in `physics_agent/runs/comprehensive_test_*/`:
-- `comprehensive_theory_validation_*.html` - Full test report with rankings
-- `trajectory_viewers/unified_multi_particle_viewer_advanced.html` - Interactive 3D viewer
-- `trajectory_visualizations/` - 2D plots for each theory
-- Theory directories with individual results
-
-### Key Components
-- **`physics_agent/evaluation.py`** - Comprehensive validation suite
-- **`physics_agent/ui/renderer.py`** - Unified viewer generator
-- **`physics_agent/comprehensive_test_report_generator_v2.py`** - Report generator
-
----
+1. **Theory as Code**: Each gravitational theory is implemented as Python code with clear physics
+2. **Comprehensive Validation**: Both analytical and numerical tests ensure physical accuracy
+3. **Beautiful Visualizations**: WebGPU-powered 3D renderers for intuitive understanding
+4. **Candidate System**: Democratic process for discovering and validating new theories
+5. **High Precision**: Careful numerical methods preserve conservation laws
 
 ## 📚 Documentation
 
-- [Technical Paper](docs/paper.html) - Geodesic solver development
-- [Validators](docs/validators.html) - All validation tests explained
-- [Self Discovery](docs/self_discovery.html) - AI theory generation
-- [API Reference](https://albert.so/documentation.html) - Full documentation
-- [Unified Viewer Guide](physics_agent/UNIFIED_VIEWER_DOCUMENTATION.md) - 3D visualization
+- [Solver Architecture](docs/solvers/index.html) - Deep dive into the numerical methods
+- [Validation Pipeline](docs/validators.html) - How theories are tested
+- [Self-Discovery](docs/self_discovery.html) - AI-guided theory exploration
+- [Scoring System](docs/scoring.html) - How theories are ranked
+
+## 🤝 Contributing
+
+We welcome contributions! Whether it's:
+- New gravitational theories
+- Additional validation tests
+- Visualization improvements
+- Documentation enhancements
+
+See the [contribution guidelines](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🎓 Citations
+
+If you use Albert in your research, please cite:
+```bibtex
+@software{albert2024,
+  title = {Albert: Physics at The Speed of AI},
+  author = {Albert AI Team},
+  year = {2024},
+  url = {https://github.com/albertai/albert}
+}
+```
+
+## 🚧 Current Status
+
+Albert is under active development. Current focus areas:
+- Expanding the theory collection
+- Adding more experimental constraints
+- Improving visualization performance
+- Enhancing the self-discovery system
 
 ---
 
-## 🙏 Acknowledgments
-
-This project continues Einstein's quest for unification. Special thanks to:
-- Partanen & Tulkki (2025) for the UGM framework
-- The open-source physics community
-- Everyone who believes in open science
-
----
-
-## 📊 Architecture Diagrams
-
-### Theory Engine Core Execution Flow
-
-```mermaid
-flowchart TD
-    START[albert run] --> PARSE[Parse CLI Arguments]
-    PARSE --> SETUP[Setup Execution Mode]
-    SETUP --> DEVICE[Determine Device & Dtype<br/>GPU/CPU, float32/float64]
-    DEVICE --> ENGINE[Create TheoryEngine Instance]
-    
-    ENGINE --> COMPREHENSIVE{Skip Comprehensive Test?}
-    COMPREHENSIVE -->|No (Default)| EVALUATION[Run evaluation.py<br/>Comprehensive Validation]
-    COMPREHENSIVE -->|Yes| DISCOVER[Discover Theories]
-    
-    EVALUATION --> CALIBRATE[Solver Calibration<br/>Test numerical accuracy]
-    CALIBRATE --> VALIDATORS[Run 10 Core Validators<br/>All theories tested]
-    VALIDATORS --> VISUALIZE[Generate Visualizations<br/>renderer.py]
-    VISUALIZE --> REPORT[HTML Report & Rankings]
-    REPORT --> UNIFIED[Unified Multi-Particle Viewer<br/>All theories in one 3D view]
-    UNIFIED --> COMPLETE{Continue After Test?}
-    COMPLETE -->|No (Default)| END[End]
-    COMPLETE -->|Yes| DISCOVER
-    
-    DISCOVER --> LOADER[Create TheoryLoader]
-    LOADER --> PHASE0[PHASE 0: Baseline Simulation<br/>Kerr & Kerr-Newman]
-    
-    PHASE0 --> PHASE1[PHASE 1: Theory Validation]
-    PHASE1 --> THEORY_LOOP{For each theory}
-    
-    THEORY_LOOP --> HASSWEEP{Has parameter sweep?}
-    HASSWEEP -->|Yes| SWEEP[Multiprocessing<br/>ProcessPoolExecutor]
-    HASSWEEP -->|No| TRAJECTORY[Compute Trajectory]
-    
-    THEORY_LOOP -->|Complete| PHASE2[PHASE 2: Full Analysis]
-    PHASE2 --> PHASE3[PHASE 3: Predictions]
-    PHASE3 --> LEADERBOARD[Generate Final Leaderboard]
-    LEADERBOARD --> END
-    
-    style START fill:#90EE90
-    style END fill:#FFB6C1
-    style EVALUATION fill:#87CEEB
-    style UNIFIED fill:#87CEEB
-    style PHASE0 fill:#FFE4B5
-    style PHASE1 fill:#FFE4B5
-    style PHASE2 fill:#FFE4B5
-    style PHASE3 fill:#FFE4B5
-```
-
-### Validation Pipeline
-
-```mermaid
-graph TD
-    A[🎯 THEORY SPECIFICATION<br/>Define g_μν + parameters] 
-    A --> B[🧪 VALIDATION SUITE<br/>10 Core Tests]
-    B --> C[⚙️ THEORY ENGINE<br/>Auto-detect symmetries]
-    C --> D{🔍 SOLVER SELECTION}
-    
-    D -->|Symmetric| E[4D Solver<br/>Conserved: E, L_z]
-    D -->|General| F[6D Solver<br/>Full phase space]
-    D -->|Charged| G[Charged Extension<br/>Lorentz force]
-    D -->|Quantum| H[Quantum Path Integral<br/>WKB approximation]
-    
-    E --> I[📐 INTEGRATION<br/>RK4 with PyTorch]
-    F --> I
-    G --> I  
-    H --> I
-    
-    I --> J[✅ TEST EXECUTION<br/>10 Validators Run]
-    J --> K{📊 RESULTS ANALYSIS}
-    
-    K -->|Pass| L[✨ NOVEL PREDICTIONS]
-    K -->|Fail| M[❌ THEORY REJECTED]
-    
-    L --> N[🏆 SCORING<br/>χ²/dof • AIC • BIC]
-    N --> O[📈 LEADERBOARD]
-    
-    M --> P[🔄 FEEDBACK]
-    P --> A
-```
-
-### Self-Discovery Flow
-
-```mermaid
-graph TD
-    A[🤖 LLM Generation<br/>AI generates novel theories] -->|Python code| B[🔬 Evaluation<br/>Test against baselines]
-    B --> C[🏆 Ranking<br/>Top 10 promoted]
-    C --> D[📁 Candidate Storage<br/>c_timestamp_hash/]
-    D --> E[🌿 Git Workflow<br/>Automated branch]
-    E --> F[🔄 Pull Request<br/>Community review]
-    
-    D --> G[theory.py<br/>README.md<br/>trajectory.pt<br/>losses.json]
-```
-
-### Standard Model Support
-
-```mermaid
-graph LR
-    A[QED Lagrangian] --> B[Precision Tests]
-    B --> C[Electron g-2<br/>12 digits precision]
-    B --> D[Quantum Clocks<br/>33cm test: 10^-17]
-    B --> E[Lamb Shift<br/>1057.845 MHz]
-    
-    F[Base Theory] --> G[add_qed_corrections]
-    G --> H[Matter Coupling]
-    H --> I[Unified Theory]
-```
-
-### Unified Gauge Model (UGM) Architecture
-
-```mermaid
-graph TD
-    A[Four U1 Gauge Fields] --> B[H^0_μ: Time U1]
-    A --> C[H^1_μ: Radial U1]
-    A --> D[H^2_μ: Theta U1]
-    A --> E[H^3_μ: Phi U1]
-    
-    B --> F[Tetrad: e^a_μ = δ^a_μ + g H^a_μ]
-    C --> F
-    D --> F
-    E --> F
-    
-    F --> G[Metric: g_μν = η_ab e^a_μ e^b_ν]
-    G --> H[General Relativity<br/>when all α_a = 1]
-```
-
-### Geodesic Solver Architecture
-
-```mermaid
-classDiagram
-    class GravitationalTheory {
-        +get_metric(r, M, C, G)
-        +get_lagrangian()
-        +validate()
-    }
-    
-    class GeneralGeodesicRK4Solver {
-        +6D state space
-        +Arbitrary metrics
-        +Quantum corrections
-    }
-    
-    class GeodesicRK4Solver {
-        +4D optimized
-        +Conserved E, L_z
-        +Symmetric spacetimes
-    }
-    
-    class UGMGeodesicRK4Solver {
-        +Tetrad formalism
-        +Gauge fields H^a_μ
-        +Loop corrections
-    }
-    
-    GravitationalTheory --> GeneralGeodesicRK4Solver
-    GravitationalTheory --> GeodesicRK4Solver
-    GravitationalTheory --> UGMGeodesicRK4Solver
-```
-
-### Performance Optimization
-
-```mermaid
-graph LR
-    A[First Run<br/>4+ minutes] --> B[Cache Trajectory<br/>30MB PyTorch tensors]
-    B --> C[Second Run<br/>8.6ms]
-    
-    D[10K steps] -->|1,110x speedup| E[2.75s → 2.5ms]
-    F[100K steps] -->|10,674x speedup| G[25.8s → 2.4ms]
-    H[1M steps] -->|29,323x speedup| I[4m 12s → 8.6ms]
-```
-
-### Future Physics Engine Vision
-
-```mermaid
-graph TD
-    A[Physics Engine<br/>Base classes for all physics] --> B[Unified Testing<br/>Every experiment digitized]
-    B --> C[World Simulation<br/>Game engines meet physics]
-    
-    A --> D[FluidDynamics<br/>QuantumField<br/>GravitationalTheory]
-    B --> E[LIGO data<br/>Quantum interference<br/>Cosmology]
-    C --> F[Synthetic data<br/>PyTorch backend<br/>Real-time simulation]
-    
-    D --> G[WorldModel]
-    E --> G
-    F --> G
-    
-    G --> H[universe.simulate<br/>→ games or training!]
-```
-
----
-
-<div align="center">
-  <i>"I want to know God's thoughts. The rest are details."</i><br>
-  — Albert Einstein
-</div> 
-
-## Prerequisites
-
-- **Python**: 3.9+
-- **GPU**: NVIDIA (CUDA), Apple Silicon (MPS), or CPU fallback
-- **API Key**: xAI/Grok (recommended) or experimental support for other providers
-
-## Configuration
-
-Albert uses AI to generate new theories. Get your API key:
-
-### Primary Provider (Recommended)
-- **xAI/Grok**: https://x.ai/api
-
-### Experimental Providers
-- OpenAI, Anthropic, Google Gemini (limited support)
-
-Run the setup wizard:
-```bash
-python albert_setup.py
-``` 
+*Built for Einstein's legacy - pursuing perfection in gravitational physics*

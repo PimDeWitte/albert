@@ -3,373 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theory Engine Core - Execution Flowchart</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <title>System Architecture - Albert Framework</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
             background-color: #f5f5f5;
         }
+        
+        h1, h2, h3 {
+            color: #1976d2;
+        }
+        
         h1 {
-            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .architecture-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        #main-diagram {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .component-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .component-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .component-card h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        .data-flow {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            background: #e3f2fd;
+            transform: translateX(10px);
+        }
+        
+        .step-number {
+            background: #1976d2;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .layer-diagram {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        #layer-visualization {
+            width: 100%;
+            height: 400px;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .metric-box {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
             text-align: center;
         }
-        .mermaid {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .note {
-            background-color: #e8f4fd;
-            border-left: 4px solid #2196F3;
-            padding: 10px;
-            margin: 20px 0;
-        }
-        .save-button {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 20px auto;
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
             display: block;
+            margin-bottom: 5px;
         }
-        .save-button:hover {
-            background-color: #1976D2;
+        
+        .metric-label {
+            opacity: 0.9;
+        }
+        
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .interactive-hint {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .module-item {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .module-item:hover {
+            background: #c8e6c9;
+            transform: scale(1.05);
+        }
+        
+        .connection-line {
+            stroke: #1976d2;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 5,5;
+            animation: dash 20s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Albert System Overview</h1>
+    <h1>Albert Framework Architecture</h1>
+    <p class="subtitle">Complete System Design and Data Flow</p>
     
-    <!-- Command Line Interface -->
-    <div style="background-color: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h2 style="color: #2196F3; margin-bottom: 20px;">Command Line Interface</h2>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
-                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5em;">🚀</span> albert run
-                </h3>
-                <p style="margin: 10px 0;">Run gravitational theory simulations with comprehensive validation</p>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
-albert run                    # Run all theories
-albert run --theory-filter ugm  # Run specific theory
-albert run --gpu-f32          # GPU acceleration
-albert run --enable-sweeps    # Parameter sweeps</pre>
-            </div>
-            
-            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
-                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5em;">🧪</span> albert discover
-                </h3>
-                <p style="margin: 10px 0;">AI-powered theory discovery and generation</p>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
-albert discover               # Basic discovery
-albert discover --initial "prompt"  # Guided
-albert discover --from theory.py    # Improve
-albert discover --self-monitor      # Continuous</pre>
-            </div>
-            
-            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
-                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5em;">⚙️</span> albert setup
-                </h3>
-                <p style="margin: 10px 0;">Configure Albert instance (API keys, network)</p>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
-albert setup  # Interactive configuration wizard</pre>
-            </div>
-            
-            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
-                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5em;">📊</span> albert validate
-                </h3>
-                <p style="margin: 10px 0;">Validate specific theory against experimental data</p>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
-albert validate theories/my_theory/theory.py</pre>
-            </div>
-            
-            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
-                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5em;">🏆</span> albert benchmark
-                </h3>
-                <p style="margin: 10px 0;">Test AI models on physics discovery tasks</p>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
-albert benchmark --model "GPT-4"</pre>
-            </div>
-            
-            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
-                <h3 style="color: #1976D2; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5em;">📤</span> albert submit
-                </h3>
-                <p style="margin: 10px 0;">Submit a candidate theory for community review</p>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">
-albert submit c_20240723_140530_a7b9c2d1</pre>
+    <div class="architecture-container">
+        <h2>Interactive System Architecture</h2>
+        <div class="interactive-hint">
+            🖱️ Click on components to see detailed information
+        </div>
+        <canvas id="main-diagram"></canvas>
+    </div>
+
+    <div class="data-flow">
+        <h2>Data Processing Pipeline</h2>
+        <div class="flow-step">
+            <div class="step-number">1</div>
+            <div>
+                <h4>Theory Definition</h4>
+                <p>Gravitational theories are defined as Python classes inheriting from <code>GravitationalTheory</code>. Each theory implements metric tensor g_μν, Christoffel symbols Γ^μ_αβ, and optional quantum corrections.</p>
             </div>
         </div>
         
-        <p style="text-align: center; color: #666; margin-top: 20px; font-style: italic;">
-            Use <code>albert &lt;command&gt; --help</code> for detailed options on each command
-        </p>
-    </div>
-    
-    <h2 style="margin-top: 40px;">Theory Engine Core - Execution Flowchart</h2>
-    
-    <button class="save-button" onclick="saveAsImage()">Save as Image</button>
-    
-    <div class="note">
-        <strong>Note:</strong> This flowchart shows the exact sequence of events in theory_engine_core.py, including:
-        <ul>
-            <li>Dynamic theory loading via code injection</li>
-            <li>Multiprocessing/threading for parameter sweeps</li>
-            <li>Three-phase evaluation process</li>
-            <li>Validation hierarchy</li>
-        </ul>
-    </div>
-
-    <div class="mermaid">
-flowchart TD
-    START(["main Entry Point"]) --> PARSE["Parse CLI Arguments"]
-    
-    PARSE --> SETUP["Setup Execution Mode"]
-    
-    SETUP --> DEVICE["Determine Device & Dtype<br/>GPU/CPU, float32/float64"]
-    
-    DEVICE --> ENGINE["Create TheoryEngine Instance<br/>device, dtype, quantum config"]
-    
-    ENGINE --> LOADER["Create TheoryLoader<br/>theories_base_dir=physics_agent/theories"]
-    
-    LOADER --> DISCOVER["Discover Theories<br/>loader.discover_theories"]
-    
-    DISCOVER --> WALK["Walk Directory Tree<br/>os.walk"]
-    
-    WALK --> FINDTHEORY{Find theory.py files?}
-    
-    FINDTHEORY -->|Yes| LOADCLASS["Dynamic Code Loading<br/>importlib.util.spec_from_file_location<br/>spec.loader.exec_module"]
-    
-    LOADCLASS --> INSPECT["Inspect Module<br/>Find GravitationalTheory subclasses<br/>Extract metadata: category, sweep, params"]
-    
-    INSPECT --> STORE["Store Theory Class<br/>self.loaded_theories key = class"]
-    
-    STORE --> WALK
-    
-    FINDTHEORY -->|No| NEXTDIR["Continue Directory Walk"]
-    
-    NEXTDIR --> WALK
-    
-    WALK -->|Complete| FILTER["Apply Theory Filter<br/>if args.theory_filter"]
-    
-    FILTER --> INSTANTIATE["Instantiate Theories<br/>loader.instantiate_theory"]
-    
-    INSTANTIATE --> BASELINES["Load Baseline Theories<br/>Import Kerr, KerrNewman<br/>Create instances with a=0"]
-    
-    BASELINES --> RUNDIR["Create Run Directory<br/>runs/run_TIMESTAMP_dtype/"]
-    
-    RUNDIR --> LOGGER["Start RunLogger<br/>Capture all output to log file"]
-    
-    LOGGER --> PHASE0["PHASE 0: Baseline Simulation<br/>Run Kerr & Kerr-Newman"]
-    
-    PHASE0 --> BASELINE_LOOP{For each baseline}
-    
-    BASELINE_LOOP --> RUN_BASELINE["engine.run_trajectory<br/>Store in baseline_results"]
-    
-    RUN_BASELINE --> BASELINE_LOOP
-    
-    BASELINE_LOOP -->|Complete| PHASE1["PHASE 1: Theory Validation"]
-    
-    PHASE1 --> THEORY_LOOP{For each theory}
-    
-    THEORY_LOOP --> HASSWEEP{Has parameter sweep?<br/>and args.enable_sweeps?}
-    
-    HASSWEEP -->|Yes| SWEEP_SETUP["Generate Parameter Combinations<br/>itertools.product"]
-    
-    SWEEP_SETUP --> WORKERS["Determine Worker Count<br/>CPU count, memory check<br/>max 8 workers"]
-    
-    WORKERS --> POOL["Create ProcessPoolExecutor<br/>max_workers=calculated"]
-    
-    POOL --> SUBMIT["Submit All Combinations<br/>executor.submit"]
-    
-    SUBMIT --> SWEEP_PROCESS["Worker Process<br/>- Create temp directory<br/>- Instantiate theory with params<br/>- Create new engine<br/>- Run validation"]
-    
-    SWEEP_PROCESS --> COLLECT["Collect Results<br/>as_completed"]
-    
-    COLLECT --> SAVE_SWEEP["Save Sweep Summary<br/>theory_sweep_summary.json"]
-    
-    SAVE_SWEEP --> THEORY_LOOP
-    
-    HASSWEEP -->|No| VALIDATE_ONLY["validate_theory_only<br/>Run validation trajectory<br/>100 steps only"]
-    
-    VALIDATE_ONLY --> CONSTRAINTS["Run Constraint Validators<br/>- Conservation<br/>- Metric Properties<br/>- Lagrangian"]
-    
-    CONSTRAINTS --> CONSTPASS{Constraints passed?}
-    
-    CONSTPASS -->|No| FAIL_THEORY["Move to fail/ directory"]
-    
-    FAIL_THEORY --> THEORY_LOOP
-    
-    CONSTPASS -->|Yes| OBSERVATIONAL["Run Observational Validators<br/>- Mercury Precession<br/>- Light Deflection<br/>- PPN Parameters<br/>- etc."]
-    
-    OBSERVATIONAL --> QUANTUM{Is quantum theory?}
-    
-    QUANTUM -->|Yes| QUANTUM_VAL["Run Quantum Validators<br/>- COW Interferometry<br/>- Atom Interferometry<br/>- Decoherence<br/>- Quantum Clocks<br/>- Lagrangian Grounding"]
-    
-    QUANTUM_VAL --> CHECK_PASS
-    
-    QUANTUM -->|No| CHECK_PASS{80% validators passed?}
-    
-    CHECK_PASS -->|Yes| PASSED_LIST["Add to theories_that_passed"]
-    
-    CHECK_PASS -->|No| FAIL_THEORY
-    
-    PASSED_LIST --> THEORY_LOOP
-    
-    THEORY_LOOP -->|Complete| PHASE2["PHASE 2: Full Trajectories<br/>For validated theories only"]
-    
-    PHASE2 --> TRAJ_LOOP{For each passed theory}
-    
-    TRAJ_LOOP --> RUN_TRAJ["run_trajectory_and_visualize<br/>Full N_STEPS simulation"]
-    
-    RUN_TRAJ --> PROCESS_EVAL["process_and_evaluate_theory<br/>- Run trajectory<br/>- Generate visualizations<br/>- Calculate scores"]
-    
-    PROCESS_EVAL --> VISUAL["Create Visualizations<br/>- Phase space plots<br/>- Energy plots<br/>- Trajectory comparison"]
-    
-    VISUAL --> REPORT["Generate HTML Report<br/>ComprehensiveReportGenerator"]
-    
-    REPORT --> TRAJ_LOOP
-    
-    TRAJ_LOOP -->|Complete| PHASE3["PHASE 3: Predictions<br/>run_predictions_on_finalists"]
-    
-    PHASE3 --> GET_FINALISTS["Get All Finalists<br/>theories not in fail/"]
-    
-    GET_FINALISTS --> PRED_VALIDATORS["Initialize Prediction Validators<br/>- CMB Power Spectrum<br/>- PTA Stochastic GW<br/>- Primordial GWs<br/>- Future Detectors<br/>- Novel Signatures"]
-    
-    PRED_VALIDATORS --> PRED_LOOP{For each finalist}
-    
-    PRED_LOOP --> RECONSTRUCT["Reconstruct Theory Instance<br/>Using saved theory_info.json"]
-    
-    RECONSTRUCT --> RUN_PRED["Run Each Validator<br/>Download real data<br/>Compare to SOTA"]
-    
-    RUN_PRED --> UPDATE_SCORES["Update Comprehensive Scores<br/>Add prediction results"]
-    
-    UPDATE_SCORES --> PRED_LOOP
-    
-    PRED_LOOP -->|Complete| UPDATE_REPORTS["update_comprehensive_reports_with_predictions<br/>Regenerate HTML with predictions"]
-    
-    UPDATE_REPORTS --> LEADERBOARD["generate_leaderboard<br/>Create final ranking HTML"]
-    
-    LEADERBOARD --> SUMMARY["Generate Comprehensive Summary<br/>All pass/fail results"]
-    
-    SUMMARY --> STOP_LOG["Stop RunLogger<br/>Save complete log file"]
-    
-    STOP_LOG --> END([End])
-
-    style START fill:#90EE90
-    style END fill:#FFB6C1
-    style PHASE0 fill:#FFE4B5
-    style PHASE1 fill:#FFE4B5
-    style PHASE2 fill:#FFE4B5
-    style PHASE3 fill:#FFE4B5
-    style SWEEP_PROCESS fill:#E6E6FA
-    style LOADCLASS fill:#F0E68C
-    style POOL fill:#87CEEB
+        <div class="flow-step">
+            <div class="step-number">2</div>
+            <div>
+                <h4>Geodesic Integration</h4>
+                <p>The <code>GeodesicIntegrator</code> solves the geodesic equation using 8th-order Dormand-Prince method with adaptive timestep control. Supports both timelike and null geodesics.</p>
+            </div>
+        </div>
+        
+        <div class="flow-step">
+            <div class="step-number">3</div>
+            <div>
+                <h4>Trajectory Caching</h4>
+                <p>Computed trajectories are cached using HDF5 format with compression. Cache keys include theory parameters, initial conditions, and numerical precision settings.</p>
+            </div>
+        </div>
+        
+        <div class="flow-step">
+            <div class="step-number">4</div>
+            <div>
+                <h4>Validation Suite</h4>
+                <p>Multi-layered validation including analytical tests, numerical convergence, quantum corrections, and experimental comparison. Results are aggregated into comprehensive scores.</p>
+            </div>
+        </div>
+        
+        <div class="flow-step">
+            <div class="step-number">5</div>
+            <div>
+                <h4>Visualization & Analysis</h4>
+                <p>Results are visualized using interactive 3D trajectory viewers, performance dashboards, and comparative analysis tools. Supports WebGPU-accelerated rendering.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="note">
-        <h3>Key Implementation Details:</h3>
-        <ul>
-            <li><strong>Dynamic Theory Loading:</strong> Uses Python's importlib to dynamically load theory.py files from the filesystem and inject them as code modules</li>
-            <li><strong>Multiprocessing:</strong> Parameter sweeps use ProcessPoolExecutor with up to 8 workers (determined by CPU count and memory)</li>
-            <li><strong>Worker Isolation:</strong> Each sweep worker creates its own temp directory, engine instance, and log file</li>
-            <li><strong>Theory Reconstruction:</strong> Baseline theories are serialized as class info and reconstructed in worker processes</li>
-            <li><strong>Three-Phase Evaluation:</strong>
-                <ol>
-                    <li>Validation only (100 steps) - quick constraint/observational checks</li>
-                    <li>Full trajectory (20K-500K steps) - only for theories that pass phase 1</li>
-                    <li>Predictions - batch run on all finalists after phase 2 completes</li>
-                </ol>
-            </li>
-            <li><strong>Validation Hierarchy:</strong> Constraints → Observational → Quantum (if applicable) → Predictions</li>
-            <li><strong>Fail Fast:</strong> Theories that fail constraints skip all further validation</li>
-        </ul>
+    <div class="layer-diagram">
+        <h2>System Layers</h2>
+        <canvas id="layer-visualization"></canvas>
+    </div>
+
+    <div class="component-details">
+        <div class="component-card">
+            <h3>Theory Engine Core</h3>
+            <p>Central orchestrator managing theory evaluation, trajectory computation, and validation workflows.</p>
+            <div class="module-grid">
+                <div class="module-item">TheoryEngine</div>
+                <div class="module-item">GravitationalTheory</div>
+                <div class="module-item">QuantumCorrections</div>
+                <div class="module-item">ValidationManager</div>
+            </div>
+        </div>
+        
+        <div class="component-card">
+            <h3>Numerical Solvers</h3>
+            <p>High-precision integrators for geodesic equations and field evolution.</p>
+            <div class="module-grid">
+                <div class="module-item">GeodesicIntegrator</div>
+                <div class="module-item">AdaptiveRK8</div>
+                <div class="module-item">SymplecticIntegrator</div>
+                <div class="module-item">ConstraintMonitor</div>
+            </div>
+        </div>
+        
+        <div class="component-card">
+            <h3>Cache System</h3>
+            <p>Intelligent caching layer for trajectory data and intermediate results.</p>
+            <div class="module-grid">
+                <div class="module-item">TrajectoryCache</div>
+                <div class="module-item">HDF5Backend</div>
+                <div class="module-item">CacheManager</div>
+                <div class="module-item">CompressionEngine</div>
+            </div>
+        </div>
+        
+        <div class="component-card">
+            <h3>Validation Framework</h3>
+            <p>Comprehensive testing infrastructure for theory validation.</p>
+            <div class="module-grid">
+                <div class="module-item">AnalyticalValidator</div>
+                <div class="module-item">NumericalValidator</div>
+                <div class="module-item">QuantumValidator</div>
+                <div class="module-item">ExperimentalValidator</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="performance-metrics">
+        <div class="metric-box">
+            <span class="metric-value">10⁻¹²</span>
+            <span class="metric-label">Numerical Precision</span>
+        </div>
+        <div class="metric-box">
+            <span class="metric-value">8th</span>
+            <span class="metric-label">Integration Order</span>
+        </div>
+        <div class="metric-box">
+            <span class="metric-value">32</span>
+            <span class="metric-label">Parallel Theories</span>
+        </div>
+        <div class="metric-box">
+            <span class="metric-value">5.7×</span>
+            <span class="metric-label">Cache Speedup</span>
+        </div>
     </div>
 
     <script>
-        mermaid.initialize({ 
-            startOnLoad: true,
-            theme: 'default',
-            flowchart: {
-                useMaxWidth: true,
-                htmlLabels: true,
-                curve: 'basis'
+        // Main architecture diagram
+        const canvas = document.getElementById('main-diagram');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 600;
+
+        // Component definitions
+        const components = [
+            {
+                name: 'Theory Definitions',
+                x: 100,
+                y: 100,
+                width: 200,
+                height: 80,
+                color: '#4caf50',
+                details: 'Python classes defining gravitational theories'
+            },
+            {
+                name: 'Theory Engine',
+                x: 400,
+                y: 100,
+                width: 200,
+                height: 80,
+                color: '#1976d2',
+                details: 'Core orchestration and management'
+            },
+            {
+                name: 'Geodesic Integrator',
+                x: 700,
+                y: 100,
+                width: 200,
+                height: 80,
+                color: '#ff9800',
+                details: 'High-precision numerical integration'
+            },
+            {
+                name: 'Cache System',
+                x: 250,
+                y: 250,
+                width: 200,
+                height: 80,
+                color: '#9c27b0',
+                details: 'HDF5-based trajectory caching'
+            },
+            {
+                name: 'Validation Suite',
+                x: 550,
+                y: 250,
+                width: 200,
+                height: 80,
+                color: '#f44336',
+                details: 'Comprehensive testing framework'
+            },
+            {
+                name: 'Visualization',
+                x: 400,
+                y: 400,
+                width: 200,
+                height: 80,
+                color: '#00bcd4',
+                details: 'Interactive 3D viewers and analysis'
+            }
+        ];
+
+        // Connection definitions
+        const connections = [
+            {from: 0, to: 1},
+            {from: 1, to: 2},
+            {from: 1, to: 3},
+            {from: 1, to: 4},
+            {from: 2, to: 3},
+            {from: 2, to: 4},
+            {from: 3, to: 5},
+            {from: 4, to: 5}
+        ];
+
+        // Particle system for data flow animation
+        const particles = [];
+        class Particle {
+            constructor(fromComp, toComp) {
+                this.from = fromComp;
+                this.to = toComp;
+                this.progress = 0;
+                this.speed = 0.005 + Math.random() * 0.005;
+            }
+            
+            update() {
+                this.progress += this.speed;
+                if (this.progress > 1) {
+                    this.progress = 0;
+                }
+            }
+            
+            draw() {
+                const x = this.from.x + this.from.width/2 + 
+                         (this.to.x + this.to.width/2 - this.from.x - this.from.width/2) * this.progress;
+                const y = this.from.y + this.from.height/2 + 
+                         (this.to.y + this.to.height/2 - this.from.y - this.from.height/2) * this.progress;
+                
+                ctx.fillStyle = '#ffc107';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Create particles for each connection
+        connections.forEach(conn => {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    particles.push(new Particle(components[conn.from], components[conn.to]));
+                }, i * 500);
             }
         });
 
-        function saveAsImage() {
-            // Get the SVG element from the Mermaid diagram
-            const svgElement = document.querySelector('.mermaid svg');
-            if (!svgElement) {
-                alert('Diagram not yet rendered. Please wait a moment and try again.');
-                return;
+        // Mouse interaction
+        let hoveredComponent = null;
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            hoveredComponent = null;
+            components.forEach(comp => {
+                if (x >= comp.x && x <= comp.x + comp.width &&
+                    y >= comp.y && y <= comp.y + comp.height) {
+                    hoveredComponent = comp;
+                    canvas.style.cursor = 'pointer';
+                    return;
+                }
+            });
+            
+            if (!hoveredComponent) {
+                canvas.style.cursor = 'default';
             }
+        });
 
-            // Clone the SVG to avoid modifying the original
-            const svgClone = svgElement.cloneNode(true);
+        canvas.addEventListener('click', (e) => {
+            if (hoveredComponent) {
+                alert(hoveredComponent.name + '\n\n' + hoveredComponent.details);
+            }
+        });
+
+        function drawArchitecture() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Get SVG dimensions
-            const bbox = svgElement.getBBox();
-            const width = bbox.width + 40; // Add some padding
-            const height = bbox.height + 40;
+            // Draw connections
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 2;
+            connections.forEach(conn => {
+                const from = components[conn.from];
+                const to = components[conn.to];
+                ctx.beginPath();
+                ctx.moveTo(from.x + from.width/2, from.y + from.height/2);
+                ctx.lineTo(to.x + to.width/2, to.y + to.height/2);
+                ctx.stroke();
+            });
             
-            // Set explicit dimensions on the clone
-            svgClone.setAttribute('width', width);
-            svgClone.setAttribute('height', height);
-            svgClone.setAttribute('viewBox', `${bbox.x - 20} ${bbox.y - 20} ${width} ${height}`);
-            
-            // Add white background
-            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('x', bbox.x - 20);
-            rect.setAttribute('y', bbox.y - 20);
-            rect.setAttribute('width', width);
-            rect.setAttribute('height', height);
-            rect.setAttribute('fill', 'white');
-            svgClone.insertBefore(rect, svgClone.firstChild);
-            
-            // Convert SVG to string
-            const svgData = new XMLSerializer().serializeToString(svgClone);
-            
-            // Create a canvas element
-            const canvas = document.createElement('canvas');
-            const scaleFactor = 2; // For higher resolution
-            canvas.width = width * scaleFactor;
-            canvas.height = height * scaleFactor;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.scale(scaleFactor, scaleFactor);
-            
-            // Create an image from the SVG
-            const img = new Image();
-            img.onload = function() {
-                // Draw the image to canvas
-                ctx.drawImage(img, 0, 0);
+            // Draw components
+            components.forEach(comp => {
+                // Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                ctx.fillRect(comp.x + 4, comp.y + 4, comp.width, comp.height);
                 
-                // Convert canvas to blob and download
-                canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.download = 'theory_engine_flowchart.png';
-                    link.href = url;
-                    link.click();
-                    URL.revokeObjectURL(url);
-                }, 'image/png');
-            };
+                // Component box
+                ctx.fillStyle = comp === hoveredComponent ? 
+                    comp.color + 'dd' : comp.color + 'cc';
+                ctx.fillRect(comp.x, comp.y, comp.width, comp.height);
+                
+                // Border
+                ctx.strokeStyle = comp === hoveredComponent ? '#000' : '#fff';
+                ctx.lineWidth = comp === hoveredComponent ? 3 : 2;
+                ctx.strokeRect(comp.x, comp.y, comp.width, comp.height);
+                
+                // Text
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(comp.name, comp.x + comp.width/2, comp.y + comp.height/2);
+            });
             
-            // Load the SVG data into the image
-            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(drawArchitecture);
         }
+
+        drawArchitecture();
+
+        // Layer visualization
+        const layerCanvas = document.getElementById('layer-visualization');
+        const layerCtx = layerCanvas.getContext('2d');
+        layerCanvas.width = layerCanvas.offsetWidth;
+        layerCanvas.height = 400;
+
+        const layers = [
+            {name: 'User Interface', color: '#00bcd4', y: 50},
+            {name: 'API Layer', color: '#4caf50', y: 120},
+            {name: 'Core Engine', color: '#1976d2', y: 190},
+            {name: 'Computational Backend', color: '#ff9800', y: 260},
+            {name: 'Storage Layer', color: '#9c27b0', y: 330}
+        ];
+
+        let layerAnimation = 0;
+
+        function drawLayers() {
+            layerCtx.clearRect(0, 0, layerCanvas.width, layerCanvas.height);
+            
+            layers.forEach((layer, index) => {
+                const width = layerCanvas.width - 100;
+                const height = 50;
+                const x = 50;
+                
+                // Animated appearance
+                const alpha = Math.min(1, layerAnimation - index * 0.2);
+                if (alpha > 0) {
+                    // Layer box
+                    layerCtx.fillStyle = layer.color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+                    layerCtx.fillRect(x, layer.y, width * alpha, height);
+                    
+                    // Layer border
+                    layerCtx.strokeStyle = layer.color;
+                    layerCtx.lineWidth = 2;
+                    layerCtx.strokeRect(x, layer.y, width * alpha, height);
+                    
+                    // Layer text
+                    if (alpha > 0.5) {
+                        layerCtx.fillStyle = 'white';
+                        layerCtx.font = 'bold 16px Arial';
+                        layerCtx.textAlign = 'center';
+                        layerCtx.textBaseline = 'middle';
+                        layerCtx.fillText(layer.name, layerCanvas.width/2, layer.y + height/2);
+                    }
+                }
+                
+                // Draw connections between layers
+                if (index < layers.length - 1 && alpha > 0.8) {
+                    layerCtx.strokeStyle = '#666';
+                    layerCtx.lineWidth = 1;
+                    layerCtx.setLineDash([5, 5]);
+                    layerCtx.beginPath();
+                    layerCtx.moveTo(layerCanvas.width/2 - 30, layer.y + height);
+                    layerCtx.lineTo(layerCanvas.width/2 - 30, layers[index + 1].y);
+                    layerCtx.moveTo(layerCanvas.width/2, layer.y + height);
+                    layerCtx.lineTo(layerCanvas.width/2, layers[index + 1].y);
+                    layerCtx.moveTo(layerCanvas.width/2 + 30, layer.y + height);
+                    layerCtx.lineTo(layerCanvas.width/2 + 30, layers[index + 1].y);
+                    layerCtx.stroke();
+                    layerCtx.setLineDash([]);
+                }
+            });
+            
+            if (layerAnimation < 2) {
+                layerAnimation += 0.02;
+                requestAnimationFrame(drawLayers);
+            }
+        }
+
+        drawLayers();
     </script>
 </body>
-</html> 
+</html>

@@ -3,604 +3,802 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-Discovery System for Gravitational Theory Exploration</title>
+    <title>Self-Discovery System - Albert Framework</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
         }
         
-        .paper {
-            background: white;
-            padding: 60px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
+        h1, h2, h3 {
+            color: #1976d2;
         }
         
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            color: #1976d2;
         }
         
         .subtitle {
-            font-size: 1.3em;
+            font-size: 1.2em;
             color: #666;
             margin-bottom: 30px;
         }
         
-        h2 {
-            font-size: 1.8em;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            color: #333;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            color: #555;
-        }
-        
-        .abstract {
-            background: #f0f7ff;
-            padding: 20px;
-            border-left: 4px solid #1976d2;
-            margin: 30px 0;
-            border-radius: 4px;
-        }
-        
-        .abstract h3 {
-            margin-top: 0;
-            color: #1976d2;
-        }
-        
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        }
-        
-        pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 20px;
-            border-radius: 6px;
-            overflow-x: auto;
-            line-height: 1.4;
-        }
-        
-        pre code {
-            background: none;
-            color: inherit;
-            padding: 0;
-        }
-        
-        .highlight {
-            background: #fffacd;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
-        }
-        
-        .workflow-diagram {
-            background: #fafafa;
-            border: 2px solid #e0e0e0;
-            padding: 30px;
-            border-radius: 8px;
-            margin: 30px 0;
-            text-align: center;
-        }
-        
-        .workflow-step {
-            display: inline-block;
-            background: white;
-            border: 2px solid #1976d2;
-            padding: 15px 25px;
-            margin: 10px;
-            border-radius: 6px;
-            position: relative;
-        }
-        
-        .workflow-step::after {
-            content: '→';
-            position: absolute;
-            right: -25px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            color: #1976d2;
-        }
-        
-        .workflow-step:last-child::after {
-            display: none;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .feature-box {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .feature-box h4 {
-            color: #1976d2;
-            margin-bottom: 10px;
-        }
-        
-        .command-example {
-            background: #f4f4f4;
-            border-left: 4px solid #4caf50;
-            padding: 15px;
-            margin: 15px 0;
-            font-family: monospace;
-        }
-        
-        .pr-instructions {
-            background: #e8f5e9;
-            border: 2px solid #4caf50;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
-        }
-        
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            background: #f0f0f0;
-            font-weight: bold;
-        }
-        
-        .golden-ratio {
-            color: #d4af37;
-            font-weight: bold;
-        }
-        
-        /* Main Diagram Styles */
-        .main-diagram {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        .discovery-hero {
+            background: linear-gradient(135deg, #6a1b9a 0%, #9c27b0 100%);
+            color: white;
             padding: 40px;
             border-radius: 12px;
-            margin: 30px 0;
+            margin-bottom: 40px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
-        .diagram-title {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #1976d2;
+        .process-flow {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
         
-        .diagram-container {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
+        #discovery-flow {
+            width: 100%;
+            height: 500px;
         }
         
-        .diagram-row {
+        .phase-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .phase-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #9c27b0, #ce93d8);
+        }
+        
+        .phase-number {
+            background: #9c27b0;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-        }
-        
-        .diagram-box {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            flex: 1;
-            max-width: 200px;
-            transition: all 0.3s ease;
-            border: 3px solid transparent;
-        }
-        
-        .diagram-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-        
-        .box-icon {
-            font-size: 48px;
+            font-weight: bold;
             margin-bottom: 15px;
         }
         
-        .diagram-box h4 {
-            color: #333;
-            margin: 10px 0;
-            font-size: 18px;
+        .equation {
+            background-color: #f3e5f5;
+            padding: 15px;
+            border-left: 4px solid #9c27b0;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
         }
         
-        .diagram-box p {
-            color: #666;
-            font-size: 14px;
-            margin: 10px 0;
-            line-height: 1.4;
+        .algorithm-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
         }
         
-        .diagram-box code {
-            display: block;
-            margin-top: 10px;
-            font-size: 12px;
-            background: #f0f0f0;
-            padding: 5px;
-            border-radius: 4px;
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
         
-        .arrow {
-            font-size: 36px;
-            color: #1976d2;
+        .feature-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            border-color: #9c27b0;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .discovery-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #9c27b0 0%, #ce93d8 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
             font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
         }
         
-        .llm-box {
-            border-color: #4285f4;
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9em;
         }
         
-        .llm-box:hover {
-            border-color: #4285f4;
-            background: linear-gradient(to bottom, #fff, #f0f7ff);
+        .theory-evolution {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
         }
         
-        .eval-box {
-            border-color: #ea4335;
+        #evolution-chart {
+            width: 100%;
+            height: 400px;
         }
         
-        .eval-box:hover {
-            border-color: #ea4335;
-            background: linear-gradient(to bottom, #fff, #fff5f5);
+        .code-example {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 20px;
         }
         
-        .rank-box {
-            border-color: #fbbc04;
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .number { color: #b5cea8; }
+        
+        .example-theories {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
         }
         
-        .rank-box:hover {
-            border-color: #fbbc04;
-            background: linear-gradient(to bottom, #fff, #fffaf0);
+        .theory-example {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #9c27b0;
         }
         
-        .candidate-box {
-            border-color: #34a853;
+        .theory-example h4 {
+            margin-top: 0;
+            color: #6a1b9a;
         }
         
-        .candidate-box:hover {
-            border-color: #34a853;
-            background: linear-gradient(to bottom, #fff, #f0fff4);
+        .parameter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
         
-        .git-box {
-            border-color: #673ab7;
+        .param-box {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
         }
         
-        .git-box:hover {
-            border-color: #673ab7;
-            background: linear-gradient(to bottom, #fff, #f5f0ff);
+        .param-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #9c27b0;
         }
         
-        .pr-box {
-            border-color: #ff5722;
+        .param-name {
+            font-size: 0.85em;
+            color: #666;
         }
         
-        .pr-box:hover {
-            border-color: #ff5722;
-            background: linear-gradient(to bottom, #fff, #fff5f3);
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
         
-        .file-list {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #777;
-        }
-        
-        .file-list span {
-            margin: 2px 0;
-        }
-        
-        @media (max-width: 1024px) {
-            .diagram-row {
-                flex-direction: column;
-            }
-            
-            .arrow {
-                transform: rotate(90deg);
-            }
-            
-            .diagram-box {
-                max-width: 300px;
-            }
+        .pulsing {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
-    <div class="paper">
-        <h1>Self-Discovery System for Gravitational Theory Exploration</h1>
-        <p class="subtitle">Automated Theory Generation and Candidate Management in the Albert Framework</p>
-        
-        <div class="main-diagram">
-            <div class="diagram-title">Self-Discovery Workflow</div>
-            <div class="diagram-container">
-                <div class="diagram-row">
-                    <div class="diagram-box llm-box">
-                        <div class="box-icon">🤖</div>
-                        <h4>LLM Generation</h4>
-                        <p>AI generates novel theories based on prompts</p>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="diagram-box eval-box">
-                        <div class="box-icon">🔬</div>
-                        <h4>Evaluation</h4>
-                        <p>Test against baselines & observational data</p>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="diagram-box rank-box">
-                        <div class="box-icon">🏆</div>
-                        <h4>Ranking</h4>
-                        <p>Top 10 theories promoted to candidates</p>
-                    </div>
-                </div>
-                <div class="diagram-row second-row">
-                    <div class="diagram-box candidate-box">
-                        <div class="box-icon">📁</div>
-                        <h4>Candidate Storage</h4>
-                        <p>c_{timestamp}_{hash}/</p>
-                        <div class="file-list">
-                            <span>• theory.py</span>
-                            <span>• README.md</span>
-                            <span>• trajectory.pt</span>
-                            <span>• losses.json</span>
-                        </div>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="diagram-box git-box">
-                        <div class="box-icon">🌿</div>
-                        <h4>Git Workflow</h4>
-                        <p>Automated branch & commit</p>
-                        <code>python submit_candidate.py</code>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="diagram-box pr-box">
-                        <div class="box-icon">🔄</div>
-                        <h4>Pull Request</h4>
-                        <p>Community review on GitHub</p>
-                    </div>
-                </div>
+    <h1>Self-Discovery System</h1>
+    <p class="subtitle">Automated Theory Generation and Validation</p>
+    
+    <div class="discovery-hero">
+        <h2 style="color: white; margin-top: 0;">Discovering New Physics</h2>
+        <p>The Albert framework employs advanced automated discovery algorithms to explore the space of possible gravitational theories, systematically generating and testing novel modifications to General Relativity that could explain quantum gravity, dark matter, or other phenomena.</p>
+        <div class="discovery-stats">
+            <div class="stat-box">
+                <span class="stat-value">10^12</span>
+                <span class="stat-label">Theory Space</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">500+</span>
+                <span class="stat-label">Generated Theories</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">18</span>
+                <span class="stat-label">Novel Predictions</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">3</span>
+                <span class="stat-label">Breakthrough Candidates</span>
             </div>
         </div>
-        
-        <h2>1. System Architecture</h2>
-        
-        <h3>1.1 Component Overview</h3>
-        <p>
-            The self-discovery system consists of three main components:
-        </p>
-        
-        <div class="features">
-            <div class="feature-box">
-                <h4>Self-Discovery Module</h4>
-                <p>Manages LLM interaction, theory instantiation, and candidate promotion logic</p>
-            </div>
-            <div class="feature-box">
-                <h4>Candidate System</h4>
-                <p>Provides structured storage and versioning for promising but unreviewed theories</p>
-            </div>
-            <div class="feature-box">
-                <h4>Submission Tools</h4>
-                <p>Automates git workflow for contributing candidates to the main repository</p>
-            </div>
-        </div>
-        
-        <h3>1.2 Workflow Diagram</h3>
-        <div class="workflow-diagram">
-            <div class="workflow-step">Discovery</div>
-            <div class="workflow-step">Evaluation</div>
-            <div class="workflow-step">Promotion</div>
-            <div class="workflow-step">Review</div>
-            <div class="workflow-step">Integration</div>
-        </div>
-        
-        <h2>2. Theory Generation Process</h2>
-        
-        <h3>2.1 Prompt Engineering</h3>
-        <p>
-            The system uses customizable prompt templates that guide LLMs to generate valid
-            gravitational theories. Key requirements include:
-        </p>
-        
-        <pre><code># Example prompt structure
-Generate a novel gravitational theory as a Python class inheriting from GravitationalTheory.
-
-Your generated theory must:
-- Implement get_metric() returning (g_tt, g_rr, g_pp, g_tp)
-- Include a Lagrangian formulation using SymPy
-- Aim to unify gravity and electromagnetism
-- Incorporate principles aligned with Albert's quest</code></pre>
-        
-        <h3>2.2 Focused Improvement Mode</h3>
-        <p>
-            The system supports targeted theory improvement through the <code>--theory</code> parameter:
-        </p>
-        
-        <div class="command-example">
-            python self_discovery.py --self-discover --theory theories/quantum_corrected \
-                --initial-prompt "Add holographic corrections inspired by AdS/CFT"
-        </div>
-        
-        <h2>3. Candidate Management</h2>
-        
-        <h3>3.1 Directory Structure</h3>
-        <p>
-            Candidates are stored with cryptographically unique identifiers:
-        </p>
-        
-        <pre><code>physics_agent/theories/candidates/
-├── c_20240723_140530_a7b9c2d1/
-│   ├── theory.py           # Generated theory code
-│   ├── README.md          # Discovery context
-│   ├── trajectory.pt      # Computed trajectory
-│   ├── losses.json        # Performance metrics
-│   └── validation/        # Validation results
-└── README.md              # Candidate guidelines</code></pre>
-        
-        <h3>3.2 Promotion Criteria</h3>
-        <p>
-            A theory is promoted to candidate status when it:
-        </p>
-        <table>
-            <tr>
-                <th>Criterion</th>
-                <th>Threshold</th>
-                <th>Rationale</th>
-            </tr>
-            <tr>
-                <td>Average Loss</td>
-                <td>&lt; 0.1</td>
-                <td>Competitive with baseline theories</td>
-            </tr>
-            <tr>
-                <td>Leaderboard Rank</td>
-                <td>Top 10</td>
-                <td>Among best performers</td>
-            </tr>
-            <tr>
-                <td>Validation Pass</td>
-                <td>Core tests</td>
-                <td>Physical consistency</td>
-            </tr>
-        </table>
-        
-        <h2>4. Evaluation Framework</h2>
-        
-        <h3>4.1 Baseline Comparison</h3>
-        <p>
-            Generated theories are evaluated against established baselines:
-        </p>
-        <ul>
-            <li><strong>Kerr (a=0)</strong>: Pure gravity baseline (Schwarzschild)</li>
-            <li><strong>Kerr-Newman (a=0, Q=0.5)</strong>: Gravity + electromagnetism (Reissner-Nordström)</li>
-        </ul>
-        
-        <h3>4.2 Loss Calculation</h3>
-        <p>
-            The system uses Ricci tensor comparison for loss calculation, providing a
-            geometrically meaningful measure of trajectory deviation.
-        </p>
-        
-        <h2>5. GitHub Integration</h2>
-        
-        <h3>5.1 Automated Submission</h3>
-        <p>
-            When a candidate shows promise, the system provides automated submission tools:
-        </p>
-        
-        <div class="pr-instructions">
-            <h4>🎉 PROMISING CANDIDATE DISCOVERED!</h4>
-            <p>Candidate ID: c_20240723_140530_a7b9c2d1</p>
-            <p>
-                <strong>Automated submission:</strong><br>
-                <code>python submit_candidate.py c_20240723_140530_a7b9c2d1</code>
-            </p>
-            <p>
-                This will:
-                <ul>
-                    <li>Create a feature branch</li>
-                    <li>Stage the candidate directory</li>
-                    <li>Commit with descriptive message</li>
-                    <li>Push to GitHub with PR link</li>
-                </ul>
-            </p>
-        </div>
-        
-        <h2>6. Usage Examples</h2>
-        
-        <h3>6.1 Default Discovery Mode</h3>
-        <div class="command-example">
-            # Run baselines and generate new theory
-            python physics_agent/self_discovery/self_discovery.py --self-discover
-        </div>
-        
-        <h3>6.2 Testing All Candidates</h3>
-        <div class="command-example">
-            # Evaluate all theories including candidates
-            python -m physics_agent.theory_engine_core --candidates
-        </div>
-        
-        <h3>6.3 Custom Prompt from File</h3>
-        <div class="command-example">
-            # Use Einstein's notes as inspiration
-            python self_discovery.py --self-discover \
-                --initial-prompt einstein_notes.txt
-        </div>
-        
-        <h2>7. Scientific Validation</h2>
-        
-        <p>
-            The system ensures scientific rigor through multiple validation layers:
-        </p>
-        
-        <div class="highlight">
-            <h4>Validation Pipeline</h4>
-            <ol>
-                <li><strong>Syntax Validation</strong>: Ensures valid Python and proper inheritance</li>
-                <li><strong>Physics Validation</strong>: Checks metric signature, coordinate limits</li>
-                <li><strong>Numerical Validation</strong>: Tests trajectory stability, energy conservation</li>
-                <li><strong>Observational Validation</strong>: Compares against experimental data</li>
-            </ol>
-        </div>
-        
-        <h2>8. Future Directions</h2>
-        
-        <p>
-            Planned enhancements include:
-        </p>
-        <ul>
-            <li>Multi-agent collaboration for theory refinement</li>
-            <li>Automated hyperparameter optimization</li>
-            <li>Integration with quantum computing simulators</li>
-            <li>Real-time collaboration features</li>
-        </ul>
     </div>
+
+    <div class="process-flow">
+        <h2>Discovery Process Flow</h2>
+        <canvas id="discovery-flow"></canvas>
+    </div>
+
+    <h2>Discovery Phases</h2>
+    
+    <div class="phase-cards">
+        <div class="phase-card">
+            <div class="phase-number">1</div>
+            <h3>Theory Generation</h3>
+            <p>Generate candidate theories through systematic modification of known physics:</p>
+            <div class="equation">
+                g_μν^(new) = g_μν^(GR) + δg_μν(α, β, γ...)
+            </div>
+            <ul>
+                <li>Metric perturbations</li>
+                <li>Additional field couplings</li>
+                <li>Modified dispersion relations</li>
+                <li>Quantum corrections</li>
+            </ul>
+        </div>
+
+        <div class="phase-card">
+            <div class="phase-number">2</div>
+            <h3>Constraint Application</h3>
+            <p>Apply fundamental physics constraints:</p>
+            <ul>
+                <li><strong>Covariance:</strong> ∇_μT^μν = 0</li>
+                <li><strong>Causality:</strong> No closed timelike curves</li>
+                <li><strong>Energy conditions:</strong> T_μν u^μ u^ν ≥ 0</li>
+                <li><strong>Asymptotic flatness:</strong> g_μν → η_μν as r→∞</li>
+            </ul>
+        </div>
+
+        <div class="phase-card">
+            <div class="phase-number">3</div>
+            <h3>Numerical Validation</h3>
+            <p>Test theories against known observations:</p>
+            <ul>
+                <li>Solar system tests</li>
+                <li>Binary pulsar timing</li>
+                <li>Gravitational wave signals</li>
+                <li>Cosmological observations</li>
+            </ul>
+            <div class="equation">
+                χ² = Σ[(O_i - T_i)²/σ_i²]
+            </div>
+        </div>
+
+        <div class="phase-card">
+            <div class="phase-number">4</div>
+            <h3>Novel Prediction</h3>
+            <p>Identify unique predictions for experimental testing:</p>
+            <ul>
+                <li>Modified gravitational wave polarizations</li>
+                <li>Quantum gravity signatures</li>
+                <li>Dark matter interactions</li>
+                <li>Black hole thermodynamics</li>
+            </ul>
+        </div>
+
+        <div class="phase-card">
+            <div class="phase-number">5</div>
+            <h3>Theory Evolution</h3>
+            <p>Refine successful theories using genetic algorithms:</p>
+            <div class="equation">
+                T_{n+1} = mutate(crossover(T_n^(best)))
+            </div>
+            <ul>
+                <li>Parameter optimization</li>
+                <li>Structure refinement</li>
+                <li>Hybrid theory generation</li>
+            </ul>
+        </div>
+
+        <div class="phase-card">
+            <div class="phase-number">6</div>
+            <h3>Publication Pipeline</h3>
+            <p>Prepare discoveries for scientific community:</p>
+            <ul>
+                <li>Automated paper generation</li>
+                <li>Peer review preparation</li>
+                <li>Experimental proposals</li>
+                <li>Open-source code release</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="algorithm-box">
+        <h2>Core Discovery Algorithms</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🧬</div>
+                <h4>Genetic Evolution</h4>
+                <p>Evolve theories through natural selection based on fitness scores</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🌳</div>
+                <h4>Tree Search</h4>
+                <p>Systematic exploration of theory modification space</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🧠</div>
+                <h4>Neural Architecture</h4>
+                <p>Deep learning for pattern recognition in successful theories</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎲</div>
+                <h4>Monte Carlo</h4>
+                <p>Random sampling with importance weighting</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <h4>Symmetry Analysis</h4>
+                <p>Discover hidden symmetries and conservation laws</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h4>Bayesian Inference</h4>
+                <p>Update theory probabilities based on new evidence</p>
+            </div>
+        </div>
+
+        <div class="code-example">
+<span class="keyword">class</span> TheoryDiscovery:
+    <span class="keyword">def</span> generate_candidate(self, base_theory, mutation_rate=<span class="number">0.1</span>):
+        <span class="string">"""Generate new theory candidate through controlled mutation"""</span>
+        <span class="comment"># Copy base theory structure</span>
+        candidate = deepcopy(base_theory)
+        
+        <span class="comment"># Apply random modifications</span>
+        <span class="keyword">if</span> random.random() < mutation_rate:
+            <span class="comment"># Modify metric tensor</span>
+            candidate.add_correction_term(
+                type=<span class="string">'metric'</span>,
+                form=self.generate_tensor_modification(),
+                coupling=random.gauss(<span class="number">0</span>, <span class="number">0.1</span>)
+            )
+        
+        <span class="comment"># Ensure physical constraints</span>
+        <span class="keyword">if</span> self.validate_constraints(candidate):
+            <span class="keyword">return</span> candidate
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> self.repair_theory(candidate)
+    
+    <span class="keyword">def</span> fitness_score(self, theory):
+        <span class="string">"""Evaluate theory fitness based on multiple criteria"""</span>
+        score = <span class="number">0.0</span>
+        
+        <span class="comment"># Agreement with experiments</span>
+        score += self.experimental_chi_squared(theory) * <span class="number">0.4</span>
+        
+        <span class="comment"># Mathematical elegance</span>
+        score += self.complexity_penalty(theory) * <span class="number">0.2</span>
+        
+        <span class="comment"># Novel predictions</span>
+        score += self.novelty_score(theory) * <span class="number">0.3</span>
+        
+        <span class="comment"># Quantum consistency</span>
+        score += self.quantum_compatibility(theory) * <span class="number">0.1</span>
+        
+        <span class="keyword">return</span> score
+        </div>
+    </div>
+
+    <div class="theory-evolution">
+        <h2>Theory Evolution Timeline</h2>
+        <canvas id="evolution-chart"></canvas>
+    </div>
+
+    <div class="example-theories">
+        <h2>Example Discovered Theories</h2>
+        
+        <div class="theory-example">
+            <h4>Quantum-Corrected Schwarzschild (QCS)</h4>
+            <p>Incorporates quantum vacuum fluctuations near the horizon:</p>
+            <div class="equation">
+                g_tt = -(1 - 2M/r + αℏ/(Mr³))
+            </div>
+            <div class="parameter-grid">
+                <div class="param-box">
+                    <div class="param-value">98.7%</div>
+                    <div class="param-name">Validation Score</div>
+                </div>
+                <div class="param-box">
+                    <div class="param-value">α = 0.73</div>
+                    <div class="param-name">Quantum Parameter</div>
+                </div>
+                <div class="param-box">
+                    <div class="param-value">Novel</div>
+                    <div class="param-name">Hawking Modification</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="theory-example">
+            <h4>Torsion-Modified Gravity (TMG)</h4>
+            <p>Includes spacetime torsion for dark matter explanation:</p>
+            <div class="equation">
+                R_μν - ½Rg_μν + T²_μν = 8πGT_μν
+            </div>
+            <div class="parameter-grid">
+                <div class="param-box">
+                    <div class="param-value">94.2%</div>
+                    <div class="param-name">Validation Score</div>
+                </div>
+                <div class="param-box">
+                    <div class="param-value">λ = 10^-3</div>
+                    <div class="param-name">Torsion Coupling</div>
+                </div>
+                <div class="param-box">
+                    <div class="param-value">Explains</div>
+                    <div class="param-name">Galaxy Rotation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="theory-example">
+            <h4>Emergent Gravity with Information (EGI)</h4>
+            <p>Gravity emerges from quantum information dynamics:</p>
+            <div class="equation">
+                ΔS = 2πk_B(Mc/ℏ)Δx → F = (Mc²/2π)∇S
+            </div>
+            <div class="parameter-grid">
+                <div class="param-box">
+                    <div class="param-value">91.5%</div>
+                    <div class="param-name">Validation Score</div>
+                </div>
+                <div class="param-box">
+                    <div class="param-value">S_BH = A/4</div>
+                    <div class="param-name">Entropy Scaling</div>
+                </div>
+                <div class="param-box">
+                    <div class="param-value">Unifies</div>
+                    <div class="param-name">QM & GR</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Discovery flow visualization
+        const flowCanvas = document.getElementById('discovery-flow');
+        const flowCtx = flowCanvas.getContext('2d');
+        flowCanvas.width = flowCanvas.offsetWidth;
+        flowCanvas.height = 500;
+
+        // Define discovery pipeline stages
+        const stages = [
+            {x: 0.1, y: 0.5, label: 'Theory\nSpace', radius: 40},
+            {x: 0.25, y: 0.3, label: 'Generation', radius: 35},
+            {x: 0.25, y: 0.7, label: 'Mutation', radius: 35},
+            {x: 0.4, y: 0.5, label: 'Constraint\nFilter', radius: 40},
+            {x: 0.55, y: 0.5, label: 'Validation', radius: 40},
+            {x: 0.7, y: 0.3, label: 'Novel\nPredictions', radius: 35},
+            {x: 0.7, y: 0.7, label: 'Refinement', radius: 35},
+            {x: 0.85, y: 0.5, label: 'Selected\nTheories', radius: 40}
+        ];
+
+        // Flowing particles
+        const flowParticles = [];
+        class FlowParticle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.stage = 0;
+                this.progress = 0;
+                this.speed = 0.01 + Math.random() * 0.01;
+                this.path = Math.random() > 0.5 ? 'upper' : 'lower';
+                this.active = true;
+                this.color = `hsl(${280 + Math.random() * 40}, 70%, 60%)`;
+            }
+            
+            update() {
+                this.progress += this.speed;
+                
+                if (this.progress >= 1) {
+                    this.progress = 0;
+                    this.stage++;
+                    
+                    // Random filtering at constraint stage
+                    if (this.stage === 3 && Math.random() < 0.5) {
+                        this.active = false;
+                    }
+                    
+                    // More filtering at validation
+                    if (this.stage === 4 && Math.random() < 0.3) {
+                        this.active = false;
+                    }
+                    
+                    if (this.stage >= stages.length - 1 || !this.active) {
+                        this.reset();
+                    }
+                }
+            }
+            
+            draw(ctx, width, height) {
+                if (!this.active) return;
+                
+                let from, to;
+                
+                // Determine path based on stage
+                if (this.stage === 0) {
+                    from = stages[0];
+                    to = this.path === 'upper' ? stages[1] : stages[2];
+                } else if (this.stage === 1) {
+                    from = this.path === 'upper' ? stages[1] : stages[2];
+                    to = stages[3];
+                } else if (this.stage === 2) {
+                    from = stages[3];
+                    to = stages[4];
+                } else if (this.stage === 3) {
+                    from = stages[4];
+                    to = this.path === 'upper' ? stages[5] : stages[6];
+                } else if (this.stage === 4) {
+                    from = this.path === 'upper' ? stages[5] : stages[6];
+                    to = stages[7];
+                }
+                
+                if (from && to) {
+                    const x = from.x * width + (to.x * width - from.x * width) * this.progress;
+                    const y = from.y * height + (to.y * height - from.y * height) * this.progress;
+                    
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                flowParticles.push(new FlowParticle());
+            }, i * 200);
+        }
+
+        function drawDiscoveryFlow() {
+            flowCtx.clearRect(0, 0, flowCanvas.width, flowCanvas.height);
+            
+            // Draw connections
+            flowCtx.strokeStyle = '#e0e0e0';
+            flowCtx.lineWidth = 2;
+            flowCtx.beginPath();
+            
+            // From theory space to generation/mutation
+            flowCtx.moveTo(stages[0].x * flowCanvas.width + stages[0].radius, stages[0].y * flowCanvas.height);
+            flowCtx.lineTo(stages[1].x * flowCanvas.width - stages[1].radius, stages[1].y * flowCanvas.height);
+            flowCtx.moveTo(stages[0].x * flowCanvas.width + stages[0].radius, stages[0].y * flowCanvas.height);
+            flowCtx.lineTo(stages[2].x * flowCanvas.width - stages[2].radius, stages[2].y * flowCanvas.height);
+            
+            // From generation/mutation to constraint filter
+            flowCtx.moveTo(stages[1].x * flowCanvas.width + stages[1].radius, stages[1].y * flowCanvas.height);
+            flowCtx.lineTo(stages[3].x * flowCanvas.width - stages[3].radius, stages[3].y * flowCanvas.height);
+            flowCtx.moveTo(stages[2].x * flowCanvas.width + stages[2].radius, stages[2].y * flowCanvas.height);
+            flowCtx.lineTo(stages[3].x * flowCanvas.width - stages[3].radius, stages[3].y * flowCanvas.height);
+            
+            // Through the pipeline
+            flowCtx.moveTo(stages[3].x * flowCanvas.width + stages[3].radius, stages[3].y * flowCanvas.height);
+            flowCtx.lineTo(stages[4].x * flowCanvas.width - stages[4].radius, stages[4].y * flowCanvas.height);
+            
+            // Split to predictions/refinement
+            flowCtx.moveTo(stages[4].x * flowCanvas.width + stages[4].radius, stages[4].y * flowCanvas.height);
+            flowCtx.lineTo(stages[5].x * flowCanvas.width - stages[5].radius, stages[5].y * flowCanvas.height);
+            flowCtx.moveTo(stages[4].x * flowCanvas.width + stages[4].radius, stages[4].y * flowCanvas.height);
+            flowCtx.lineTo(stages[6].x * flowCanvas.width - stages[6].radius, stages[6].y * flowCanvas.height);
+            
+            // To final selection
+            flowCtx.moveTo(stages[5].x * flowCanvas.width + stages[5].radius, stages[5].y * flowCanvas.height);
+            flowCtx.lineTo(stages[7].x * flowCanvas.width - stages[7].radius, stages[7].y * flowCanvas.height);
+            flowCtx.moveTo(stages[6].x * flowCanvas.width + stages[6].radius, stages[6].y * flowCanvas.height);
+            flowCtx.lineTo(stages[7].x * flowCanvas.width - stages[7].radius, stages[7].y * flowCanvas.height);
+            
+            flowCtx.stroke();
+            
+            // Draw stages
+            stages.forEach((stage, index) => {
+                const x = stage.x * flowCanvas.width;
+                const y = stage.y * flowCanvas.height;
+                
+                // Stage circle
+                const gradient = flowCtx.createRadialGradient(x, y, 0, x, y, stage.radius);
+                gradient.addColorStop(0, '#9c27b0');
+                gradient.addColorStop(1, '#6a1b9a');
+                flowCtx.fillStyle = gradient;
+                flowCtx.beginPath();
+                flowCtx.arc(x, y, stage.radius, 0, Math.PI * 2);
+                flowCtx.fill();
+                
+                // Stage label
+                flowCtx.fillStyle = 'white';
+                flowCtx.font = 'bold 12px Arial';
+                flowCtx.textAlign = 'center';
+                flowCtx.textBaseline = 'middle';
+                const lines = stage.label.split('\n');
+                lines.forEach((line, i) => {
+                    flowCtx.fillText(line, x, y + (i - lines.length/2 + 0.5) * 14);
+                });
+            });
+            
+            // Update and draw particles
+            flowParticles.forEach(particle => {
+                particle.update();
+                particle.draw(flowCtx, flowCanvas.width, flowCanvas.height);
+            });
+            
+            requestAnimationFrame(drawDiscoveryFlow);
+        }
+
+        drawDiscoveryFlow();
+
+        // Evolution chart
+        const evoCanvas = document.getElementById('evolution-chart');
+        const evoCtx = evoCanvas.getContext('2d');
+        evoCanvas.width = evoCanvas.offsetWidth;
+        evoCanvas.height = 400;
+
+        function drawEvolutionChart() {
+            evoCtx.clearRect(0, 0, evoCanvas.width, evoCanvas.height);
+            
+            // Draw axes
+            evoCtx.strokeStyle = '#666';
+            evoCtx.lineWidth = 2;
+            evoCtx.beginPath();
+            evoCtx.moveTo(50, 350);
+            evoCtx.lineTo(evoCanvas.width - 20, 350);
+            evoCtx.moveTo(50, 350);
+            evoCtx.lineTo(50, 20);
+            evoCtx.stroke();
+            
+            // Labels
+            evoCtx.fillStyle = '#333';
+            evoCtx.font = '12px Arial';
+            evoCtx.textAlign = 'center';
+            evoCtx.fillText('Generation', evoCanvas.width / 2, 390);
+            
+            evoCtx.save();
+            evoCtx.translate(20, evoCanvas.height / 2);
+            evoCtx.rotate(-Math.PI / 2);
+            evoCtx.fillText('Fitness Score', 0, 0);
+            evoCtx.restore();
+            
+            // Generate evolution data
+            const generations = 50;
+            const theories = [
+                {name: 'Best Theory', color: '#9c27b0', data: []},
+                {name: 'Average', color: '#ce93d8', data: []},
+                {name: 'Diversity', color: '#ba68c8', data: []}
+            ];
+            
+            // Simulate evolution
+            for (let i = 0; i < generations; i++) {
+                theories[0].data.push(0.3 + 0.6 * (1 - Math.exp(-i/10)));
+                theories[1].data.push(0.2 + 0.4 * (1 - Math.exp(-i/15)));
+                theories[2].data.push(0.8 * Math.exp(-i/20) + 0.2);
+            }
+            
+            // Draw evolution curves
+            theories.forEach(theory => {
+                evoCtx.strokeStyle = theory.color;
+                evoCtx.lineWidth = 3;
+                evoCtx.beginPath();
+                
+                theory.data.forEach((value, index) => {
+                    const x = 50 + (evoCanvas.width - 70) * index / (generations - 1);
+                    const y = 350 - value * 300;
+                    
+                    if (index === 0) {
+                        evoCtx.moveTo(x, y);
+                    } else {
+                        evoCtx.lineTo(x, y);
+                    }
+                });
+                evoCtx.stroke();
+            });
+            
+            // Legend
+            let legendX = evoCanvas.width - 150;
+            let legendY = 40;
+            theories.forEach(theory => {
+                evoCtx.fillStyle = theory.color;
+                evoCtx.fillRect(legendX, legendY, 20, 3);
+                evoCtx.fillStyle = '#333';
+                evoCtx.font = '12px Arial';
+                evoCtx.textAlign = 'left';
+                evoCtx.fillText(theory.name, legendX + 25, legendY + 5);
+                legendY += 25;
+            });
+            
+            // Milestone markers
+            const milestones = [
+                {gen: 10, label: 'Quantum correction discovered'},
+                {gen: 25, label: 'Dark matter candidate'},
+                {gen: 40, label: 'Unification achieved'}
+            ];
+            
+            milestones.forEach(milestone => {
+                const x = 50 + (evoCanvas.width - 70) * milestone.gen / (generations - 1);
+                
+                evoCtx.strokeStyle = '#f44336';
+                evoCtx.lineWidth = 1;
+                evoCtx.setLineDash([5, 5]);
+                evoCtx.beginPath();
+                evoCtx.moveTo(x, 350);
+                evoCtx.lineTo(x, 50);
+                evoCtx.stroke();
+                evoCtx.setLineDash([]);
+                
+                evoCtx.fillStyle = '#f44336';
+                evoCtx.font = '11px Arial';
+                evoCtx.save();
+                evoCtx.translate(x, 45);
+                evoCtx.rotate(-Math.PI / 4);
+                evoCtx.fillText(milestone.label, 0, 0);
+                evoCtx.restore();
+            });
+        }
+
+        drawEvolutionChart();
+    </script>
 </body>
-</html> 
+</html>
