@@ -5041,6 +5041,51 @@ def main():
                 shutil.copy2(file_path, reports_dir)
                 print(f"  Copied {os.path.basename(file_path)} to reports directory")
     
+    # Copy to docs/latest_run for easy access
+    try:
+        # Ensure docs/latest_run directory exists
+        docs_latest_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', 'latest_run')
+        os.makedirs(docs_latest_dir, exist_ok=True)
+        
+        # Find the most recent comprehensive report in the run directory
+        comprehensive_reports = glob.glob(os.path.join(reports_dir, "comprehensive_*.html"))
+        if comprehensive_reports:
+            # Sort by modification time to get the most recent
+            latest_report = max(comprehensive_reports, key=os.path.getmtime)
+            latest_report_path = os.path.join(docs_latest_dir, 'latest_report.html')
+            # Also preserve timestamped version
+            timestamped_report_path = os.path.join(docs_latest_dir, os.path.basename(latest_report))
+            shutil.copy2(latest_report, latest_report_path)
+            shutil.copy2(latest_report, timestamped_report_path)
+            print(f"\n  Copied comprehensive report to docs/latest_run/")
+        
+        # Copy leaderboard if it exists
+        if os.path.exists(os.path.join(reports_dir, "leaderboard.html")):
+            shutil.copy2(os.path.join(reports_dir, "leaderboard.html"), 
+                        os.path.join(docs_latest_dir, "leaderboard.html"))
+            print(f"  Copied leaderboard to docs/latest_run/")
+        
+        # Look for unified viewer in various possible locations
+        unified_viewer_paths = [
+            os.path.join(reports_dir, 'trajectory_viewers', 'unified_multi_particle_viewer_advanced.html'),
+            os.path.join(main_run_dir, 'trajectory_viewers', 'unified_multi_particle_viewer_advanced.html'),
+            os.path.join(main_run_dir, 'visualizations', 'unified_multi_particle_viewer_advanced.html')
+        ]
+        
+        for viewer_path in unified_viewer_paths:
+            if os.path.exists(viewer_path):
+                docs_viewers_dir = os.path.join(docs_latest_dir, 'trajectory_viewers')
+                os.makedirs(docs_viewers_dir, exist_ok=True)
+                latest_viewer_path = os.path.join(docs_viewers_dir, 'unified_multi_particle_viewer_advanced.html')
+                shutil.copy2(viewer_path, latest_viewer_path)
+                print(f"  Copied unified viewer to docs/latest_run/trajectory_viewers/")
+                break
+        
+        print(f"\n✓ Latest results available at: docs/latest_run/")
+        
+    except Exception as e:
+        print(f"\nWarning: Failed to copy files to docs/latest_run: {str(e)}")
+    
     # <reason>chain: Stop capturing output and save the log file</reason>
     run_logger.stop()
 

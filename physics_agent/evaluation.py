@@ -1714,6 +1714,37 @@ def main():
     if os.path.exists(unified_viewer):
         print(f"View interactive 3D trajectories: {unified_viewer}")
     
+    # Copy to docs/latest_run for easy access
+    try:
+        # Ensure docs/latest_run directory exists
+        docs_latest_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', 'latest_run')
+        os.makedirs(docs_latest_dir, exist_ok=True)
+        
+        # Copy comprehensive report to docs/latest_run
+        if os.path.exists(run_html_file):
+            # Create a simple filename without timestamp for easy access
+            latest_report_path = os.path.join(docs_latest_dir, 'latest_report.html')
+            shutil.copy(run_html_file, latest_report_path)
+            
+            # Also preserve timestamped version
+            timestamped_report_path = os.path.join(docs_latest_dir, os.path.basename(run_html_file))
+            shutil.copy(run_html_file, timestamped_report_path)
+            
+            print(f"\nCopied comprehensive report to docs/latest_run/")
+        
+        # Copy unified viewer to docs/latest_run/trajectory_viewers/
+        if os.path.exists(unified_viewer):
+            docs_viewers_dir = os.path.join(docs_latest_dir, 'trajectory_viewers')
+            os.makedirs(docs_viewers_dir, exist_ok=True)
+            latest_viewer_path = os.path.join(docs_viewers_dir, 'unified_multi_particle_viewer_advanced.html')
+            shutil.copy(unified_viewer, latest_viewer_path)
+            print(f"Copied unified viewer to docs/latest_run/trajectory_viewers/")
+            
+        print(f"\n✓ Latest results available at: docs/latest_run/")
+        
+    except Exception as e:
+        print(f"\nWarning: Failed to copy files to docs/latest_run: {str(e)}")
+    
     # Check what files were actually created
     print("\nGenerated files:")
     if os.path.exists(run_dir):
