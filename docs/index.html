@@ -728,7 +728,7 @@
                             <div class="flex items-stretch">
                                 <div class="flex-1 p-4 space-y-1">
                                     <div id="homepage-install-command" class="font-mono text-sm">
-                                        <span class="text-accent">git clone</span> <span class="text-ink">https://github.com/albertai/albert.git</span> <span class="text-muted">&& cd albert && pip install -r requirements.txt</span>
+                                        <span class="text-accent">curl -fsSL</span> <span class="text-ink">https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh</span> <span class="text-muted">| bash</span>
                                     </div>
                                 </div>
                                 <button 
@@ -1934,7 +1934,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
 
         // Copy homepage command function
         function copyHomepageCommand() {
-            const command = 'git clone https://github.com/albertai/albert.git && cd albert && pip install -r requirements.txt';
+            const command = 'curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash';
             navigator.clipboard.writeText(command).then(() => {
                 // Show check icon
                 document.getElementById('homepage-copy-icon').classList.add('hidden');
