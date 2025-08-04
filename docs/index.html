@@ -459,19 +459,12 @@
                 <div class="space-y-6">
                     <!-- One-line install -->
                     <div>
-                        <h3 class="text-xl font-bold text-ink mb-2">Installation</h3>
-                        <div class="bg-code-bg border border-code-border rounded-xl p-4 space-y-2 font-mono text-sm">
-                            <div><span class="text-muted"># Clone the repository</span></div>
-                            <div class="text-accent">git clone https://github.com/albertai/albert.git</div>
-                            <div class="text-accent">cd albert</div>
-                            <div class="mt-2"><span class="text-muted"># Install dependencies</span></div>
-                            <div class="text-accent">pip install -r requirements.txt</div>
-                        </div>
-                        <div class="relative group hidden">
+                        <h3 class="text-xl font-bold text-ink mb-2">One-line Installation</h3>
+                        <div class="relative group">
                             <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
                                 <div class="flex items-stretch">
                                     <div class="flex-1 p-4">
-                                        <code id="modal-install-command" class="text-ink font-mono text-sm break-all select-all">git clone https://github.com/albertai/albert.git</code>
+                                        <code id="modal-install-command" class="text-ink font-mono text-sm break-all select-all">curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash</code>
                                     </div>
                                     <button 
                                         onclick="copyModalCommand()" 
@@ -825,160 +818,116 @@
         <!-- The Emotional Journey Begins -->
         <section id="journey" class="relative">
                     <!-- Chapter 2: Real-Time Theory Testing -->
-        <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper pt-16 md:pt-0">
-                <div class="max-w-5xl mx-auto">
+        <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper pt-16 md:pt-0">
+                <div class="max-w-7xl mx-auto">
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        <div class="space-y-6">
-                            <h3 class="text-4xl lg:text-5xl font-display font-bold text-accent">
-                                Real-Time Theory Testing
-                            </h3>
+                    <!-- Section Header -->
+                    <div class="text-center mb-12">
+                        <h3 class="text-4xl lg:text-5xl font-display font-bold text-accent mb-6">
+                           A simulator just for physics research
+                        </h3>
+                        <div class="max-w-4xl mx-auto space-y-4">
                             <p class="text-lg font-serif text-ink">
-                                Define your theory as code. Let the engine do the rest. In traditional physics, 
-                                testing a new theory takes years of mathematical derivation and numerical implementation. 
-                                Albert changes everything - just specify your metric tensor and field equations.
+                                Just as AlphaFold revolutionized biology by translating protein folding into a differentiable, learnable simulation space, Albert brings the same paradigm to fundamental physics. By expressing your theory as code—defining metric tensors and field equations—you embed it in a framework where reinforcement learning and gradient-based optimization become possible. This differential approach enables the engine to iteratively improve theories across generations, integrating experimental data and external sources to refine predictions. The result: a scientific environment where physical laws can be tested, validated, and evolved in silico, accelerating discovery through automated, data-driven feedback.
                             </p>
-                            <p class="text-lg font-serif text-ink">
-                                The framework builds on Einstein's vision: that geometry itself could unify all forces. 
-                                His final calculations explored asymmetric metrics where g<sub>μν</sub> ≠ g<sub>νμ</sub>, 
-                                hoping the antisymmetric part would become electromagnetism.
-                            </p>
-                            <p class="text-lg font-serif text-ink">
-                                Today, Albert lets you test these ideas instantly. The engine handles automatic 
-                                differentiation for Christoffel symbols, symplectic integration for geodesics, 
-                                and parallel validation against 21 experimental tests.
-                            </p>
-                        
-                            <p class="text-lg font-serif text-ink">
-                                Like AlphaFold transformed biology by moving protein folding into computable space, 
-                                Albert transforms physics. Instead of waiting centuries to test quantum gravity theories 
-                                experimentally, we simulate them in a fully differential PyTorch environment. 
-                            </p>
+ 
                         </div>
-                        
-                        <div class="relative">
-                            <!-- Einstein's Final Work - Interactive -->
-                            <div class="bg-white rounded-2xl shadow-2xl border border-code-border overflow-hidden">
-                                <div class="bg-gradient-to-r from-accent/10 to-muted/10 p-4 border-b border-code-border">
-                                    <h4 class="text-lg font-bold text-center text-accent">Theory Components • Real-Time Testing</h4>
+                    </div>
+                    
+                    <!-- Theory Engine Visualization - Full Width -->
+                    <div class="mb-20">
+                        <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-8 border border-code-border/30">
+                            <canvas id="theoryEngineCanvas" width="1200" height="800" class="w-full"></canvas>
+                        </div>
+                        <p class="text-center text-sm text-muted mt-4 italic">
+                            Watch how Albert validates your theory in real-time against classical black hole trajectories
+                        </p>
+                    </div>
+                    
+                    <!-- Additional Context Below Animation -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto">
+                        <div class="space-y-6">
+                            <h4 class="text-2xl font-bold text-accent">How It Works</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <span class="text-accent font-bold">1</span>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-ink mb-1">Define Your Metric</h5>
+                                        <p class="text-sm text-muted">
+                                            Write your gravitational theory as Python code. Include quantum corrections, 
+                                            torsion terms, or any modifications to Einstein's equations.
+                                        </p>
+                                    </div>
                                 </div>
-                                
-                                <div class="p-6 space-y-4">
-                                    <!-- Asymmetric Metric -->
-                                    <div class="group bg-paper hover:bg-accent/5 p-4 rounded-xl transition-all cursor-pointer border border-transparent hover:border-accent/30" onclick="toggleEinsteinDetail('einstein-asymmetric')">
-                                        <h5 class="font-bold text-accent mb-2">Define Your Metric</h5>
-                                        <div class="font-mono text-xl text-center mb-2">
-                                            g<sub>μν</sub> = your_theory_metric()
-                                        </div>
-                                        <p class="text-sm text-muted text-center italic">
-                                            Symmetric or asymmetric
-                                        </p>
-                                        <div id="einstein-asymmetric-detail" class="mt-4 pt-4 border-t border-accent/20 hidden">
-                                            <h6 class="font-bold text-sm mb-2 text-accent">Understanding Metric Tensors</h6>
-                                            <p class="text-xs mb-2">
-                                                The metric tensor defines spacetime geometry. In General Relativity, it's symmetric: 
-                                                g<sub>μν</sub> = g<sub>νμ</sub>. But Albert supports any metric structure:
-                                            </p>
-                                            <div class="bg-accent/5 rounded p-2 mb-2 font-mono text-xs">
-                                                # Standard Schwarzschild<br>
-                                                g_tt = -(1 - 2*M/r)<br>
-                                                # Your quantum gravity theory<br>
-                                                g_tt = -(1 - 2*M/r + α/r³)
-                                            </div>
-                                            <p class="text-xs">
-                                                The engine automatically computes Christoffel symbols, Riemann tensors, and 
-                                                geodesics from your metric. No manual derivation needed!
-                                            </p>
-                                        </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-quantum/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <span class="text-quantum font-bold">2</span>
                                     </div>
-                                    
-                                    <!-- Connection -->
-                                    <div class="group bg-paper hover:bg-quantum/5 p-4 rounded-xl transition-all cursor-pointer border border-transparent hover:border-quantum/30" onclick="toggleEinsteinDetail('einstein-connection')">
-                                        <h5 class="font-bold text-quantum mb-2">Automatic Differentiation</h5>
-                                        <div class="font-mono text-lg text-center mb-2">
-                                            Γ<sup>λ</sup><sub>μν</sub> = autodiff(g<sub>μν</sub>)
-                                        </div>
-                                        <p class="text-sm text-muted text-center italic">
-                                            PyTorch handles derivatives
+                                    <div>
+                                        <h5 class="font-bold text-ink mb-1">Automatic Computation</h5>
+                                        <p class="text-sm text-muted">
+                                            Albert automatically computes Christoffel symbols, geodesic equations, 
+                                            and conservation laws using symbolic differentiation.
                                         </p>
-                                        <div id="einstein-connection-detail" class="mt-4 pt-4 border-t border-quantum/20 hidden">
-                                            <h6 class="font-bold text-sm mb-2 text-quantum">The Power of Automatic Differentiation</h6>
-                                            <p class="text-xs mb-2">
-                                                Computing Christoffel symbols by hand is error-prone and tedious. Albert uses 
-                                                PyTorch's autograd to compute them automatically:
-                                            </p>
-                                            <div class="bg-quantum/5 rounded p-2 mb-2 font-mono text-xs">
-                                                # Traditional: pages of algebra<br>
-                                                Γ<sup>r</sup><sub>tt</sub> = M(r-2M)/r³<br>
-                                                # Albert: automatic<br>
-                                                gamma = christoffel(metric)
-                                            </div>
-                                            <p class="text-xs">
-                                                This extends to all tensor operations: Riemann curvature, Ricci tensor, 
-                                                Einstein tensor - all computed automatically and differentiably.
-                                            </p>
-                                        </div>
                                     </div>
-                                    
-                                    <!-- Field Tensor -->
-                                    <div class="group bg-paper hover:bg-success/5 p-4 rounded-xl transition-all cursor-pointer border border-transparent hover:border-success/30" onclick="toggleEinsteinDetail('einstein-field')">
-                                        <h5 class="font-bold text-success mb-2">Instant Validation</h5>
-                                        <div class="font-mono text-lg text-center mb-2">
-                                            results = theory.validate()
-                                        </div>
-                                        <p class="text-sm text-muted text-center italic">
-                                            21 tests in seconds
-                                        </p>
-                                        <div id="einstein-field-detail" class="mt-4 pt-4 border-t border-success/20 hidden">
-                                            <h6 class="font-bold text-sm mb-2 text-success">Comprehensive Test Suite</h6>
-                                            <p class="text-xs mb-2">
-                                                Every theory is automatically tested against experimental data:
-                                            </p>
-                                            <div class="bg-success/5 rounded p-2 mb-2 font-mono text-xs">
-                                                Classical: Mercury, light bending<br>
-                                                Quantum: g-2, Lamb shift<br>
-                                                Strong field: LIGO, pulsars<br>
-                                                Cosmological: dark matter, expansion
-                                            </div>
-                                            <p class="text-xs">
-                                                Results include confidence intervals, systematic errors, and comparisons 
-                                                to General Relativity. All computed in parallel on GPU.
-                                            </p>
-                                        </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <span class="text-success font-bold">3</span>
                                     </div>
-                                    
-                                    <!-- The Vision -->
-                                    <div class="border-t border-code-border pt-4 mt-4">
-                                        <h5 class="font-bold text-accent mb-2">The Workflow:</h5>
-                                        <p class="text-sm text-ink">
-                                            1. Define your metric tensor → describes spacetime
-                                        </p>
-                                        <p class="text-sm text-ink mt-2">
-                                            2. Specify field equations → dynamics of gravity 
-                                        </p>
-                                        <p class="text-sm text-ink mt-2">
-                                            3. Run validation → instant experimental comparison
-                                        </p>
-                                        <div class="bg-accent/10 rounded-lg p-3 mt-3 border border-accent/30">
-                                            <p class="text-sm font-medium text-accent">Total Time:</p>
-                                            <p class="text-xs text-ink mt-1">
-                                                Minutes instead of years. Focus on physics, not numerics.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="text-center mt-4">
-                                        <p class="text-xs text-muted italic">
-                                            The future of theoretical physics is computational
+                                    <div>
+                                        <h5 class="font-bold text-ink mb-1">Real-Time Validation</h5>
+                                        <p class="text-sm text-muted">
+                                            Your theory is tested against experimental data, from GPS satellites 
+                                            to gravitational waves, with results in milliseconds.
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="space-y-6">
+                            <h4 class="text-2xl font-bold text-quantum">Key Features</h4>
+                            <div class="bg-gradient-to-r from-accent/5 to-quantum/5 rounded-2xl p-6 border border-accent/20">
+                                <ul class="space-y-3">
+                                    <li class="flex items-center gap-3">
+                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="text-sm">Supports symmetric and asymmetric metric tensors</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="text-sm">Automatic symbolic differentiation for all geometric quantities</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="text-sm">GPU-accelerated trajectory integration</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="text-sm">Comparison with 21 experimental tests</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-6 text-center">
+                                    <a href="documentation.html" target="_blank" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition shadow-sm">
+                                        <span>Explore Documentation</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-
                 </div>
             </section>
             
@@ -1200,20 +1149,7 @@
                 </div>
             </div>
 
-            <!-- Real-Time Theory Testing Pipeline -->
-            <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper">
-                
-                <div class="max-w-7xl mx-auto">
-                    
-                    
-                    <!-- Theory Engine Visualization - Full Width -->
-                    <div class="mb-20">
-                        <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-8 border border-code-border/30">
-                            <canvas id="theoryEngineCanvas" width="1200" height="800" class="w-full"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
              <!-- Chapter 5: The Theory Engine -->
              <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
@@ -1622,16 +1558,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
             <!-- Chapter 7: World Model Vision -->
             <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
                 <div class="max-w-7xl mx-auto">
-                   
-                    <h3 class="text-5xl lg:text-7xl font-display font-bold text-center text-accent mb-8">
-                        Towards merging physics, machine learning, and games into one open engine
-                    </h3>
-                    
-                    <p class="text-2xl text-center font-serif text-ink mb-20 max-w-4xl mx-auto">
-                        Merging machine learning, physics, and eventually games into one fully differential engine rooted in reality and code
-                    </p>
-                    
-                   
+                
                     
                     <!-- Core Capabilities -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
@@ -2309,7 +2236,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                 ctx.font = 'bold 28px Playfair Display, serif';
                 ctx.fillStyle = colors.accent;
                 ctx.textAlign = 'center';
-                ctx.fillText('Real-Time Theory Testing: Classical Trajectory Validation', theoryEngineCanvas.width/2, 40);
+                ctx.fillText('Theories as Code', theoryEngineCanvas.width/2, 40);
                 
                 // Subtitle
                 ctx.font = '16px EB Garamond, serif';
