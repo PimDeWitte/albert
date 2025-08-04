@@ -342,7 +342,7 @@
         let animationTime = 0;
         let isPlaying = true;
         let animationSpeed = 1.0;
-        let currentView = 'third';
+        let currentView = 'top';
         let primaryParticle = 'electron';
         let mountedParticle = null;
         let currentTheory = null;
@@ -443,7 +443,7 @@
             document.getElementById('schwarzschildRadius').textContent = (2 * M).toFixed(3) + ' (scaled)';
             
             // Set initial camera position
-            setView('third');
+            setView('top');
             
             // Load first theory by default
             const firstTheory = document.getElementById('theorySelect').querySelector('option:not([value=""])');

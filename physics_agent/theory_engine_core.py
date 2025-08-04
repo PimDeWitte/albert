@@ -315,6 +315,22 @@ class TheoryEngine:
         from physics_agent.utils import get_metric_wrapper
         metric_func = get_metric_wrapper(model.get_metric)
         
+        # <reason>chain: Calculate particle entropy for ASEC_Decoherence theory</reason>
+        if hasattr(model, '__class__') and model.__class__.__name__ == 'ASEC_Decoherence':
+            # Load particle object to calculate entropy
+            particle = None
+            if particle_name:
+                particle = self.particle_loader.get_particle(particle_name)
+            
+            if particle:
+                from physics_agent.functions import calculate_particle_entropy
+                # Calculate entropy without temperature (ground state)
+                S_particle = calculate_particle_entropy(particle)
+                metric_kwargs['S_particle'] = S_particle
+            else:
+                # Default entropy if particle not found
+                metric_kwargs['S_particle'] = 0.0
+        
         g_tt, g_rr, g_pp, g_tp = metric_func(
             r=r, 
             M=torch.tensor(self.M, device=self.device, dtype=self.dtype),
@@ -812,6 +828,13 @@ class TheoryEngine:
                         print(f"Warning: Particle '{particle_name}' not found")
                 return None, f"particle_{particle_name}_not_found", []
             # Apply particle properties (mass, charge, spin) in solver selection below
+            
+            # <reason>chain: Calculate particle entropy for ASEC_Decoherence theory</reason>
+            if hasattr(model, '__class__') and model.__class__.__name__ == 'ASEC_Decoherence':
+                from physics_agent.functions import calculate_particle_entropy
+                S_particle = calculate_particle_entropy(particle)
+                # Add to optimization_kwargs so it gets passed to geodesic solver
+                optimization_kwargs['S_particle'] = S_particle
         
         # <reason>chain: Check if we should use quantum trajectory calculator for quantum theories</reason>
         theory_category = getattr(model, 'category', 'unknown')
@@ -3049,7 +3072,7 @@ def process_and_evaluate_theory(
                     'particle_properties': particle_result['particle_properties']
                 }
                 
-                engine.visualizer.generate_comparison_plot(
+                engine.visualizer.generate_trajectory_comparison(
                     model, particle_result['trajectory'], baseline_results, baseline_theories,
                     particle_plot_filename, engine.rs, 
                     final_validation_results,
@@ -4188,8 +4211,7 @@ def main():
                 'test_results': test_results
             }
             
-            # Copy comprehensive test results to run directory
-            copy_comprehensive_results_to_run()
+            # Note: Results will be copied to run directory later when it's created
             
             # By default, exit after comprehensive test unless --continue-after-test is set
             if not (hasattr(args, 'continue_after_test') and args.continue_after_test):
@@ -4486,7 +4508,7 @@ def main():
     
     print(f"Run directory: {main_run_dir}")
     
-    # <reason>chain: Copy comprehensive test results, viewers, and weights to run directory if they exist</reason>
+    # <reason>chain: Define copy function before it's used in comprehensive test</reason>
     def copy_comprehensive_results_to_run():
         """Copy comprehensive test results, viewers and weights to the run directory."""
         import shutil

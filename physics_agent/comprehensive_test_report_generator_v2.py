@@ -528,25 +528,7 @@ class ComprehensiveTestReportGenerator:
         except Exception as e:
             print(f"Error generating unified viewer: {e}")
             
-        # Also generate individual viewers for backward compatibility
-        try:
-            from physics_agent.ui.multi_particle_trajectory_viewer_generator import (
-                generate_multi_particle_viewer_from_run
-            )
-            
-            for result in results:
-                theory_name = result['theory']
-                clean_name = theory_name.replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '')
-                
-                try:
-                    viewer_path = os.path.join(viewers_dir, f'{clean_name}_multi_particle_viewer.html')
-                    generate_multi_particle_viewer_from_run(
-                        theory_name=theory_name,
-                        run_dir=output_dir,
-                        output_path=viewer_path,
-                        black_hole_mass=9.945e13
-                    )
-                except Exception as e:
-                    print(f"Warning: Could not generate viewer for {theory_name}: {e}")
-        except:
-            pass
+        # Individual viewers removed - using unified viewer only
+        # Individual theory viewers were generating files like:
+        # Non-Commutative_Geometry_multi_particle_viewer.html
+        # These are no longer needed as the unified viewer handles all theories

@@ -259,13 +259,24 @@ class UnifiedTrajectoryCalculator:
         # Compute amplitude and probability
         amplitude = None
         if method == 'monte_carlo':
-            amplitude = self.quantum_integrator.compute_amplitude_monte_carlo(
-                start_state, end_state, num_samples=num_samples, **kwargs
-            )
+            # Check if quantum_integrator has the method (UnifiedQuantumSolver vs QuantumPathIntegrator)
+            if hasattr(self.quantum_integrator, 'compute_amplitude_monte_carlo'):
+                amplitude = self.quantum_integrator.compute_amplitude_monte_carlo(
+                    start_state, end_state, num_samples=num_samples, **kwargs
+                )
+            elif hasattr(self.quantum_integrator, '_amplitude_monte_carlo'):
+                amplitude = self.quantum_integrator._amplitude_monte_carlo(
+                    start_state, end_state, num_paths=num_samples, **kwargs
+                )
         elif method == 'wkb':
-            amplitude = self.quantum_integrator.compute_amplitude_wkb(
-                start_state, end_state, **kwargs
-            )
+            if hasattr(self.quantum_integrator, 'compute_amplitude_wkb'):
+                amplitude = self.quantum_integrator.compute_amplitude_wkb(
+                    start_state, end_state, **kwargs
+                )
+            elif hasattr(self.quantum_integrator, '_amplitude_wkb'):
+                amplitude = self.quantum_integrator._amplitude_wkb(
+                    start_state, end_state, **kwargs
+                )
             
         probability = abs(amplitude) ** 2 if amplitude is not None else 0.0
         

@@ -247,6 +247,13 @@
             </select>
         </div>
         
+        <h3 style="margin-top: 20px;">Compare Trajectories</h3>
+        <div class="theory-selector">
+            <select id="overlaySelect">
+                <option value="">No Overlay...</option>
+            </select>
+        </div>
+        
         <h3 style="margin-top: 20px;">View Controls</h3>
         <button class="button" onclick="setView('third')">Third Person</button>
         <button class="button" onclick="setView('top')">Top View</button>
@@ -346,6 +353,9 @@
         let primaryParticle = 'electron';
         let mountedParticle = null;
         let currentTheory = null;
+        let overlayTheory = null;
+        let overlayTrajectories = {};
+        let overlayParticles = {};
         let spacetimeGrid = null;
         let raycaster, mouse;
         let hoveredObject = null;
@@ -434,6 +444,7 @@
             document.getElementById('speedSlider').addEventListener('input', updateSpeed);
             document.getElementById('timeSlider').addEventListener('input', updateTimeFromSlider);
             document.getElementById('theorySelect').addEventListener('change', onTheoryChange);
+            document.getElementById('overlaySelect').addEventListener('change', onOverlayChange);
             
             // Mouse events
             renderer.domElement.addEventListener('mousemove', onMouseMove);
@@ -702,6 +713,7 @@
         
         function populateTheorySelector() {
             const select = document.getElementById('theorySelect');
+            const overlaySelect = document.getElementById('overlaySelect');
             
             // Group theories by category
             const categories = {};
@@ -713,19 +725,28 @@
                 categories[category].push(theoryName);
             }
             
-            // Add options grouped by category
+            // Add options grouped by category to both selects
             for (const [category, theories] of Object.entries(categories)) {
                 const optgroup = document.createElement('optgroup');
                 optgroup.label = category.charAt(0).toUpperCase() + category.slice(1);
+                
+                const overlayOptgroup = document.createElement('optgroup');
+                overlayOptgroup.label = category.charAt(0).toUpperCase() + category.slice(1);
                 
                 theories.sort().forEach(theory => {
                     const option = document.createElement('option');
                     option.value = theory;
                     option.textContent = theory;
                     optgroup.appendChild(option);
+                    
+                    const overlayOption = document.createElement('option');
+                    overlayOption.value = theory;
+                    overlayOption.textContent = theory;
+                    overlayOptgroup.appendChild(overlayOption);
                 });
                 
                 select.appendChild(optgroup);
+                overlaySelect.appendChild(overlayOptgroup);
             }
         }
         
@@ -734,6 +755,20 @@
             if (!theoryName) return;
             
             loadTheory(theoryName);
+        }
+        
+        function onOverlayChange(event) {
+            const overlayName = event.target.value;
+            
+            // Clear existing overlay
+            clearOverlay();
+            
+            if (!overlayName) {
+                overlayTheory = null;
+                return;
+            }
+            
+            loadOverlay(overlayName);
         }
         
         function loadTheory(theoryName) {
@@ -812,6 +847,116 @@
             particles = {};
             trajectoryLines = {};
             currentPositions = {};
+        }
+        
+        function clearOverlay() {
+            // Remove overlay particles
+            for (const name in overlayParticles) {
+                if (overlayParticles[name]) {
+                    scene.remove(overlayParticles[name]);
+                    if (overlayParticles[name].geometry) overlayParticles[name].geometry.dispose();
+                    if (overlayParticles[name].material) overlayParticles[name].material.dispose();
+                }
+            }
+            // Remove overlay trajectories
+            for (const name in overlayTrajectories) {
+                if (overlayTrajectories[name]) {
+                    scene.remove(overlayTrajectories[name]);
+                    if (overlayTrajectories[name].geometry) overlayTrajectories[name].geometry.dispose();
+                    if (overlayTrajectories[name].material) overlayTrajectories[name].material.dispose();
+                }
+            }
+            
+            overlayParticles = {};
+            overlayTrajectories = {};
+            overlayPositions = {};
+        }
+        
+        function loadOverlay(theoryName) {
+            overlayTheory = theoryName;
+            const theoryData = runData[theoryName];
+            
+            if (!theoryData) {
+                console.error('Overlay theory data not found:', theoryName);
+                return;
+            }
+            
+            // Load overlay particle data
+            const particleData = theoryData.particles || {};
+            
+            // Create overlay visualizations
+            for (const [particleName, data] of Object.entries(particleData)) {
+                if (data && data.positions) {
+                    createOverlayVisualization(particleName, data);
+                }
+            }
+        }
+        
+        function createOverlayVisualization(particleName, data) {
+            // Create semi-transparent particle for overlay
+            const geometry = new THREE.SphereGeometry(0.8, 16, 16);
+            const material = new THREE.MeshPhongMaterial({
+                color: particleColors[particleName] || 0xffffff,
+                emissive: particleColors[particleName] || 0xffffff,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.4
+            });
+            
+            const particle = new THREE.Mesh(geometry, material);
+            particle.name = `overlay_${particleName}`;
+            particle.userData = {
+                type: 'overlay_particle',
+                name: particleName,
+                trajectory: data
+            };
+            
+            overlayParticles[particleName] = particle;
+            scene.add(particle);
+            
+            // Create dashed trajectory line for overlay
+            if (data.positions && data.positions.length > 0) {
+                const points = [];
+                for (let i = 0; i < data.positions.length; i++) {
+                    const pos = data.positions[i];
+                    const r = pos[0];
+                    const phi = pos[1];
+                    
+                    const x = r * Math.cos(phi);
+                    const z = r * Math.sin(phi);
+                    
+                    // Apply Flamm's paraboloid embedding
+                    const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+                    const y = height * 2;
+                    
+                    points.push(new THREE.Vector3(x, y, z));
+                }
+                
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                
+                // Use dashed line material for overlay
+                const lineMaterial = new THREE.LineDashedMaterial({
+                    color: particleColors[particleName] || 0xffffff,
+                    opacity: 0.6,
+                    transparent: true,
+                    dashSize: 3,
+                    gapSize: 2,
+                    linewidth: 2
+                });
+                
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                line.computeLineDistances();
+                line.name = `overlay_trajectory_${particleName}`;
+                
+                overlayTrajectories[particleName] = line;
+                scene.add(line);
+                
+                // Initialize position
+                if (data.positions.length > 0) {
+                    const pos = data.positions[0];
+                    overlayPositions[particleName] = 0;
+                }
+            }
         }
         
         function createParticleControls(particleData) {
@@ -959,6 +1104,24 @@
             particle.position.y = height * 2;  // Scale up for visibility
             
             currentPositions[particleName] = position;
+        }
+        
+        function updateOverlayParticlePosition(particleName, position) {
+            const particle = overlayParticles[particleName];
+            if (!particle) return;
+            
+            const r = position[0];
+            const phi = position[1];
+            
+            // Position particle on curved spacetime surface
+            particle.position.x = r * Math.cos(phi);
+            particle.position.z = r * Math.sin(phi);
+            
+            // Apply Flamm's paraboloid embedding
+            const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+            particle.position.y = height * 2;
+            
+            overlayPositions[particleName] = position;
         }
         
         function toggleParticle(particleName) {
@@ -1295,6 +1458,18 @@
                     }
                 }
                 
+                // Update overlay particle positions if overlay is active
+                if (overlayTheory) {
+                    const overlayData = runData[overlayTheory];
+                    for (const [particleName, data] of Object.entries(overlayData.particles || {})) {
+                        if (data && data.positions && overlayParticles[particleName]) {
+                            const index = Math.floor(animationTime * (data.positions.length - 1));
+                            const position = data.positions[Math.min(index, data.positions.length - 1)];
+                            updateOverlayParticlePosition(particleName, position);
+                        }
+                    }
+                }
+                
                 // Update tensor info if camera is mounted
                 if (mountedParticle) {
                     updateTensorInfo();
@@ -1353,6 +1528,22 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function updateOverlayParticlePosition(particleName, position) {
+            const particle = overlayParticles[particleName];
+            if (!particle) return;
+            
+            const r = position[0];
+            const phi = position[1];
+            
+            // Position overlay particle on curved spacetime surface
+            particle.position.x = r * Math.cos(phi);
+            particle.position.z = r * Math.sin(phi);
+            
+            // Apply Flamm's paraboloid embedding
+            const height = r > 2 ? -2 * Math.sqrt(2 * M * (r - 2 * M)) : 0;
+            particle.position.y = height * 2;
         }
         
         function fitCameraToScene() {

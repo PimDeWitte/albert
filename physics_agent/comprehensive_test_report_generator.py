@@ -106,7 +106,7 @@ class ComprehensiveTestReportGenerator:
             '        .test-name { font-weight: 500; margin-bottom: 5px; }',
             '        .test-details { font-size: 0.9em; color: #7f8c8d; }',
             '        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }',
-            '        .loss-value { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }',
+    
             '        .timing-info { color: #7f8c8d; font-size: 0.85em; margin-top: 5px; }',
             '        .note-box { background: #fff9c4; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #fbc02d; }',
             '        .legend { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; }',
@@ -177,7 +177,7 @@ class ComprehensiveTestReportGenerator:
             '                ${particleLinks}',
             '                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">',
             f'                    <a href="{viz_path}/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>',
-            '                    <a href="trajectory_viewers/" + safeName + "_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em;">🌐 Interactive 3D Viewer</a>',
+            '                    <a href="trajectory_viewers/unified_multi_particle_viewer_advanced.html" target="_blank" style="font-size: 1.1em;">🌐 Interactive 3D Viewer (All Theories)</a>',
             '                </div>',
             '            `;',
             '            ',
@@ -374,7 +374,6 @@ class ComprehensiveTestReportGenerator:
                 f'                    <td class="score">{result["combined_summary"]["success_rate"]*100:.1f}%</td>',
                 f'                    <td>{result["analytical_summary"]["passed"]}/{result["analytical_summary"]["total"]}</td>',
                 f'                    <td>{solver_str}</td>',
-                f'                    <td class="loss-value">{loss_str}</td>',
                 f'                    <td class="distance-divergence">{combined_str}</td>',
                 f'                    <td class="timing-info">{time_str}</td>',
                 f'                    <td><button class="view-trajectory-btn" onclick="viewTrajectory(\'{result["theory"]}\')">View Trajectory</button></td>',
@@ -595,6 +594,9 @@ class ComprehensiveTestReportGenerator:
     
     def _generate_trajectory_viewers(self, results: List[Dict[str, Any]], output_dir: str):
         """Generate individual trajectory viewer HTML files for each theory."""
+        # Skip individual viewer generation - unified viewer handles this better
+        return
+        
         viewers_dir = os.path.join(output_dir, 'trajectory_viewers')
         os.makedirs(viewers_dir, exist_ok=True)
         

@@ -1,0 +1,3096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Theory Validation Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
+        .timestamp { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .summary-card { background: #ecf0f1; padding: 20px; border-radius: 6px; text-align: center; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #34495e; font-size: 0.9em; text-transform: uppercase; }
+        .summary-card .value { font-size: 2.5em; font-weight: bold; color: #3498db; }
+        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; }
+        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }
+        tr:hover { background-color: #f8f9fa; }
+        .rank { font-weight: bold; text-align: center; }
+        .category-baseline { color: #2c3e50; font-weight: bold; }
+        .category-classical { color: #3498db; font-weight: bold; }
+        .category-quantum { color: #9b59b6; font-weight: bold; }
+        .score { text-align: center; font-weight: 500; }
+        .pass { color: #27ae60; }
+        .fail { color: #e74c3c; }
+        .warning { color: #f39c12; }
+        .details-section { margin-top: 40px; }
+        .theory-detail { background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        .theory-detail h3 { margin-top: 0; color: #2c3e50; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 15px; }
+        .test-result { background: white; padding: 15px; border-radius: 6px; border: 1px solid #ecf0f1; }
+        .test-result.pass { border-left: 4px solid #27ae60; }
+        .test-result.fail { border-left: 4px solid #e74c3c; }
+        .test-result.warning { border-left: 4px solid #f39c12; }
+        .test-name { font-weight: 500; margin-bottom: 5px; }
+        .test-details { font-size: 0.9em; color: #7f8c8d; }
+        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }
+        .loss-value { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        .timing-info { color: #7f8c8d; font-size: 0.85em; margin-top: 5px; }
+        .note-box { background: #fff9c4; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #fbc02d; }
+        .legend { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .legend h4 { margin-top: 0; color: #34495e; }
+        .legend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            table { font-size: 0.9em; }
+            th, td { padding: 8px; }
+        }
+        .view-trajectory-btn { background: #4a9eff; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .view-trajectory-btn:hover { background: #357abd; }
+        .trajectory-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 1000; max-width: 90vw; max-height: 90vh; overflow: auto; }
+        .trajectory-popup.show { display: block; }
+        .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
+        .popup-overlay.show { display: block; }
+        /* Tooltip styles */
+        .tooltip { position: relative; display: inline-block; cursor: help; }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        .tooltiptext { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 12px; line-height: 1.4; }
+        .tooltiptext::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent; }
+        .distance-divergence { font-size: 0.85em; line-height: 1.5; }
+        .distance-divergence strong { color: #34495e; font-size: 0.9em; }
+        .progressive-loss-label { color: #666; font-size: 0.85em; font-weight: normal; }
+        /* Log viewer styles */
+        .log-section { margin-top: 40px; }
+        .log-viewer { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 12px; line-height: 1.5; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
+        .log-toggle { background: #666; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }
+        .log-toggle:hover { background: #777; }
+        .popup-close { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .trajectory-image { max-width: 100%; height: auto; }
+        .trajectory-links { margin-top: 15px; }
+        .trajectory-links a { margin-right: 15px; }
+    </style>
+    <script>
+        function viewTrajectory(theoryName) {
+            const safeName = theoryName.replace(/ /g, "_").replace(/[(),.]/g, "");
+            
+            const popup = document.getElementById("trajectory-popup");
+            const overlay = document.getElementById("popup-overlay");
+            const imageContainer = document.getElementById("trajectory-image-container");
+            const titleElement = document.getElementById("trajectory-title");
+            
+            titleElement.textContent = theoryName + " - Multi-Particle Trajectories";
+            
+            // Generate links for all particles
+            const particles = ["electron", "neutrino", "photon", "proton"];
+            let particleLinks = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">';
+            
+            particles.forEach(particle => {
+                const trajectoryPath = `trajectory_visualizations/${safeName}_${particle}_trajectory.png`;
+                const orbitPath = `trajectory_visualizations/${safeName}_${particle}_orbit.png`;
+                
+                particleLinks += `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                        <h4 style="margin-top: 0; color: #2c3e50;">${particle.charAt(0).toUpperCase() + particle.slice(1)}</h4>
+                        <div style="margin-top: 10px;">
+                            <a href="${trajectoryPath}" target="_blank" style="margin-right: 10px;">📊 Analysis</a>
+                            <a href="${orbitPath}" target="_blank">🌐 Orbit</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            particleLinks += "</div>";
+            
+            imageContainer.innerHTML = `
+                ${particleLinks}
+                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">
+                    <a href="trajectory_visualizations/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>
+                    <a href="trajectory_viewers/" + safeName + "_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em;">🌐 Interactive 3D Viewer</a>
+                </div>
+            `;
+            
+            popup.classList.add("show");
+            overlay.classList.add("show");
+        }
+        
+        function closeTrajectoryPopup() {
+            document.getElementById("trajectory-popup").classList.remove("show");
+            document.getElementById("popup-overlay").classList.remove("show");
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Comprehensive Theory Validation Report</h1>
+        <div class="timestamp">Generated: 2025-08-03 20:33:47</div>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Theories</h3>
+                <div class="value">16</div>
+                <div class="label">Tested</div>
+            </div>
+            <div class="summary-card">
+                <h3>Analytical Tests</h3>
+                <div class="value">91/112</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-card">
+                <h3>Solver Tests</h3>
+                <div class="value">88/111</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-card">
+                <h3>Perfect Scores</h3>
+                <div class="value">7/0</div>
+                <div class="label">Analytical/Combined</div>
+            </div>
+        </div>
+        <h2>Theory Rankings - Combined Score</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Theory</th>
+                    <th>Category</th>
+                    <th>Combined Score</th>
+                    <th>Analytical</th>
+                    <th>Solver</th>
+                    <th class="tooltip">Distance & Divergence<span class="tooltiptext">Distance: Total path length in black hole radii (M = GM/c²)<br>Divergence: How error accumulates along trajectory<br>• Start (1% of path)<br>• Mid (50% of path)<br>• End (99% of path)<br>• Avg (mean divergence)</span></th>
+                    <th>Solver Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="rank">1</td>
+                    <td class="theory-name">Schwarzschild</td>
+                    <td class="category-baseline">baseline</td>
+                    <td class="score">92.9%</td>
+                    <td>7/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 1.20e-50<br><span class="progressive-loss-label">Mid:</span> 7.07e-46<br><span class="progressive-loss-label">End:</span> 4.72e-45<br><span class="progressive-loss-label">Avg:</span> 1.81e-45</td>
+                    <td class="timing-info">1.140s (1.0ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Schwarzschild')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">2</td>
+                    <td class="theory-name">Kerr</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">92.9%</td>
+                    <td>7/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">0.00</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 0.00e+00<br><span class="progressive-loss-label">Mid:</span> 0.00e+00<br><span class="progressive-loss-label">End:</span> 0.00e+00<br><span class="progressive-loss-label">Avg:</span> 0.00e+00</td>
+                    <td class="timing-info">1.137s (1.0ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Kerr')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">3</td>
+                    <td class="theory-name">Asymptotic Safety</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">92.9%</td>
+                    <td>7/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 1.20e-50<br><span class="progressive-loss-label">Mid:</span> 7.07e-46<br><span class="progressive-loss-label">End:</span> 4.72e-45<br><span class="progressive-loss-label">Avg:</span> 1.81e-45</td>
+                    <td class="timing-info">0.734s (0.7ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Asymptotic Safety')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">4</td>
+                    <td class="theory-name">ASEC-D</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">92.9%</td>
+                    <td>7/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">2.62e-28</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 1.03e-36<br><span class="progressive-loss-label">Mid:</span> 9.86e-30<br><span class="progressive-loss-label">End:</span> 2.49e-28<br><span class="progressive-loss-label">Avg:</span> 8.62e-29</td>
+                    <td class="timing-info">0.979s (0.9ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('ASEC-D')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">5</td>
+                    <td class="theory-name">Yukawa</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">85.7%</td>
+                    <td>6/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">N/A</td>
+                    <td class="distance-divergence">N/A</td>
+                    <td class="timing-info">0.406s (0.8ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Yukawa')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">6</td>
+                    <td class="theory-name">Einstein Teleparallel</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">85.7%</td>
+                    <td>7/7</td>
+                    <td>5/7 (g-2 Muon,CMB)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 1.20e-50<br><span class="progressive-loss-label">Mid:</span> 7.07e-46<br><span class="progressive-loss-label">End:</span> 4.72e-45<br><span class="progressive-loss-label">Avg:</span> 1.81e-45</td>
+                    <td class="timing-info">0.699s (0.6ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Einstein Teleparallel')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">7</td>
+                    <td class="theory-name">Quantum Corrected</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">85.7%</td>
+                    <td>6/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">1.09e-26</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.4 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 4.42e-35<br><span class="progressive-loss-label">Mid:</span> 4.22e-28<br><span class="progressive-loss-label">End:</span> 1.04e-26<br><span class="progressive-loss-label">Avg:</span> 3.60e-27</td>
+                    <td class="timing-info">0.724s (0.7ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Quantum Corrected')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">8</td>
+                    <td class="theory-name">String Theory</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">85.7%</td>
+                    <td>7/7</td>
+                    <td>5/7 (g-2 Muon,CMB)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 1.20e-50<br><span class="progressive-loss-label">Mid:</span> 7.07e-46<br><span class="progressive-loss-label">End:</span> 4.72e-45<br><span class="progressive-loss-label">Avg:</span> 1.81e-45</td>
+                    <td class="timing-info">0.689s (0.6ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('String Theory')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">9</td>
+                    <td class="theory-name">Non-Commutative Geometry</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">85.7%</td>
+                    <td>7/7</td>
+                    <td>5/7 (g-2 Muon,CMB)</td>
+                    <td class="loss-value">5.18e-45</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 1.20e-50<br><span class="progressive-loss-label">Mid:</span> 7.07e-46<br><span class="progressive-loss-label">End:</span> 4.72e-45<br><span class="progressive-loss-label">Avg:</span> 1.81e-45</td>
+                    <td class="timing-info">1.045s (1.0ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Non-Commutative Geometry')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">10</td>
+                    <td class="theory-name">Twistor Theory</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">85.7%</td>
+                    <td>6/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">5.77e-26</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">38.7 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small> <span style="color: #e74c3c;">(1.02× longer)</span><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 2.13e-34<br><span class="progressive-loss-label">Mid:</span> 2.07e-27<br><span class="progressive-loss-label">End:</span> 5.46e-26<br><span class="progressive-loss-label">Avg:</span> 1.89e-26</td>
+                    <td class="timing-info">0.736s (0.7ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Twistor Theory')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">11</td>
+                    <td class="theory-name">Kerr-Newman</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">78.6%</td>
+                    <td>5/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">0.00e+00</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 0.00e+00<br><span class="progressive-loss-label">Mid:</span> 0.00e+00<br><span class="progressive-loss-label">End:</span> 0.00e+00<br><span class="progressive-loss-label">Avg:</span> 0.00e+00</td>
+                    <td class="timing-info">1.239s (1.1ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Kerr-Newman')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">12</td>
+                    <td class="theory-name">Loop Quantum Gravity</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">71.4%</td>
+                    <td>4/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">3.69e-24</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">51.0 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small> <span style="color: #e74c3c;">(1.35× longer)</span><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 7.19e-33<br><span class="progressive-loss-label">Mid:</span> 7.45e-26<br><span class="progressive-loss-label">End:</span> 3.30e-24<br><span class="progressive-loss-label">Avg:</span> 1.13e-24</td>
+                    <td class="timing-info">1.028s (0.9ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Loop Quantum Gravity')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">13</td>
+                    <td class="theory-name">Causal Dynamical Triangulations</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">71.4%</td>
+                    <td>4/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">1.44e-26</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">34.1 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small> <span style="color: #f39c12;">(0.90× shorter)</span><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 6.67e-31<br><span class="progressive-loss-label">Mid:</span> 1.45e-26<br><span class="progressive-loss-label">End:</span> 1.45e-26<br><span class="progressive-loss-label">Avg:</span> 9.68e-27</td>
+                    <td class="timing-info">1.181s (1.1ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Causal Dynamical Triangulations')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">14</td>
+                    <td class="theory-name">Spinor Conformal</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">64.3%</td>
+                    <td>3/7</td>
+                    <td>6/7 (g-2 Muon)</td>
+                    <td class="loss-value">7.71e-25</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">34.9 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small> <span style="color: #f39c12;">(0.92× shorter)</span><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 3.38e-33<br><span class="progressive-loss-label">Mid:</span> 3.22e-26<br><span class="progressive-loss-label">End:</span> 7.34e-25<br><span class="progressive-loss-label">Avg:</span> 2.55e-25</td>
+                    <td class="timing-info">0.768s (0.7ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Spinor Conformal')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">15</td>
+                    <td class="theory-name">Aalto Gauge Gravity</td>
+                    <td class="category-quantum">quantum</td>
+                    <td class="score">57.1%</td>
+                    <td>4/7</td>
+                    <td>4/7 (g-2 Muon,CMB,PGW)</td>
+                    <td class="loss-value">N/A</td>
+                    <td class="distance-divergence">N/A</td>
+                    <td class="timing-info">0.445s (1.1ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Aalto Gauge Gravity')">View Trajectory</button></td>
+                </tr>
+                <tr>
+                    <td class="rank">16</td>
+                    <td class="theory-name">Newtonian Limit</td>
+                    <td class="category-classical">classical</td>
+                    <td class="score">53.8%</td>
+                    <td>4/7</td>
+                    <td>3/6 (g-2 Muon,Scattering Amplitudes,CMB)</td>
+                    <td class="loss-value">1.29e-44</td>
+                    <td class="distance-divergence"><strong>Distance:</strong> <span class="tooltip">37.8 <small>M</small><span class="tooltiptext">Distance in black hole radii<br>(M = GM/c²)</span></span> / 37.8 <small>M</small><br><strong>Divergence:</strong><br><span class="progressive-loss-label">Start:</span> 4.73e-51<br><span class="progressive-loss-label">Mid:</span> 4.87e-46<br><span class="progressive-loss-label">End:</span> 1.23e-44<br><span class="progressive-loss-label">Avg:</span> 4.25e-45</td>
+                    <td class="timing-info">0.517s (0.5ms/step)</td>
+                    <td><button class="view-trajectory-btn" onclick="viewTrajectory('Newtonian Limit')">View Trajectory</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="details-section">
+            <h2>Detailed Theory Results</h2>
+            <div class="theory-detail">
+                <h3>Asymptotic Safety <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>92.9%</strong> 
+                (13/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Asymptotic Safety')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 5.1787e-45</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.068s (solver: 0.068s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.028s (solver: 0.018s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.015s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>ASEC-D <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>92.9%</strong> 
+                (13/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('ASEC-D')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 4.11%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 2.6244e-28</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.092s (solver: 0.092s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.032s (solver: 0.019s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.009s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Kerr <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>92.9%</strong> 
+                (13/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Kerr')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: symmetric_charged_solver_run (cached)</div>
+                        <div class="test-details">Loss: 0.0000e+00</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.104s (solver: 0.104s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.031s (solver: 0.020s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.004s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Schwarzschild <span class="category-baseline">(baseline)</span></h3>
+                <p>Combined Score: <strong>92.9%</strong> 
+                (13/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Schwarzschild')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: symmetric_charged_solver_run (cached)</div>
+                        <div class="test-details">Loss: 5.1787e-45</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.073s (solver: 0.073s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 1.157s (solver: 0.019s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.005s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.001s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Yukawa <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>85.7%</strong> 
+                (12/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Yukawa')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0780</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 432</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.066s (solver: 0.066s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.029s (solver: 0.018s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.019s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>String Theory <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>85.7%</strong> 
+                (12/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('String Theory')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 5.1787e-45</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.063s (solver: 0.063s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.027s (solver: 0.017s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.005s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Einstein Teleparallel <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>85.7%</strong> 
+                (12/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Einstein Teleparallel')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 5.1787e-45</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.062s (solver: 0.061s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.028s (solver: 0.017s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.005s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Quantum Corrected <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>85.7%</strong> 
+                (12/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Quantum Corrected')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 1.0925e-26</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.063s (solver: 0.063s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.027s (solver: 0.017s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.015s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Twistor Theory <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>85.7%</strong> 
+                (12/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Twistor Theory')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 5.7720e-26</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.068s (solver: 0.068s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.029s (solver: 0.018s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.017s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Non-Commutative Geometry <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>85.7%</strong> 
+                (12/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Non-Commutative Geometry')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 5.1787e-45</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.097s (solver: 0.097s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.029s (solver: 0.018s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.007s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Kerr-Newman <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>78.6%</strong> 
+                (11/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Kerr-Newman')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1000.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 0.0000e+00</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.109s (solver: 0.109s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.030s (solver: 0.019s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.005s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Loop Quantum Gravity <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>71.4%</strong> 
+                (10/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Loop Quantum Gravity')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0780</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 100.00%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 3.6942e-24</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.091s (solver: 0.091s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.030s (solver: 0.019s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.017s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Causal Dynamical Triangulations <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>71.4%</strong> 
+                (10/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Causal Dynamical Triangulations')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 0.9751</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 56.05%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 0.5143</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 1.4447e-26</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.109s (solver: 0.108s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.030s (solver: 0.018s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.017s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Spinor Conformal <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>64.3%</strong> 
+                (9/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Spinor Conformal')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result fail">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 16.81%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0001</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 700.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 719722215.01%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="test-details">Loss: 7.7123e-25</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.065s (solver: 0.065s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.029s (solver: 0.018s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.015s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Aalto Gauge Gravity <span class="category-quantum">(quantum)</span></h3>
+                <p>Combined Score: <strong>57.1%</strong> 
+                (8/14 tests passed)</p>
+                <p><button onclick="viewTrajectory('Aalto Gauge Gravity')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0780</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.6391</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 100.00%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 0.9927</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: quantum_symmetric_solver_run (cached)</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 315</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: ConservedQuantityGeodesicSolver</div>
+                        <div class="timing-info">Time: 0.098s (solver: 0.098s)</div>
+                        <div class="test-details">Steps: 100</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Quantum Geodesic Sim</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Quantum-2qb</div>
+                        <div class="timing-info">Time: 0.029s (solver: 0.017s)</div>
+                        <div class="test-details">Steps: 10</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: ERROR</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: PASS</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.018s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Quantum-PI</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="theory-detail">
+                <h3>Newtonian Limit <span class="category-classical">(classical)</span></h3>
+                <p>Combined Score: <strong>53.8%</strong> 
+                (7/13 tests passed)</p>
+                <p><button onclick="viewTrajectory('Newtonian Limit')">🚀 View Multi-Particle Trajectories</button></p>
+                <h4>Analytical Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Mercury Precession</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.02%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Light Deflection</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Error: 50.01%</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Photon Sphere</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 1.0000</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">PPN Parameters</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="test-details">Loss: 700.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">COW Interferometry</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Error: 0.12%</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Gravitational Waves</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">PSR J0740</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="test-details">Loss: 0.0000</div>
+                    </div>
+                </div>
+                <h4>Solver-Based Tests</h4>
+                <div class="test-grid">
+                    <div class="test-result pass">
+                        <div class="test-name">Trajectory vs Kerr</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: symmetric_charged_solver_run (cached)</div>
+                        <div class="test-details">Loss: 1.2855e-44</div>
+                        <div class="timing-info">Using cached trajectory</div>
+                        <div class="test-details">Steps: 1000</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Circular Orbit</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: NewtonianAnalytical</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.001s)</div>
+                        <div class="test-details">Steps: 1</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">g-2 Muon</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">Scattering Amplitudes</div>
+                        <div class="test-details">Status: FAIL</div>
+                    </div>
+                    <div class="test-result fail">
+                        <div class="test-name">CMB Power Spectrum</div>
+                        <div class="test-details">Status: FAIL</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.003s (solver: 0.000s)</div>
+                    </div>
+                    <div class="test-result pass">
+                        <div class="test-name">Primordial GWs</div>
+                        <div class="test-details">Status: PASS</div>
+                        <div class="solver-info">Solver: Analytical</div>
+                        <div class="timing-info">Time: 0.000s (solver: 0.000s)</div>
+                    </div>
+                </div>
+            </div>
+        <div class="legend">
+            <h4>Test Methodology</h4>
+            <div class="legend-grid">
+                <div>
+                    <strong>Analytical Tests:</strong>
+                    <ul>
+                        <li>Mercury Precession</li>
+                        <li>Light Deflection</li>
+                        <li>Photon Sphere</li>
+                        <li>PPN Parameters</li>
+                        <li>COW Interferometry</li>
+                        <li>Gravitational Waves</li>
+                        <li>PSR J0740+6620</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Solver-Based Tests:</strong>
+                    <ul>
+                        <li>Trajectory vs Kerr (10k steps)</li>
+                        <li>Circular Orbit Conservation</li>
+                        <li>Quantum Geodesic Simulation</li>
+                        <li>g-2 Muon Anomaly</li>
+                        <li>Scattering Amplitudes</li>
+                        <li>CMB Power Spectrum</li>
+                        <li>Primordial GWs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="note-box">
+            <strong>Note on Solver Timings:</strong> Cached trajectory results show as "Using cached trajectory" 
+            instead of misleading timing values. Actual solver performance is only measured for freshly computed trajectories.
+        </div>
+        <div class="log-section">
+            <h2>Test Execution Logs</h2>
+            <button class="log-toggle" onclick="toggleLog('main-log')">Toggle Full Test Log</button>
+            <div id="main-log" class="log-viewer" style="display: none;">
+COMPREHENSIVE THEORY VALIDATION - ANALYTICAL + SOLVER TESTS
+================================================================================
+Testing 16 theories with both analytical and solver-based tests
+Running theories sequentially with 4 particles in parallel
+
+============================================================
+Testing: Schwarzschild [baseline]
+============================================================
+Initialized: Schwarzschild
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Schwarzschild...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_electron_a8b7beb9b5aa8c8f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_electron_a8b7beb9b5aa8c8f_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_neutrino_a8b7beb9b5aa8c8f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_neutrino_a8b7beb9b5aa8c8f_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_photon_a8b7beb9b5aa8c8f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_photon_a8b7beb9b5aa8c8f_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_proton_a8b7beb9b5aa8c8f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Schwarzschild_proton_a8b7beb9b5aa8c8f_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [symmetric_charged_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+  ✓ CMB Power Spectrum: PASS [Analytical]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Analytical]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 6/7 passed (85.7%)
+Combined: 13/14 passed (92.9%)
+
+============================================================
+Testing: Newtonian Limit [classical]
+============================================================
+Initialized: Newtonian Limit
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✗ Light Deflection: FAIL
+  ✗ Photon Sphere: FAIL
+  ✗ PPN Parameters: FAIL
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Newtonian Limit...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_electron_0045008e580dcb4b_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_electron_0045008e580dcb4b_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_neutrino_0045008e580dcb4b_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_neutrino_0045008e580dcb4b_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_photon_0045008e580dcb4b_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_photon_0045008e580dcb4b_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_proton_0045008e580dcb4b_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Newtonian_Limit_proton_0045008e580dcb4b_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [symmetric_charged_solver_run (cached)]
+  ✓ Circular Orbit: PASS [NewtonianAnalytical]
+  - Quantum Geodesic Sim: SKIP (Theory does not support quantum corrections)
+  ✗ g-2 Muon: FAIL
+  ✗ Scattering Amplitudes: FAIL
+Loaded 29 CMB data points from dataset loader
+  ✗ CMB Power Spectrum: FAIL [Analytical]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Analytical]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 4/7 passed (57.1%)
+Solver: 3/6 passed (50.0%)
+Combined: 7/13 passed (53.8%)
+
+============================================================
+Testing: Kerr [classical]
+============================================================
+Initialized: Kerr (a=0.00)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Kerr (a=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__neutrino_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__neutrino_920eb6ecb7979a32_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__photon_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__photon_920eb6ecb7979a32_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__proton_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__proton_920eb6ecb7979a32_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [symmetric_charged_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+  ✓ CMB Power Spectrum: PASS [Analytical]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Analytical]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 6/7 passed (85.7%)
+Combined: 13/14 passed (92.9%)
+
+============================================================
+Testing: Kerr-Newman [classical]
+============================================================
+Initialized: Kerr-Newman (a=0.00, q_e=0.00)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✗ Photon Sphere: FAIL
+  ✗ PPN Parameters: FAIL
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Kerr-Newman (a=0.00, q_e=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__electron_df0604889bfc237a_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__electron_df0604889bfc237a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__neutrino_df0604889bfc237a_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__neutrino_df0604889bfc237a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__photon_df0604889bfc237a_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__photon_df0604889bfc237a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__proton_df0604889bfc237a_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr-Newman__a_0_00__q_e_0_00__proton_df0604889bfc237a_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+  ✓ CMB Power Spectrum: PASS [Analytical]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Analytical]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 5/7 passed (71.4%)
+Solver: 6/7 passed (85.7%)
+Combined: 11/14 passed (78.6%)
+
+============================================================
+Testing: Yukawa [classical]
+============================================================
+Initialized: Yukawa (λ=10.00 RS)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✗ Photon Sphere: FAIL
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Yukawa (λ=10.00 RS)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__electron_cb42bea6e642fd8a_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__electron_cb42bea6e642fd8a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__neutrino_cb42bea6e642fd8a_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__neutrino_cb42bea6e642fd8a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__photon_cb42bea6e642fd8a_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__photon_cb42bea6e642fd8a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__proton_cb42bea6e642fd8a_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Yukawa____10_00_RS__proton_cb42bea6e642fd8a_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Yukawa_(λ=10.00_RS)/
+   📊 Data saved to: runs/predictions/Yukawa_(λ=10.00_RS)/data/
+   💻 Code saved to: runs/predictions/Yukawa_(λ=10.00_RS)/code/
+   📝 Logs saved to: runs/predictions/Yukawa_(λ=10.00_RS)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 6/7 passed (85.7%)
+Solver: 6/7 passed (85.7%)
+Combined: 12/14 passed (85.7%)
+
+============================================================
+Testing: Einstein Teleparallel [classical]
+============================================================
+Initialized: Einstein Teleparallel (τ=0.000)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Einstein Teleparallel (τ=0.000)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__electron_bfcba75d92759cd8_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__electron_bfcba75d92759cd8_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__neutrino_bfcba75d92759cd8_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__neutrino_bfcba75d92759cd8_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__photon_bfcba75d92759cd8_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__photon_bfcba75d92759cd8_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__proton_bfcba75d92759cd8_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Einstein_Teleparallel____0_000__proton_bfcba75d92759cd8_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+  ✗ CMB Power Spectrum: FAIL [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 5/7 passed (71.4%)
+Combined: 12/14 passed (85.7%)
+
+============================================================
+Testing: Spinor Conformal [classical]
+============================================================
+Initialized: Spinor-Conformal QG (λ=0.00)
+
+Analytical Validators:
+  ✗ Mercury Precession: FAIL
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✗ PPN Parameters: FAIL
+  ✗ COW Interferometry: FAIL
+  ✓ Gravitational Waves: PASS
+  ✗ PSR J0740: FAIL
+
+Solver-Based Tests:
+  Running particle trajectories for Spinor-Conformal QG (λ=0.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__electron_7f99cb136ffe96d7_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__electron_7f99cb136ffe96d7_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__neutrino_7f99cb136ffe96d7_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__neutrino_7f99cb136ffe96d7_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__photon_7f99cb136ffe96d7_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__photon_7f99cb136ffe96d7_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__proton_7f99cb136ffe96d7_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Spinor-Conformal_QG____0_00__proton_7f99cb136ffe96d7_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Spinor-Conformal_QG_(λ=0.00)/
+   📊 Data saved to: runs/predictions/Spinor-Conformal_QG_(λ=0.00)/data/
+   💻 Code saved to: runs/predictions/Spinor-Conformal_QG_(λ=0.00)/code/
+   📝 Logs saved to: runs/predictions/Spinor-Conformal_QG_(λ=0.00)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 3/7 passed (42.9%)
+Solver: 6/7 passed (85.7%)
+Combined: 9/14 passed (64.3%)
+
+============================================================
+Testing: Quantum Corrected [quantum]
+============================================================
+Initialized: Quantum Corrected (α=+0.01)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✗ Gravitational Waves: FAIL
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Quantum Corrected (α=+0.01)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__electron_bd62a33baccd4a63_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__electron_bd62a33baccd4a63_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__neutrino_bd62a33baccd4a63_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__neutrino_bd62a33baccd4a63_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__photon_bd62a33baccd4a63_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__photon_bd62a33baccd4a63_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__proton_bd62a33baccd4a63_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Quantum_Corrected_____0_01__proton_bd62a33baccd4a63_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Quantum_Corrected_(α=+0.01)/
+   📊 Data saved to: runs/predictions/Quantum_Corrected_(α=+0.01)/data/
+   💻 Code saved to: runs/predictions/Quantum_Corrected_(α=+0.01)/code/
+   📝 Logs saved to: runs/predictions/Quantum_Corrected_(α=+0.01)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 6/7 passed (85.7%)
+Solver: 6/7 passed (85.7%)
+Combined: 12/14 passed (85.7%)
+
+============================================================
+Testing: String Theory [quantum]
+============================================================
+Initialized: String Theory (α&#x27;=1.0e-66)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for String Theory (α&#x27;=1.0e-66)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__electron_4f11965f176dbf2f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__electron_4f11965f176dbf2f_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__neutrino_4f11965f176dbf2f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__neutrino_4f11965f176dbf2f_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__photon_4f11965f176dbf2f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__photon_4f11965f176dbf2f_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__proton_4f11965f176dbf2f_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/String_Theory_____1_0e-66__proton_4f11965f176dbf2f_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+  ✗ CMB Power Spectrum: FAIL [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 5/7 passed (71.4%)
+Combined: 12/14 passed (85.7%)
+
+============================================================
+Testing: Asymptotic Safety [quantum]
+============================================================
+Initialized: Asymptotic Safety (Λ_as=1.0e+18 GeV)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Asymptotic Safety (Λ_as=1.0e+18 GeV)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__electron_b973a1941657a872_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__electron_b973a1941657a872_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__neutrino_b973a1941657a872_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__neutrino_b973a1941657a872_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__photon_b973a1941657a872_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__photon_b973a1941657a872_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__proton_b973a1941657a872_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Asymptotic_Safety____as_1_0e_18_GeV__proton_b973a1941657a872_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Asymptotic_Safety_(Λ_as=1.0e+18_GeV)/
+   📊 Data saved to: runs/predictions/Asymptotic_Safety_(Λ_as=1.0e+18_GeV)/data/
+   💻 Code saved to: runs/predictions/Asymptotic_Safety_(Λ_as=1.0e+18_GeV)/code/
+   📝 Logs saved to: runs/predictions/Asymptotic_Safety_(Λ_as=1.0e+18_GeV)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 6/7 passed (85.7%)
+Combined: 13/14 passed (92.9%)
+
+============================================================
+Testing: ASEC-D [quantum]
+============================================================
+Initialized: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__electron_931f5febf3457406_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__electron_931f5febf3457406_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__neutrino_931f5febf3457406_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__neutrino_931f5febf3457406_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__photon_931f5febf3457406_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__photon_931f5febf3457406_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__proton_931f5febf3457406_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__proton_931f5febf3457406_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/ASEC-D_(ξ=1.00,_β=0.0010,_Sc=1.0e+05)/
+   📊 Data saved to: runs/predictions/ASEC-D_(ξ=1.00,_β=0.0010,_Sc=1.0e+05)/data/
+   💻 Code saved to: runs/predictions/ASEC-D_(ξ=1.00,_β=0.0010,_Sc=1.0e+05)/code/
+   📝 Logs saved to: runs/predictions/ASEC-D_(ξ=1.00,_β=0.0010,_Sc=1.0e+05)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 6/7 passed (85.7%)
+Combined: 13/14 passed (92.9%)
+
+============================================================
+Testing: Loop Quantum Gravity [quantum]
+============================================================
+Initialized: Loop Quantum Gravity (γ=0.2375)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✗ Photon Sphere: FAIL
+  ✓ PPN Parameters: PASS
+  ✗ COW Interferometry: FAIL
+  ✗ Gravitational Waves: FAIL
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Loop Quantum Gravity (γ=0.2375)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__electron_bed441297ce27c9a_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__electron_bed441297ce27c9a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__neutrino_bed441297ce27c9a_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__neutrino_bed441297ce27c9a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__photon_bed441297ce27c9a_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__photon_bed441297ce27c9a_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__proton_bed441297ce27c9a_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Loop_Quantum_Gravity____0_2375__proton_bed441297ce27c9a_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: FAIL
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Loop_Quantum_Gravity_(γ=0.2375)/
+   📊 Data saved to: runs/predictions/Loop_Quantum_Gravity_(γ=0.2375)/data/
+   💻 Code saved to: runs/predictions/Loop_Quantum_Gravity_(γ=0.2375)/code/
+   📝 Logs saved to: runs/predictions/Loop_Quantum_Gravity_(γ=0.2375)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 4/7 passed (57.1%)
+Solver: 6/7 passed (85.7%)
+Combined: 10/14 passed (71.4%)
+
+============================================================
+Testing: Non-Commutative Geometry [quantum]
+============================================================
+Initialized: Non-Commutative Geometry (θ=1.00)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✓ Gravitational Waves: PASS
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Non-Commutative Geometry (θ=1.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__electron_1eed7fb4c329f712_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__electron_1eed7fb4c329f712_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__neutrino_1eed7fb4c329f712_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__neutrino_1eed7fb4c329f712_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__photon_1eed7fb4c329f712_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__photon_1eed7fb4c329f712_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__proton_1eed7fb4c329f712_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Non-Commutative_Geometry____1_00__proton_1eed7fb4c329f712_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+  ✗ CMB Power Spectrum: FAIL [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 7/7 passed (100.0%)
+Solver: 5/7 passed (71.4%)
+Combined: 12/14 passed (85.7%)
+
+============================================================
+Testing: Twistor Theory [quantum]
+============================================================
+Initialized: Twistor Theory (λ=0.10)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✓ Photon Sphere: PASS
+  ✓ PPN Parameters: PASS
+  ✓ COW Interferometry: PASS
+  ✗ Gravitational Waves: FAIL
+  ✓ PSR J0740: PASS
+
+Solver-Based Tests:
+  Running particle trajectories for Twistor Theory (λ=0.10)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__electron_717ac7fb4bf7877c_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__electron_717ac7fb4bf7877c_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__neutrino_717ac7fb4bf7877c_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__neutrino_717ac7fb4bf7877c_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__photon_717ac7fb4bf7877c_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__photon_717ac7fb4bf7877c_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__proton_717ac7fb4bf7877c_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Twistor_Theory____0_10__proton_717ac7fb4bf7877c_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Twistor_Theory_(λ=0.10)/
+   📊 Data saved to: runs/predictions/Twistor_Theory_(λ=0.10)/data/
+   💻 Code saved to: runs/predictions/Twistor_Theory_(λ=0.10)/code/
+   📝 Logs saved to: runs/predictions/Twistor_Theory_(λ=0.10)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 6/7 passed (85.7%)
+Solver: 6/7 passed (85.7%)
+Combined: 12/14 passed (85.7%)
+
+============================================================
+Testing: Aalto Gauge Gravity [quantum]
+============================================================
+Initialized: Aalto Gauge Gravity (g=1.00)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✗ Photon Sphere: FAIL
+  ✓ PPN Parameters: PASS
+  ✗ COW Interferometry: FAIL
+  ✓ Gravitational Waves: PASS
+  ✗ PSR J0740: FAIL
+
+Solver-Based Tests:
+  Running particle trajectories for Aalto Gauge Gravity (g=1.00)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__electron_b6c3b9f2ba0a39bc_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__electron_b6c3b9f2ba0a39bc_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__neutrino_b6c3b9f2ba0a39bc_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__neutrino_b6c3b9f2ba0a39bc_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__photon_b6c3b9f2ba0a39bc_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__photon_b6c3b9f2ba0a39bc_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__proton_b6c3b9f2ba0a39bc_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Aalto_Gauge_Gravity__g_1_00__proton_b6c3b9f2ba0a39bc_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/Aalto_Gauge_Gravity_(g=1.00)/
+   📊 Data saved to: runs/predictions/Aalto_Gauge_Gravity_(g=1.00)/data/
+   💻 Code saved to: runs/predictions/Aalto_Gauge_Gravity_(g=1.00)/code/
+   📝 Logs saved to: runs/predictions/Aalto_Gauge_Gravity_(g=1.00)/logs/
+  ✗ CMB Power Spectrum: FAIL [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✗ Primordial GWs: FAIL [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 4/7 passed (57.1%)
+Solver: 4/7 passed (57.1%)
+Combined: 8/14 passed (57.1%)
+
+============================================================
+Testing: Causal Dynamical Triangulations [quantum]
+============================================================
+Initialized: CDT (k₀=2.2, k₄=0.6)
+
+Analytical Validators:
+  ✓ Mercury Precession: PASS
+  ✓ Light Deflection: PASS
+  ✗ Photon Sphere: FAIL
+  ✓ PPN Parameters: PASS
+  ✗ COW Interferometry: FAIL
+  ✓ Gravitational Waves: PASS
+  ✗ PSR J0740: FAIL
+
+Solver-Based Tests:
+  Running particle trajectories for CDT (k₀=2.2, k₄=0.6)...
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__electron_410e7a22358ac61d_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__electron_410e7a22358ac61d_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__neutrino_410e7a22358ac61d_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__neutrino_410e7a22358ac61d_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__photon_410e7a22358ac61d_steps_1000.pt
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__photon_410e7a22358ac61d_steps_1000_metadata.json
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__proton_410e7a22358ac61d_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/CDT__k__2_2__k__0_6__proton_410e7a22358ac61d_steps_1000_metadata.json
+    ✓ electron: cached
+    ✓ neutrino: cached
+    ✓ photon: cached
+    ✓ proton: cached
+    All particles completed successfully!
+Loading cached trajectory from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000.pt
+  Truncating trajectory from 1001 to 1000 steps
+  Loaded metadata from: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/Kerr__a_0_00__electron_920eb6ecb7979a32_steps_1000_metadata.json
+  ✓ Trajectory vs Kerr: PASS [quantum_symmetric_solver_run (cached)]
+  ✓ Circular Orbit: PASS [ConservedQuantityGeodesicSolver]
+  ✓ Quantum Geodesic Sim: PASS [Quantum-2qb]
+  ✗ g-2 Muon: ERROR
+  ✓ Scattering Amplitudes: PASS
+Loaded 29 CMB data points from dataset loader
+
+✅ PREDICTION IMPROVEMENT LOGGED: runs/predictions/CDT_(k₀=2.2,_k₄=0.6)/
+   📊 Data saved to: runs/predictions/CDT_(k₀=2.2,_k₄=0.6)/data/
+   💻 Code saved to: runs/predictions/CDT_(k₀=2.2,_k₄=0.6)/code/
+   📝 Logs saved to: runs/predictions/CDT_(k₀=2.2,_k₄=0.6)/logs/
+  ✓ CMB Power Spectrum: PASS [Quantum-PI]
+Loaded BICEP/Keck data from dataloader
+  ✓ Primordial GWs: PASS [Quantum-PI]
+  - Trajectory Cache: SKIP (Performance test, not theory-specific)
+
+Analytical: 4/7 passed (57.1%)
+Solver: 6/7 passed (85.7%)
+Combined: 10/14 passed (71.4%)
+
+
+================================================================================
+FINAL RANKINGS - ANALYTICAL VALIDATORS ONLY
+================================================================================
+
+Rank   Theory                              Category     Score      Tests Passed
+--------------------------------------------------------------------------------
+1      Schwarzschild                       baseline     100.0%     7/7 ← Baseline
+2      Kerr                                classical    100.0%     7/7
+3      Einstein Teleparallel               classical    100.0%     7/7
+4      String Theory                       quantum      100.0%     7/7 ✓ High-performing quantum
+5      Asymptotic Safety                   quantum      100.0%     7/7 ✓ High-performing quantum
+6      ASEC-D                              quantum      100.0%     7/7 ✓ High-performing quantum
+7      Non-Commutative Geometry            quantum      100.0%     7/7 ✓ High-performing quantum
+8      Yukawa                              classical    85.7%      6/7
+9      Quantum Corrected                   quantum      85.7%      6/7 ✓ High-performing quantum
+10     Twistor Theory                      quantum      85.7%      6/7 ✓ High-performing quantum
+11     Kerr-Newman                         classical    71.4%      5/7
+12     Newtonian Limit                     classical    57.1%      4/7 ← Should be lowest
+13     Loop Quantum Gravity                quantum      57.1%      4/7
+14     Aalto Gauge Gravity                 quantum      57.1%      4/7
+15     Causal Dynamical Triangulations     quantum      57.1%      4/7
+16     Spinor Conformal                    classical    42.9%      3/7
+
+
+VALIDATOR DETAILS (Analytical):
+--------------------------------------------------------------------------------
+
+Validators used (all use analytical methods, no trajectory solvers):
+  1. Mercury Precession     - Analytical (weak-field approximation)
+  2. Light Deflection       - Analytical (PPN calculation, γ parameter)
+  3. Photon Sphere          - Analytical (effective potential extremum)
+  4. PPN Parameters         - Analytical (metric expansion, γ and β)
+  5. COW Interferometry     - Analytical (metric gradient calculation)
+  6. Gravitational Waves    - Analytical (post-Newtonian waveforms)
+  7. PSR J0740              - Analytical (Shapiro time delay)
+
+
+================================================================================
+FINAL RANKINGS - COMBINED (ANALYTICAL + SOLVER-BASED)
+================================================================================
+
+Rank   Theory                              Category     Analytical (Failed)       Solver (Failed) [Type]                             Combined        Solver Complexity         Total
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1      Asymptotic Safety                   quantum      7/7                       6/7 ✗g-2[?]                                        92.9%           0.752s (0.7ms/step)       13/14 ✓ High-performing quantum
+2      ASEC-D                              quantum      7/7                       6/7 ✗g-2[?]                                        92.9%           0.998s (0.9ms/step)       13/14 ✓ High-performing quantum
+3      Kerr                                classical    7/7                       6/7 ✗g-2[?]                                        92.9%           1.157s (1.0ms/step)       13/14
+4      Schwarzschild                       baseline     7/7                       6/7 ✗g-2[?]                                        92.9%           1.159s (1.0ms/step)       13/14 ← Baseline
+5      Yukawa                              classical    6/7 ✗Photon               6/7 ✗g-2[?]                                        85.7%           0.424s (0.8ms/step)       12/14
+6      String Theory                       quantum      7/7                       5/7 ✗g-2[?] ✗CMB[QPI]                              85.7%           0.706s (0.6ms/step)       12/14 ✓ High-performing quantum
+7      Einstein Teleparallel               classical    7/7                       5/7 ✗g-2[?] ✗CMB[QPI]                              85.7%           0.716s (0.6ms/step)       12/14
+8      Quantum Corrected                   quantum      6/7 ✗GW                   6/7 ✗g-2[?]                                        85.7%           0.740s (0.7ms/step)       12/14 ✓ High-performing quantum
+9      Twistor Theory                      quantum      6/7 ✗GW                   6/7 ✗g-2[?]                                        85.7%           0.754s (0.7ms/step)       12/14 ✓ High-performing quantum
+10     Non-Commutative Geometry            quantum      7/7                       5/7 ✗g-2[?] ✗CMB[QPI]                              85.7%           1.064s (1.0ms/step)       12/14 ✓ High-performing quantum
+11     Kerr-Newman                         classical    5/7 ✗Photon,PPN           6/7 ✗g-2[?]                                        78.6%           1.258s (1.1ms/step)       11/14
+12     Loop Quantum Gravity                quantum      4/7 ✗Photon,COW,GW        6/7 ✗g-2[?]                                        71.4%           1.047s (0.9ms/step)       10/14 ✓ High-performing quantum
+13     Causal Dynamical Triangulations     quantum      4/7 ✗Photon,COW,PSR       6/7 ✗g-2[?]                                        71.4%           1.199s (1.1ms/step)       10/14 ✓ High-performing quantum
+14     Spinor Conformal                    classical    3/7 ✗Mercury,PPN,COW,PSR  6/7 ✗g-2[?]                                        64.3%           0.786s (0.7ms/step)       9/14
+15     Aalto Gauge Gravity                 quantum      4/7 ✗Photon,COW,PSR       4/7 ✗g-2[?] ✗CMB[QPI] ✗PGW[QPI]                    57.1%           0.462s (1.1ms/step)       8/14
+16     Newtonian Limit                     classical    4/7 ✗Light,Photon,PPN     3/6 ✗g-2[?] ✗SA[?] ✗CMB[An]                        53.8%           0.517s (0.5ms/step)       7/13 ← Should be lowest
+
+
+ADDITIONAL TESTS (Solver-Based):
+--------------------------------------------------------------------------------
+
+Solver-based tests added in combined ranking:
+  1. Trajectory vs Kerr     - 1000-step trajectory integration with loss calculation
+  2. Circular Orbit Period  - USES geodesic RK4 solver (specific orbital test)
+  3. CMB Power Spectrum     - USES quantum path integral (optional)
+  4. Primordial GWs         - USES quantum path integral (optional)
+  5. Quantum Geodesic Sim   - Tests quantum corrections (2-qubit simulation)
+  6. g-2 Muon               - Tests quantum corrections (2-qubit simulation)
+  7. Scattering Amplitudes - Tests quantum corrections (2-qubit simulation)
+
+
+TRAJECTORY INTEGRATION ANALYSIS (1000 steps):
+------------------------------------------------------------
+
+Using cached trajectories (1 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Schwarzschild                 : 5.18e-45
+
+Using cached trajectories (2 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Schwarzschild                 : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (3 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (4 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (5 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (6 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (7 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (8 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  Newtonian Limit               : 1.29e-44
+
+Using cached trajectories (9 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Using cached trajectories (10 theories)
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Using cached trajectories (11 theories)
+
+Slowest trajectory integration (ms/step):
+  Spinor Conformal               [quantum_symmetric_solver_run (cached)]: 0.703ms/step
+  Quantum Corrected              [quantum_symmetric_solver_run (cached)]: 0.660ms/step
+  String Theory                  [quantum_symmetric_solver_run (cached)]: 0.625ms/step
+  Asymptotic Safety              [quantum_symmetric_solver_run (cached)]: 0.667ms/step
+  ASEC-D                         [quantum_symmetric_solver_run (cached)]: 0.887ms/step
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Using cached trajectories (12 theories)
+
+Slowest trajectory integration (ms/step):
+  Quantum Corrected              [quantum_symmetric_solver_run (cached)]: 0.660ms/step
+  String Theory                  [quantum_symmetric_solver_run (cached)]: 0.625ms/step
+  Asymptotic Safety              [quantum_symmetric_solver_run (cached)]: 0.667ms/step
+  ASEC-D                         [quantum_symmetric_solver_run (cached)]: 0.887ms/step
+  Loop Quantum Gravity           [quantum_symmetric_solver_run (cached)]: 0.937ms/step
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Worst match to Kerr baseline (highest MSE loss):
+  Newtonian Limit               : 1.29e-44
+  ASEC-D                        : 2.62e-28
+  Quantum Corrected             : 1.09e-26
+  Spinor Conformal              : 7.71e-25
+  Loop Quantum Gravity          : 3.69e-24
+
+Using cached trajectories (13 theories)
+
+Slowest trajectory integration (ms/step):
+  String Theory                  [quantum_symmetric_solver_run (cached)]: 0.625ms/step
+  Asymptotic Safety              [quantum_symmetric_solver_run (cached)]: 0.667ms/step
+  ASEC-D                         [quantum_symmetric_solver_run (cached)]: 0.887ms/step
+  Loop Quantum Gravity           [quantum_symmetric_solver_run (cached)]: 0.937ms/step
+  Non-Commutative Geometry       [quantum_symmetric_solver_run (cached)]: 0.948ms/step
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Worst match to Kerr baseline (highest MSE loss):
+  Newtonian Limit               : 1.29e-44
+  ASEC-D                        : 2.62e-28
+  Quantum Corrected             : 1.09e-26
+  Spinor Conformal              : 7.71e-25
+  Loop Quantum Gravity          : 3.69e-24
+
+Using cached trajectories (14 theories)
+
+Slowest trajectory integration (ms/step):
+  Asymptotic Safety              [quantum_symmetric_solver_run (cached)]: 0.667ms/step
+  ASEC-D                         [quantum_symmetric_solver_run (cached)]: 0.887ms/step
+  Loop Quantum Gravity           [quantum_symmetric_solver_run (cached)]: 0.937ms/step
+  Non-Commutative Geometry       [quantum_symmetric_solver_run (cached)]: 0.948ms/step
+  Twistor Theory                 [quantum_symmetric_solver_run (cached)]: 0.668ms/step
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Worst match to Kerr baseline (highest MSE loss):
+  ASEC-D                        : 2.62e-28
+  Quantum Corrected             : 1.09e-26
+  Twistor Theory                : 5.77e-26
+  Spinor Conformal              : 7.71e-25
+  Loop Quantum Gravity          : 3.69e-24
+
+Using cached trajectories (15 theories)
+
+Slowest trajectory integration (ms/step):
+  ASEC-D                         [quantum_symmetric_solver_run (cached)]: 0.887ms/step
+  Loop Quantum Gravity           [quantum_symmetric_solver_run (cached)]: 0.937ms/step
+  Non-Commutative Geometry       [quantum_symmetric_solver_run (cached)]: 0.948ms/step
+  Twistor Theory                 [quantum_symmetric_solver_run (cached)]: 0.668ms/step
+  Aalto Gauge Gravity            [quantum_symmetric_solver_run (cached)]: 1.101ms/step
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Worst match to Kerr baseline (highest MSE loss):
+  ASEC-D                        : 2.62e-28
+  Quantum Corrected             : 1.09e-26
+  Twistor Theory                : 5.77e-26
+  Spinor Conformal              : 7.71e-25
+  Loop Quantum Gravity          : 3.69e-24
+
+Using cached trajectories (16 theories)
+
+Slowest trajectory integration (ms/step):
+  Loop Quantum Gravity           [quantum_symmetric_solver_run (cached)]: 0.937ms/step
+  Non-Commutative Geometry       [quantum_symmetric_solver_run (cached)]: 0.948ms/step
+  Twistor Theory                 [quantum_symmetric_solver_run (cached)]: 0.668ms/step
+  Aalto Gauge Gravity            [quantum_symmetric_solver_run (cached)]: 1.101ms/step
+  Causal Dynamical Triangulations [quantum_symmetric_solver_run (cached)]: 1.073ms/step
+
+
+Best match to Kerr baseline (lowest MSE loss):
+  Kerr                          : 0.00e+00
+  Kerr-Newman                   : 0.00e+00
+  Schwarzschild                 : 5.18e-45
+  Einstein Teleparallel         : 5.18e-45
+  String Theory                 : 5.18e-45
+
+Worst match to Kerr baseline (highest MSE loss):
+  Quantum Corrected             : 1.09e-26
+  Causal Dynamical Triangulations: 1.44e-26
+  Twistor Theory                : 5.77e-26
+  Spinor Conformal              : 7.71e-25
+  Loop Quantum Gravity          : 3.69e-24
+
+NOTE: Trajectory vs Kerr test runs actual 1000-step integration using engine.run_trajectory()
+CMB and PGW tests do not run trajectory integration, only analytical calculations.
+
+
+LEGEND:
+------------------------------------------------------------
+Analytical Test Abbreviations:
+  Mercury = Mercury Precession, Light = Light Deflection, Photon = Photon Sphere
+  PPN = PPN Parameters, COW = COW Interferometry, GW = Gravitational Waves, PSR = PSR J0740
+
+Solver Test Abbreviations:
+  TvK = Trajectory vs Kerr, Orb = Circular Orbit, CMB = CMB Power Spectrum
+  PGW = Primordial GWs, QGS = Quantum Geodesic Sim, g-2 = g-2 Muon, SA = Scattering Amplitudes
+
+Solver Types:
+  4D = 4DOF-RK4, 6D = 6DOF-RK4, Q4D = Quantum-4DOF-RK4, Q6D = Quantum-6DOF-RK4
+  Q2 = Quantum-2qb, QPI = Quantum-PI, An = Analytical
+
+
+SOLVER-BASED TESTS ADDED IN COMBINED RANKING:
+--------------------------------------------------------------------------------
+
+1. Trajectory vs Kerr - Full 1000-step trajectory integration with MSE loss
+   - What it tests: Integrates geodesics for 1000 steps and compares to Kerr baseline
+   - Time aspect: Continuous evolution showing how trajectories diverge from GR over time
+   - Why relevant: Direct measurement of theory accuracy against known solution
+   - Provides: Actual ms/step timing and quantitative loss metric
+
+2. Circular Orbit Period (Orb) - Tests specific orbital configuration
+   - What it tests: Integrates circular orbit to compute period
+   - Time aspect: Follows particle for one complete orbit
+   - Why relevant: Tests if theory predicts correct orbital dynamics
+   - Complements: Mercury precession (analytical calculation)
+
+3. CMB Power Spectrum (CMB) - Tests cosmological evolution
+   - What it tests: Evolves perturbations from early universe to CMB formation
+   - Time aspect: Tracks quantum fluctuations evolving over cosmic time (380,000 years)
+   - Why relevant: Tests if theory predictions remain consistent across cosmic epochs
+   - Complements: Instantaneous tests by validating long-term cosmological evolution
+
+4. Primordial Gravitational Waves (PGW) - Tests tensor mode evolution
+   - What it tests: Propagation of gravitational waves from inflation to today
+   - Time aspect: Evolves tensor perturbations through multiple cosmic phases
+   - Why relevant: Detects instabilities that only appear in long-term wave propagation
+   - Complements: GW test (single waveform calculation for current mergers)
+
+5. Quantum Geodesic Simulator (QGS) - Tests quantum trajectory evolution
+   - What it tests: 2-qubit simulation tracking quantum corrections over time
+   - Time aspect: Evolves quantum state through many gate operations
+   - Why relevant: Shows if quantum corrections remain coherent or decohere over time
+   - Complements: Classical tests that assume point particles without quantum effects
+
+6. g-2 Muon - Tests quantum corrections (2-qubit simulation)
+   - What it tests: Tests if theory predictions for the anomalous magnetic moment of the muon are consistent with experimental data.
+   - Time aspect: Simulates quantum corrections over time.
+   - Why relevant: Tests if quantum corrections remain coherent or decohere over time.
+   - Complements: Classical tests that assume point particles without quantum effects.
+
+7. Scattering Amplitudes - Tests quantum corrections (2-qubit simulation)
+   - What it tests: Tests if theory predictions for the scattering of particles are consistent with experimental data.
+   - Time aspect: Simulates quantum corrections over time.
+   - Why relevant: Tests if quantum corrections remain coherent or decohere over time.
+   - Complements: Classical tests that assume point particles without quantum effects.
+
+
+SOLVER COMPLEXITY METRICS:
+--------------------------------------------------
+• Total solver time: Actual computation time spent in solver integration
+• Time per step: Average time for each integration step (ms)
+• Why it matters:
+  - Shows computational efficiency of different theories
+  - Reveals which theories scale well for long simulations
+  - Lower time per step = more efficient implementation
+• Key insight: Complexity differences become significant in production simulations
+  where millions of steps may be needed
+
+KEY INSIGHTS:
+• Analytical tests: Single-point calculations at specific moments (instantaneous measurements)
+• Solver tests: Evolution over time through multiple steps (accumulated effects)
+• This temporal difference is crucial because:
+  - Analytical tests check if a theory gives correct values at one instant
+  - Solver tests verify the theory remains consistent and stable over extended evolution
+  - Small errors can accumulate over time, revealing issues invisible to single-point tests
+• Additional differences:
+  - Analytical tests use approximations (weak-field, post-Newtonian, etc.)
+  - Solver tests validate the full nonlinear dynamics without approximations
+• High failure rate in solver tests (especially PGW) suggests issues with:
+  - Numerical stability over extended time evolution
+  - Theory implementations breaking down during multi-step integration
+  - Cumulative errors in modified gravity theories
+
+
+ANALYSIS:
+------------------------------------------------------------
+Rankings changed for 12 theories after adding solver tests.
+
+
+Detailed JSON report saved to: theory_validation_comprehensive_20250803_203318.json
+HTML report saved to: comprehensive_theory_validation_20250803_203318.html
+Latest report available at: physics_agent/reports/latest_comprehensive_validation.html
+
+            </div>
+            <h3>Individual Theory Logs</h3>
+            <script>
+            function toggleLog(logId) {
+                var log = document.getElementById(logId);
+                if (log.style.display === "none") {
+                    log.style.display = "block";
+                } else {
+                    log.style.display = "none";
+                }
+            }
+            </script>
+        </div>
+    </div>
+    <!-- Trajectory Popup -->
+    <div id="popup-overlay" class="popup-overlay" onclick="closeTrajectoryPopup()"></div>
+    <div id="trajectory-popup" class="trajectory-popup">
+        <button class="popup-close" onclick="closeTrajectoryPopup()">✕</button>
+        <h2 id="trajectory-title">Trajectory Analysis</h2>
+        <div id="trajectory-image-container"></div>
+    </div>
+</body>
+</html>

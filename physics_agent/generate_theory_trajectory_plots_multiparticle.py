@@ -18,44 +18,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.theory_visualizer import TheoryVisualizer
 from physics_agent.particle_loader import ParticleLoader
-# Import all theories
-from physics_agent.theories.newtonian_limit.theory import NewtonianLimit
-from physics_agent.theories.defaults.baselines.kerr import Kerr
-from physics_agent.theories.defaults.baselines.kerr_newman import KerrNewman
-from physics_agent.theories.yukawa.theory import Yukawa
-from physics_agent.theories.einstein_teleparallel.theory import EinsteinTeleparallel
-from physics_agent.theories.spinor_conformal.theory import SpinorConformal
-from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
+# Theory imports removed - now using dynamic loading based on actually tested theories
+# The function will only visualize theories that were actually tested in the run
 
-# Import quantum theories
-from physics_agent.theories.quantum_corrected.theory import QuantumCorrected
-from physics_agent.theories.string.theory import StringTheory
-from physics_agent.theories.asymptotic_safety.theory import AsymptoticSafetyTheory
-from physics_agent.theories.loop_quantum_gravity.theory import LoopQuantumGravity
-from physics_agent.theories.non_commutative_geometry.theory import NonCommutativeGeometry
-from physics_agent.theories.twistor_theory.theory import TwistorTheory
-from physics_agent.theories.aalto_gauge_gravity.theory import AaltoGaugeGravity
-from physics_agent.theories.causal_dynamical_triangulations.theory import CausalDynamicalTriangulations
-
-# Define all theories list
-ALL_THEORIES = [
-    ('Schwarzschild', Schwarzschild, 'baseline'),
-    ('Newtonian Limit', NewtonianLimit, 'classical'),
-    ('Kerr', lambda: Kerr(a=0.0), 'classical'),
-    ('Kerr-Newman', lambda: KerrNewman(a=0.0, Q=0.0), 'classical'),
-    ('Yukawa', Yukawa, 'classical'),
-    ('Einstein Teleparallel', EinsteinTeleparallel, 'classical'),
-    ('Spinor Conformal', SpinorConformal, 'classical'),
-    # Quantum theories
-    ('Quantum Corrected', QuantumCorrected, 'quantum'),
-    ('String Theory', StringTheory, 'quantum'),
-    ('Asymptotic Safety', AsymptoticSafetyTheory, 'quantum'),
-    ('Loop Quantum Gravity', LoopQuantumGravity, 'quantum'),
-    ('Non-Commutative Geometry', NonCommutativeGeometry, 'quantum'),
-    ('Twistor Theory', TwistorTheory, 'quantum'),
-    ('Aalto Gauge Gravity', AaltoGaugeGravity, 'quantum'),
-    ('Causal Dynamical Triangulations', CausalDynamicalTriangulations, 'quantum'),
-]
+# ALL_THEORIES list removed - now detecting which theories were actually tested
 
 def create_trajectory_plots(hist, theory_name, particle_name, engine, output_dir):
     """Create comprehensive trajectory plots for a single theory and particle."""
@@ -269,14 +235,65 @@ def generate_trajectory_visualizations_for_run(run_dir, n_steps=2000):
     if len(available) == 0:
         print("ERROR: No particles loaded! Check particle files.")
     
-    # Initialize all theories
+    # Detect which theories were actually tested by looking at particle trajectories
+    particle_traj_dir = os.path.join(run_dir, 'particle_trajectories')
+    tested_theories = set()
+    
+    if os.path.exists(particle_traj_dir):
+        # Extract theory names from saved trajectory files
+        particle_names = ['electron', 'neutrino', 'photon', 'proton']
+        for filename in os.listdir(particle_traj_dir):
+            if filename.endswith('_trajectory.pt'):
+                # Remove extension
+                base_name = filename.replace('_trajectory.pt', '')
+                
+                # Find and remove particle name from the end
+                for particle in particle_names:
+                    if base_name.endswith(f'_{particle}'):
+                        theory_name = base_name[:-len(f'_{particle}')]
+                        tested_theories.add(theory_name)
+                        break
+    
+    print(f"Found {len(tested_theories)} tested theories to visualize")
+    
+    # Load only the tested theories
+    from physics_agent.theory_loader import TheoryLoader
+    loader = TheoryLoader()
     all_theories = []
-    for theory_name, theory_class, category in ALL_THEORIES:
-        if callable(theory_class):
-            theory = theory_class()
+    
+    for theory_name in tested_theories:
+        print(f"  - Looking for theory: {theory_name}")
+        
+        # Try to find in discovered theories
+        discovered = loader.discover_theories()
+        theory_instance = None
+        
+        for key, info in discovered.items():
+            instance = loader.instantiate_theory(key)
+            if instance:
+                # Check if the saved theory name matches the instance name
+                # The saved name might have special characters replaced with underscores
+                instance_name = instance.name
+                
+                # Direct match first
+                if instance_name == theory_name:
+                    theory_instance = instance
+                    break
+                
+                # Try replacing special characters for comparison
+                # This handles cases like "ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)"
+                saved_normalized = theory_name.replace('_', ' ').replace('=', ' ').replace(',', ' ')
+                instance_normalized = instance_name.replace('_', ' ').replace('=', ' ').replace(',', ' ')
+                
+                if saved_normalized.lower().replace('  ', ' ').strip() == instance_normalized.lower().replace('  ', ' ').strip():
+                    theory_instance = instance
+                    break
+        
+        if theory_instance:
+            all_theories.append(theory_instance)
+            print(f"    ✓ Found and loaded: {theory_instance.name}")
         else:
-            theory = theory_class()
-        all_theories.append(theory)
+            print(f"    ✗ Warning: Could not load theory: {theory_name}")
     
     # Track what we've generated
     generated_files = []

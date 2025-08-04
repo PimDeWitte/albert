@@ -1,0 +1,403 @@
+  Copied comprehensive validation report to run directory
+  Copied trajectory viewers to run directory
+  Copied comprehensive_theory_validation_20250803_185601.html to run directory
+  Copied comprehensive_theory_validation_20250803_183700.html to run directory
+  Copied comprehensive_theory_validation_20250802_101443.html to run directory
+  Copied comprehensive_theory_validation_20250802_122152.html to run directory
+  Copied comprehensive_theory_validation_20250803_185714.html to run directory
+  Copied comprehensive_theory_validation_20250802_122501.html to run directory
+  Copied comprehensive_theory_validation_20250802_155755.html to run directory
+  Copied comprehensive_theory_validation_20250802_155850.html to run directory
+  Copied comprehensive_theory_validation_20250802_154148.html to run directory
+  Copied comprehensive_theory_validation_20250803_193016.html to run directory
+  Copied comprehensive_theory_validation_20250802_073124.html to run directory
+  Copied theory_validation_comprehensive_20250802_233026.json to run directory
+  Copied theory_validation_comprehensive_20250803_193016.json to run directory
+  Copied theory_validation_comprehensive_20250803_183700.json to run directory
+  Copied theory_validation_comprehensive_20250803_185601.json to run directory
+  Copied theory_validation_comprehensive_20250803_185713.json to run directory
+  Copied theory_validation_comprehensive_20250802_232740.json to run directory
+  Copied comprehensive_theory_validation_20250802_173726.html to run directory
+  Copied comprehensive_theory_validation_20250802_001619.html to run directory
+  Copied comprehensive_theory_validation_20250803_150317.html to run directory
+  Copied comprehensive_theory_validation_20250802_154153.html to run directory
+  Copied comprehensive_theory_validation_20250802_154216.html to run directory
+  Copied comprehensive_theory_validation_20250802_172640.html to run directory
+  Copied theory_validation_comprehensive_20250801_151818.json to run directory
+  Copied theory_validation_comprehensive_20250801_215640.json to run directory
+  Copied theory_validation_comprehensive_20250802_001122.json to run directory
+  Copied theory_validation_comprehensive_20250801_234054.json to run directory
+  Copied theory_validation_comprehensive_20250801_152428.json to run directory
+  Copied theory_validation_comprehensive_20250801_144339.json to run directory
+  Copied theory_validation_comprehensive_20250801_153107.json to run directory
+  Copied theory_validation_comprehensive_20250801_154928.json to run directory
+  Copied theory_validation_comprehensive_20250802_232827.json to run directory
+  Copied theory_validation_comprehensive_20250802_001011.json to run directory
+  Copied theory_validation_comprehensive_20250802_230302.json to run directory
+  Copied theory_validation_comprehensive_20250801_173616.json to run directory
+  Copied theory_validation_comprehensive_20250801_151804.json to run directory
+  Copied theory_validation_comprehensive_20250801_153229.json to run directory
+  Copied theory_validation_comprehensive_20250801_142418.json to run directory
+  Copied theory_validation_comprehensive_20250802_173724.json to run directory
+  Copied theory_validation_comprehensive_20250802_001446.json to run directory
+  Copied theory_validation_comprehensive_20250801_144518.json to run directory
+  Copied theory_validation_comprehensive_20250801_233313.json to run directory
+  Copied theory_validation_comprehensive_20250802_231808.json to run directory
+  Copied theory_validation_comprehensive_20250801_231854.json to run directory
+  Copied theory_validation_comprehensive_20250801_152457.json to run directory
+  Copied theory_validation_comprehensive_20250802_001130.json to run directory
+  Copied theory_validation_comprehensive_20250802_172639.json to run directory
+  Copied theory_validation_comprehensive_20250801_142553.json to run directory
+  Copied theory_validation_comprehensive_20250802_001151.json to run directory
+  Copied theory_validation_comprehensive_20250801_141021.json to run directory
+  Copied theory_validation_comprehensive_20250801_141037.json to run directory
+  Copied theory_validation_comprehensive_20250801_214452.json to run directory
+  Copied theory_validation_comprehensive_20250802_234446.json to run directory
+  Copied theory_validation_comprehensive_20250801_153749.json to run directory
+  Copied theory_validation_comprehensive_20250801_140308.json to run directory
+  Copied theory_validation_comprehensive_20250801_155501.json to run directory
+  Copied theory_validation_comprehensive_20250801_233540.json to run directory
+  Copied theory_validation_comprehensive_20250801_151743.json to run directory
+  Copied theory_validation_comprehensive_20250801_223645.json to run directory
+  Copied theory_validation_comprehensive_20250802_154214.json to run directory
+  Copied theory_validation_comprehensive_20250801_151119.json to run directory
+  Copied theory_validation_comprehensive_20250802_233848.json to run directory
+  Copied theory_validation_comprehensive_20250801_152328.json to run directory
+  Copied theory_validation_comprehensive_20250801_134107.json to run directory
+  Copied theory_validation_comprehensive_20250801_222615.json to run directory
+  Copied theory_validation_comprehensive_20250802_001619.json to run directory
+  Copied theory_validation_comprehensive_20250801_140441.json to run directory
+  Copied theory_validation_comprehensive_20250801_220653.json to run directory
+  Copied theory_validation_comprehensive_20250803_150316.json to run directory
+  Copied theory_validation_comprehensive_20250801_143522.json to run directory
+  Copied theory_validation_comprehensive_20250801_152958.json to run directory
+  Copied theory_validation_comprehensive_20250801_151509.json to run directory
+  Copied theory_validation_comprehensive_20250801_150932.json to run directory
+  Copied theory_validation_comprehensive_20250802_154151.json to run directory
+  Copied theory_validation_comprehensive_20250801_225220.json to run directory
+  Copied theory_validation_comprehensive_20250801_152431.json to run directory
+
+--- Phase 1: Validating All Theories ---
+============================================================
+
+--- Evaluating 1 Theories ---
+
+--- Validating: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05) ---
+  Running validation trajectory for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Using orbital parameters for electron:
+    Angular factor: 1.0
+    Radial factor: 0.0
+    Orbit type: circular
+  Quantum theory detected: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)
+    Initial conditions: r=12.0, E=0.9624036958162585, Lz=3.9992039142134415
+    Time steps: 100, Step size: 0.1
+    Using solver: ConservedQuantityGeodesicSolver
+    Classical trajectory computed: 101 points
+  Warning: Failed to use quantum trajectory calculator: 'QuantumPathIntegrator' object has no attribute 'compute_amplitude_monte_carlo'
+Saved trajectory and metadata to cache: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__419cf2cd3452858f_steps_100.pt
+  Using orbital parameters for electron:
+    Angular factor: 1.0
+    Radial factor: 0.0
+    Orbit type: circular
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.59 radians
+  Error: 0.11 radians (4.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.397604 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.091144e-16
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000418176
+  Weak field factor: 4.244030e-07
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 1.000000 (0.0σ)
+  Combined loss: 0.639
+  Status: PASS
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.182e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Note: Theory has no GW modifications - computing standard GR waveform
+  Binary masses: 36.0 + 29.0 M_sun
+  Effective spin χ_eff: 0.12
+  Initial frequency: 30.0 Hz
+  ISCO frequency: 33.8 Hz
+
+Results:
+  Waveform match: 1.000
+  Phase difference at ISCO: 0.000 rad
+  PN order: 3.5PN
+  Status: PASS
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 2.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.419 μs
+  Running validator: GMinus2Validator
+  Error running GMinus2Validator: cannot determine truth value of Relational: (1.39702721500736e-40*α - 4.00982513264884)**2 < 17.8473087810903
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1722, in run_all_validations
+    result = validator.validate(theory, verbose=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/g_minus_2_validator.py", line 190, in validate
+    if result.beats_sota:
+       ^^^^^^^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/site-packages/sympy/core/relational.py", line 519, in __bool__
+    raise TypeError(
+TypeError: cannot determine truth value of Relational: (1.39702721500736e-40*α - 4.00982513264884)**2 < 17.8473087810903
+
+  Running validator: ScatteringAmplitudeValidator
+  ⚠️ Observational validations failed - skipping prediction validations
+  Constraint tests: PASSED
+  Observation tests: FAILED
+  Overall validation: PASSED
+
+============================================================
+Validation Summary:
+  Total theories validated: 1
+  Passed: 1
+  Failed: 0
+============================================================
+
+Theories that passed validation:
+  ✓ ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)
+
+--- Phase 2: Running Full Trajectories for Validated Theories ---
+============================================================
+
+--- Running Full Trajectory: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05) ---
+
+--- Evaluating: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05) ---
+
+--- Evaluating: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05) ---
+  Results will be saved to: runs/run_20250803_193147_float64/ASEC-D_ξ_1_00_β_0_0010_Sc_1_0e+05
+  Running pre-flight checks for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Using orbital parameters for electron:
+    Angular factor: 1.0
+    Radial factor: 0.0
+    Orbit type: circular
+  Quantum theory detected: ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)
+    - Category: quantum
+    - enable_quantum: True
+    - use_quantum_trajectories: True
+    - NOTE: Using classical solver for proper curved spacetime physics
+  Attempting to use UnifiedTrajectoryCalculator for quantum theory
+
+  UnifiedTrajectoryCalculator: Computing classical trajectory for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)
+    Initial conditions: r=12.0, E=0.9624036958162585, Lz=3.9992039142134415
+    Time steps: 100, Step size: 0.01
+    Using solver: ConservedQuantityGeodesicSolver
+    Classical trajectory computed: 101 points
+  Warning: Failed to use quantum trajectory calculator: 'QuantumPathIntegrator' object has no attribute 'compute_amplitude_monte_carlo'
+Saved trajectory and metadata to cache: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__898df9f5e709bec0_steps_100.pt
+  Using orbital parameters for electron:
+    Angular factor: 1.0
+    Radial factor: 0.0
+    Orbit type: circular
+  Constraint validators using quantum Lagrangian
+  Running validator: Conservation Validator
+  Running validator: Metric Properties Validator
+  Theory category: quantum
+  Using tested quantum validator for quantum theory
+  Adding tested classical observational validators...
+  Running validator: COWInterferometryValidator
+
+Calculating COW phase shift for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Neutron wavelength: 2.2 Å
+  Enclosed area: 0.3 cm²
+  Neutron velocity: 1798.1 m/s
+
+Results:
+  Observed: 2.70 ± 0.21 radians
+  Predicted: 2.59 radians
+  Error: 0.11 radians (4.1%)
+  Status: PASSED
+
+Debug info:
+  g_metric: -9.397604 m/s²
+  g_newton: 9.819532 m/s²
+  Metric gradient dg_tt/dr: -2.091144e-16
+  Running validator: MercuryPrecessionValidator
+
+Calculating Mercury precession for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Semi-major axis: 57.909 Gm
+  Eccentricity: 0.2056
+  Orbital period: 87.969 days
+
+Results:
+  Observed: 42.98 ± 0.04 arcsec/century
+  Predicted: 42.99 arcsec/century
+  Error: 0.009 arcsec/century (0.02%)
+  Status: PASSED
+  Running validator: LightDeflectionValidator
+
+Calculating light deflection for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Solar mass: 1.989e+30 kg
+  Solar radius: 696.0 Mm
+
+Results:
+  Observed: 1.7512 ± 0.0016 arcsec
+  Predicted: 1.7508 arcsec
+  Error: 0.0004 arcsec (0.02%)
+  Status: PASSED
+
+Debug info:
+  GR theoretical: 1.7508 arcsec
+  PPN gamma: 1.000000
+  g_rr at test radius: 1.000000418176
+  Weak field factor: 4.244030e-07
+  Running validator: PPN Parameter Validator
+
+Calculating PPN parameters for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Semi-major axis: 100 - 1000 AU
+  Weak field potential Φ/c²: 2.73e-14
+
+Results:
+  PPN γ (Cassini): 1.000021 ± 0.000023
+  Predicted γ: 1.000000 (0.9σ)
+  PPN β (LLR): 1.000000 ± 0.000030
+  Predicted β: 1.000000 (0.0σ)
+  Combined loss: 0.639
+  Status: PASS
+  Running validator: Photon Sphere Validator
+
+Calculating photon sphere for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Debug: Found extremum at index 20 of 200
+  Debug: |dV/dr| = 4.182e-04
+  Schwarzschild radius: 2.000e+00 m
+  Search range: 1.1 - 5.0 r_s
+
+Results:
+  Photon sphere radius: 1.492 r_s (expected: 1.500 r_s)
+  Shadow diameter: 5.196 r_s (expected: 5.196 r_s)
+  Orbit stability: Unstable (correct)
+  Error: 0.01%
+  Status: PASS
+  Running validator: Gravitational Wave Validator
+
+Generating gravitational waveforms for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Note: Theory has no GW modifications - computing standard GR waveform
+  Binary masses: 36.0 + 29.0 M_sun
+  Effective spin χ_eff: 0.12
+  Initial frequency: 30.0 Hz
+  ISCO frequency: 33.8 Hz
+
+Results:
+  Waveform match: 1.000
+  Phase difference at ISCO: 0.000 rad
+  PN order: 3.5PN
+  Status: PASS
+  Running validator: PSR J0740 Shapiro Delay Validator
+
+PSR J0740+6620 System Parameters:
+  Pulsar mass: 2.08 M☉
+  Companion mass: 0.253 M☉
+  Orbital period: 4.7669 days
+  Semi-major axis: 10998.4 × 10^6 m
+  Inclination: 87.56°
+  Timing RMS: 0.28 μs
+  Validation tolerance: 2.0 μs
+
+Theory Predictions:
+  Analytic Shapiro delay: 17.461 μs
+  Numeric time of flight: 18.419 μs
+  Running validator: GMinus2Validator
+  Error running GMinus2Validator: cannot determine truth value of Relational: (1.39702721500736e-40*α - 4.00982513264884)**2 < 17.8473087810903
+Traceback (most recent call last):
+  File "/Users/p/dev/albert/physics_agent/theory_engine_core.py", line 1722, in run_all_validations
+    result = validator.validate(theory, verbose=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/p/dev/albert/physics_agent/validations/g_minus_2_validator.py", line 190, in validate
+    if result.beats_sota:
+       ^^^^^^^^^^^^^^^^^
+  File "/Users/p/.pyenv/versions/3.12.7/lib/python3.12/site-packages/sympy/core/relational.py", line 519, in __bool__
+    raise TypeError(
+TypeError: cannot determine truth value of Relational: (1.39702721500736e-40*α - 4.00982513264884)**2 < 17.8473087810903
+
+  Running validator: ScatteringAmplitudeValidator
+  ⚠️ Observational validations failed - skipping prediction validations
+  Running trajectory simulation for ASEC-D (ξ=1.00, β=0.0010, Sc=1.0e+05)...
+  Testing all 4 available particles: electron, neutrino, photon, proton
+      Stored electron result with tag: quantum_symmetric_solver_run
+Saved trajectory and metadata to cache: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__photon_3c362591024d5295_steps_500.pt
+Trajectory cached to: /Users/p/dev/albert/physics_agent/cache/trajectories/1.0.0/Primordial_Mini_Black_Hole/ASEC-D____1_00____0_0010__Sc_1_0e_05__photon_3c362591024d5295_steps_500.pt with performance metadata

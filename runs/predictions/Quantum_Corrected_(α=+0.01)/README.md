@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: quantum  
-**Last Updated**: 2025-08-03T18:36:58.011664
+**Last Updated**: 2025-08-03T21:35:47.441091
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from physics_agent.theories.quantum_corrected.theory import QuantumCorrected
+from theory_quantum_corrected_theory import QuantumCorrected
 
 # Create theory instance with exact parameters
 theory = QuantumCorrected()
@@ -155,6 +155,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `physics_agent.theories.quantum_corrected.theory`
+1. Original theory implementation: `theory_quantum_corrected_theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above

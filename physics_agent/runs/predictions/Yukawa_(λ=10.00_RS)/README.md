@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: quantum  
-**Last Updated**: 2025-08-03T18:35:07.667965
+**Last Updated**: 2025-08-03T22:19:45.625226
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from physics_agent.theories.yukawa.theory import Yukawa
+from theory_yukawa_theory import Yukawa
 
 # Create theory instance with exact parameters
 theory = Yukawa()
@@ -155,6 +155,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `physics_agent.theories.yukawa.theory`
+1. Original theory implementation: `theory_yukawa_theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Theory Validation Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
+        .timestamp { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .summary-card { background: #ecf0f1; padding: 20px; border-radius: 6px; text-align: center; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #34495e; font-size: 0.9em; text-transform: uppercase; }
+        .summary-card .value { font-size: 2.5em; font-weight: bold; color: #3498db; }
+        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; }
+        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }
+        tr:hover { background-color: #f8f9fa; }
+        .rank { font-weight: bold; text-align: center; }
+        .category-baseline { color: #2c3e50; font-weight: bold; }
+        .category-classical { color: #3498db; font-weight: bold; }
+        .category-quantum { color: #9b59b6; font-weight: bold; }
+        .score { text-align: center; font-weight: 500; }
+        .pass { color: #27ae60; }
+        .fail { color: #e74c3c; }
+        .warning { color: #f39c12; }
+        .details-section { margin-top: 40px; }
+        .theory-detail { background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        .theory-detail h3 { margin-top: 0; color: #2c3e50; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 15px; }
+        .test-result { background: white; padding: 15px; border-radius: 6px; border: 1px solid #ecf0f1; }
+        .test-result.pass { border-left: 4px solid #27ae60; }
+        .test-result.fail { border-left: 4px solid #e74c3c; }
+        .test-result.warning { border-left: 4px solid #f39c12; }
+        .test-name { font-weight: 500; margin-bottom: 5px; }
+        .test-details { font-size: 0.9em; color: #7f8c8d; }
+        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }
+        .timing-info { color: #7f8c8d; font-size: 0.85em; margin-top: 5px; }
+        .note-box { background: #fff9c4; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #fbc02d; }
+        .legend { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .legend h4 { margin-top: 0; color: #34495e; }
+        .legend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            table { font-size: 0.9em; }
+            th, td { padding: 8px; }
+        }
+        .view-trajectory-btn { background: #4a9eff; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .view-trajectory-btn:hover { background: #357abd; }
+        .trajectory-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 1000; max-width: 90vw; max-height: 90vh; overflow: auto; }
+        .trajectory-popup.show { display: block; }
+        .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
+        .popup-overlay.show { display: block; }
+        /* Tooltip styles */
+        .tooltip { position: relative; display: inline-block; cursor: help; }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        .tooltiptext { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 12px; line-height: 1.4; }
+        .tooltiptext::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent; }
+        .distance-divergence { font-size: 0.85em; line-height: 1.5; }
+        .distance-divergence strong { color: #34495e; font-size: 0.9em; }
+        .progressive-loss-label { color: #666; font-size: 0.85em; font-weight: normal; }
+        /* Log viewer styles */
+        .log-section { margin-top: 40px; }
+        .log-viewer { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 12px; line-height: 1.5; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
+        .log-toggle { background: #666; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }
+        .log-toggle:hover { background: #777; }
+        .popup-close { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .trajectory-image { max-width: 100%; height: auto; }
+        .trajectory-links { margin-top: 15px; }
+        .trajectory-links a { margin-right: 15px; }
+    </style>
+    <script>
+        function viewTrajectory(theoryName) {
+            const safeName = theoryName.replace(/ /g, "_").replace(/[(),.]/g, "");
+            
+            const popup = document.getElementById("trajectory-popup");
+            const overlay = document.getElementById("popup-overlay");
+            const imageContainer = document.getElementById("trajectory-image-container");
+            const titleElement = document.getElementById("trajectory-title");
+            
+            titleElement.textContent = theoryName + " - Multi-Particle Trajectories";
+            
+            // Generate links for all particles
+            const particles = ["electron", "neutrino", "photon", "proton"];
+            let particleLinks = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">';
+            
+            particles.forEach(particle => {
+                const trajectoryPath = `trajectory_visualizations/${safeName}_${particle}_trajectory.png`;
+                const orbitPath = `trajectory_visualizations/${safeName}_${particle}_orbit.png`;
+                
+                particleLinks += `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                        <h4 style="margin-top: 0; color: #2c3e50;">${particle.charAt(0).toUpperCase() + particle.slice(1)}</h4>
+                        <div style="margin-top: 10px;">
+                            <a href="${trajectoryPath}" target="_blank" style="margin-right: 10px;">📊 Analysis</a>
+                            <a href="${orbitPath}" target="_blank">🌐 Orbit</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            particleLinks += "</div>";
+            
+            imageContainer.innerHTML = `
+                ${particleLinks}
+                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">
+                    <a href="trajectory_visualizations/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>
+                    <a href="trajectory_viewers/" + safeName + "_multi_particle_viewer.html" target="_blank" style="font-size: 1.1em;">🌐 Interactive 3D Viewer</a>
+                </div>
+            `;
+            
+            popup.classList.add("show");
+            overlay.classList.add("show");
+        }
+        
+        function closeTrajectoryPopup() {
+            document.getElementById("trajectory-popup").classList.remove("show");
+            document.getElementById("popup-overlay").classList.remove("show");
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Comprehensive Theory Validation Report</h1>
+        <div class="timestamp">Generated: 2025-08-03 22:00:28</div>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Theories</h3>
+                <div class="value">0</div>
+                <div class="label">Tested</div>
+            </div>
+            <div class="summary-card">
+                <h3>Analytical Tests</h3>
+                <div class="value">0/0</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-card">
+                <h3>Solver Tests</h3>
+                <div class="value">0/0</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-card">
+                <h3>Perfect Scores</h3>
+                <div class="value">0/0</div>
+                <div class="label">Analytical/Combined</div>
+            </div>
+        </div>
+        <h2>Theory Rankings - Combined Score</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Theory</th>
+                    <th>Category</th>
+                    <th>Combined Score</th>
+                    <th>Analytical</th>
+                    <th>Solver</th>
+                    <th class="tooltip">Distance & Divergence<span class="tooltiptext">Distance: Total path length in black hole radii (M = GM/c²)<br>Divergence: How error accumulates along trajectory<br>• Start (1% of path)<br>• Mid (50% of path)<br>• End (99% of path)<br>• Avg (mean divergence)</span></th>
+                    <th>Solver Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="details-section">
+            <h2>Detailed Theory Results</h2>
+        <div class="legend">
+            <h4>Test Methodology</h4>
+            <div class="legend-grid">
+                <div>
+                    <strong>Analytical Tests:</strong>
+                    <ul>
+                        <li>Mercury Precession</li>
+                        <li>Light Deflection</li>
+                        <li>Photon Sphere</li>
+                        <li>PPN Parameters</li>
+                        <li>COW Interferometry</li>
+                        <li>Gravitational Waves</li>
+                        <li>PSR J0740+6620</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Solver-Based Tests:</strong>
+                    <ul>
+                        <li>Trajectory vs Kerr (10k steps)</li>
+                        <li>Circular Orbit Conservation</li>
+                        <li>Quantum Geodesic Simulation</li>
+                        <li>g-2 Muon Anomaly</li>
+                        <li>Scattering Amplitudes</li>
+                        <li>CMB Power Spectrum</li>
+                        <li>Primordial GWs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="note-box">
+            <strong>Note on Solver Timings:</strong> Cached trajectory results show as "Using cached trajectory" 
+            instead of misleading timing values. Actual solver performance is only measured for freshly computed trajectories.
+        </div>
+        <div class="log-section">
+            <h2>Test Execution Logs</h2>
+            <button class="log-toggle" onclick="toggleLog('main-log')">Toggle Full Test Log</button>
+            <div id="main-log" class="log-viewer" style="display: none;">
+COMPREHENSIVE THEORY VALIDATION - ANALYTICAL + SOLVER TESTS
+================================================================================
+Testing 0 theories with both analytical and solver-based tests
+Running theories sequentially with 4 particles in parallel
+
+
+================================================================================
+FINAL RANKINGS - ANALYTICAL VALIDATORS ONLY
+================================================================================
+
+Rank   Theory                              Category     Score      Tests Passed
+--------------------------------------------------------------------------------
+
+
+VALIDATOR DETAILS (Analytical):
+--------------------------------------------------------------------------------
+
+Validators used (all use analytical methods, no trajectory solvers):
+  1. Mercury Precession     - Analytical (weak-field approximation)
+  2. Light Deflection       - Analytical (PPN calculation, γ parameter)
+  3. Photon Sphere          - Analytical (effective potential extremum)
+  4. PPN Parameters         - Analytical (metric expansion, γ and β)
+  5. COW Interferometry     - Analytical (metric gradient calculation)
+  6. Gravitational Waves    - Analytical (post-Newtonian waveforms)
+  7. PSR J0740              - Analytical (Shapiro time delay)
+
+
+================================================================================
+FINAL RANKINGS - COMBINED (ANALYTICAL + SOLVER-BASED)
+================================================================================
+
+Rank   Theory                              Category     Analytical (Failed)       Solver (Failed) [Type]                             Combined        Solver Complexity         Total
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+ADDITIONAL TESTS (Solver-Based):
+--------------------------------------------------------------------------------
+
+Solver-based tests added in combined ranking:
+  1. Trajectory vs Kerr     - 1000-step trajectory integration with loss calculation
+  2. Circular Orbit Period  - USES geodesic RK4 solver (specific orbital test)
+  3. CMB Power Spectrum     - USES quantum path integral (optional)
+  4. Primordial GWs         - USES quantum path integral (optional)
+  5. Quantum Geodesic Sim   - Tests quantum corrections (2-qubit simulation)
+  6. g-2 Muon               - Tests quantum corrections (2-qubit simulation)
+  7. Scattering Amplitudes - Tests quantum corrections (2-qubit simulation)
+
+
+TRAJECTORY INTEGRATION ANALYSIS (1000 steps):
+------------------------------------------------------------
+
+NOTE: Trajectory vs Kerr test runs actual 1000-step integration using engine.run_trajectory()
+CMB and PGW tests do not run trajectory integration, only analytical calculations.
+
+
+LEGEND:
+------------------------------------------------------------
+Analytical Test Abbreviations:
+  Mercury = Mercury Precession, Light = Light Deflection, Photon = Photon Sphere
+  PPN = PPN Parameters, COW = COW Interferometry, GW = Gravitational Waves, PSR = PSR J0740
+
+Solver Test Abbreviations:
+  TvK = Trajectory vs Kerr, Orb = Circular Orbit, CMB = CMB Power Spectrum
+  PGW = Primordial GWs, QGS = Quantum Geodesic Sim, g-2 = g-2 Muon, SA = Scattering Amplitudes
+
+Solver Types:
+  4D = 4DOF-RK4, 6D = 6DOF-RK4, Q4D = Quantum-4DOF-RK4, Q6D = Quantum-6DOF-RK4
+  Q2 = Quantum-2qb, QPI = Quantum-PI, An = Analytical
+
+
+SOLVER-BASED TESTS ADDED IN COMBINED RANKING:
+--------------------------------------------------------------------------------
+
+1. Trajectory vs Kerr - Full 1000-step trajectory integration with MSE loss
+   - What it tests: Integrates geodesics for 1000 steps and compares to Kerr baseline
+   - Time aspect: Continuous evolution showing how trajectories diverge from GR over time
+   - Why relevant: Direct measurement of theory accuracy against known solution
+   - Provides: Actual ms/step timing and quantitative loss metric
+
+2. Circular Orbit Period (Orb) - Tests specific orbital configuration
+   - What it tests: Integrates circular orbit to compute period
+   - Time aspect: Follows particle for one complete orbit
+   - Why relevant: Tests if theory predicts correct orbital dynamics
+   - Complements: Mercury precession (analytical calculation)
+
+3. CMB Power Spectrum (CMB) - Tests cosmological evolution
+   - What it tests: Evolves perturbations from early universe to CMB formation
+   - Time aspect: Tracks quantum fluctuations evolving over cosmic time (380,000 years)
+   - Why relevant: Tests if theory predictions remain consistent across cosmic epochs
+   - Complements: Instantaneous tests by validating long-term cosmological evolution
+
+4. Primordial Gravitational Waves (PGW) - Tests tensor mode evolution
+   - What it tests: Propagation of gravitational waves from inflation to today
+   - Time aspect: Evolves tensor perturbations through multiple cosmic phases
+   - Why relevant: Detects instabilities that only appear in long-term wave propagation
+   - Complements: GW test (single waveform calculation for current mergers)
+
+5. Quantum Geodesic Simulator (QGS) - Tests quantum trajectory evolution
+   - What it tests: 2-qubit simulation tracking quantum corrections over time
+   - Time aspect: Evolves quantum state through many gate operations
+   - Why relevant: Shows if quantum corrections remain coherent or decohere over time
+   - Complements: Classical tests that assume point particles without quantum effects
+
+6. g-2 Muon - Tests quantum corrections (2-qubit simulation)
+   - What it tests: Tests if theory predictions for the anomalous magnetic moment of the muon are consistent with experimental data.
+   - Time aspect: Simulates quantum corrections over time.
+   - Why relevant: Tests if quantum corrections remain coherent or decohere over time.
+   - Complements: Classical tests that assume point particles without quantum effects.
+
+7. Scattering Amplitudes - Tests quantum corrections (2-qubit simulation)
+   - What it tests: Tests if theory predictions for the scattering of particles are consistent with experimental data.
+   - Time aspect: Simulates quantum corrections over time.
+   - Why relevant: Tests if quantum corrections remain coherent or decohere over time.
+   - Complements: Classical tests that assume point particles without quantum effects.
+
+
+SOLVER COMPLEXITY METRICS:
+--------------------------------------------------
+• Total solver time: Actual computation time spent in solver integration
+• Time per step: Average time for each integration step (ms)
+• Why it matters:
+  - Shows computational efficiency of different theories
+  - Reveals which theories scale well for long simulations
+  - Lower time per step = more efficient implementation
+• Key insight: Complexity differences become significant in production simulations
+  where millions of steps may be needed
+
+KEY INSIGHTS:
+• Analytical tests: Single-point calculations at specific moments (instantaneous measurements)
+• Solver tests: Evolution over time through multiple steps (accumulated effects)
+• This temporal difference is crucial because:
+  - Analytical tests check if a theory gives correct values at one instant
+  - Solver tests verify the theory remains consistent and stable over extended evolution
+  - Small errors can accumulate over time, revealing issues invisible to single-point tests
+• Additional differences:
+  - Analytical tests use approximations (weak-field, post-Newtonian, etc.)
+  - Solver tests validate the full nonlinear dynamics without approximations
+• High failure rate in solver tests (especially PGW) suggests issues with:
+  - Numerical stability over extended time evolution
+  - Theory implementations breaking down during multi-step integration
+  - Cumulative errors in modified gravity theories
+
+
+ANALYSIS:
+------------------------------------------------------------
+Rankings remained the same after adding solver tests.
+
+
+Detailed JSON report saved to: theory_validation_comprehensive_20250803_220028.json
+HTML report saved to: comprehensive_theory_validation_20250803_220028.html
+Latest report available at: physics_agent/reports/latest_comprehensive_validation.html
+
+            </div>
+            <h3>Individual Theory Logs</h3>
+            <script>
+            function toggleLog(logId) {
+                var log = document.getElementById(logId);
+                if (log.style.display === "none") {
+                    log.style.display = "block";
+                } else {
+                    log.style.display = "none";
+                }
+            }
+            </script>
+        </div>
+    </div>
+    <!-- Trajectory Popup -->
+    <div id="popup-overlay" class="popup-overlay" onclick="closeTrajectoryPopup()"></div>
+    <div id="trajectory-popup" class="trajectory-popup">
+        <button class="popup-close" onclick="closeTrajectoryPopup()">✕</button>
+        <h2 id="trajectory-title">Trajectory Analysis</h2>
+        <div id="trajectory-image-container"></div>
+    </div>
+</body>
+</html>

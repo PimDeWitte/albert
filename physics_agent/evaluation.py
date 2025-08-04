@@ -15,7 +15,6 @@ import json
 import math
 from datetime import datetime
 from typing import Dict, List, Tuple
-
 # Global variable for controlling parallelism
 MAX_CONCURRENT_TRAJECTORIES = 4
 
@@ -23,6 +22,11 @@ MAX_CONCURRENT_TRAJECTORIES = 4
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
 from physics_agent.comprehensive_test_report_generator import ComprehensiveTestReportGenerator
+from physics_agent.theory_loader import TheoryLoader
+from physics_agent.cli import get_cli_parser
+
+# Import Kerr baseline for comparison (always needed)
+from physics_agent.theories.defaults.baselines.kerr import Kerr
 
 # Import validators
 from physics_agent.validations.mercury_precession_validator import MercuryPrecessionValidator
@@ -41,48 +45,131 @@ from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver, G
 from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
 from physics_agent.validations.primordial_gws_validator import PrimordialGWsValidator
 
-# Import all theories
-from physics_agent.theories.newtonian_limit.theory import NewtonianLimit
-from physics_agent.theories.defaults.baselines.kerr import Kerr
-from physics_agent.theories.defaults.baselines.kerr_newman import KerrNewman
-from physics_agent.theories.yukawa.theory import Yukawa
-from physics_agent.theories.einstein_teleparallel.theory import EinsteinTeleparallel
-from physics_agent.theories.spinor_conformal.theory import SpinorConformal
-from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
-
-# Import quantum theories
-from physics_agent.theories.quantum_corrected.theory import QuantumCorrected
-from physics_agent.theories.string.theory import StringTheory
-from physics_agent.theories.asymptotic_safety.theory import AsymptoticSafetyTheory
-from physics_agent.theories.loop_quantum_gravity.theory import LoopQuantumGravity
-from physics_agent.theories.non_commutative_geometry.theory import NonCommutativeGeometry
-from physics_agent.theories.twistor_theory.theory import TwistorTheory
-from physics_agent.theories.aalto_gauge_gravity.theory import AaltoGaugeGravity
-from physics_agent.theories.causal_dynamical_triangulations.theory import CausalDynamicalTriangulations
+# Dynamic theory loading - no hardcoded imports needed
+# Theories will be discovered at runtime
 
 # All theories to test
-ALL_THEORIES = [
-    # Baseline
-    ("Schwarzschild", Schwarzschild, "baseline"),
+def discover_theories(include_candidates=False, candidates_status='proposed', candidates_only=False):
+    """
+    Dynamically discover all available theories.
     
-    # Classical accepted
-    ("Newtonian Limit", NewtonianLimit, "classical"),
-    ("Kerr", Kerr, "classical"),
-    ("Kerr-Newman", KerrNewman, "classical"),
-    ("Yukawa", Yukawa, "classical"),
-    ("Einstein Teleparallel", EinsteinTeleparallel, "classical"),
-    ("Spinor Conformal", SpinorConformal, "classical"),
+    Args:
+        include_candidates: Whether to include theories from the candidates folder
+        candidates_status: Which candidate status to include ('proposed', 'new', 'rejected', or 'all')
+        candidates_only: If True, return ONLY candidate theories (no regular theories)
     
-    # Quantum accepted/in-progress
-    ("Quantum Corrected", QuantumCorrected, "quantum"),
-    ("String Theory", StringTheory, "quantum"),
-    ("Asymptotic Safety", AsymptoticSafetyTheory, "quantum"),
-    ("Loop Quantum Gravity", LoopQuantumGravity, "quantum"),
-    ("Non-Commutative Geometry", NonCommutativeGeometry, "quantum"),
-    ("Twistor Theory", TwistorTheory, "quantum"),
-    ("Aalto Gauge Gravity", AaltoGaugeGravity, "quantum"),
-    ("Causal Dynamical Triangulations", CausalDynamicalTriangulations, "quantum"),
-]
+    Returns:
+        List of (name, theory_class, category) tuples
+    """
+    # Ensure all directories have __init__.py files
+    ensure_init_files()
+    
+    # Determine the correct theories directory based on current location
+    import os
+    if os.path.exists('theories'):
+        # Running from within physics_agent directory
+        theories_dir = 'theories'
+    elif os.path.exists('physics_agent/theories'):
+        # Running from parent directory
+        theories_dir = 'physics_agent/theories'
+    else:
+        print("ERROR: Cannot find theories directory!")
+        return []
+    
+    loader = TheoryLoader(theories_base_dir=theories_dir)
+    all_theories = []
+    
+    # Discover all theories
+    discovered = loader.discover_theories()
+    
+    # Process discovered theories
+    for theory_key, info in discovered.items():
+        theory_path = info['path']
+        
+        # Check if this is a candidate theory
+        is_candidate = 'candidates' in theory_path
+        
+        # Skip candidates if not requested
+        if is_candidate and not include_candidates and not candidates_only:
+            continue
+            
+        # Skip non-candidates if only candidates requested
+        if not is_candidate and candidates_only:
+            continue
+            
+        # If including candidates, check status filter
+        if is_candidate and candidates_status != 'all':
+            if f'candidates/{candidates_status}' not in theory_path:
+                continue
+        
+        # Skip template and example theories
+        if 'template' in theory_path.lower() or 'example' in theory_path.lower():
+            continue
+            
+        # Try to instantiate the theory
+        theory_instance = loader.instantiate_theory(theory_key)
+        if theory_instance is None:
+            continue
+            
+        # Get theory class
+        theory_class = loader.loaded_theories.get(theory_key)
+        if theory_class is None:
+            continue
+            
+        # Use the theory's own name if available
+        theory_name = getattr(theory_instance, 'name', info['class_name'])
+        
+        # Get category
+        category = info.get('category', 'unknown')
+        
+        # Override category for specific theories
+        if 'schwarzschild' in theory_name.lower():
+            category = 'baseline'
+        elif category == 'unknown':
+            # Try to determine from path
+            if 'quantum' in theory_path:
+                category = 'quantum'
+            elif 'classical' in theory_path:
+                category = 'classical'
+            else:
+                category = 'classical'  # Default
+        
+        all_theories.append((theory_name, theory_class, category))
+    
+    # Sort theories by category and name
+    all_theories.sort(key=lambda x: (x[2], x[0]))
+    
+    return all_theories
+
+
+def ensure_init_files(base_dir=None):
+    """Ensure all theory directories have __init__.py files."""
+    if base_dir is None:
+        # Use the same logic as discover_theories
+        if os.path.exists('theories'):
+            base_dir = 'theories'
+        elif os.path.exists('physics_agent/theories'):
+            base_dir = 'physics_agent/theories'
+        else:
+            return
+    
+    for root, dirs, files in os.walk(base_dir):
+        # Skip hidden directories and __pycache__
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+        
+        # Check if this directory has a theory.py
+        if 'theory.py' in files and '__init__.py' not in files:
+            init_path = os.path.join(root, '__init__.py')
+            # Get the directory name for the comment
+            dir_name = os.path.basename(root).replace('_', ' ').title()
+            with open(init_path, 'w') as f:
+                f.write(f'# {dir_name} Theory Package\n')
+                f.write(f'"""Auto-generated package file for {dir_name} theory"""\n')
+            print(f"Created __init__.py in {root}")
+
+
+# Global variable to hold dynamically discovered theories
+ALL_THEORIES = []
 
 def run_validator_test(theory, validator_class, validator_name, engine):
     """Run a single validator on a theory."""
@@ -1459,29 +1546,69 @@ def run_comprehensive_tests():
     
     return all_results, report_file, html_path
 
+
+def parse_arguments():
+    """Parse command line arguments using the main CLI parser."""
+    # Get the base parser from cli.py
+    parser = get_cli_parser()
+    
+    # Add evaluation-specific arguments
+    eval_group = parser.add_argument_group('evaluation options')
+    eval_group.add_argument('--candidates-status', choices=['proposed', 'new', 'rejected', 'all'],
+                       default='proposed', help='Which candidate theories to include when --candidates is used')
+    eval_group.add_argument('--candidates-only', action='store_true',
+                       help='Run ONLY candidate theories (excludes regular theories)')
+    eval_group.add_argument('--test', action='store_true', 
+                       help='Run in test mode (alias for validation tests)')
+    
+    return parser.parse_args()
+
 def main():
-    """Main entry point."""
-    # Parse command line arguments
-    import argparse
-    parser = argparse.ArgumentParser(description='Run comprehensive theory validation tests')
-    parser.add_argument('--max-concurrent-trajectories', type=int, default=4,
-                        help='Maximum number of trajectories to compute in parallel. Must be multiple of 4 (num particles). Default: 4')
-    args = parser.parse_args()
+    """Main entry point with CLI argument support."""
+    global ALL_THEORIES
+    
+    args = parse_arguments()
+    
+    # Discover theories dynamically
+    if args.candidates_only:
+        print(f"\nDiscovering candidate theories only (status={args.candidates_status})...")
+    else:
+        print(f"\nDiscovering theories (include_candidates={args.candidates})...")
+    
+    ALL_THEORIES = discover_theories(
+        include_candidates=args.candidates or args.candidates_only,
+        candidates_status=args.candidates_status,
+        candidates_only=args.candidates_only
+    )
+    
+    # Apply theory filter if specified
+    if args.theory_filter:
+        ALL_THEORIES = [
+            (name, cls, cat) for name, cls, cat in ALL_THEORIES 
+            if args.theory_filter.lower() in name.lower()
+        ]
+    
+    print(f"Found {len(ALL_THEORIES)} theories to test:")
+    for name, _, category in ALL_THEORIES:
+        marker = "✓" if category == 'baseline' else "-"
+        print(f"  {marker} {name} [{category}]")
     
     # Validate and adjust max concurrent trajectories
     num_particles = 4
-    if args.max_concurrent_trajectories < num_particles:
-        args.max_concurrent_trajectories = num_particles
-        print(f"Adjusted max-concurrent-trajectories to {num_particles} (minimum)")
+    max_workers = args.max_parallel_workers if args.max_parallel_workers else 4
+    
+    if max_workers < num_particles:
+        max_workers = num_particles
+        print(f"Adjusted max-parallel-workers to {num_particles} (minimum)")
     else:
         # Round down to nearest multiple of num_particles
-        args.max_concurrent_trajectories = (args.max_concurrent_trajectories // num_particles) * num_particles
-        if args.max_concurrent_trajectories > num_particles:
-            print(f"Adjusted max-concurrent-trajectories to {args.max_concurrent_trajectories} (multiple of {num_particles})")
+        max_workers = (max_workers // num_particles) * num_particles
+        if max_workers > num_particles:
+            print(f"Adjusted max-parallel-workers to {max_workers} (multiple of {num_particles})")
     
     # Store in global for access in tests
     global MAX_CONCURRENT_TRAJECTORIES
-    MAX_CONCURRENT_TRAJECTORIES = args.max_concurrent_trajectories
+    MAX_CONCURRENT_TRAJECTORIES = max_workers
     
     # Create run directory
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -1535,23 +1662,10 @@ def main():
     except Exception as e:
         print(f"Warning: Failed to save particle trajectories: {str(e)}")
     
-    # Generate multi-particle trajectory visualizations
-    print("\nGenerating trajectory visualizations for all particles...")
-    try:
-        from physics_agent.generate_theory_trajectory_plots_multiparticle import generate_trajectory_visualizations_for_run
-        # Use the same number of steps as the trajectory tests (1000 by default)
-        viz_dir = generate_trajectory_visualizations_for_run(run_dir, n_steps=1000)
-    except Exception as e:
-        print(f"Warning: Failed to generate trajectory visualizations: {str(e)}")
-        viz_dir = None
+    # Skip trajectory visualization generation - unified viewer handles this better
+    viz_dir = None
     
-    # Generate 3D WebGL viewers
-    print("\nGenerating interactive 3D viewers...")
-    try:
-        from physics_agent.generate_3d_viewers_for_run import generate_3d_viewers_for_run
-        generate_3d_viewers_for_run(run_dir)
-    except Exception as e:
-        print(f"Warning: Failed to generate 3D viewers: {str(e)}")
+    # 3D viewer generation removed - redundant with unified viewer below
     
     # Generate unified multi-particle viewer with advanced features
     print("\nGenerating unified multi-particle viewer...")
@@ -1589,10 +1703,11 @@ def main():
     
     print(f"\nRun complete! Results saved to: {run_dir}")
     print(f"View report: {run_html_file}")
-    if viz_dir:
-        print(f"View trajectory visualizations: {os.path.join(viz_dir, 'index.html')}")
-    else:
-        print("Warning: Trajectory visualizations were not generated")
+    
+    # Check for unified viewer
+    unified_viewer = os.path.join(run_dir, 'trajectory_viewers', 'unified_multi_particle_viewer_advanced.html')
+    if os.path.exists(unified_viewer):
+        print(f"View interactive 3D trajectories: {unified_viewer}")
     
     # Check what files were actually created
     print("\nGenerated files:")

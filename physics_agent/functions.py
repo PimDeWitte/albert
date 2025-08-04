@@ -490,6 +490,64 @@ def check_radius_bounds(r: torch.Tensor) -> bool:
             r <= NUMERICAL_THRESHOLDS['radius_max'])
 
 
+def calculate_particle_entropy(particle, temperature=None):
+    """
+    Calculate the entropy of a particle based on its properties.
+    
+    <reason>chain: For ASEC-D theory, we need to quantify the "information content" of particles</reason>
+    
+    Args:
+        particle: Particle object with mass, charge, spin, etc.
+        temperature: Optional temperature in Kelvin (for thermal states)
+        
+    Returns:
+        S_particle: Entropy in units of k_B (Boltzmann constant)
+    """
+    from physics_agent.constants import BOLTZMANN_CONSTANT, HBAR, ELECTRON_MASS
+    import numpy as np
+    
+    # Base entropy from quantum numbers
+    # <reason>chain: Spin contributes to entropy via number of microstates</reason>
+    if hasattr(particle, 'spin'):
+        spin_states = 2 * particle.spin + 1  # Number of spin states
+        S_spin = np.log(spin_states) if spin_states > 1 else 0
+    else:
+        S_spin = 0
+    
+    # Mass contribution (heavier particles have more internal degrees of freedom)
+    # <reason>chain: Use electron mass as reference scale</reason>
+    if hasattr(particle, 'mass') and particle.mass > 0:
+        mass_ratio = particle.mass / ELECTRON_MASS
+        S_mass = np.log(1 + mass_ratio) / 10  # Scaled contribution
+    else:
+        S_mass = 0
+    
+    # Charge contribution (charged particles interact more)
+    # <reason>chain: Charged particles create more "semaphore contention"</reason>
+    if hasattr(particle, 'charge') and particle.charge != 0:
+        S_charge = 1.0  # Fixed contribution for charged particles
+    else:
+        S_charge = 0
+    
+    # Thermal contribution if temperature is provided
+    # <reason>chain: Thermal states have higher entropy than ground states</reason>
+    if temperature is not None and temperature > 0:
+        # Use simple Maxwell-Boltzmann statistics
+        S_thermal = 3/2 * np.log(temperature / 300)  # Normalized to room temp
+    else:
+        S_thermal = 0
+    
+    # Special cases for specific particle types
+    # <reason>chain: Massless particles (photons, neutrinos) have minimal internal entropy</reason>
+    if hasattr(particle, 'particle_type') and particle.particle_type == 'massless':
+        return 0.1  # Minimal entropy for massless particles
+    
+    # Total entropy (in units of k_B)
+    S_particle = S_spin + S_mass + S_charge + S_thermal
+    
+    return S_particle
+
+
 # Export all functions
 __all__ = [
     # Geometric calculations
@@ -516,4 +574,6 @@ __all__ = [
     # Stability checks
     'check_velocity_magnitude',
     'check_radius_bounds',
+    # Particle entropy
+    'calculate_particle_entropy',
 ] 

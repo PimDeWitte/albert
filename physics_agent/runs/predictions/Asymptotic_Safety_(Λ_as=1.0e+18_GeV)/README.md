@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: quantum  
-**Last Updated**: 2025-08-03T18:35:09.058150
+**Last Updated**: 2025-08-03T22:19:40.846051
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from physics_agent.theories.asymptotic_safety.theory import AsymptoticSafetyTheory
+from theory_asymptotic_safety_theory import AsymptoticSafetyTheory
 
 # Create theory instance with exact parameters
 theory = AsymptoticSafetyTheory()
@@ -155,6 +155,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `physics_agent.theories.asymptotic_safety.theory`
+1. Original theory implementation: `theory_asymptotic_safety_theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above

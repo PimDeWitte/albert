@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: quantum  
-**Last Updated**: 2025-08-03T18:36:59.459811
+**Last Updated**: 2025-08-03T21:35:49.257339
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from physics_agent.theories.twistor_theory.theory import TwistorTheory
+from theory_twistor_theory_theory import TwistorTheory
 
 # Create theory instance with exact parameters
 theory = TwistorTheory()
@@ -155,6 +155,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `physics_agent.theories.twistor_theory.theory`
+1. Original theory implementation: `theory_twistor_theory_theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above

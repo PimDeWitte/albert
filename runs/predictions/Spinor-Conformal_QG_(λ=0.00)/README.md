@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: quantum  
-**Last Updated**: 2025-08-03T18:36:57.749774
+**Last Updated**: 2025-08-03T21:35:48.010452
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from physics_agent.theories.spinor_conformal.theory import SpinorConformal
+from theory_spinor_conformal_theory import SpinorConformal
 
 # Create theory instance with exact parameters
 theory = SpinorConformal()
@@ -155,6 +155,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `physics_agent.theories.spinor_conformal.theory`
+1. Original theory implementation: `theory_spinor_conformal_theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above
