@@ -622,10 +622,7 @@
         </div>
     </div>
 
-    <div class="visualization-container">
-        <h2>Solver Performance Comparison</h2>
-        <canvas id="solver-comparison"></canvas>
-    </div>
+
 
     <div class="section-card">
         <h2>Top Performing Theories (Latest Run)</h2>
@@ -798,127 +795,7 @@
 
         drawValidatorChart();
 
-        // Solver comparison chart
-        const solverCanvas = document.getElementById('solver-comparison');
-        const solverCtx = solverCanvas.getContext('2d');
-        solverCanvas.width = solverCanvas.offsetWidth;
-        solverCanvas.height = 400;
 
-        function drawSolverComparison() {
-            solverCtx.clearRect(0, 0, solverCanvas.width, solverCanvas.height);
-            
-            // Data points for different step counts
-            const stepCounts = [100, 1000, 10000, 100000];
-            const methods = [
-                {
-                    name: 'Dormand-Prince 8',
-                    color: '#1976d2',
-                    data: [0.5, 4.7, 47.3, 473],
-                    order: 8
-                },
-                {
-                    name: 'Symplectic 6',
-                    color: '#4caf50',
-                    data: [0.3, 2.8, 28.1, 281],
-                    order: 6
-                },
-                {
-                    name: 'Implicit Gauss',
-                    color: '#ff9800',
-                    data: [1.5, 15.6, 156.7, 1567],
-                    order: 6
-                },
-                {
-                    name: 'Standard RK4',
-                    color: '#e74c3c',
-                    data: [0.2, 2.3, 22.9, 229],
-                    order: 4
-                }
-            ];
-            
-            // Draw axes
-            solverCtx.strokeStyle = '#666';
-            solverCtx.lineWidth = 2;
-            solverCtx.beginPath();
-            solverCtx.moveTo(80, 350);
-            solverCtx.lineTo(solverCanvas.width - 40, 350);
-            solverCtx.moveTo(80, 350);
-            solverCtx.lineTo(80, 50);
-            solverCtx.stroke();
-            
-            // Y-axis labels (log scale)
-            const yLabels = ['0.1', '1', '10', '100', '1000'];
-            solverCtx.fillStyle = '#666';
-            solverCtx.font = '12px Arial';
-            solverCtx.textAlign = 'right';
-            yLabels.forEach((label, i) => {
-                const y = 350 - (i * 60);
-                solverCtx.fillText(label + 'ms', 70, y);
-            });
-            
-            // X-axis labels
-            solverCtx.textAlign = 'center';
-            stepCounts.forEach((steps, i) => {
-                const x = 80 + (solverCanvas.width - 120) * i / (stepCounts.length - 1);
-                solverCtx.fillText(steps.toLocaleString(), x, 370);
-            });
-            
-            // Draw lines for each method
-            methods.forEach(method => {
-                solverCtx.strokeStyle = method.color;
-                solverCtx.lineWidth = 3;
-                solverCtx.beginPath();
-                
-                method.data.forEach((time, i) => {
-                    const x = 80 + (solverCanvas.width - 120) * i / (stepCounts.length - 1);
-                    const logTime = Math.log10(time);
-                    const y = 350 - ((logTime + 1) * 60);
-                    
-                    if (i === 0) {
-                        solverCtx.moveTo(x, y);
-                    } else {
-                        solverCtx.lineTo(x, y);
-                    }
-                    
-                    // Draw point
-                    solverCtx.fillStyle = method.color;
-                    solverCtx.beginPath();
-                    solverCtx.arc(x, y, 4, 0, Math.PI * 2);
-                    solverCtx.fill();
-                });
-                solverCtx.stroke();
-            });
-            
-            // Legend
-            let legendY = 70;
-            methods.forEach(method => {
-                solverCtx.fillStyle = method.color;
-                solverCtx.fillRect(solverCanvas.width - 180, legendY, 20, 3);
-                solverCtx.fillStyle = '#333';
-                solverCtx.font = '12px Arial';
-                solverCtx.textAlign = 'left';
-                solverCtx.fillText(method.name + ' (O' + method.order + ')', solverCanvas.width - 150, legendY + 5);
-                legendY += 25;
-            });
-            
-            // Title
-            solverCtx.fillStyle = '#333';
-            solverCtx.font = 'bold 16px Arial';
-            solverCtx.textAlign = 'center';
-            solverCtx.fillText('Solver Performance vs Integration Steps', solverCanvas.width/2, 30);
-            
-            // Axis labels
-            solverCtx.font = '14px Arial';
-            solverCtx.fillText('Number of Steps', solverCanvas.width/2, 395);
-            
-            solverCtx.save();
-            solverCtx.translate(30, solverCanvas.height/2);
-            solverCtx.rotate(-Math.PI/2);
-            solverCtx.fillText('Computation Time (log scale)', 0, 0);
-            solverCtx.restore();
-        }
-
-        drawSolverComparison();
     </script>
 </body>
 </html>

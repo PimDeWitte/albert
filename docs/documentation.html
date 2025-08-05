@@ -112,17 +112,18 @@
     <div class="header">
         <h1>Albert Documentation</h1>
         <div class="tabs">
-            <button class="tab active" data-tab="introduction">Introduction & System</button>
+            <button class="tab" data-tab="introduction">Introduction & System</button>
             <button class="tab" data-tab="solvers-validators">Solvers & Validators</button>
             <button class="tab" data-tab="cache">Cache System</button>
             <button class="tab" data-tab="datasets">Datasets</button>
             <button class="tab" data-tab="validators">Validator Reference</button>
+            <button class="tab active" data-tab="latest-report">Latest Report</button>
         </div>
     </div>
     
     <div class="content">
-        <div id="introduction-container" class="iframe-container active">
-            <iframe src="introduction.html"></iframe>
+        <div id="introduction-container" class="iframe-container">
+            <iframe data-src="introduction.html"></iframe>
         </div>
         
         <div id="solvers-validators-container" class="iframe-container">
@@ -139,6 +140,10 @@
         
         <div id="validators-container" class="iframe-container">
             <iframe data-src="validators.html"></iframe>
+        </div>
+        
+        <div id="latest-report-container" class="iframe-container active">
+            <iframe src="latest_run/latest_report.html"></iframe>
         </div>
     </div>
     

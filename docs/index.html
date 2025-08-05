@@ -516,83 +516,73 @@
                     <!-- Quick Start Commands -->
                     <div>
                         <h3 class="text-xl font-bold text-ink mb-2">Basic Usage</h3>
-                        <div class="bg-code-bg border border-code-border rounded-xl p-4 space-y-2 font-mono text-sm">
-                            <div><span class="text-muted"># Run comprehensive evaluation on all theories. This command initiates a full simulation and validation pipeline across all implemented gravitational theories, computing particle trajectories using geodesic equations, checking conservation laws like energy and angular momentum preservation, and verifying against experimental datasets such as Mercury's perihelion precession and gravitational lensing observations. It ensures numerical stability through adaptive timestepping and provides detailed reports on theory performance, including precision metrics and failure modes, enabling rigorous comparison of theoretical predictions with empirical data.</span></div>
-                            <div class="text-accent">albert run</div>
-                            <div class="mt-4"><span class="text-muted"># Include candidate theories in the evaluation. This flag extends the simulation to encompass experimental or hypothetical theories in the 'candidates' directory, allowing for systematic testing of novel modifications to established frameworks like general relativity, such as asymmetric metrics or quantum-corrected terms, while maintaining the same validation rigor including conservation checks and experimental matching.</span></div>
-                            <div class="text-accent">albert run --candidates</div>
-                            <div class="mt-4"><span class="text-muted"># Test your own custom theory by adding it to the theories/ directory. This command filters the evaluation to focus exclusively on the specified theory, facilitating rapid iteration and debugging by isolating its performance in geodesic integration, conservation law adherence, and alignment with observational data, which is crucial for developing and refining new physical models.</span></div>
-                            <div class="text-accent">albert run --theory-filter "MyTheory"</div>
-                            <div class="mt-4"><span class="text-muted"># Run simulations with extended trajectories by increasing the maximum number of integration steps. This allows for longer-term evolution of particle paths, which is essential for detecting subtle deviations in orbital stability, precession rates, or conservation violations that may only manifest over extended timescales in extreme gravitational regimes.</span></div>
-                            <div class="text-accent">albert run --max-steps 10000</div>
-                            <div class="mt-4"><span class="text-muted"># Execute pre-flight tests to verify solver correctness before main simulations. These tests include analytical benchmarks like Keplerian orbits, numerical convergence checks, and validation against known solutions to ensure the integrator preserves symplectic structure and maintains required precision across various spacetime curvatures.</span></div>
-                            <div class="text-accent">albert run --test</div>
+                        <div class="bg-code-bg border border-code-border rounded-xl p-4 space-y-3 font-mono text-sm">
+                            <div>
+                                <span class="text-muted"># Run comprehensive evaluation on all theories</span>
+                                <div class="text-accent">albert run</div>
+                            </div>
+                            <div>
+                                <span class="text-muted"># Include experimental candidate theories</span>
+                                <div class="text-accent">albert run --candidates</div>
+                            </div>
+                            <div>
+                                <span class="text-muted"># Test a specific theory</span>
+                                <div class="text-accent">albert run --theory-filter "MyTheory"</div>
+                            </div>
+                            <div>
+                                <span class="text-muted"># Run with extended integration steps</span>
+                                <div class="text-accent">albert run --max-steps 10000</div>
+                            </div>
+                            <div>
+                                <span class="text-muted"># Run pre-flight solver validation tests</span>
+                                <div class="text-accent">albert run --test</div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Available Commands -->
                     <div>
-                        <h3 class="text-xl font-bold text-ink mb-2">Available Commands</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h3 class="text-xl font-bold text-ink mb-2">Other Commands</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
-                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
-                                    <span class="text-lg">🚀</span> albert run
-                                </h4>
-                                <p class="text-sm text-muted">Run gravitational theory simulations with comprehensive validation. This core command orchestrates the entire pipeline: theory selection, geodesic equation solving using Runge-Kutta methods, trajectory generation, and multi-faceted validation including conservation laws and experimental data matching.</p>
-                                <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>--theory-filter "name"  # Select specific theories for focused evaluation, enabling targeted analysis of particular models without processing the entire suite, which is useful for iterative development and debugging of individual theories.</div>
-                                    <div>--steps 10000  # Set the number of integration steps for trajectory computation, allowing for finer temporal resolution in simulations to capture high-frequency phenomena or long-term stability characteristics.</div>
-                                    <div>--gpu-f32 / --cpu-f64  # Choose computation backend and precision: GPU with float32 for speed in large-scale simulations, or CPU with float64 for maximum numerical accuracy in precision-critical validations.</div>
-                                    <div>--enable-sweeps  # Activate parameter sweep mode for systematic exploration of theory parameters, generating comprehensive datasets for analyzing sensitivity and optimizing model configurations against validation criteria.</div>
+                                <div class="font-mono text-sm">
+                                    <span class="text-accent">albert discover</span>
+                                    <p class="text-xs text-muted mt-1">AI-assisted theory generation</p>
                                 </div>
                             </div>
                             
                             <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
-                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
-                                    <span class="text-lg">🧪</span> albert discover
-                                </h4>
-                                <p class="text-sm text-muted">Generate new theoretical variations using AI-assisted code generation, creating novel modifications to base theories while ensuring they remain mathematically consistent and ready for immediate validation.</p>
-                                <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>--initial "prompt"  # Provide an initial description or concept to guide the generation of new theory variants, such as "add quantum correction term" or "modify for asymmetric metrics".</div>
-                                    <div>--from-theory path  # Base the new theory on an existing implementation at the specified path, allowing for incremental modifications and extensions of proven models.</div>
+                                <div class="font-mono text-sm">
+                                    <span class="text-accent">albert setup</span>
+                                    <p class="text-xs text-muted mt-1">Configure environment and API keys</p>
                                 </div>
                             </div>
                             
                             <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
-                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
-                                    <span class="text-lg">⚙️</span> albert setup
-                                </h4>
-                                <p class="text-sm text-muted">Configure API keys, computational resources, and network settings through an interactive wizard, ensuring optimal setup for simulations including GPU detection and precision settings.</p>
-                                <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>Interactive wizard  # Step-by-step configuration process that detects hardware capabilities, sets environment variables, and validates installations for seamless operation.</div>
+                                <div class="font-mono text-sm">
+                                    <span class="text-accent">albert validate</span>
+                                    <p class="text-xs text-muted mt-1">Test a specific theory file</p>
                                 </div>
                             </div>
                             
                             <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
-                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
-                                    <span class="text-lg">📊</span> albert validate
-                                </h4>
-                                <p class="text-sm text-muted">Perform standalone validation of a specific theory against the full suite of experimental datasets and conservation checks, generating detailed reports on performance metrics.</p>
-                                <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>theories/my_theory/theory.py  # Path to the theory implementation file to validate, allowing for isolated testing of individual models outside the full run pipeline.</div>
+                                <div class="font-mono text-sm">
+                                    <span class="text-accent">albert run-advanced</span>
+                                    <p class="text-xs text-muted mt-1">Parameter sweeps and optimization</p>
                                 </div>
                             </div>
-                            
-                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
-                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
-                                    <span class="text-lg">🚀</span> albert run-advanced
-                                </h4>
-                                <p class="text-sm text-muted">Execute advanced simulations with parameter sweeps, parallel processing, and in-depth analysis tools for comprehensive theory exploration and optimization.</p>
-                                <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>--enable-sweeps  # Enable systematic parameter variation across specified ranges, generating multi-dimensional datasets for analyzing theory behavior and identifying optimal configurations.</div>
-                                    <div>--sweep-workers 8  # Set the number of parallel workers for distributed computation of parameter sweeps, leveraging multi-core or multi-GPU systems for accelerated processing of large simulation sets.</div>
-                                </div>
-                            </div>
-                            
                         </div>
-                        <p class="text-xs text-muted mt-3 text-center">
-                            Use <span class="font-mono">albert &lt;command&gt; --help</span> for detailed options
-                        </p>
+                    </div>
+                    
+                    <!-- Documentation Link -->
+                    <div class="mt-6 pt-6 border-t border-code-border text-center">
+                        <p class="text-sm text-muted mb-2">For detailed documentation and advanced options:</p>
+                        <a href="documentation.html" class="text-accent hover:text-accent/80 font-semibold text-sm inline-flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            View Full Documentation
+                        </a>
                     </div>
                     
                 
@@ -791,12 +781,12 @@
                 </div>
                 
                 <div class="flex items-center justify-center gap-6 mt-8">
-                    <a href="https://albert.so/latest_run/latest_report.html" 
+                    <a href="documentation.html" 
                        class="bg-accent hover:bg-accent/90 text-white text-lg px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-sm interactive w-64 h-14 flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        View Full Report
+                        View Docs
                     </a>
                     <a href="https://albert.so/latest_run/trajectory_viewers/unified_multi_particle_viewer_advanced.html" 
                        class="bg-quantum hover:bg-quantum/90 text-white text-lg px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-sm interactive w-64 h-14 flex items-center justify-center gap-2">
@@ -816,12 +806,12 @@
         <!-- The Emotional Journey Begins -->
         <section id="journey" class="relative">
                     <!-- Chapter 2: Real-Time Theory Testing -->
-        <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper pt-16 md:pt-0">
+        <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper pt-8 md:pt-0">
                 <div class="max-w-7xl mx-auto">
                     
                     <!-- Section Header -->
-                    <div class="text-center mb-12">
-                        <h3 class="text-4xl lg:text-5xl font-display font-bold text-accent mb-6">
+                    <div class="text-center mb-8 md:mb-12">
+                        <h3 class="text-5xl sm:text-6xl lg:text-5xl font-display font-bold text-accent mb-4 md:mb-6">
                            A simulator just for physics research
                         </h3>
                     </div>
@@ -1444,6 +1434,236 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                         </div>
                     </div>
                     
+                    <!-- Section 3: Future Vision - Open World Engine -->
+                    <div class="mb-20">
+                        <div class="max-w-5xl mx-auto">
+                            <!-- Collapsible Header -->
+                            <div class="bg-gradient-to-r from-extreme/5 to-accent/5 rounded-2xl shadow-lg border border-extreme/20 overflow-hidden">
+                                <button onclick="toggleFutureVisionSection()" class="w-full px-8 py-6 flex items-center justify-between hover:bg-extreme/5 transition-colors group">
+                                    <div class="flex items-center gap-4">
+                                        <h4 class="text-3xl font-bold text-extreme">Future Vision: Open World Engine</h4>
+                                        <div class="flex items-center space-x-2 bg-extreme/10 border border-extreme/30 rounded-lg px-3 py-1">
+                                            <svg class="w-4 h-4 text-extreme" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <span class="text-xs font-medium text-ink">Roadmap</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm text-muted group-hover:text-extreme transition-colors">
+                                            Explore the future
+                                        </span>
+                                        <svg id="future-vision-chevron" class="w-6 h-6 text-extreme transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </button>
+                                
+                                <!-- Collapsible Content -->
+                                <div id="future-vision-content" class="overflow-hidden transition-all duration-500" style="max-height: 0;">
+                                    <div class="px-8 py-6 bg-gradient-to-b from-transparent to-extreme/5">
+                                        
+                                        <div class="space-y-12">
+                                            <!-- Part 1: Open World Engine -->
+                                            <div>
+                                                <h5 class="text-2xl font-bold text-extreme mb-6">1. From Gravity to Everything: An Open World Engine</h5>
+                                                
+                                                <p class="text-lg font-serif text-ink mb-6">
+                                                    Albert's architecture isn't limited to gravitational theories. The same differentiable physics framework
+                                                    that validates Einstein's equations can extend to fluid dynamics, thermodynamics, quantum field theory,
+                                                    and beyond—creating a unified computational model of physical reality.
+                                                </p>
+                                                
+                                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                                                    <!-- Fluid Dynamics Example -->
+                                                    <div class="bg-white rounded-xl p-6 border border-code-border">
+                                                        <h6 class="font-bold text-accent mb-3">Fluid Dynamics Integration</h6>
+                                                        <pre class="code-block text-xs overflow-x-auto"><span class="text-muted"># Future: Navier-Stokes solver in Albert</span>
+<span class="text-accent">class</span> <span class="text-warning">FluidTheory</span>(AlbertBaseTheory):
+    <span class="text-accent">def</span> <span class="text-success">compute_flow_field</span>(self, initial_conditions):
+        <span class="text-muted"># Differentiable fluid simulation</span>
+        velocity = self.solve_navier_stokes(
+            viscosity=self.params[<span class="text-string">'nu'</span>],
+            density=self.params[<span class="text-string">'rho'</span>],
+            pressure_grad=self.compute_pressure()
+        )
+        <span class="text-accent">return</span> velocity
+    
+    <span class="text-accent">def</span> <span class="text-success">validate</span>(self):
+        <span class="text-muted"># Compare with experimental flow data</span>
+        <span class="text-accent">return</span> self.compare_with_PIV_data()</pre>
+                                                    </div>
+                                                    
+                                                    <!-- Thermodynamics Example -->
+                                                    <div class="bg-white rounded-xl p-6 border border-code-border">
+                                                        <h6 class="font-bold text-success mb-3">Thermodynamics & Phase Transitions</h6>
+                                                        <pre class="code-block text-xs overflow-x-auto"><span class="text-muted"># Future: Statistical mechanics in Albert</span>
+<span class="text-accent">class</span> <span class="text-warning">IsingModel</span>(AlbertBaseTheory):
+    <span class="text-accent">def</span> <span class="text-success">compute_magnetization</span>(self, T):
+        <span class="text-muted"># Differentiable Monte Carlo</span>
+        states = self.initialize_spins()
+        <span class="text-accent">for</span> _ <span class="text-accent">in</span> range(self.n_steps):
+            states = self.metropolis_step(states, T)
+        
+        <span class="text-muted"># Learn critical exponents</span>
+        <span class="text-accent">return</span> torch.mean(states)</pre>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Unified Physics Code Example -->
+                                                <div class="bg-gradient-to-r from-extreme/10 to-quantum/10 rounded-2xl p-6 mb-8">
+                                                    <h6 class="font-bold text-ink mb-3">Unified Multi-Physics Simulation</h6>
+                                                    <pre class="code-block text-sm"><span class="text-muted"># Future Albert: Coupling different physics domains</span>
+<span class="text-accent">from</span> albert.theories <span class="text-accent">import</span> GravityTheory, FluidTheory, QuantumFieldTheory
+<span class="text-accent">from</span> albert.couplings <span class="text-accent">import</span> GravityFluidCoupling
+
+<span class="text-muted"># Create a black hole accretion disk simulation</span>
+gravity = KerrTheory(a=<span class="text-warning">0.9</span>)
+fluid = RelativisticMHD()
+coupling = GravityFluidCoupling()
+
+<span class="text-muted"># Run coupled simulation with automatic differentiation</span>
+system = albert.MultiphysicsSystem([gravity, fluid], [coupling])
+trajectory = system.evolve(initial_conditions, t_final=<span class="text-warning">1000</span>)
+
+<span class="text-muted"># Validate against Event Horizon Telescope data</span>
+validation = system.validate_against_observations(
+    data=<span class="text-string">'EHT_M87_2019.fits'</span>,
+    metrics=[<span class="text-string">'ring_diameter'</span>, <span class="text-string">'brightness_asymmetry'</span>]
+)</pre>
+                                                </div>
+                                                
+                                                <div class="bg-white/80 rounded-xl p-6 border border-accent/20">
+                                                    <h6 class="font-bold text-accent mb-3">Applications Beyond Research</h6>
+                                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                                        <div class="text-center">
+                                                            <div class="text-2xl mb-2">🎮</div>
+                                                            <div class="font-bold">Game Engines</div>
+                                                            <div class="text-muted">Realistic physics for virtual worlds</div>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <div class="text-2xl mb-2">🏗️</div>
+                                                            <div class="font-bold">Engineering</div>
+                                                            <div class="text-muted">Digital twins & simulations</div>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <div class="text-2xl mb-2">🌍</div>
+                                                            <div class="font-bold">Climate Modeling</div>
+                                                            <div class="text-muted">Differentiable Earth systems</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Part 2: Physics Engine Orchestrator -->
+                                            <div>
+                                                <h5 class="text-2xl font-bold text-extreme mb-6">2. Universal Physics Orchestrator</h5>
+                                                
+                                                <p class="text-lg font-serif text-ink mb-6">
+                                                    Rather than replacing existing engines, Albert can become an intelligent orchestrator—wrapping
+                                                    specialized simulators like NVIDIA Warp, Taichi, or game engines, while adding automatic
+                                                    differentiation, theory validation, and cross-engine consistency checks.
+                                                </p>
+                                                
+                                                <div class="space-y-6">
+                                                    <!-- NVIDIA Warp Integration -->
+                                                    <div class="bg-white rounded-xl p-6 border border-code-border">
+                                                        <h6 class="font-bold text-quantum mb-3">NVIDIA Warp Integration</h6>
+                                                        <pre class="code-block text-sm"><span class="text-muted"># Future: Albert wrapping NVIDIA Warp for GPU simulation</span>
+<span class="text-accent">import</span> warp <span class="text-accent">as</span> wp
+<span class="text-accent">from</span> albert.wrappers <span class="text-accent">import</span> WarpWrapper
+
+<span class="text-accent">class</span> <span class="text-warning">WarpFluidSolver</span>(AlbertSolver):
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self):
+        self.wrapper = WarpWrapper()
+        
+    <span class="text-decorator">@wp.kernel</span>
+    <span class="text-accent">def</span> <span class="text-success">simulate_sph</span>(
+        positions: wp.array(dtype=wp.vec3),
+        velocities: wp.array(dtype=wp.vec3),
+        pressure: wp.array(dtype=float)
+    ):
+        <span class="text-muted"># Smoothed Particle Hydrodynamics on GPU</span>
+        tid = wp.tid()
+        <span class="text-muted"># Warp handles the low-level GPU code</span>
+        <span class="text-muted"># Albert handles validation & differentiation</span>
+        
+    <span class="text-accent">def</span> <span class="text-success">validate_conservation</span>(self):
+        <span class="text-muted"># Albert's conservation validators work seamlessly</span>
+        <span class="text-accent">return</span> self.check_momentum_conservation()</pre>
+                                                    </div>
+                                                    
+                                                    <!-- Unity/Unreal Integration -->
+                                                    <div class="bg-white rounded-xl p-6 border border-code-border">
+                                                        <h6 class="font-bold text-warning mb-3">Game Engine Integration</h6>
+                                                        <pre class="code-block text-sm"><span class="text-muted"># Future: Albert as a physics backend for games</span>
+<span class="text-accent">from</span> albert.game_bridges <span class="text-accent">import</span> UnityBridge, UnrealBridge
+
+<span class="text-accent">class</span> <span class="text-warning">AlbertGamePhysics</span>:
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, engine=<span class="text-string">"unity"</span>):
+        self.bridge = UnityBridge() <span class="text-accent">if</span> engine == <span class="text-string">"unity"</span> <span class="text-accent">else</span> UnrealBridge()
+        self.theory = GeneralRelativity()  <span class="text-muted"># Or any custom theory!</span>
+        
+    <span class="text-accent">def</span> <span class="text-success">simulate_black_hole</span>(self, player_position):
+        <span class="text-muted"># Real GR effects in games</span>
+        geodesic = self.theory.compute_geodesic(
+            start_pos=player_position,
+            near_mass=self.black_hole_mass
+        )
+        <span class="text-muted"># Send warped spacetime mesh back to game engine</span>
+        <span class="text-accent">return</span> self.bridge.update_geometry(geodesic)</pre>
+                                                    </div>
+                                                    
+                                                    <!-- Cross-Engine Validation -->
+                                                    <div class="bg-gradient-to-r from-quantum/10 to-extreme/10 rounded-xl p-6">
+                                                        <h6 class="font-bold text-ink mb-3">Cross-Engine Validation Framework</h6>
+                                                        <pre class="code-block text-sm"><span class="text-muted"># Future: Validate physics consistency across engines</span>
+<span class="text-accent">from</span> albert.orchestrator <span class="text-accent">import</span> PhysicsOrchestrator
+
+orchestrator = PhysicsOrchestrator()
+
+<span class="text-muted"># Register multiple physics engines</span>
+orchestrator.register(<span class="text-string">'pytorch'</span>, PyTorchPhysics())
+orchestrator.register(<span class="text-string">'warp'</span>, NvidiaWarpPhysics())  
+orchestrator.register(<span class="text-string">'taichi'</span>, TaichiPhysics())
+orchestrator.register(<span class="text-string">'jax-md'</span>, JAXMDPhysics())
+
+<span class="text-muted"># Run same simulation across all engines</span>
+results = orchestrator.run_comparative_simulation(
+    scenario=<span class="text-string">"double_pendulum_chaos"</span>,
+    validate_against=<span class="text-string">"experimental_data.csv"</span>
+)
+
+<span class="text-muted"># Albert automatically detects discrepancies</span>
+<span class="text-accent">print</span>(results.consistency_report())
+<span class="text-comment"># Output: PyTorch and JAX agree to 1e-12</span>
+<span class="text-comment"># Warning: Warp diverges after t=10s due to...</span></pre>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Vision Summary -->
+                                                <div class="bg-white/90 rounded-2xl p-8 mt-8 border-2 border-extreme/30">
+                                                    <h6 class="text-xl font-bold text-extreme mb-4">The Ultimate Vision</h6>
+                                                    <p class="text-lg font-serif text-ink mb-4">
+                                                        Albert evolves from a gravitational theory validator into a universal physics intelligence layer—a
+                                                        differentiable, validatable, and interpretable interface to the laws of nature. Whether you're
+                                                        discovering new physics, engineering a fusion reactor, or creating the next breakthrough game,
+                                                        Albert provides the computational substrate to model reality accurately and efficiently.
+                                                    </p>
+                                                    <div class="text-center mt-6">
+                                                        <p class="text-sm text-muted italic">
+                                                            "Make everything as simple as possible, but not simpler." — Albert Einstein
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
                     
@@ -3098,6 +3318,22 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
         function togglePhysicsEngineSection() {
             const content = document.getElementById('physics-engine-content');
             const chevron = document.getElementById('physics-engine-chevron');
+            
+            if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+                // Open the section
+                content.style.maxHeight = content.scrollHeight + 'px';
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                // Close the section
+                content.style.maxHeight = '0';
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Toggle Future Vision section
+        function toggleFutureVisionSection() {
+            const content = document.getElementById('future-vision-content');
+            const chevron = document.getElementById('future-vision-chevron');
             
             if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
                 // Open the section
