@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conservation Validation - Albert Framework</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1976d2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #1565c0;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #0d47a1;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .diagram-container {
+            background-color: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+        
+        .formula {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-left: 4px solid #1976d2;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .example-box {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        .comparison-table th {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        
+        .pass {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        .fail {
+            color: #c62828;
+            font-weight: bold;
+        }
+        
+        .note {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .mermaid {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conservation Validation in the Albert Framework</h1>
+        
+        <div class="section">
+            <h2>Overview</h2>
+            <p>The Conservation Validator is a critical component of the Albert Framework that ensures gravitational theories respect fundamental conservation laws. It validates that energy and angular momentum remain conserved during particle trajectories around black holes, which is essential for physical validity.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Process Flow Diagram</h2>
+            <div class="diagram-container">
+                <div class="mermaid">
+graph TB
+    %% Title and main flow
+    Start["Conservation Validator Start<br/>Theory + Trajectory Data"] --> UnitConv["Unit Conversion<br/>SI to Geometric Units<br/>M=G=c=1"]
+    
+    UnitConv --> PreCheck{{"Pre-flight Checks<br/>Valid trajectory?<br/>No NaN/Inf?"}}
+    PreCheck -->|Fail| FailResult["FAIL<br/>Loss = infinity"]
+    PreCheck -->|Pass| TheoryType{{"Theory Type?"}}
+    
+    %% Theory type branches
+    TheoryType -->|Symmetric| SymCalc["Standard Calculation<br/>Central Differences"]
+    TheoryType -->|Rotating Kerr| RotCalc["Rotating Spacetime<br/>Sample Points + Initial Conditions"]
+    TheoryType -->|UGM| UGMCalc["UGM Theory<br/>Tetrad Formalism"]
+    TheoryType -->|Quantum| QuantCalc["Quantum Theory<br/>Phase Corrections"]
+    
+    %% Energy calculation process
+    SymCalc --> MetricComp
+    RotCalc --> MetricComp
+    UGMCalc --> MetricComp
+    QuantCalc --> MetricComp
+    
+    MetricComp["Get Metric Components<br/>g_tt, g_rr, g_pp, g_tp"] --> VelCalc
+    VelCalc["Calculate Velocities<br/>u_t = dt/dtau<br/>u_phi = dphi/dtau"] --> ConsQuant
+    ConsQuant["Conserved Quantities<br/>E = -(g_tt*u_t + g_tp*u_phi)<br/>L_z = g_tp*u_t + g_pp*u_phi"] --> ErrorCalc
+    
+    %% Error calculation
+    ErrorCalc["Error Calculation<br/>E_error = std(E) / mean(E)<br/>L_error = std(L) / mean(L)"] --> TolSelect
+    
+    %% Tolerance selection
+    TolSelect{{"Tolerance Selection"}}
+    TolSelect -->|Standard| StdTol["Base: 1e-5"]
+    TolSelect -->|Rotating Kerr| RotTol["Relaxed: 1e-3"]
+    TolSelect -->|UGM| UGMTol["Relaxed: 1e-3"]
+    TolSelect -->|Expected Violation| PhysTol["Adaptive:<br/>expected + 1e-5"]
+    
+    %% Scoring
+    StdTol --> Loss
+    RotTol --> Loss
+    UGMTol --> Loss
+    PhysTol --> Loss
+    
+    Loss["Total Loss = E_error + L_error"] --> PassFail
+    PassFail["Pass/Fail Decision:<br/>error < tolerance?"] --> Flags
+    Flags["Generate Flags:<br/>- Overall<br/>- Energy Conservation<br/>- Angular Momentum<br/>- Strict Conservation"] --> Compare
+    
+    %% Theory comparison
+    Compare{{"Theory Comparison"}}
+    
+    Compare --> Rank1["1. Lowest Loss<br/>Best Conservation"]
+    Compare --> Rank2["2. Physical Violations<br/>With Justification"]
+    Compare --> Rank3["3. Higher Loss<br/>Numerical Issues"]
+    Compare --> RankF["4. Failed<br/>Unphysical"]
+    
+    %% Final result
+    Rank1 --> Result
+    Rank2 --> Result
+    Rank3 --> Result
+    RankF --> Result
+    
+    Result["Final Report<br/>- Loss value<br/>- Pass/Fail flags<br/>- Error details<br/>- Tolerance used"]
+    
+    %% Styling
+    classDef processBox fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef decisionBox fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef failBox fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef successBox fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    
+    class Start,UnitConv,SymCalc,RotCalc,UGMCalc,QuantCalc,ErrorCalc,StdTol,RotTol,UGMTol,PhysTol,MetricComp,VelCalc,ConsQuant processBox
+    class PreCheck,TheoryType,TolSelect,Compare,PassFail decisionBox
+    class FailResult,RankF failBox
+    class Result,Rank1,Flags,Loss successBox
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Energy Calculation and Comparison Process</h2>
+            <p>This diagram shows how energy is calculated from trajectory data and how theories are compared:</p>
+            <div class="diagram-container">
+                <div class="mermaid">
+graph LR
+    subgraph Input["Input Data"]
+        Traj["Trajectory<br/>(t, r, φ)"]
+        Theory["Theory<br/>(Metric g_μν)"]
+    end
+    
+    subgraph EnergyCalc["Energy Calculation at Each Point"]
+        Vel["Velocity Components<br/>u_t = dt/dτ<br/>u_φ = dφ/dτ"]
+        Metric["Metric Components<br/>g_tt, g_tp, g_pp"]
+        Energy["Energy<br/>E = -(g_tt·u_t + g_tp·u_φ)"]
+        Vel --> Energy
+        Metric --> Energy
+    end
+    
+    subgraph Analysis["Statistical Analysis"]
+        Mean["Mean Energy<br/>μ(E)"]
+        StdDev["Std Deviation<br/>σ(E)"]
+        Error["Relative Error<br/>ε = σ(E)/|μ(E)|"]
+        Mean --> Error
+        StdDev --> Error
+    end
+    
+    subgraph Comparison["Theory Comparison"]
+        T1["Theory A<br/>ε = 1e-7<br/>✓ PASS"]
+        T2["Theory B<br/>ε = 1e-4<br/>✓ PASS"]
+        T3["Theory C<br/>ε = 0.1<br/>✗ FAIL"]
+        Rank["Ranking:<br/>A > B > C"]
+        T1 --> Rank
+        T2 --> Rank
+        T3 --> Rank
+    end
+    
+    Traj --> Vel
+    Theory --> Metric
+    Energy --> Mean
+    Energy --> StdDev
+    Error --> T1
+    Error --> T2
+    Error --> T3
+    
+    classDef inputBox fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef calcBox fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef analysisBox fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef passBox fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    classDef failBox fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
+    
+    class Traj,Theory inputBox
+    class Vel,Metric,Energy calcBox
+    class Mean,StdDev,Error analysisBox
+    class T1,T2 passBox
+    class T3 failBox
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Step-by-Step Process</h2>
+            
+            <h3>1. Unit Conversion</h3>
+            <p>The validator first converts trajectory data from SI units to geometric units where M=G=c=1. This ensures numerical stability by working with O(1) values.</p>
+            <div class="formula">
+                Conversions:
+                - Time: t_geom = t_SI / (4.92e-6 seconds)
+                - Length: r_geom = r_SI / (1474.0 meters)
+                - Angular coordinate: φ (already dimensionless)
+                - Velocity: v_geom = v_SI * (time_scale / velocity_scale)
+            </div>
+            
+            <h3>2. Pre-flight Checks</h3>
+            <p>Before proceeding, the validator checks for:</p>
+            <ul>
+                <li>Valid trajectory data (not None, sufficient length)</li>
+                <li>No NaN or infinite values in the trajectory</li>
+                <li>Minimum of 3 time steps for meaningful conservation analysis</li>
+            </ul>
+            
+            <h3>3. Theory-Specific Calculations</h3>
+            <p>Different theory types require different approaches:</p>
+            
+            <div class="example-box">
+                <h4>Symmetric Theories (e.g., Schwarzschild)</h4>
+                <p>Use central differences to calculate velocities:</p>
+                <div class="formula">
+                    u_t = (t[i+1] - t[i-1]) / (2 * Δτ)
+                    u_φ = (φ[i+1] - φ[i-1]) / (2 * Δτ)
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h4>Rotating Spacetimes (e.g., Kerr)</h4>
+                <p>Sample trajectory at key points and use initial conditions for higher accuracy. Tolerance relaxed to 1e-3 due to trajectory storage limitations.</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>UGM Theories</h4>
+                <p>Account for tetrad formalism which can introduce small numerical errors. Tolerance relaxed to 1e-3.</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Quantum Theories</h4>
+                <p>Apply phase corrections based on quantum path integral contributions.</p>
+            </div>
+            
+            <h3>4. Energy and Angular Momentum Calculation</h3>
+            <p>The conserved quantities are calculated from the metric components and velocities:</p>
+            <div class="formula">
+                Energy: E = -(g_tt * u_t + g_tp * u_φ)
+                Angular Momentum: L_z = g_tp * u_t + g_pp * u_φ
+                
+                Where g_μν are the metric components obtained from the theory
+            </div>
+            
+            <h3>5. Error Calculation</h3>
+            <p>Conservation errors are computed as relative deviations:</p>
+            <div class="formula">
+                Energy Error = σ(E) / |μ(E)|
+                Momentum Error = σ(L_z) / |μ(L_z)|
+                
+                Where σ is standard deviation and μ is mean
+            </div>
+            
+            <h3>6. Tolerance Selection</h3>
+            <p>The validator uses adaptive tolerances based on theory characteristics:</p>
+            <ul>
+                <li><strong>Standard tolerance:</strong> 1e-5 for most theories</li>
+                <li><strong>Rotating Kerr:</strong> 1e-3 due to coordinate singularities</li>
+                <li><strong>UGM theories:</strong> 1e-3 due to tetrad formalism</li>
+                <li><strong>Expected violations:</strong> For theories with known physical violations, tolerance = expected + 1e-5</li>
+            </ul>
+            
+            <h3>7. Scoring and Comparison</h3>
+            <p>The total loss is the sum of energy and momentum errors:</p>
+            <div class="formula">
+                Total Loss = Energy Error + Momentum Error
+            </div>
+            <p>Theories are then ranked by their conservation performance.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Theory Comparison Example</h2>
+            <p>Here's how different theories might compare in a typical validation run:</p>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Theory</th>
+                    <th>Energy Error</th>
+                    <th>Momentum Error</th>
+                    <th>Total Loss</th>
+                    <th>Tolerance Used</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td>Schwarzschild</td>
+                    <td>2.5e-7</td>
+                    <td>1.8e-7</td>
+                    <td>4.3e-7</td>
+                    <td>1e-5</td>
+                    <td class="pass">PASS ✓</td>
+                </tr>
+                <tr>
+                    <td>Kerr (Rotating)</td>
+                    <td>8.2e-4</td>
+                    <td>6.1e-4</td>
+                    <td>1.43e-3</td>
+                    <td>1e-3</td>
+                    <td class="pass">PASS ✓</td>
+                </tr>
+                <tr>
+                    <td>UGM Theory</td>
+                    <td>3.1e-4</td>
+                    <td>2.8e-4</td>
+                    <td>5.9e-4</td>
+                    <td>1e-3</td>
+                    <td class="pass">PASS ✓</td>
+                </tr>
+                <tr>
+                    <td>Quantum Theory</td>
+                    <td>1.2e-6</td>
+                    <td>9.8e-7</td>
+                    <td>2.18e-6</td>
+                    <td>1e-5</td>
+                    <td class="pass">PASS ✓</td>
+                </tr>
+                <tr>
+                    <td>Failed Theory</td>
+                    <td>0.15</td>
+                    <td>0.23</td>
+                    <td>0.38</td>
+                    <td>1e-5</td>
+                    <td class="fail">FAIL ✗</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>Physical Justifications</h2>
+            <p>Some theories may violate conservation laws for physically justified reasons:</p>
+            
+            <div class="note">
+                <h4>Stochastic Theories</h4>
+                <p>Theories with stochastic spacetime fluctuations have expected drift: <code>σ * √(trajectory_length)</code></p>
+            </div>
+            
+            <div class="note">
+                <h4>Quantum Corrections</h4>
+                <p>Quantum theories may have modified conservation laws due to vacuum fluctuations and path integral contributions.</p>
+            </div>
+            
+            <div class="note">
+                <h4>Gauge Field Theories</h4>
+                <p>UGM theories using tetrad formalism may have small numerical violations due to gauge transformations.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Output Format</h2>
+            <p>The validator returns a structured result containing:</p>
+            <div class="formula">
+{
+    "loss": 0.00043,  // Total conservation error
+    "flags": {
+        "overall": "PASS",
+        "energy_conservation": "PASS",
+        "angular_momentum_conservation": "PASS",
+        "strict_conservation": "PASS"
+    },
+    "details": {
+        "energy_conservation_error": 0.00025,
+        "angular_momentum_conservation_error": 0.00018,
+        "expected_violation": 0.0,
+        "violation_mechanism": null,
+        "tolerance_used": 1e-5
+    }
+}
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Always ensure trajectories have sufficient time steps (>3) for meaningful analysis</li>
+                <li>Use geometric units internally for numerical stability</li>
+                <li>Apply theory-specific tolerances based on physical understanding</li>
+                <li>Document any expected conservation violations with physical justifications</li>
+                <li>Monitor both energy and angular momentum conservation equally</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
