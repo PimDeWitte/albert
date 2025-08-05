@@ -131,7 +131,6 @@ profile_default/
 ipython_config.py
 
 # Video/Animation outputs
-*.mp4
 *.avi
 *.mov
 *.gif
