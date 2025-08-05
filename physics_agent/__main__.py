@@ -23,10 +23,10 @@ Examples:
   albert run --candidates-only         # Evaluate only candidate theories
   albert run --theory-filter "kerr"    # Run only theories matching "kerr"
   albert run --max-steps 10000         # Run with longer trajectories
+  albert run --no-cache                # Force fresh computation, bypass cache
+  albert run --enable-sweeps           # Run with parameter sweeps
+  albert run --sweep-only gamma        # Sweep only specific parameter
   albert run --test                    # Run pre-flight tests before evaluation
-  
-  albert run-advanced --enable-sweeps  # Run with parameter sweeps (advanced mode)
-  albert run-advanced --sweep-only gamma  # Sweep only specific parameter
   
   albert discover                      # Start AI-powered self-discovery mode
   albert discover --initial "quantum"  # Guide discovery toward quantum theories
@@ -49,38 +49,11 @@ For more information on each command, use: albert <command> --help
         description='Evaluate all theories against analytical and trajectory-based tests with interactive visualizations'
     )
     
-    # Add evaluation-specific arguments
-    run_parser.add_argument('--candidates', action='store_true',
-                          help='Include candidate theories from candidates/ folder')
-    run_parser.add_argument('--candidates-status', choices=['proposed', 'new', 'rejected', 'all'],
-                          default='proposed', help='Which candidate theories to include (default: proposed)')
-    run_parser.add_argument('--candidates-only', action='store_true',
-                          help='Run ONLY candidate theories (excludes regular theories)')
-    run_parser.add_argument('--theory-filter', type=str, default=None,
-                          help='Filter theories by name (substring match)')
-    run_parser.add_argument('--max-steps', type=int, default=None,
-                          help='Maximum simulation steps (default: 1000, use 10000+ for longer trajectories)')
-    run_parser.add_argument('--max-parallel-workers', type=int, default=4,
-                          help='Maximum parallel workers for trajectory computation')
-    run_parser.add_argument('--test', action='store_true',
-                          help='Run pre-flight environment tests before evaluation')
-    
-    # Note about parameter sweeps
-    run_parser.add_argument('--enable-sweeps', action='store_true',
-                          help='Note: Parameter sweeps not yet supported in evaluation mode. Use theory_engine_core directly.')
-    
-    # Advanced command - runs theory_engine_core directly
-    advanced_parser = subparsers.add_parser(
-        'run-advanced', 
-        help='Run theories with full parameter sweep support',
-        description='Advanced mode with parameter sweeps using theory_engine_core directly'
-    )
-    
-    # Import CLI arguments from cli.py for advanced mode
+    # Import CLI arguments from cli.py for full functionality
     from physics_agent.cli import get_cli_parser
     cli_parser = get_cli_parser()
     
-    # Copy all arguments from the original parser to advanced subcommand
+    # Copy all arguments from the original parser to run subcommand
     for action in cli_parser._actions:
         if action.dest == 'help':  # Skip help action
             continue
@@ -115,7 +88,18 @@ For more information on each command, use: albert <command> --help
             if hasattr(action, 'choices') and action.choices is not None:
                 kwargs['choices'] = action.choices
             
-        advanced_parser.add_argument(*action.option_strings, **kwargs)
+        run_parser.add_argument(*action.option_strings, **kwargs)
+    
+    # Add evaluation-specific arguments that aren't in cli.py
+    eval_group = run_parser.add_argument_group('evaluation options')
+    eval_group.add_argument('--candidates-status', choices=['proposed', 'new', 'rejected', 'all'],
+                       default='proposed', help='Which candidate theories to include when --candidates is used')
+    eval_group.add_argument('--candidates-only', action='store_true',
+                       help='Run ONLY candidate theories (excludes regular theories)')
+    eval_group.add_argument('--test', action='store_true',
+                       help='Run pre-flight environment tests before evaluation')
+    
+
     
     # Setup command
     setup_parser = subparsers.add_parser(
@@ -237,34 +221,7 @@ For more information on each command, use: albert <command> --help
         results, run_dir = run_evaluation()
         print(f"\n📊 Evaluation complete! Results saved to: {run_dir}")
         
-    elif args.command == 'run-advanced':
-        # Run theory_engine_core directly for full parameter sweep support
-        from physics_agent.theory_engine_core import main as run_theories
-        from physics_agent.cli import get_cli_parser
-        
-        # Convert namespace to list for theory_engine_core
-        cli_parser = get_cli_parser()
-        defaults = {}
-        for action in cli_parser._actions:
-            if action.dest != 'help':
-                defaults[action.dest] = action.default
-        
-        sys.argv = ['albert-run-advanced']  # Set program name
-        # Add all the arguments back
-        for key, value in vars(args).items():
-            if key not in ['command'] and value is not None:
-                # Skip if it's a default value (not explicitly set by user)
-                if key in defaults and value == defaults[key]:
-                    continue
-                    
-                if isinstance(value, bool):
-                    if value:
-                        sys.argv.append(f'--{key.replace("_", "-")}')
-                else:
-                    sys.argv.append(f'--{key.replace("_", "-")}')
-                    sys.argv.append(str(value))
-        run_theories()
-        
+
     elif args.command == 'setup':
         # Run the setup script
         from albert_setup import main as run_setup

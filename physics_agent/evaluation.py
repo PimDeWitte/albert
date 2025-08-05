@@ -347,7 +347,7 @@ def test_quantum_geodesic_for_theory(theory):
         exec_time = time.time() - start_time
         return False, "NotSupported" if "Newtonian" in str(e) or "not supported" in str(e) else "Failed", exec_time, 0.0, 0
 
-def test_trajectory_vs_kerr(theory, engine, n_steps=None):
+def test_trajectory_vs_kerr(theory, engine, n_steps=None, args=None):
     """Run actual trajectory integration and compute loss vs Kerr baseline."""
     try:
         start_time = time.time()
@@ -400,7 +400,9 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=None):
                     theory_category=theory.category if hasattr(theory, 'category') else 'unknown',
                     use_quantum=hasattr(theory, 'enable_quantum') and theory.enable_quantum,
                     black_hole_preset=engine.bh_preset.name,
-                    show_pbar=False
+                    show_pbar=True,  # Enable progress bar for particle
+                    pbar_desc=f"    electron",  # Custom description for progress bar
+                    no_cache=args.no_cache if args and hasattr(args, 'no_cache') else False
                 )
                 # Handle both tuple and dict return formats
                 if isinstance(result, tuple):
@@ -436,7 +438,9 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=None):
                         theory_category=theory.category if hasattr(theory, 'category') else 'unknown',
                         use_quantum=hasattr(theory, 'enable_quantum') and theory.enable_quantum,
                         black_hole_preset=engine.bh_preset.name,
-                        show_pbar=False
+                        show_pbar=True,  # Enable progress bar for particle
+                        pbar_desc=f"    {particle_name}",  # Custom description for progress bar
+                        no_cache=args.no_cache if args and hasattr(args, 'no_cache') else False
                     )
                     # Handle both tuple and dict return formats
                     if isinstance(result, tuple):
@@ -583,7 +587,8 @@ def test_trajectory_vs_kerr(theory, engine, n_steps=None):
                 particle_name='electron',
                 theory_category='classical',
                 black_hole_preset=engine.bh_preset.name,
-                show_pbar=False
+                show_pbar=False,
+                no_cache=args.no_cache if args and hasattr(args, 'no_cache') else False
             )
             # Handle 3-tuple return
             if isinstance(kerr_result, tuple) and len(kerr_result) == 3:
@@ -739,11 +744,11 @@ def test_scattering_amplitude(theory):
             'error': str(e)[:200]
         }
 
-def run_solver_test(theory, test_func, test_name, engine=None):
+def run_solver_test(theory, test_func, test_name, engine=None, args=None):
     """Run a single solver-based test on a theory."""
     try:
         if test_name == "Trajectory vs Kerr" and engine:
-            return test_trajectory_vs_kerr(theory, engine)
+            return test_trajectory_vs_kerr(theory, engine, args=args)
         elif test_name == "Circular Orbit":
             result, solver_type, exec_time, solver_time, num_steps = test_circular_orbit_for_theory(theory)
             return {
@@ -938,7 +943,7 @@ def run_solver_test(theory, test_func, test_name, engine=None):
             'exec_time': 0.0
         }
 
-def test_theory_comprehensive(theory_name, theory_class, category):
+def test_theory_comprehensive(theory_name, theory_class, category, args=None):
     """Test a single theory with both analytical validators and solver tests."""
     print(f"\n{'='*60}")
     print(f"Testing: {theory_name} [{category}]")
@@ -1006,7 +1011,7 @@ def test_theory_comprehensive(theory_name, theory_class, category):
     # Run solver-based tests
     print("\nSolver-Based Tests:")
     for test_func, test_name in SOLVER_TESTS:
-        test_result = run_solver_test(theory, test_func, test_name, engine)
+        test_result = run_solver_test(theory, test_func, test_name, engine, args)
         results['solver_tests'].append(test_result)
         
         # Format solver info
@@ -1261,7 +1266,7 @@ def save_particle_trajectories_to_run(run_dir, theory_results):
     
     print(f"Total trajectories saved: {saved_count}")
 
-def run_comprehensive_tests():
+def run_comprehensive_tests(args=None):
     """Run comprehensive tests and return results."""
     print("COMPREHENSIVE THEORY VALIDATION - ANALYTICAL + SOLVER TESTS")
     print("="*80)
@@ -1281,7 +1286,7 @@ def run_comprehensive_tests():
     if theories_in_parallel == 1:
         # Sequential theory execution (default)
         for theory_name, theory_class, category in ALL_THEORIES:
-            result = test_theory_comprehensive(theory_name, theory_class, category)
+            result = test_theory_comprehensive(theory_name, theory_class, category, args)
             if result:
                 all_results.append(result)
             time.sleep(0.1)  # Brief pause
@@ -1296,7 +1301,7 @@ def run_comprehensive_tests():
             with concurrent.futures.ThreadPoolExecutor(max_workers=theories_in_parallel) as executor:
                 futures = []
                 for theory_name, theory_class, category in batch:
-                    future = executor.submit(test_theory_comprehensive, theory_name, theory_class, category)
+                    future = executor.submit(test_theory_comprehensive, theory_name, theory_class, category, args)
                     futures.append(future)
                 
                 # Collect results
@@ -1630,7 +1635,7 @@ def main():
     
     # If running with tee, just run normally
     if 'tee' in ' '.join(sys.argv):
-        results, json_file, html_file = run_comprehensive_tests()
+        results, json_file, html_file = run_comprehensive_tests(args)
     else:
         # Capture output to log file
         class TeeLogger:
@@ -1655,7 +1660,7 @@ def main():
         sys.stdout = logger
         
         try:
-            results, json_file, html_file = run_comprehensive_tests()
+            results, json_file, html_file = run_comprehensive_tests(args)
         finally:
             sys.stdout = old_stdout
             logger.close()

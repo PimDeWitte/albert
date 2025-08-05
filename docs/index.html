@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
     
     <!-- Primary Meta Tags -->
     <meta name="title" content="Albert - Differential PyTorch Physics Engine for Testing Theories">
-    <meta name="description" content="A differential PyTorch-based physics research engine for testing physical theories. Run high-precision simulations, validate against experimental data, and explore new physics models where data is rich.">
+    <meta name="description" content="A PyTorch-based physics engine for testing and validating fundamental theories through differentiable simulations.">
     <meta name="keywords" content="physics engine, differential equations, gravitational theories, general relativity, experimental validation, PyTorch physics, differential physics, research tools">
     <meta name="author" content="Albert Project">
     
@@ -16,7 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://albert.so/">
     <meta property="og:title" content="Albert - Differential PyTorch Physics Engine">
-    <meta property="og:description" content="A differential PyTorch-based physics research engine for testing physical theories. Run high-precision simulations, validate against experimental data, and explore new physics models where data is rich.">
+    <meta property="og:description" content="A PyTorch-based physics engine for testing and validating fundamental theories through differentiable simulations.">
     <meta property="og:image" content="https://albert.so/docs/sketch.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -26,7 +27,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://albert.so/">
     <meta property="twitter:title" content="Albert - Differential PyTorch Physics Engine">
-    <meta property="twitter:description" content="A differential PyTorch-based physics research engine for testing physical theories. Run high-precision simulations, validate against experimental data, and explore new physics models where data is rich.">
+    <meta property="twitter:description" content="A PyTorch-based physics engine for testing and validating fundamental theories through differentiable simulations.">
     <meta property="twitter:image" content="https://albert.so/docs/sketch.png">
     
     <!-- Additional Meta Tags -->
@@ -49,6 +50,11 @@
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
     
     <!-- Tailwind Config -->
     <script>
@@ -113,6 +119,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.875rem;
             line-height: 1.6;
+            white-space: pre-wrap;
         }
         
         .code-block .comment { @apply text-muted; }
@@ -396,6 +403,7 @@
             .code-block, pre {
                 font-size: 0.75rem !important;
                 padding: 1rem !important;
+                white-space: pre-wrap !important;
             }
             
 
@@ -509,15 +517,15 @@
                     <div>
                         <h3 class="text-xl font-bold text-ink mb-2">Basic Usage</h3>
                         <div class="bg-code-bg border border-code-border rounded-xl p-4 space-y-2 font-mono text-sm">
-                            <div><span class="text-muted"># Run comprehensive evaluation on all theories</span></div>
+                            <div><span class="text-muted"># Run comprehensive evaluation on all theories. This command initiates a full simulation and validation pipeline across all implemented gravitational theories, computing particle trajectories using geodesic equations, checking conservation laws like energy and angular momentum preservation, and verifying against experimental datasets such as Mercury's perihelion precession and gravitational lensing observations. It ensures numerical stability through adaptive timestepping and provides detailed reports on theory performance, including precision metrics and failure modes, enabling rigorous comparison of theoretical predictions with empirical data.</span></div>
                             <div class="text-accent">albert run</div>
-                            <div class="mt-4"><span class="text-muted"># Include candidate theories</span></div>
+                            <div class="mt-4"><span class="text-muted"># Include candidate theories in the evaluation. This flag extends the simulation to encompass experimental or hypothetical theories in the 'candidates' directory, allowing for systematic testing of novel modifications to established frameworks like general relativity, such as asymmetric metrics or quantum-corrected terms, while maintaining the same validation rigor including conservation checks and experimental matching.</span></div>
                             <div class="text-accent">albert run --candidates</div>
-                            <div class="mt-4"><span class="text-muted"># Test your own theory - just add to theories/</span></div>
+                            <div class="mt-4"><span class="text-muted"># Test your own custom theory by adding it to the theories/ directory. This command filters the evaluation to focus exclusively on the specified theory, facilitating rapid iteration and debugging by isolating its performance in geodesic integration, conservation law adherence, and alignment with observational data, which is crucial for developing and refining new physical models.</span></div>
                             <div class="text-accent">albert run --theory-filter "MyTheory"</div>
-                            <div class="mt-4"><span class="text-muted"># Run with longer trajectories</span></div>
+                            <div class="mt-4"><span class="text-muted"># Run simulations with extended trajectories by increasing the maximum number of integration steps. This allows for longer-term evolution of particle paths, which is essential for detecting subtle deviations in orbital stability, precession rates, or conservation violations that may only manifest over extended timescales in extreme gravitational regimes.</span></div>
                             <div class="text-accent">albert run --max-steps 10000</div>
-                            <div class="mt-4"><span class="text-muted"># Run pre-flight tests to ensure solver correctness</span></div>
+                            <div class="mt-4"><span class="text-muted"># Execute pre-flight tests to verify solver correctness before main simulations. These tests include analytical benchmarks like Keplerian orbits, numerical convergence checks, and validation against known solutions to ensure the integrator preserves symplectic structure and maintains required precision across various spacetime curvatures.</span></div>
                             <div class="text-accent">albert run --test</div>
                         </div>
                     </div>
@@ -530,12 +538,12 @@
                                 <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
                                     <span class="text-lg">🚀</span> albert run
                                 </h4>
-                                <p class="text-sm text-muted">Run gravitational theory simulations with comprehensive validation</p>
+                                <p class="text-sm text-muted">Run gravitational theory simulations with comprehensive validation. This core command orchestrates the entire pipeline: theory selection, geodesic equation solving using Runge-Kutta methods, trajectory generation, and multi-faceted validation including conservation laws and experimental data matching.</p>
                                 <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>--theory-filter "name"</div>
-                                    <div>--steps 10000</div>
-                                    <div>--gpu-f32 / --cpu-f64</div>
-                                    <div>--enable-sweeps</div>
+                                    <div>--theory-filter "name"  # Select specific theories for focused evaluation, enabling targeted analysis of particular models without processing the entire suite, which is useful for iterative development and debugging of individual theories.</div>
+                                    <div>--steps 10000  # Set the number of integration steps for trajectory computation, allowing for finer temporal resolution in simulations to capture high-frequency phenomena or long-term stability characteristics.</div>
+                                    <div>--gpu-f32 / --cpu-f64  # Choose computation backend and precision: GPU with float32 for speed in large-scale simulations, or CPU with float64 for maximum numerical accuracy in precision-critical validations.</div>
+                                    <div>--enable-sweeps  # Activate parameter sweep mode for systematic exploration of theory parameters, generating comprehensive datasets for analyzing sensitivity and optimizing model configurations against validation criteria.</div>
                                 </div>
                             </div>
                             
@@ -543,10 +551,10 @@
                                 <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
                                     <span class="text-lg">🧪</span> albert discover
                                 </h4>
-                                <p class="text-sm text-muted">Generate new theoretical variations</p>
+                                <p class="text-sm text-muted">Generate new theoretical variations using AI-assisted code generation, creating novel modifications to base theories while ensuring they remain mathematically consistent and ready for immediate validation.</p>
                                 <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>--initial "prompt"</div>
-                                    <div>--from-theory path</div>
+                                    <div>--initial "prompt"  # Provide an initial description or concept to guide the generation of new theory variants, such as "add quantum correction term" or "modify for asymmetric metrics".</div>
+                                    <div>--from-theory path  # Base the new theory on an existing implementation at the specified path, allowing for incremental modifications and extensions of proven models.</div>
                                 </div>
                             </div>
                             
@@ -554,9 +562,9 @@
                                 <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
                                     <span class="text-lg">⚙️</span> albert setup
                                 </h4>
-                                <p class="text-sm text-muted">Configure API keys and network settings</p>
+                                <p class="text-sm text-muted">Configure API keys, computational resources, and network settings through an interactive wizard, ensuring optimal setup for simulations including GPU detection and precision settings.</p>
                                 <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>Interactive wizard</div>
+                                    <div>Interactive wizard  # Step-by-step configuration process that detects hardware capabilities, sets environment variables, and validates installations for seamless operation.</div>
                                 </div>
                             </div>
                             
@@ -564,9 +572,9 @@
                                 <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
                                     <span class="text-lg">📊</span> albert validate
                                 </h4>
-                                <p class="text-sm text-muted">Validate specific theory against experimental data</p>
+                                <p class="text-sm text-muted">Perform standalone validation of a specific theory against the full suite of experimental datasets and conservation checks, generating detailed reports on performance metrics.</p>
                                 <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>theories/my_theory/theory.py</div>
+                                    <div>theories/my_theory/theory.py  # Path to the theory implementation file to validate, allowing for isolated testing of individual models outside the full run pipeline.</div>
                                 </div>
                             </div>
                             
@@ -574,10 +582,10 @@
                                 <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
                                     <span class="text-lg">🚀</span> albert run-advanced
                                 </h4>
-                                <p class="text-sm text-muted">Advanced parameter sweeps and analysis</p>
+                                <p class="text-sm text-muted">Execute advanced simulations with parameter sweeps, parallel processing, and in-depth analysis tools for comprehensive theory exploration and optimization.</p>
                                 <div class="text-xs font-mono mt-2 text-ink">
-                                    <div>--enable-sweeps</div>
-                                    <div>--sweep-workers 8</div>
+                                    <div>--enable-sweeps  # Enable systematic parameter variation across specified ranges, generating multi-dimensional datasets for analyzing theory behavior and identifying optimal configurations.</div>
+                                    <div>--sweep-workers 8  # Set the number of parallel workers for distributed computation of parameter sweeps, leveraging multi-core or multi-GPU systems for accelerated processing of large simulation sets.</div>
                                 </div>
                             </div>
                             
@@ -697,7 +705,7 @@
                 
                 <h1 class="text-4xl sm:text-6xl lg:text-8xl font-bold mb-8 fade-in font-display">
                     <span class="text-accent">Introducing Albert</span>
-                    <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4"> A Differential Physics Research Engine, Written in PyTorch</span>
+                    <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4">  A Differential PyTorch Physics Research Engine </span>
                 </h1>
                 
     
@@ -816,12 +824,41 @@
                         <h3 class="text-4xl lg:text-5xl font-display font-bold text-accent mb-6">
                            A simulator just for physics research
                         </h3>
-                        <div class="max-w-4xl mx-auto space-y-4">
-                            <p class="text-lg font-serif text-ink">
-                                Just as AlphaFold revolutionized biology by translating protein folding into a differentiable, learnable simulation space, Albert brings the same paradigm to fundamental physics. By expressing your theory as code—defining metric tensors and field equations—you embed it in a framework where reinforcement learning and gradient-based optimization become possible. This differential approach enables the engine to iteratively improve theories across generations, integrating experimental data and external sources to refine predictions. The result: a scientific environment where physical laws can be tested, validated, and evolved in silico, accelerating discovery through automated, data-driven feedback.
-                            </p>
- 
+                    </div>
+                    
+                    <!-- CLI Demo Video -->
+                    <div class="mb-16 max-w-7xl mx-auto">
+                        <div class="relative bg-gradient-to-br from-accent/5 to-quantum/5 rounded-3xl p-1 shadow-2xl">
+                            <div class="bg-black rounded-3xl overflow-hidden">
+                                <!-- Terminal-style header -->
+                                <div class="bg-gray-800 px-4 py-2 flex items-center gap-2">
+                                    <div class="flex gap-1.5">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    </div>
+                                    <span class="text-gray-400 text-sm font-mono ml-2">albert demo</span>
+                                </div>
+                                <!-- Video container with 2.33:1 aspect ratio -->
+                                <div class="relative" style="padding-bottom: 42.9%;">
+                                    <video 
+                                        id="demoVideo"
+                                        class="absolute inset-0 w-full h-full"
+                                        src="demo.mp4"
+                                        muted
+                                        loop
+                                        playsinline
+                                        preload="metadata"
+                                        controls
+                                    >
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
                         </div>
+                        <p class="text-center text-sm text-muted mt-4 italic">
+                            Watch Albert validate gravitational theories in real-time through our CLI interface
+                        </p>
                     </div>
                     
                     <!-- Theory Engine Visualization - Full Width -->
@@ -829,314 +866,136 @@
                         <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-8 border border-code-border/30">
                             <canvas id="theoryEngineCanvas" width="1200" height="800" class="w-full"></canvas>
                         </div>
-                        <p class="text-center text-sm text-muted mt-4 italic">
-                            Watch how Albert validates your theory in real-time against classical black hole trajectories
-                        </p>
+                     
                     </div>
-                    
-                    <!-- Additional Context Below Animation -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto">
-                        <div class="space-y-6">
-                            <h4 class="text-2xl font-bold text-accent">How It Works</h4>
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <span class="text-accent font-bold">1</span>
-                                    </div>
-                                    <div>
-                                        <h5 class="font-bold text-ink mb-1">Define Your Theory</h5>
-                                        <p class="text-sm text-muted">
-                                            Write your physical theory as Python code. Implement metric tensors, 
-                                            field equations, or modifications to established theories for systematic testing.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-quantum/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <span class="text-quantum font-bold">2</span>
-                                    </div>
-                                    <div>
-                                        <h5 class="font-bold text-ink mb-1">Automatic Computation</h5>
-                                        <p class="text-sm text-muted">
-                                            Albert automatically computes Christoffel symbols, geodesic equations, 
-                                            and conservation laws using symbolic differentiation.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <span class="text-success font-bold">3</span>
-                                    </div>
-                                    <div>
-                                        <h5 class="font-bold text-ink mb-1">Real-Time Validation</h5>
-                                        <p class="text-sm text-muted">
-                                            Your theory is tested against experimental data, from GPS satellites 
-                                            to gravitational waves, with results in milliseconds.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="space-y-6">
-                            <h4 class="text-2xl font-bold text-quantum">Key Features</h4>
-                            <div class="bg-gradient-to-r from-accent/5 to-quantum/5 rounded-2xl p-6 border border-accent/20">
-                                <ul class="space-y-3">
-                                    <li class="flex items-center gap-3">
-                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        <span class="text-sm">Supports symmetric and asymmetric metric tensors</span>
-                                    </li>
-                                    <li class="flex items-center gap-3">
-                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        <span class="text-sm">Automatic symbolic differentiation for all geometric quantities</span>
-                                    </li>
-                                    <li class="flex items-center gap-3">
-                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        <span class="text-sm">GPU-accelerated trajectory integration</span>
-                                    </li>
-                                    <li class="flex items-center gap-3">
-                                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        <span class="text-sm">Comparison with 21 experimental tests</span>
-                                    </li>
-                                </ul>
-                                <div class="mt-6 text-center">
-                                    <a href="documentation.html" target="_blank" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold transition shadow-sm">
-                                        <span>Explore Documentation</span>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </section>
             
     
 
 
-
-            <!-- Chapter 6: The Validation Gauntlet -->
+            <!-- Chapter 6: A Validation Framework for Fundamental Physics -->
             <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
-                <div class="max-w-6xl mx-auto">
+                <div class="container mx-auto">
+                    <h2 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-12">
+                        A Validation Framework for Fundamental Physics
+                    </h2>
                     
-                    <h3 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-16">
-                        Automatically drops code that isn't consistent with the laws of physics we already know
-                    </h3>
-                    
-                    <div class="max-w-4xl mx-auto space-y-6 mb-16">
-                       
-                        <p class="text-lg font-serif text-ink">
-                            Before going to trajectory calculations, each theory faces a comprehensive suite of experimental validation tests. These include classical tests that general relativity passes with high precision, 
-                            from Mercury's perihelion precession to gravitational wave signatures. 
+                    <!-- Two Column Layout: Text and Video -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto mb-16">
+                        <!-- Text Content -->
+                        <div class="space-y-6">
+                            <p class="text-xl font-serif text-ink leading-relaxed">
+                                AlphaFold succeeded by creating specialized environments for training on protein structures. 
+                                Albert provides analogous infrastructure for physics—leveraging PyTorch as the computational foundation. 
+                                Express your theory as code—metric tensors and field equations—and Albert's solvers transform these 
+                                mathematical laws into differentiable computations. This extends PyTorch into a platform for physics 
+                                simulation, where Lagrangians can be implemented as differentiable operations yielding executable dynamics.
+                            </p>
                             
-                            The engine's differential architecture enables systematic exploration of theory modifications and their observable consequences. While quantum gravity remains an open challenge with vanishingly small observable effects at astrophysical scales, 
-                            this framework excels at testing theories where rich experimental data exists.
-
-                        </p>
+                            <p class="text-xl font-serif text-ink leading-relaxed">
+                                The differentiable nature enables theories to learn from their own simulations through gradient-based 
+                                optimization. By providing this integrated infrastructure, Albert reduces the barrier to developing 
+                                physics learning systems, allowing researchers to focus on innovation rather than building validation 
+                                pipelines from scratch.
+                            </p>
+                        </div>
+                        
+                        <!-- 3D Video -->
+                        <div class="relative">
+                            <div class="bg-white rounded-3xl shadow-2xl p-4 border border-accent/20 overflow-hidden">
+                                <video 
+                                    class="w-full h-auto rounded-2xl"
+                                    autoplay 
+                                    loop 
+                                    muted 
+                                    playsinline
+                                    controls
+                                >
+                                    <source src="3d.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <div class="absolute -z-10 top-8 right-8 w-full h-full bg-gradient-to-br from-quantum/20 to-accent/20 rounded-3xl blur-3xl"></div>
+                        </div>
                     </div>
+
+                    
+                    <!-- Energy Calculation Example -->
+                    <div class="bg-white rounded-3xl shadow-xl p-8 border border-accent/10 max-w-6xl mx-auto mt-12">
+                        <h3 class="text-2xl font-bold text-accent mb-6">Example: How Energy Conservation Validation Works</h3>
+                        <p class="text-lg font-serif text-ink mb-6">
+                            Here's a concrete example of how validators analyze solver output to verify physical conservation laws:
+                        </p>
+                        <div class="bg-paper rounded-2xl p-6 border border-code-border overflow-x-auto">
+                            <div class="mermaid">
+graph LR
+    subgraph Input["Input Data"]
+        Traj["Trajectory<br/>(t, r, φ)"]
+        Theory["Theory<br/>(Metric g_μν)"]
+    end
+    
+    subgraph EnergyCalc["Energy Calculation at Each Point"]
+        Vel["Velocity Components<br/>u_t = dt/dτ<br/>u_φ = dφ/dτ"]
+        Metric["Metric Components<br/>g_tt, g_tp, g_pp"]
+        Energy["Energy<br/>E = -(g_tt·u_t + g_tp·u_φ)"]
+        Vel --> Energy
+        Metric --> Energy
+    end
+    
+    subgraph Analysis["Statistical Analysis"]
+        Mean["Mean Energy<br/>μ(E)"]
+        StdDev["Std Deviation<br/>σ(E)"]
+        Error["Relative Error<br/>ε = σ(E)/|μ(E)|"]
+        Mean --> Error
+        StdDev --> Error
+    end
+    
+    subgraph Comparison["Theory Comparison"]
+        T1["Theory A<br/>ε = 1e-7<br/>✓ PASS"]
+        T2["Theory B<br/>ε = 1e-4<br/>✓ PASS"]
+        T3["Theory C<br/>ε = 0.1<br/>✗ FAIL"]
+        Rank["Ranking:<br/>A > B > C"]
+        T1 --> Rank
+        T2 --> Rank
+        T3 --> Rank
+    end
+    
+    Traj --> Vel
+    Theory --> Metric
+    Energy --> Mean
+    Energy --> StdDev
+    Error --> T1
+    Error --> T2
+    Error --> T3
+    
+    classDef inputBox fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef calcBox fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef analysisBox fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef passBox fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    classDef failBox fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
+    
+    class Traj,Theory inputBox
+    class Vel,Metric,Energy calcBox
+    class Mean,StdDev,Error analysisBox
+    class T1,T2 passBox
+    class T3 failBox
+                                    </div>
+                                </div>
+                        <p class="text-base text-muted mt-4 italic text-center">
+                            The validator continuously monitors conserved quantities throughout the trajectory, 
+                            ensuring numerical integration preserves the physics
+                        </p>
+                        </div>
                     
                     <!-- Live Validation Visualization -->
-                    <div class="bg-white rounded-3xl shadow-2xl p-8 mb-12">
-                        <canvas id="validationGauntletCanvas" width="1200" height="400" class="w-full"></canvas>
+                    <div class="max-w-7xl mx-auto mt-12">
+                        <div class="bg-white rounded-3xl shadow-2xl p-8 mb-12">
+                            <canvas id="validationGauntletCanvas" width="1200" height="400" class="w-full"></canvas>
+                        </div>
                     </div>
                   
-                </div>
-            </div>
-
-            <!-- Chapter 6.5: Precision Test Specifications -->
-            <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-gradient-to-b from-paper to-white">
-                <div class="max-w-7xl mx-auto">
-                    
-                    <h3 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-8">
-                        Precision Test Specifications
-                    </h3>
-                    
-                    <p class="text-2xl text-center font-serif text-ink mb-16 max-w-4xl mx-auto">
-                        State-of-the-art experimental datasets validate every theory against the universe itself
-                    </p>
-                    
-                    <!-- Test Categories Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                        <!-- Classical Tests -->
-                        <div class="bg-white rounded-2xl shadow-xl p-8 border border-accent/20 hover:shadow-2xl transition-shadow">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center">
-                                    <span class="text-2xl">🌍</span>
-                                </div>
-                                <h4 class="text-2xl font-bold text-accent">Classical Tests</h4>
-                            </div>
-                            <ul class="space-y-3 text-ink">
-                                <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
-                                    <div>
-                                        <strong>Mercury Precession</strong>
-                                        <div class="text-sm text-muted">JPL Horizons: 0.004"/century precision</div>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
-                                    <div>
-                                        <strong>Light Deflection</strong>
-                                        <div class="text-sm text-muted">Gaia DR3: 10 μas accuracy</div>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
-                                    <div>
-                                        <strong>Black Hole Shadow</strong>
-                                        <div class="text-sm text-muted">EHT M87*: 42±3 μas</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <!-- Quantum Tests -->
-                        <div class="bg-white rounded-2xl shadow-xl p-8 border border-quantum/20 hover:shadow-2xl transition-shadow">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 bg-quantum/20 rounded-lg flex items-center justify-center">
-                                    <span class="text-2xl">⚛️</span>
-                                </div>
-                                <h4 class="text-2xl font-bold text-quantum">Quantum Tests</h4>
-                            </div>
-                            <ul class="space-y-3 text-ink">
-                                <li class="flex items-start gap-2">
-                                    <span class="text-muted mt-1">⚠</span>
-                                    <div>
-                                        <strong>Quantum Entanglement</strong>
-                                        <div class="text-sm text-muted">Bose-Marletto-Vedral: 10⁻³ rad (Coming soon)</div>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-muted mt-1">⚠</span>
-                                    <div>
-                                        <strong>Atom Interferometry</strong>
-                                        <div class="text-sm text-muted">NIST clocks: 10⁻¹⁷ precision (Coming soon)</div>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
-                                    <div>
-                                        <strong>COW Experiment</strong>
-                                        <div class="text-sm text-muted">Neutron phase: 2.7±0.2 rad</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <!-- Cosmological Tests -->
-                        <div class="bg-white rounded-2xl shadow-xl p-8 border border-warning/20 hover:shadow-2xl transition-shadow">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 bg-warning/20 rounded-lg flex items-center justify-center">
-                                    <span class="text-2xl">🌌</span>
-                                </div>
-                                <h4 class="text-2xl font-bold text-warning">Cosmological Tests</h4>
-                            </div>
-                            <ul class="space-y-3 text-ink">
-                                <li class="flex items-start gap-2">
-                                    <span class="text-muted mt-1">⚠</span>
-                                    <div>
-                                        <strong>Pulsar Timing</strong>
-                                        <div class="text-sm text-muted">NANOGrav 15yr: 1 μs residuals (Coming soon)</div>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
-                                    <div>
-                                        <strong>CMB Power Spectrum</strong>
-                                        <div class="text-sm text-muted">Planck 2018: l=2-2508</div>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="text-success mt-1">✓</span>
-                                    <div>
-                                        <strong>Primordial Gravity Waves</strong>
-                                        <div class="text-sm text-muted">BICEP/Keck: r < 0.036</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Highlighted Test Example -->
-                    <div class="bg-gradient-to-r from-accent/10 to-quantum/10 rounded-3xl p-1">
-                        <div class="bg-white rounded-3xl p-8 md:p-12">
-                            <h4 class="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-accent to-quantum bg-clip-text text-transparent">
-                                Example: COW Experiment Test
-                            </h4>
-                            
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                                <div class="space-y-6">
-                                    <div class="bg-paper rounded-2xl p-6 border border-code-border">
-                                        <h5 class="font-bold text-lg mb-3 text-accent">Dataset Source</h5>
-                                        <p class="text-sm text-ink mb-2">Colella et al. 1975, Phys Rev Lett</p>
-                                        <p class="text-xs text-muted">DOI: 10.1103/PhysRevLett.34.1472</p>
-                                    </div>
-                                    
-                                    <div class="bg-paper rounded-2xl p-6 border border-code-border">
-                                        <h5 class="font-bold text-lg mb-3 text-quantum">Precision Achieved</h5>
-                                        <div class="font-mono text-lg">Δφ = 2.70±0.21 rad</div>
-                                        <div class="text-sm text-muted mt-1">Neutron phase shift measurement</div>
-                                    </div>
-                                    
-                                    <div class="bg-paper rounded-2xl p-6 border border-code-border">
-                                        <h5 class="font-bold text-lg mb-3 text-success">Why This Matters</h5>
-                                        <p class="text-sm text-ink">
-                                            The COW experiment demonstrates quantum interference in a gravitational field. 
-                                            Neutrons split into two paths experience different gravitational potentials, 
-                                            creating a phase shift that tests the equivalence principle at the quantum level.
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div class="bg-code-bg rounded-2xl p-8 border border-code-border">
-                                    <h5 class="font-bold text-lg mb-4 text-accent">Test Implementation</h5>
-                                    <pre class="text-xs font-mono overflow-x-auto">
-<span class="text-muted"># From COWInterferometryValidator</span>
-<span class="text-accent">def</span> <span class="text-success">validate</span>(theory, verbose=True):
-    <span class="text-muted"># COW experiment parameters</span>
-    neutron_wavelength = <span class="text-warning">2.2e-10</span>  <span class="text-muted"># meters (2.2 Å)</span>
-    enclosed_area = <span class="text-warning">3.12e-5</span>      <span class="text-muted"># m² (0.312 cm²)</span>
-    neutron_velocity = <span class="text-warning">1798.1</span>      <span class="text-muted"># m/s</span>
-    
-    <span class="text-muted"># Calculate phase shift</span>
-    phase_shift = calculate_cow_phase(
-        theory, neutron_wavelength, enclosed_area
-    )
-    
-    <span class="text-accent">assert</span> abs(phase_shift - <span class="text-warning">2.70</span>) < <span class="text-warning">0.21</span>  <span class="text-success">✓</span>
-    <span class="text-accent">assert</span> theory.g_metric ≈ <span class="text-warning">-9.81</span>  <span class="text-success">✓</span>
-                                    </pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Call to Action -->
-                    <div class="text-center mt-16">
-                        <p class="text-xl font-serif text-ink mb-8">
-                            Every theory must match these precision measurements or be rejected. 
-                            No shortcuts. No approximations. Pure physics.
-                        </p>
-                        <div class="inline-flex flex-col sm:flex-row gap-4">
-                            
-                            <a href="documentation.html" target="_blank" class="group inline-flex items-center space-x-3 bg-white hover:bg-paper border-2 border-accent text-accent px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
-                                <span>Explore All Validators</span>
-                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -1148,72 +1007,196 @@
                    
                   
                     
-                    <!-- Section 1: Standard Model Support -->
+                    <!-- Section 1: Standard Model Support (Expandable) -->
                     <div class="mb-20">
-                        <h4 class="text-4xl font-bold text-center text-quantum mb-12">Standard Model Integration</h4>
-                        
-                        <div class="max-w-5xl mx-auto mb-12">
-                            <!-- Technical Implementation -->
-                            <div class="bg-white rounded-2xl shadow-lg p-8 border border-code-border">
-                                <h5 class="text-2xl font-bold text-accent mb-4">Technical Implementation</h5>
-                                <p class="text-lg font-serif text-ink mb-4">
-                                    Albert embeds the complete Standard Model physics through QED Lagrangians, 
-                                    enabling precision tests at the quantum-gravitational interface. Every theory 
-                                    must couple correctly to fermions and gauge bosons.
-                                </p>
-
+                        <div class="max-w-5xl mx-auto">
+                            <!-- Collapsible Header -->
+                            <div class="bg-gradient-to-r from-quantum/5 to-accent/5 rounded-2xl shadow-lg border border-quantum/20 overflow-hidden">
+                                <button onclick="toggleStandardModelSection()" class="w-full px-8 py-6 flex items-center justify-between hover:bg-quantum/5 transition-colors group">
+                                    <div class="flex items-center gap-4">
+                                        <h4 class="text-3xl font-bold text-quantum">Standard Model Integration</h4>
+                                        <div class="flex items-center space-x-2 bg-warning/10 border border-warning/30 rounded-lg px-3 py-1">
+                                            <svg class="w-4 h-4 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <span class="text-xs font-medium text-ink">Experimental Quantum Features</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm text-muted group-hover:text-quantum transition-colors">
+                                            Click to explore quantum-gravity interface
+                                        </span>
+                                        <svg id="sm-chevron" class="w-6 h-6 text-quantum transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </button>
                                 
-                                <!-- Real Implementation Example -->
-                                <div class="mt-6">
-                                    <h5 class="text-xl font-bold text-success mb-4">Real Implementation: Einstein's Asymmetric Theory</h5>
-                                    <pre class="text-xs font-mono overflow-x-auto bg-code-bg rounded-lg p-4 border border-code-border">
-<span class="text-accent">from</span> physics_agent.theories.einstein_asymmetric <span class="text-accent">import</span> EinsteinAsymmetric
+                                <!-- Collapsible Content -->
+                                <div id="sm-content" class="overflow-hidden transition-all duration-500" style="max-height: 0;">
+                                    <div class="px-8 py-6 bg-gradient-to-b from-transparent to-quantum/5">
+                                        <div class="bg-white rounded-2xl shadow-lg p-8 border border-code-border mb-8">
+                                            <h5 class="text-2xl font-bold text-accent mb-4">Technical Implementation</h5>
+                                            <p class="text-lg font-serif text-ink mb-4">
+                                                Albert embeds the complete Standard Model physics through QED Lagrangians, 
+                                                enabling precision tests at the quantum-gravitational interface. Every theory 
+                                                must couple correctly to fermions and gauge bosons.
+                                            </p>
 
-<span class="text-accent">class</span> <span class="text-warning">EinsteinAsymmetric</span>(<span class="text-warning">GravitationalTheory</span>):
-    <span class="text-muted">"""Historical theory: Einstein's asymmetric field approach to unification"""</span>
-    
-    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, alpha: float = 0.0):
-        <span class="text-muted"># Asymmetric metric components</span>
-        g_mn = get_symbol('g_μν')     <span class="text-muted"># Symmetric part (gravity)</span>
-        f_mn = get_symbol('f_μν')     <span class="text-muted"># Antisymmetric part (EM)</span>
-        
-        <span class="text-muted"># Standard Model fermions</span>
-        psi = get_symbol('ψ')
-        psi_bar = get_symbol('ψ̄')
-        gamma_mu = get_symbol('γ^μ')
-        
-        <span class="text-muted"># EM emerges from metric asymmetry!</span>
-        F_mn = alpha * (f_mn - get_symbol('f_νμ'))
-        
-        <span class="text-muted"># Full Lagrangian with SM coupling</span>
-        gravity_lagrangian = get_symbol('R') + alpha**2 * f_mn * get_symbol('f^μν')
-        matter_lagrangian = sp.I * psi_bar * gamma_mu * D_mu * psi - m * psi_bar * psi
-        gauge_lagrangian = -sp.Rational(1,4) * F_mn * get_symbol('F^μν')
-        interaction_lagrangian = -q * psi_bar * gamma_mu * psi * A_mu * (1 + alpha * f_mn * g_mn)
-    
-    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, M_param, C_param, G_param):
-        <span class="text-muted"># Key innovation: off-diagonal g_tp term</span>
-        g_tp = self.alpha * rs / r * torch.sqrt(r)  <span class="text-muted"># Couples time-space!</span>
-        <span class="text-accent">return</span> g_tt, g_rr, g_pp, g_tp
+                                            
+                                            <!-- Real Implementation Example: Kerr -->
+                                            <div class="mt-6">
+                                                <h5 class="text-xl font-bold text-success mb-4">Real Implementation: Kerr Black Holes</h5>
+                                                <pre class="text-xs font-mono overflow-x-auto bg-code-bg rounded-lg p-4 border border-code-border">
+<span class="text-accent">from</span> physics_agent.theories.kerr <span class="text-accent">import</span> KerrMetric
 
-<span class="text-muted"># Test against all 21 validators including QED precision</span>
-theory = <span class="text-warning">EinsteinAsymmetric</span>(alpha=1e-3)
-results = theory.validate()
-<span class="text-accent">assert</span> results['qed_precision']['g2_error'] < 1e-10  <span class="text-success">✓</span>
-<span class="text-accent">assert</span> results['quantum_clock']['error'] < 1e-17   <span class="text-success">✓</span>
-                                    </pre>
+<span class="text-accent">class</span> <span class="text-warning">KerrMetric</span>(<span class="text-warning">GravitationalTheory</span>):
+    <span class="text-muted">"""Rotating black hole solution with angular momentum"""</span>
+    
+    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, theta, M, a):
+        <span class="text-muted"># Kerr metric in Boyer-Lindquist coordinates</span>
+        rs = 2 * G * M / c**2
+        rho2 = r**2 + a**2 * cos(theta)**2
+        delta = r**2 - rs * r + a**2
+        sigma2 = (r**2 + a**2)**2 - a**2 * delta * sin(theta)**2
+        
+        <span class="text-muted"># Metric components (diagonal + frame-dragging)</span>
+        g_tt = -(1 - rs * r / rho2)
+        g_rr = rho2 / delta  
+        g_θθ = rho2
+        g_φφ = sigma2 * sin(theta)**2 / rho2
+        g_tφ = -rs * r * a * sin(theta)**2 / rho2  <span class="text-muted"># Frame-dragging!</span>
+        
+        <span class="text-accent">return</span> g_tt, g_rr, g_θθ, g_φφ, g_tφ
+
+<span class="text-muted"># Test extreme Kerr (a = 0.998M) against observations</span>
+kerr = <span class="text-warning">KerrMetric</span>()
+results = kerr.validate_black_hole_shadow(M87_data)
+<span class="text-accent">assert</span> results['shadow_radius'] == 42.0 ± 3.0  <span class="text-success">✓ μas</span>
+<span class="text-accent">assert</span> results['asymmetry'] < 0.1             <span class="text-success">✓</span>
+<span class="text-accent">assert</span> results['ISCO_radius'] == 1.235 * rs   <span class="text-success">✓</span>
+                                                </pre>
+                                            </div>
+                                            
+                                            <!-- Experimental Quantum Features -->
+                                            <div class="mt-8 bg-warning/10 rounded-lg p-4 border border-warning/30">
+                                                <h5 class="text-lg font-bold text-warning mb-3">⚠️ Experimental: Quantum Corrections</h5>
+                                                <p class="text-sm text-ink mb-4">
+                                                    The following features are experimental and may change. They represent ongoing research
+                                                    into quantum gravity effects near black holes.
+                                                </p>
+                                                <pre class="text-xs font-mono overflow-x-auto bg-code-bg rounded-lg p-4 border border-code-border">
+<span class="text-muted"># EXPERIMENTAL: Quantum corrections to Kerr metric</span>
+<span class="text-accent">from</span> physics_agent.quantum.corrections <span class="text-accent">import</span> HawkingRadiation, QuantumHorizon
+
+<span class="text-accent">class</span> <span class="text-warning">QuantumKerr</span>(<span class="text-warning">KerrMetric</span>):
+    <span class="text-muted">"""Kerr metric with quantum gravity corrections (EXPERIMENTAL)"""</span>
+    
+    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self, enable_hawking=True, quantum_hair=False):
+        super().__init__()
+        self.ℏ = 1.054571817e-34  <span class="text-muted"># Planck's constant</span>
+        self.l_p = torch.sqrt(self.ℏ * G / c**3)  <span class="text-muted"># Planck length</span>
+        
+    <span class="text-accent">def</span> <span class="text-success">get_quantum_corrections</span>(self, r, M, a):
+        <span class="text-muted"># Quantum corrections near horizon (r → r+)</span>
+        r_plus = M + torch.sqrt(M**2 - a**2)
+        
+        <span class="text-muted"># Leading order quantum correction</span>
+        δg_tt = self.ℏ / (M * r**3) * torch.exp(-(r - r_plus) / self.l_p)
+        
+        <span class="text-muted"># Hawking temperature</span>
+        κ = (r_plus - M) / (2 * M * r_plus)  <span class="text-muted"># Surface gravity</span>
+        T_H = self.ℏ * κ / (2 * π * k_B)     <span class="text-muted"># ~ 10^-8 K for stellar BH</span>
+        
+        <span class="text-accent">return</span> δg_tt, T_H
+
+<span class="text-muted"># WARNING: These corrections are ~ 10^-70 for astrophysical black holes!</span>
+<span class="text-muted"># Only potentially observable for primordial black holes with M ~ 10^15 g</span>
+                                                </pre>
+                                            </div>
+                                            
+                                            <p class="text-sm text-muted mt-6 mb-4">
+                                                Standard Model integration allows testing unified theories against QED precision 
+                                                measurements with up to 13 significant figures of accuracy. Quantum gravity effects
+                                                remain orders of magnitude below current observational thresholds.
+                                            </p>
+                                            
+                                            <!-- Quantum Validator Spotlight - Atomic Clock Test -->
+                                            <div class="mt-8">
+                                                <div class="bg-gradient-to-r from-quantum/10 to-accent/10 rounded-3xl p-1">
+                                                    <div class="bg-white rounded-3xl p-8 md:p-12">
+                                                        <h4 class="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-quantum to-accent bg-clip-text text-transparent">
+                                                            Quantum Precision: The Atomic Clock Test
+                                                        </h4>
+                                                        
+                                                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                                                            <div class="order-2 lg:order-1">
+                                                                <div class="space-y-6">
+                                                                    <p class="text-xl font-serif text-ink leading-relaxed">
+                                                                        Optical atomic clocks are humanity's most precise instruments. In 2018, 
+                                                                        scientists measured time's flow between two clocks just 33 cm apart.
+                                                                    </p>
+                                                                    
+                                                                    <!-- Interactive measurement display -->
+                                                                    <div class="group bg-gradient-to-br from-code-bg to-paper rounded-2xl p-6 border border-code-border/50 hover:border-quantum/50 transition-all cursor-pointer" onclick="toggleClockDetails()">
+                                                                        <div class="flex items-center justify-between mb-4">
+                                                                            <h5 class="font-bold text-lg">Experimental Parameters</h5>
+                                                                            <div class="text-quantum text-sm">Hover for details</div>
+                                                                        </div>
+                                                                        
+                                                                        <div class="grid grid-cols-2 gap-4">
+                                                                            <div class="bg-white/50 rounded-lg p-3 group-hover:bg-white/80 transition-colors">
+                                                                                <div class="text-2xl font-mono font-bold text-accent">1.121</div>
+                                                                                <div class="text-sm text-muted">PHz frequency</div>
+                                                                            </div>
+                                                                            <div class="bg-white/50 rounded-lg p-3 group-hover:bg-white/80 transition-colors">
+                                                                                <div class="text-2xl font-mono font-bold text-quantum">0.33</div>
+                                                                                <div class="text-sm text-muted">meters apart</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <div id="clock-details" class="mt-4 overflow-hidden transition-all duration-300" style="max-height: 0;">
+                                                                            <div class="pt-4 border-t border-code-border/30">
+                                                                                <div class="bg-success/10 rounded-lg p-3 mb-3">
+                                                                                    <div class="text-sm font-mono text-success">✓ Measured: (3.61 ± 1.60) × 10⁻¹⁷</div>
+                                                                                </div>
+                                                                                <p class="text-sm text-muted">
+                                                                                    This measurement tests gravitational time dilation with 
+                                                                                    extraordinary precision—demonstrating the framework's ability to validate theories against cutting-edge experiments.
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="bg-warning/10 border border-warning/30 rounded-xl p-4">
+                                                                        <p class="text-sm font-medium text-warning mb-1">Why This Matters</p>
+                                                                        <p class="text-sm text-ink">
+                                                                            Every theory must predict this shift to 17 decimal places, 
+                                                                            testing where Einstein meets quantum mechanics.
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="order-1 lg:order-2 flex justify-center">
+                                                                <div class="bg-code-bg rounded-2xl p-4 shadow-lg border border-code-border/50">
+                                                                    <canvas id="quantumValidatorCanvas" width="450" height="350" class="w-full max-w-md"></canvas>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <a href="documentation.html" target="_blank" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm mt-8">
+                                                <span>View Documentation</span>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                                <p class="text-sm text-muted mb-4">
-                                    This allows unified theories to be tested against QED precision measurements
-                                    with 13 significant figures of accuracy.
-                                </p>
-                                <a href="documentation.html" target="_blank" class="inline-flex items-center space-x-2 bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm">
-                                    <span>View Documentation</span>
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                    </svg>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -1462,73 +1445,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                     </div>
                     
 
-                    
-                    <!-- Quantum Validator Spotlight - Better Layout -->
-                    <div class="mb-16">
-                        <div class="bg-gradient-to-r from-quantum/10 to-accent/10 rounded-3xl p-1">
-                            <div class="bg-white rounded-3xl p-8 md:p-12">
-                                <h4 class="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-quantum to-accent bg-clip-text text-transparent">
-                                    Quantum Precision: The Atomic Clock Test
-                                </h4>
-                                
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                                    <div class="order-2 lg:order-1">
-                                        <div class="space-y-6">
-                                            <p class="text-xl font-serif text-ink leading-relaxed">
-                                                Optical atomic clocks are humanity's most precise instruments. In 2018, 
-                                                scientists measured time's flow between two clocks just 33 cm apart.
-                                            </p>
-                                            
-                                            <!-- Interactive measurement display -->
-                                            <div class="group bg-gradient-to-br from-code-bg to-paper rounded-2xl p-6 border border-code-border/50 hover:border-quantum/50 transition-all cursor-pointer" onclick="toggleClockDetails()">
-                                                <div class="flex items-center justify-between mb-4">
-                                                    <h5 class="font-bold text-lg">Experimental Parameters</h5>
-                                                    <div class="text-quantum text-sm">Hover for details</div>
-                                                </div>
-                                                
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <div class="bg-white/50 rounded-lg p-3 group-hover:bg-white/80 transition-colors">
-                                                        <div class="text-2xl font-mono font-bold text-accent">1.121</div>
-                                                        <div class="text-sm text-muted">PHz frequency</div>
-                                                    </div>
-                                                    <div class="bg-white/50 rounded-lg p-3 group-hover:bg-white/80 transition-colors">
-                                                        <div class="text-2xl font-mono font-bold text-quantum">0.33</div>
-                                                        <div class="text-sm text-muted">meters apart</div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div id="clock-details" class="mt-4 overflow-hidden transition-all duration-300" style="max-height: 0;">
-                                                    <div class="pt-4 border-t border-code-border/30">
-                                                        <div class="bg-success/10 rounded-lg p-3 mb-3">
-                                                            <div class="text-sm font-mono text-success">✓ Measured: (3.61 ± 1.60) × 10⁻¹⁷</div>
-                                                        </div>
-                                                        <p class="text-sm text-muted">
-                                                            This measurement tests gravitational time dilation with 
-                                                            extraordinary precision—demonstrating the framework's ability to validate theories against cutting-edge experiments.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="bg-warning/10 border border-warning/30 rounded-xl p-4">
-                                                <p class="text-sm font-medium text-warning mb-1">Why This Matters</p>
-                                                <p class="text-sm text-ink">
-                                                    Every theory must predict this shift to 17 decimal places, 
-                                                    testing where Einstein meets quantum mechanics.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="order-1 lg:order-2 flex justify-center">
-                                        <div class="bg-code-bg rounded-2xl p-4 shadow-lg border border-code-border/50">
-                                            <canvas id="quantumValidatorCanvas" width="450" height="350" class="w-full max-w-md"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                     
                     <!-- Call to Action - More Prominent -->
                     <div class="text-center">
@@ -1544,113 +1461,9 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                     </div>
                 </div>
             </div>
+                   
 
 
-            <!-- Chapter 7: World Model Vision -->
-            <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
-                <div class="max-w-7xl mx-auto">
-                
-                    
-                    <!-- Core Capabilities -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                        <!-- Fully Differential -->
-                        <div class="bg-gradient-to-b from-accent/10 to-accent/5 rounded-2xl p-8 border border-accent/30 hover:scale-105 transition-transform">
-                            <div class="text-4xl mb-4">∇</div>
-                            <h5 class="text-xl font-bold mb-4">Fully Differential</h5>
-                            <p class="text-ink">
-                                Every computation is differentiable. Backpropagate through physics simulations, 
-                                optimize parameters with gradient descent, integrate seamlessly with PyTorch.
-                                </p>
-                            </div>
-                            
-                        <!-- Reality Grounded -->
-                        <div class="bg-gradient-to-b from-quantum/10 to-quantum/5 rounded-2xl p-8 border border-quantum/30 hover:scale-105 transition-transform">
-                            <div class="text-4xl mb-4">🌍</div>
-                            <h5 class="text-xl font-bold mb-4">Reality Grounded</h5>
-                            <p class="text-ink">
-                                Every simulation respects conservation laws, symmetries, and experimental data. 
-                                Not approximations—the actual equations that govern our universe.
-                                </p>
-                            </div>
-                            
-                        <!-- ML Native -->
-                        <div class="bg-gradient-to-b from-success/10 to-success/5 rounded-2xl p-8 border border-success/30 hover:scale-105 transition-transform">
-                            <div class="text-4xl mb-4">🧠</div>
-                            <h5 class="text-xl font-bold mb-4">ML Native</h5>
-                            <p class="text-ink">
-                                Built for the age of machine learning. PINNs, neural ODEs, differentiable 
-                                rendering—all running on the same physics foundation.
-                                </p>
-                            </div>
-                        </div>
-                        
-                    <!-- Code Example -->
-                    <div class="bg-codeBg rounded-3xl p-8 mb-20 shadow-inner border border-code-border max-w-4xl mx-auto">
-                        <h5 class="text-xl font-bold text-accent mb-6">From Gravity to Game Physics: A Concrete Roadmap</h5>
-                        <pre class="text-sm font-mono text-ink whitespace-pre-wrap"><span class="text-muted"># Today: Gravitational theories using specific metric tensors</span>
-<span class="text-accent">class</span> <span class="text-warning">GravitationalTheory</span>:
-    <span class="text-accent">def</span> <span class="text-success">get_metric</span>(self, r, M): <span class="text-muted"># Schwarzschild example</span>
-        <span class="text-accent">return</span> torch.diag([-( 1 - 2*M/r), 1/(1 - 2*M/r), r**2, r**2])
-
-<span class="text-muted"># Next: Extract the base physics framework</span>
-<span class="text-accent">class</span> <span class="text-warning">BaseTheory</span>:
-    <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self): <span class="text-accent">pass</span>
-    <span class="text-accent">def</span> <span class="text-success">derive_equations</span>(self): <span class="text-accent">pass</span>
-    <span class="text-accent">def</span> <span class="text-success">integrate</span>(self, dt): <span class="text-accent">pass</span>
-
-<span class="text-muted"># Then: Add fluid dynamics for atmospheric modeling</span>
-<span class="text-accent">class</span> <span class="text-warning">FluidDynamics</span>(<span class="text-warning">BaseTheory</span>):
-    <span class="text-accent">def</span> <span class="text-success">compute_action</span>(self):
-        <span class="text-accent">return</span> self.kinetic_energy - self.pressure_work
-    
-    <span class="text-accent">def</span> <span class="text-success">navier_stokes</span>(self, velocity, pressure):
-        <span class="text-accent">return</span> -torch.grad(pressure) + self.viscosity * laplacian(velocity)
-
-<span class="text-muted"># Example: Simple space game with real orbital mechanics</span>
-<span class="text-accent">class</span> <span class="text-warning">SpaceSimGame</span>:
-    <span class="text-accent">def</span> <span class="text-success">__init__</span>(self):
-        self.gravity = <span class="text-warning">NewtonianGravity</span>()  <span class="text-muted"># Start simple</span>
-        self.spacecraft = <span class="text-warning">RigidBody</span>(mass=1000)
-        
-    <span class="text-accent">def</span> <span class="text-success">update</span>(self, dt):
-        <span class="text-muted"># Real physics: F = GMm/r²</span>
-        force = self.gravity.compute_force(self.spacecraft.position)
-        self.spacecraft.integrate(force, dt)  <span class="text-muted"># Symplectic!</span></pre>
-                    </div>
-                    
-                    <!-- The Future -->
-                    <div class="text-center">
-                        <h4 class="text-4xl font-bold text-accent mb-8">Towards an Open World Engine</h4>
-                        
-                        <p class="text-xl font-serif text-ink mb-12 max-w-3xl mx-auto">
-                            Starting with gravitational physics, we're building a general differential 
-                            physics engine. Next steps: fluid dynamics for weather simulation, rigid body 
-                            physics for robotics, and eventually simple games with realistic physics. 
-                            Each component thoroughly tested, fully differentiable, PyTorch native.
-                        </p>
-                        
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="https://github.com/pimdewitte/albert" class="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl font-semibold text-lg transition transform hover:scale-105">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                                </svg>
-                                Contribute on GitHub
-                            </a>
-                            <a href="documentation.html" class="inline-flex items-center gap-2 bg-white hover:bg-paper border-2 border-accent text-accent px-8 py-4 rounded-xl font-semibold text-lg transition transform hover:scale-105">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                </svg>
-                                Read Documentation
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            
-        </section>
 
     </main>
 
@@ -2493,7 +2306,7 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
                 ctx.font = 'bold 24px Playfair Display, serif';
                 ctx.fillStyle = colors.accent;
                 ctx.textAlign = 'center';
-                ctx.fillText('Live: 21 Validation Tests in Action', validationGauntletCanvas.width/2, 30);
+                ctx.fillText('A newly introduced theory as code goes through tests against known laws of physics for validation testing', validationGauntletCanvas.width/2, 30);
                 
                 // Draw the gauntlet stages
                 const stages = [
@@ -3251,6 +3064,38 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
             }
         }
         
+        // Toggle Standard Model section
+        function toggleStandardModelSection() {
+            const content = document.getElementById('sm-content');
+            const chevron = document.getElementById('sm-chevron');
+            
+            if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+                // Open the section
+                content.style.maxHeight = content.scrollHeight + 'px';
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                // Close the section
+                content.style.maxHeight = '0';
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Toggle Physics Engine section
+        function togglePhysicsEngineSection() {
+            const content = document.getElementById('physics-engine-content');
+            const chevron = document.getElementById('physics-engine-chevron');
+            
+            if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+                // Open the section
+                content.style.maxHeight = content.scrollHeight + 'px';
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                // Close the section
+                content.style.maxHeight = '0';
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+        
         // Toggle clock details
         function toggleClockDetails() {
             const details = document.getElementById('clock-details');
@@ -3416,6 +3261,41 @@ is_ugm = hasattr(model, <span class="text-string">'use_ugm_solver'</span>) <span
             
             drawQuantumValidator();
         }
+        
+        // Demo Video Autoplay on Scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('demoVideo');
+            if (!video) return;
+            
+            // Create intersection observer for autoplay
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Video is in viewport - play it
+                        video.play().catch(e => {
+                            console.log('Autoplay prevented:', e);
+                        });
+                    } else {
+                        // Video is out of viewport - pause it
+                        video.pause();
+                    }
+                });
+            }, {
+                threshold: 0.5 // Trigger when 50% of video is visible
+            });
+            
+            // Start observing the video
+            observer.observe(video);
+            
+            // Add smooth fade-in effect when video loads
+            video.addEventListener('loadeddata', function() {
+                video.style.opacity = '0';
+                video.style.transition = 'opacity 0.5s ease-in-out';
+                setTimeout(() => {
+                    video.style.opacity = '1';
+                }, 100);
+            });
+        });
     </script>
 
     <!-- Footer -->

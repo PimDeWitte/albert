@@ -266,6 +266,109 @@
             height: 20px;
             border-radius: 50%;
         }
+        
+        .code-link {
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            color: #1976d2;
+            text-decoration: none;
+        }
+        
+        .code-link:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+        
+        .source-link {
+            color: #1976d2;
+            text-decoration: none;
+            font-family: monospace;
+        }
+        
+        .source-link:hover {
+            text-decoration: underline;
+        }
+        
+        .dataset-category {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .dataset-category h3 {
+            margin-top: 0;
+            color: #1976d2;
+            border-bottom: 2px solid #e3f2fd;
+            padding-bottom: 10px;
+        }
+        
+        .dataset-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #42a5f5;
+        }
+        
+        .dataset-item h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .dataset-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        
+        .meta-value {
+            color: #333;
+        }
+        
+        .source-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .source-type.remote {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .source-type.hardcoded {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .uri-link {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -274,15 +377,15 @@
     
     <div class="dataset-overview">
         <h2 style="color: white; margin-top: 0;">Dataset Overview</h2>
-        <p>The Albert framework provides extensive test scenarios covering a wide range of physical conditions, from weak-field solar system dynamics to extreme strong-field environments near black hole horizons.</p>
+        <p>The Albert framework provides extensive test scenarios covering a wide range of physical conditions, from weak-field solar system dynamics to extreme strong-field environments near black hole horizons. All data is managed through the centralized DatasetLoader system.</p>
         <div class="stats-grid">
             <div class="stat-box">
-                <span class="stat-number">4</span>
-                <span class="stat-label">Test Particles</span>
+                <span class="stat-number">20+</span>
+                <span class="stat-label">Datasets</span>
             </div>
             <div class="stat-box">
-                <span class="stat-number">5</span>
-                <span class="stat-label">Black Hole Types</span>
+                <span class="stat-number">6</span>
+                <span class="stat-label">Categories</span>
             </div>
             <div class="stat-box">
                 <span class="stat-number">12</span>
@@ -290,21 +393,448 @@
             </div>
             <div class="stat-box">
                 <span class="stat-number">10^6</span>
-                <span class="stat-label">Trajectory Points</span>
+                <span class="stat-label">Data Points</span>
             </div>
         </div>
     </div>
 
     <div class="dataset-tabs">
-        <button class="tab-button active" onclick="showTab('particles')">Test Particles</button>
+        <button class="tab-button active" onclick="showTab('all-datasets')">All Datasets</button>
+        <button class="tab-button" onclick="showTab('particles')">Test Particles</button>
         <button class="tab-button" onclick="showTab('blackholes')">Black Hole Configurations</button>
         <button class="tab-button" onclick="showTab('scenarios')">Test Scenarios</button>
         <button class="tab-button" onclick="showTab('benchmarks')">Benchmark Results</button>
     </div>
 
-    <div id="particles" class="dataset-section active">
+    <div id="all-datasets" class="dataset-section active">
+        <h2>Complete Dataset Registry</h2>
+        <p>All datasets managed by the Albert framework's DatasetLoader system. Source code: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/dataset_loader.py" class="code-link">dataset_loader.py</a></p>
+        
+        <!-- Observational Datasets -->
+        <div class="dataset-category">
+            <h3>🔭 Observational Datasets</h3>
+            
+            <div class="dataset-item">
+                <h4>Planck 2018 CMB TT Power Spectrum</h4>
+                <p style="margin: 5px 0; color: #666;">CMB temperature anisotropies test early universe physics and quantum gravity effects</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type remote">Remote</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/planck_cmb_2018/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Planck Collaboration 2020, A&A 641, A6</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">dataloader://planck_cmb_2018</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>NANOGrav 15-year Pulsar Timing Array Data</h4>
+                <p style="margin: 5px 0; color: #666;">Tests low-frequency gravitational wave background from supermassive black holes</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type remote">Remote</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/nanograv_15yr/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">NANOGrav Collaboration 2023, ApJL 951, L8</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">dataloader://nanograv_15yr</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>BICEP/Keck Array Primordial GW Constraints</h4>
+                <p style="margin: 5px 0; color: #666;">Constrains tensor-to-scalar ratio and tests inflationary predictions</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type remote">Remote</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/bicep_keck_2021/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">BICEP/Keck Collaboration 2022, Phys. Rev. Lett. 129, 201301</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">dataloader://bicep_keck_2021</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Classical GR Tests -->
+        <div class="dataset-category">
+            <h3>⚛️ Classical GR Tests</h3>
+            
+            <div class="dataset-item">
+                <h4>Mercury Perihelion Advance</h4>
+                <p style="margin: 5px 0; color: #666;">Classic GR test of post-Newtonian corrections in planetary orbits</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/mercury_perihelion/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Shapiro et al. (1976), improved by MESSENGER mission</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::MERCURY_PERIHELION_ADVANCE</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Solar Light Deflection</h4>
+                <p style="margin: 5px 0; color: #666;">Tests null geodesics in curved spacetime, validates gravitational lensing</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/solar_light_deflection/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Shapiro et al. (2004), Phys. Rev. Lett. 92, 121101</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::SOLAR_LIGHT_DEFLECTION</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Shapiro Time Delay (Cassini)</h4>
+                <p style="margin: 5px 0; color: #666;">Most precise test of GR time delay, PPN parameter gamma</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/shapiro_delay/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Bertotti et al. (2003), Cassini spacecraft</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::SHAPIRO_TIME_DELAY</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Lunar Laser Ranging</h4>
+                <p style="margin: 5px 0; color: #666;">Tests strong equivalence principle and PPN beta parameter</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/lunar_laser_ranging/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Williams et al. (2012), Class. Quantum Grav. 29, 184004</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::LUNAR_LASER_RANGING</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quantum Gravity Experiments -->
+        <div class="dataset-category">
+            <h3>🌌 Quantum Gravity Experiments</h3>
+            
+            <div class="dataset-item">
+                <h4>COW Neutron Interferometry</h4>
+                <p style="margin: 5px 0; color: #666;">Tests quantum effects in gravity, gravitational phase shift</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/cow_interferometry/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Colella, Overhauser & Werner (1975), Phys. Rev. Lett. 34, 1472</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::COW_INTERFEROMETRY</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Atom Interferometry Gravitational Redshift</h4>
+                <p style="margin: 5px 0; color: #666;">Ultra-precise gravitational redshift at meter scales</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/atom_interferometry/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Müller et al. (2010), Nature 463, 926</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::ATOM_INTERFEROMETRY</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Quantum Clock Time Dilation</h4>
+                <p style="margin: 5px 0; color: #666;">Tests gravitational time dilation at quantum scales</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/quantum_clock/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Chou et al. (2010), Science 329, 1630</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::QUANTUM_CLOCK</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Gravitational Decoherence Bounds</h4>
+                <p style="margin: 5px 0; color: #666;">Tests gravity-induced collapse models and quantum decoherence</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/gravitational_decoherence/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Bassi et al. (2013), Class. Quantum Grav. 30, 035002</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::GRAVITATIONAL_DECOHERENCE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pulsar Datasets -->
+        <div class="dataset-category">
+            <h3>✨ Pulsar Systems</h3>
+            
+            <div class="dataset-item">
+                <h4>PSR J0740+6620 Binary Pulsar</h4>
+                <p style="margin: 5px 0; color: #666;">Most massive neutron star, tests GR in strong field with Shapiro delay</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/psr_j0740_6620/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Fonseca et al. (2021), ApJL 915, L12</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">dataloader://psr_j0740_6620</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>PSR J0952-0607 Black Widow Pulsar</h4>
+                <p style="margin: 5px 0; color: #666;">Most massive neutron star known, tests equation of state limits</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/psr_j0952_0607/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Romani et al. (2022), ApJ Lett. 934, L17</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::PSR_J0952_0607</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>PSR B1913+16 Hulse-Taylor Binary</h4>
+                <p style="margin: 5px 0; color: #666;">Nobel Prize system, orbital decay confirms GW emission</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/psr_b1913_16/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Weisberg & Huang (2016), ApJ 829, 55</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::PSR_B1913_16</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cosmological Parameters -->
+        <div class="dataset-category">
+            <h3>🌍 Cosmological Parameters</h3>
+            
+            <div class="dataset-item">
+                <h4>Planck 2018 Cosmological Parameters</h4>
+                <p style="margin: 5px 0; color: #666;">Comprehensive cosmological model parameters including CMB anomalies</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/planck_cosmology_2018/</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Planck Collaboration 2020, A&A 641, A6</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::PLANCK_COSMOLOGY</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Configurations -->
+        <div class="dataset-category">
+            <h3>🔧 Test Configurations</h3>
+            
+            <div class="dataset-item">
+                <h4>Standard Test Radii</h4>
+                <p style="margin: 5px 0; color: #666;">Standard radii for metric testing in Schwarzschild units</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/test_configurations/test_radii.json</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Internal standard configuration</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::TEST_RADII_FACTORS</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dataset-item">
+                <h4>Standard Orbit Parameters</h4>
+                <p style="margin: 5px 0; color: #666;">Standard orbital configurations for conservation tests</p>
+                <div class="dataset-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Source Type</span>
+                        <span class="meta-value"><span class="source-type hardcoded">Hardcoded</span></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Local Path</span>
+                        <span class="meta-value">data/dataloader/test_configurations/standard_orbits.json</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Reference</span>
+                        <span class="meta-value">Internal standard configuration</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">URI</span>
+                        <span class="meta-value uri-link">constants.py::STANDARD_ORBITS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="particles" class="dataset-section">
         <h2>Test Particles</h2>
-        <p>Standard particles used for trajectory integration and validation tests:</p>
+        <p>Standard particles used for trajectory integration and validation tests. Data sourced from <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/constants.py" class="code-link">constants.py</a>:</p>
         
         <div class="particle-card">
             <h3>Electron</h3>
@@ -329,6 +859,7 @@
             <div class="equation">
                 Compton wavelength: λ_C = h/(m_e c) = 2.426×10^-12 m
             </div>
+            <p>Source: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/particles/defaults/electron.md" class="source-link">particles/defaults/electron.md</a></p>
         </div>
 
         <div class="particle-card">
@@ -354,6 +885,7 @@
             <div class="equation">
                 g-2 anomaly: a_μ = (g-2)/2 = 0.00116592089(63)
             </div>
+            <p>Source: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/constants.py#L42" class="source-link">constants.py#L42</a></p>
         </div>
 
         <div class="particle-card">
@@ -379,6 +911,7 @@
             <div class="equation">
                 Null geodesic: ds² = 0, E = ħω = hν
             </div>
+            <p>Implementation: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/null_geodesic_solver.py" class="source-link">null_geodesic_solver.py</a></p>
         </div>
 
         <div class="particle-card">
@@ -404,12 +937,13 @@
             <div class="equation">
                 Flavor oscillations: |ν_α⟩ = Σ U_αi |ν_i⟩
             </div>
+            <p>Source: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/constants.py#L58" class="source-link">constants.py#L58</a></p>
         </div>
     </div>
 
     <div id="blackholes" class="dataset-section">
         <h2>Black Hole Configurations</h2>
-        <p>Pre-configured black hole parameters for different test scenarios:</p>
+        <p>Pre-configured black hole parameters for different test scenarios. Source: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/black_holes/defaults/" class="code-link">black_holes/defaults/</a></p>
         
         <table class="dataset-table">
             <thead>
@@ -420,6 +954,7 @@
                     <th>Charge (Q/M)</th>
                     <th>Horizon (r_s)</th>
                     <th>ISCO Radius</th>
+                    <th>Config File</th>
                 </tr>
             </thead>
             <tbody>
@@ -430,6 +965,7 @@
                     <td>0.0</td>
                     <td>2M</td>
                     <td>6M</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/black_holes/defaults/schwarzschild.md" class="code-link">View config</a></td>
                 </tr>
                 <tr>
                     <td><strong>Kerr (Moderate)</strong></td>
@@ -438,6 +974,7 @@
                     <td>0.0</td>
                     <td>1.87M</td>
                     <td>4.23M</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/black_holes/defaults/kerr_moderate.md" class="code-link">View config</a></td>
                 </tr>
                 <tr>
                     <td><strong>Kerr (Extreme)</strong></td>
@@ -446,6 +983,7 @@
                     <td>0.0</td>
                     <td>1.06M</td>
                     <td>1.24M</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/black_holes/defaults/kerr_extreme.md" class="code-link">View config</a></td>
                 </tr>
                 <tr>
                     <td><strong>Reissner-Nordström</strong></td>
@@ -454,6 +992,7 @@
                     <td>0.8</td>
                     <td>1.6M</td>
                     <td>5.47M</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/black_holes/defaults/reissner_nordstrom.md" class="code-link">View config</a></td>
                 </tr>
                 <tr>
                     <td><strong>Primordial Mini</strong></td>
@@ -462,6 +1001,7 @@
                     <td>0.0</td>
                     <td>2.95×10^-35 m</td>
                     <td>5.8M</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/black_holes/defaults/primordial_mini.md" class="code-link">View config</a></td>
                 </tr>
             </tbody>
         </table>
@@ -478,12 +1018,13 @@
                 <li>Event horizon: r± = M ± √(M² - a² - Q²)</li>
                 <li>Ergosphere boundary: r_e = M + √(M² - a² cos²θ)</li>
             </ul>
+            <p>Implementation: <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/kerr/kerr.py" class="source-link">theories/kerr/kerr.py</a></p>
         </div>
     </div>
 
     <div id="scenarios" class="dataset-section">
         <h2>Test Scenarios</h2>
-        <p>Comprehensive test scenarios covering various physical regimes:</p>
+        <p>Comprehensive test scenarios covering various physical regimes. Test implementations in <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/solver_tests/" class="code-link">solver_tests/</a>:</p>
         
         <div class="scenario-grid">
             <div class="scenario-card">
@@ -495,7 +1036,7 @@
                     <li><span class="param-name">Error tolerance:</span> <span class="param-value">10^-10</span></li>
                     <li><span class="param-name">Particles:</span> <span class="param-value">All massive</span></li>
                 </ul>
-                <button class="download-btn">Download Test Data</button>
+                <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/solver_tests/test_circular_orbit.py" class="download-btn">View Test Code</a>
             </div>
 
             <div class="scenario-card">
@@ -507,7 +1048,7 @@
                     <li><span class="param-name">Expected shift:</span> <span class="param-value">42.98"/century</span></li>
                     <li><span class="param-name">Integration:</span> <span class="param-value">100 orbits</span></li>
                 </ul>
-                <button class="download-btn">Download Test Data</button>
+                <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/mercury_precession_validator.py" class="download-btn">View Test Code</a>
             </div>
 
             <div class="scenario-card">
@@ -519,7 +1060,7 @@
                     <li><span class="param-name">Particle:</span> <span class="param-value">Photon</span></li>
                     <li><span class="param-name">Accuracy:</span> <span class="param-value">0.01%</span></li>
                 </ul>
-                <button class="download-btn">Download Test Data</button>
+                <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/light_deflection_validator.py" class="download-btn">View Test Code</a>
             </div>
 
             <div class="scenario-card">
@@ -531,7 +1072,7 @@
                     <li><span class="param-name">Formula:</span> <span class="param-value">z = √(g_tt(r_e)/g_tt(∞)) - 1</span></li>
                     <li><span class="param-name">Validation:</span> <span class="param-value">GPS satellites</span></li>
                 </ul>
-                <button class="download-btn">Download Test Data</button>
+                <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/solver_tests/test_gravitational_redshift.py" class="download-btn">View Test Code</a>
             </div>
 
             <div class="scenario-card">
@@ -543,7 +1084,7 @@
                     <li><span class="param-name">Orbital frequency:</span> <span class="param-value">Ω_ISCO(a)</span></li>
                     <li><span class="param-name">Stability test:</span> <span class="param-value">Lyapunov exp.</span></li>
                 </ul>
-                <button class="download-btn">Download Test Data</button>
+                <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/solver_tests/test_isco_dynamics.py" class="download-btn">View Test Code</a>
             </div>
 
             <div class="scenario-card">
@@ -555,14 +1096,14 @@
                     <li><span class="param-name">Spin parameter:</span> <span class="param-value">a > 0</span></li>
                     <li><span class="param-name">Energy gain:</span> <span class="param-value">ΔE/E_in</span></li>
                 </ul>
-                <button class="download-btn">Download Test Data</button>
+                <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/solver_tests/test_penrose_process.py" class="download-btn">View Test Code</a>
             </div>
         </div>
     </div>
 
     <div id="benchmarks" class="dataset-section">
         <h2>Benchmark Results</h2>
-        <p>Reference results for validation and comparison:</p>
+        <p>Reference results for validation and comparison. Latest results from <a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/runs/comprehensive_test_20250803_220221/comprehensive_theory_validation_20250803_220637.html" class="code-link">comprehensive test run 20250803</a>:</p>
         
         <table class="dataset-table">
             <thead>
@@ -573,6 +1114,7 @@
                     <th>Computed Value</th>
                     <th>Relative Error</th>
                     <th>Status</th>
+                    <th>Validator</th>
                 </tr>
             </thead>
             <tbody>
@@ -583,6 +1125,7 @@
                     <td>6.00000 M</td>
                     <td style="color: #4caf50;">< 10^-15</td>
                     <td style="color: #4caf50;">✓ Pass</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/circular_orbit_validator.py" class="code-link">circular_orbit_validator.py</a></td>
                 </tr>
                 <tr>
                     <td>Kerr Frame Dragging</td>
@@ -591,6 +1134,7 @@
                     <td>2.134 rad/M</td>
                     <td style="color: #4caf50;">3.2×10^-12</td>
                     <td style="color: #4caf50;">✓ Pass</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/frame_dragging_validator.py" class="code-link">frame_dragging_validator.py</a></td>
                 </tr>
                 <tr>
                     <td>Photon Sphere</td>
@@ -599,6 +1143,7 @@
                     <td>3.00000 M</td>
                     <td style="color: #4caf50;">< 10^-15</td>
                     <td style="color: #4caf50;">✓ Pass</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/photon_sphere_validator.py" class="code-link">photon_sphere_validator.py</a></td>
                 </tr>
                 <tr>
                     <td>Perihelion Shift</td>
@@ -607,6 +1152,7 @@
                     <td>42.97 "/century</td>
                     <td style="color: #ff9800;">2.3×10^-4</td>
                     <td style="color: #4caf50;">✓ Pass</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/mercury_precession_validator.py" class="code-link">mercury_precession_validator.py</a></td>
                 </tr>
                 <tr>
                     <td>g-2 Anomaly</td>
@@ -615,6 +1161,25 @@
                     <td>0.00116591812</td>
                     <td style="color: #f44336;">2.4×10^-6</td>
                     <td style="color: #f44336;">✗ Fail</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/g2_anomaly_validator.py" class="code-link">g2_anomaly_validator.py</a></td>
+                </tr>
+                <tr>
+                    <td>COW Interferometry</td>
+                    <td>GR</td>
+                    <td>2.70 ± 0.21 radians</td>
+                    <td>2.703 radians</td>
+                    <td style="color: #4caf50;">0.12%</td>
+                    <td style="color: #4caf50;">✓ Pass</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cow_interferometry_validator.py" class="code-link">cow_interferometry_validator.py</a></td>
+                </tr>
+                <tr>
+                    <td>CMB Power Spectrum</td>
+                    <td>ΛCDM</td>
+                    <td>χ²/dof = 53.08</td>
+                    <td>χ²/dof = 53.08</td>
+                    <td style="color: #4caf50;">< 0.01%</td>
+                    <td style="color: #4caf50;">✓ Pass</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-link">cmb_power_spectrum_validator.py</a></td>
                 </tr>
             </tbody>
         </table>

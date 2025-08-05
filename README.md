@@ -68,6 +68,8 @@ albert run --candidates                          # Include candidates
 albert run --black-hole-preset stellar_mass      # 10 solar masses
 albert run --black-hole-preset primordial_mini   # Default: quantum scale
 albert run --black-hole-preset sagittarius_a_star # Galactic center
+albert run --black-hole-preset laboratory_micro  # Extreme quantum regime
+albert run --black-hole-preset intermediate_mass # Globular clusters
 
 # Particle simulations
 albert run --particles electron photon neutrino  # Multi-particle
@@ -78,11 +80,19 @@ albert run --device cuda --dtype float32         # GPU acceleration
 albert run --device cpu --dtype float64          # Max precision
 albert run --max-steps 1000000                   # Million-step trajectories
 albert run --no-cache                            # Force recomputation
+albert run --clear-cache                         # Clear cache and exit
 
 # Advanced options
 albert run --validators-only                     # Skip trajectory computation
 albert run --max-parallel-workers 16             # Parallel processing
 albert run --test                                # Run pre-flight tests
+albert run --enable-sweeps                       # Enable parameter sweeps
+albert run --sweep-only gamma                    # Sweep only specific parameter
+albert run --experimental                        # Enable experimental quantum features
+albert run --verbose                             # Enable verbose logging
+albert run --final                               # High-quality publication mode
+albert run --early-stop                          # Enable early stopping
+albert run --quantum-field-content all           # Configure quantum field content
 ```
 
 ### `albert discover` - AI Theory Discovery

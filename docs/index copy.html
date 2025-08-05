@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert - Differential PyTorch Physics Engine for Testing Theories</title>
+    
+    <meta name="title" content="Albert - Differential PyTorch Physics Engine for Testing Theories">
+    <meta name="description" content="A validation framework for fundamental physics. Albert provides infrastructure analogous to AlphaFold's for physics research, leveraging PyTorch to transform mathematical laws into differentiable computations. Enables theories to learn from their own simulations through gradient-based optimization.">
+    <meta name="keywords" content="physics engine, differential equations, gravitational theories, general relativity, experimental validation, PyTorch physics, differential physics, research tools">
+    <meta name="author" content="Albert Project">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://albert.so/">
+    <meta property="og:title" content="Albert - Differential PyTorch Physics Engine">
+    <meta property="og:description" content="A validation framework for fundamental physics. Albert provides infrastructure analogous to AlphaFold's for physics research, leveraging PyTorch to transform mathematical laws into differentiable computations. Enables theories to learn from their own simulations through gradient-based optimization.">
+    <meta property="og:image" content="https://albert.so/docs/sketch.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Albert">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://albert.so/">
+    <meta property="twitter:title" content="Albert - Differential PyTorch Physics Engine">
+    <meta property="twitter:description" content="A validation framework for fundamental physics. Albert provides infrastructure analogous to AlphaFold's for physics research, leveraging PyTorch to transform mathematical laws into differentiable computations. Enables theories to learn from their own simulations through gradient-based optimization.">
+    <meta property="twitter:image" content="https://albert.so/docs/sketch.png">
+    
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://albert.so/">
+    
+    <link rel="icon" type="image/png" href="sketch.png">
+    <link rel="apple-touch-icon" href="sketch.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['EB Garamond', 'Georgia', 'serif'],
+                        'display': ['Playfair Display', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'white': '#FAF8F3',          // Override white to match paper
+                        'ink': '#2D2D2D',           // Dark text
+                        'paper': '#FAF8F3',          // Background
+                        'accent': '#1A3A8A',         // Deep blue (primary)
+                        'muted': '#8B7355',          // Brown (secondary)
+                        'success': '#556B2F',        // Olive green (validation)
+                        'danger': '#B91C1C',         // Deep red (errors)
+                        'warning': '#D97706',        // Amber (in progress)
+                        'quantum': '#059669',        // Emerald (quantum tests)
+                        'extreme': '#7C3AED',        // Purple (extreme regime)
+                        'canvas-bg': '#FAF8F3',      // Canvas backgrounds - same as paper
+                        'canvas-stroke': '#E5E7EB',  // Canvas lines
+                        'code-bg': '#FAF8F3',        // Code block background - same as paper
+                        'code-border': '#E8E2D8',    // Code block border
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Remove Aeonik font-face declarations */
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+        }
+        
+        body {
+            font-family: 'EB Garamond', 'Georgia', serif;
+        }
+        
+        /* Update formula-display to use new colors */
+        .formula-display {
+            @apply text-center text-accent bg-paper py-6 px-8 rounded-xl my-6 mx-auto;
+            font-family: 'Times New Roman', 'Georgia', serif;
+            font-size: 1.4rem;
+            width: fit-content;
+            min-width: 300px;
+            box-shadow: 0 2px 8px rgba(26, 13, 171, 0.08);
+            border: 1px solid rgba(26, 58, 138, 0.15);
+            position: relative;
+        }
+        
+        /* Update code-block colors */
+        .code-block {
+            @apply bg-code-bg text-ink border border-code-border;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .code-block .comment { @apply text-muted; }
+        .code-block .string { @apply text-success; }
+        .code-block .keyword { @apply text-accent; }
+        .code-block .function { @apply text-ink; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1; 
+            }
+            50% { 
+                opacity: 0.6; 
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gravitationalFloat {
+            0%, 100% { 
+                transform: translateY(0px) scale(1) rotateZ(0deg); 
+            }
+            20% { 
+                transform: translateY(-2px) scale(1.008) rotateZ(0.2deg); 
+            }
+            40% { 
+                transform: translateY(-3px) scale(1.01) rotateZ(-0.1deg); 
+            }
+            60% { 
+                transform: translateY(1px) scale(0.995) rotateZ(0.15deg); 
+            }
+            80% { 
+                transform: translateY(-1px) scale(1.003) rotateZ(-0.1deg); 
+            }
+        }
+        
+        @keyframes gravitationalPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.01); 
+                filter: brightness(1.02);
+            }
+        }
+        
+        .gravitational-text {
+            animation: gravitationalFloat 8s ease-in-out infinite;
+        }
+        
+        .gravitational-pulse {
+            animation: gravitationalPulse 4s ease-in-out infinite;
+        }
+        
+        .glow {
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .non-interactive {
+            pointer-events: none;
+        }
+        .interactive {
+            pointer-events: auto;
+        }
+        
+        body {
+            background-color: #FAF8F3; /* colors.paper - Light cream matching sketch background */
+        }
+        
+        /* New animations for the journey */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        /* Counting animation helper */
+        .counting-animation {
+            transition: all 2s ease-out;
+        }
+        
+        /* Golden ratio spiral animation */
+        @keyframes spiralRotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Scroll indicator bounce */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Albert logo frame styling */
+        .sketch-frame {
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(250, 248, 243, 0.9) 0%, 
+                rgba(255, 255, 255, 0.95) 40%, 
+                rgba(255, 255, 255, 0.95) 60%, 
+                rgba(250, 248, 243, 0.9) 100%);
+            box-shadow: 
+                inset 0 1px 3px rgba(0, 0, 0, 0.06),
+                0 4px 12px rgba(45, 45, 45, 0.08);
+        }
+        
+        .sketch-frame::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, 
+                transparent 30%, 
+                rgba(26, 58, 138, 0.05) 50%, 
+                transparent 70%);
+            border-radius: 0.75rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sketch-frame:hover::before {
+            opacity: 1;
+        }
+        
+        /* Vintage paper texture overlay */
+        .sketch-paper {
+            position: relative;
+            background: 
+                radial-gradient(ellipse at top left, rgba(232, 226, 216, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(232, 226, 216, 0.2) 0%, transparent 50%),
+                white;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .sketch-paper::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, 
+                    transparent, 
+                    transparent 10px, 
+                    rgba(232, 226, 216, 0.03) 10px, 
+                    rgba(232, 226, 216, 0.03) 20px);
+            border-radius: 0.5rem;
+            pointer-events: none;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            /* Hide animated hero section on mobile */
+            #home {
+                display: none !important;
+            }
+            
+            /* Make Real-Time Theory Testing the first visible section */
+            #journey {
+                padding-top: 7rem !important; /* Account for nav (64px) + research notice (~48px) */
+            }
+            
+            /* Ensure main content starts below fixed headers */
+            main {
+                padding-top: 7rem !important; /* Match the journey padding */
+            }
+            
+            /* Fix header navigation on mobile */
+            nav {
+                padding: 0 0.5rem;
+            }
+            
+            .sketch-frame {
+                padding: 0.5rem !important;
+            }
+            
+            .sketch-paper {
+                padding: 0.25rem !important;
+            }
+            
+            .sketch-frame img {
+                height: 3rem !important;
+            }
+            
+            /* Fix research notice spacing on mobile */
+            .research-notice {
+                padding: 0.5rem 1rem;
+                font-size: 12px;
+            }
+            
+            /* Improve mobile typography */
+            h3.text-4xl {
+                font-size: 1.875rem !important; /* text-3xl */
+            }
+            
+            h3.text-5xl {
+                font-size: 2.25rem !important; /* text-4xl */
+            }
+            
+            .text-lg {
+                font-size: 1rem !important;
+            }
+            
+            /* Fix theory testing demo box on mobile */
+            .grid.grid-cols-1.lg\\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Einstein detail elements on mobile */
+            #einstein-asymmetric-detail,
+            #einstein-connection-detail,
+            #einstein-field-detail {
+                font-size: 0.75rem !important;
+            }
+            
+            /* Adjust padding for mobile */
+            .px-4, .px-6, .px-8 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            .py-20 {
+                padding-top: 3rem !important;
+                padding-bottom: 3rem !important;
+            }
+            
+            /* Fix canvas containers on mobile */
+            canvas {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+            
+            /* Hide non-essential animations on mobile */
+            .gravitational-text {
+                animation: none !important;
+            }
+            
+            .gravitational-pulse {
+                animation: none !important;
+            }
+            
+            /* Fix modal on mobile */
+            #setupModal .max-w-3xl {
+                max-width: calc(100vw - 2rem) !important;
+                margin: 1rem !important;
+            }
+            
+            /* Improve button spacing on mobile */
+            .flex.gap-6 {
+                gap: 1rem !important;
+                flex-direction: column !important;
+            }
+            
+            .w-64 {
+                width: 100% !important;
+            }
+            
+            /* Fix code blocks on mobile */
+            .code-block, pre {
+                font-size: 0.75rem !important;
+                padding: 1rem !important;
+            }
+            
+
+            
+            /* Make validation visualizations responsive */
+            #validationGauntletCanvas,
+            #theoryEngineCanvas {
+                height: 300px !important;
+            }
+        }
+        
+        /* Additional mobile improvements */
+        @media (max-width: 640px) {
+            /* Even smaller adjustments for very small screens */
+            h3.text-4xl {
+                font-size: 1.5rem !important;
+            }
+            
+            h3.text-5xl {
+                font-size: 1.875rem !important;
+            }
+            
+            .text-2xl {
+                font-size: 1.25rem !important;
+            }
+            
+            /* Stack buttons vertically on very small screens */
+            .flex.items-center.justify-center.gap-6 {
+                flex-direction: column !important;
+            }
+            
+            /* Full width install command on mobile */
+            .max-w-3xl {
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-ink antialiased bg-paper">
+
+    <div id="setupModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-ink/70 backdrop-blur-sm" onclick="closeSetupModal()"></div>
+        
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl max-h-[80vh] overflow-y-auto">
+            <div class="bg-paper rounded-2xl p-8 shadow-2xl border border-code-border">
+                <button onclick="closeSetupModal()" class="absolute top-4 right-4 text-muted hover:text-ink transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <h2 class="text-3xl font-bold text-accent mb-6">Quick Start Installation</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">One-line Installation</h3>
+                        <div class="relative group">
+                            <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
+                                <div class="flex items-stretch">
+                                    <div class="flex-1 p-4">
+                                        <code id="modal-install-command" class="text-ink font-mono text-sm break-all select-all">curl -fsSL https://albert.so/install | bash</code>
+                                    </div>
+                                    <button 
+                                        onclick="copyModalCommand()" 
+                                        class="px-4 text-muted hover:text-accent hover:bg-accent/5 transition-all group-hover:text-accent border-l border-code-border flex items-center justify-center"
+                                        title="Copy to clipboard"
+                                    >
+                                        <svg id="modal-copy-icon" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <svg id="modal-check-icon" class="w-5 h-5 hidden text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="modal-copy-tooltip" class="absolute -top-10 right-0 bg-ink text-paper text-xs px-3 py-1 rounded opacity-0 pointer-events-none transition-opacity shadow-lg">
+                                Copied to clipboard!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">Pure Python</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">PyTorch powered</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-ink">GPU accelerated</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Basic Usage</h3>
+                        <div class="bg-code-bg border border-code-border rounded-xl p-4 space-y-2 font-mono text-sm">
+                            <div><span class="text-muted"># Run comprehensive evaluation on all theories. This command initiates a full simulation and validation pipeline across all implemented gravitational theories, computing particle trajectories using geodesic equations, checking conservation laws like energy and angular momentum preservation, and verifying against experimental datasets such as Mercury's perihelion precession and gravitational lensing observations. It ensures numerical stability through adaptive timestepping and provides detailed reports on theory performance, including precision metrics and failure modes, enabling rigorous comparison of theoretical predictions with empirical data.</span></div>
+                            <div class="text-accent">albert run</div>
+                            <div class="mt-4"><span class="text-muted"># Include candidate theories in the evaluation. This flag extends the simulation to encompass experimental or hypothetical theories in the 'candidates' directory, allowing for systematic testing of novel modifications to established frameworks like general relativity, such as asymmetric metrics or quantum-corrected terms, while maintaining the same validation rigor including conservation checks and experimental matching.</span></div>
+                            <div class="text-accent">albert run --candidates</div>
+                            <div class="mt-4"><span class="text-muted"># Test your own custom theory by adding it to the theories/ directory. This command filters the evaluation to focus exclusively on the specified theory, facilitating rapid iteration and debugging by isolating its performance in geodesic integration, conservation law adherence, and alignment with observational data, which is crucial for developing and refining new physical models.</span></div>
+                            <div class="text-accent">albert run --theory-filter "MyTheory"</div>
+                            <div class="mt-4"><span class="text-muted"># Run simulations with extended trajectories by increasing the maximum number of integration steps. This allows for longer-term evolution of particle paths, which is essential for detecting subtle deviations in orbital stability, precession rates, or conservation violations that may only manifest over extended timescales in extreme gravitational regimes.</span></div>
+                            <div class="text-accent">albert run --max-steps 10000</div>
+                            <div class="mt-4"><span class="text-muted"># Execute pre-flight tests to verify solver correctness before main simulations. These tests include analytical benchmarks like Keplerian orbits, numerical convergence checks, and validation against known solutions to ensure the integrator preserves symplectic structure and maintains required precision across various spacetime curvatures.</span></div>
+                            <div class="text-accent">albert run --test</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Available Commands</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">🚀</span> albert run
+                                </h4>
+                                <p class="text-sm text-muted">Run gravitational theory simulations with comprehensive validation. This core command orchestrates the entire pipeline: theory selection, geodesic equation solving using Runge-Kutta methods, trajectory generation, and multi-faceted validation including conservation laws and experimental data matching.</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>--theory-filter "name"  # Select specific theories for focused evaluation, enabling targeted analysis of particular models without processing the entire suite, which is useful for iterative development and debugging of individual theories.</div>
+                                    <div>--steps 10000  # Set the number of integration steps for trajectory computation, allowing for finer temporal resolution in simulations to capture high-frequency phenomena or long-term stability characteristics.</div>
+                                    <div>--gpu-f32 / --cpu-f64  # Choose computation backend and precision: GPU with float32 for speed in large-scale simulations, or CPU with float64 for maximum numerical accuracy in precision-critical validations.</div>
+                                    <div>--enable-sweeps  # Activate parameter sweep mode for systematic exploration of theory parameters, generating comprehensive datasets for analyzing sensitivity and optimizing model configurations against validation criteria.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">🧪</span> albert discover
+                                </h4>
+                                <p class="text-sm text-muted">Generate new theoretical variations using AI-assisted code generation, creating novel modifications to base theories while ensuring they remain mathematically consistent and ready for immediate validation.</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>--initial "prompt"  # Provide an initial description or concept to guide the generation of new theory variants, such as "add quantum correction term" or "modify for asymmetric metrics".</div>
+                                    <div>--from-theory path  # Base the new theory on an existing implementation at the specified path, allowing for incremental modifications and extensions of proven models.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">⚙️</span> albert setup
+                                </h4>
+                                <p class="text-sm text-muted">Configure API keys, computational resources, and network settings through an interactive wizard, ensuring optimal setup for simulations including GPU detection and precision settings.</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>Interactive wizard  # Step-by-step configuration process that detects hardware capabilities, sets environment variables, and validates installations for seamless operation.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">📊</span> albert validate
+                                </h4>
+                                <p class="text-sm text-muted">Perform standalone validation of a specific theory against the full suite of experimental datasets and conservation checks, generating detailed reports on performance metrics.</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>theories/my_theory/theory.py  # Path to the theory implementation file to validate, allowing for isolated testing of individual models outside the full run pipeline.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-code-bg/50 border border-code-border/50 rounded-lg p-3">
+                                <h4 class="font-bold text-accent mb-1 flex items-center gap-2">
+                                    <span class="text-lg">🚀</span> albert run-advanced
+                                </h4>
+                                <p class="text-sm text-muted">Execute advanced simulations with parameter sweeps, parallel processing, and in-depth analysis tools for comprehensive theory exploration and optimization.</p>
+                                <div class="text-xs font-mono mt-2 text-ink">
+                                    <div>--enable-sweeps  # Enable systematic parameter variation across specified ranges, generating multi-dimensional datasets for analyzing theory behavior and identifying optimal configurations.</div>
+                                    <div>--sweep-workers 8  # Set the number of parallel workers for distributed computation of parameter sweeps, leveraging multi-core or multi-GPU systems for accelerated processing of large simulation sets.</div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <p class="text-xs text-muted mt-3 text-center">
+                            Use <span class="font-mono">albert &lt;command&gt; --help</span> for detailed options
+                        </p>
+                    </div>
+                    
+                
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed top-0 left-0 right-0 bg-paper/95 backdrop-blur-sm shadow-md z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="sketch-frame p-2 rounded-xl border border-code-border/30 hover:shadow-[0_6px_20px_rgba(26,58,138,0.12)] transition-all duration-300 group">
+                        <div class="sketch-paper rounded-lg p-1.5">
+                            <img src="sketch.png" alt="Albert Einstein Sketch" class="h-16 w-auto filter contrast-110 brightness-98 sepia-[0.1] group-hover:contrast-120 group-hover:sepia-[0.15] transition-all duration-300 relative z-10">
+                        </div>
+                        <div class="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-accent/15 rounded-tl-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-accent/15 rounded-tr-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-accent/15 rounded-bl-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-accent/15 rounded-br-lg group-hover:border-accent/25 transition-colors"></div>
+                        <div class="absolute -bottom-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="text-[8px] text-accent/40 font-mono transform rotate-[-5deg]">1955</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <button onclick="openSetupModal()" class="bg-accent hover:bg-accent/90 text-white px-6 py-2 rounded-lg font-semibold transition shadow-sm">
+                        Setup
+                    </button>
+                    
+                    <a href="https://github.com/pimdewitte/albert" target="_blank" class="group relative flex items-center space-x-2 bg-paper hover:bg-code-bg border border-code-border px-4 py-2 rounded-lg transition shadow-sm">
+                        <svg class="w-5 h-5 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span class="text-sm font-mono text-ink">★ 5 (new)</span>
+                        <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-ink text-paper text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Star on GitHub
+                        </span>
+                    </a>
+                    
+                    <a href="https://discord.gg/tnPhwxr6qZ" target="_blank" class="group relative flex items-center bg-paper hover:bg-code-bg border border-code-border p-2 rounded-lg transition shadow-sm">
+                        <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                        <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-ink text-paper text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Join Community
+                        </span>
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center space-x-2">
+                    <button onclick="openSetupModal()" class="bg-accent hover:bg-accent/90 text-white px-4 py-1.5 rounded-lg font-semibold transition shadow-sm text-sm">
+                        Setup
+                    </button>
+                    
+                    <a href="https://github.com/pimdewitte/albert" target="_blank" class="flex items-center space-x-1 bg-paper hover:bg-code-bg border border-code-border px-3 py-1.5 rounded-lg transition shadow-sm">
+                        <svg class="w-4 h-4 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span class="text-xs font-mono text-ink">NEW</span>
+                    </a>
+                    
+                    <a href="https://discord.gg/tnPhwxr6qZ" target="_blank" class="flex items-center bg-paper hover:bg-code-bg border border-code-border p-1.5 rounded-lg transition shadow-sm">
+                        <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="research-notice fixed top-16 left-0 right-0 bg-warning/10 border-b border-warning/20 py-3 px-4 sm:px-6 lg:px-8 z-30" style="background: linear-gradient(135deg, rgba(250, 248, 243, 0.95) 0%, rgba(250, 248, 243, 0.92) 30%, rgba(250, 248, 243, 0.94) 70%, rgba(250, 248, 243, 0.95) 100%), linear-gradient(rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.25)) !important; border: none !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.05) !important;">
+        <div class="max-w-7xl mx-auto flex items-center justify-center gap-3">
+            <svg class="w-5 h-5 text-warning flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <p class="text-sm text-ink font-medium text-center">
+                <strong>Research Preview:</strong> This is an early research preview of Albert. While the code is openly available, it has only been shared with a select group of researchers and early testers.
+            </p>
+        </div>
+    </div>
+
+
+
+    <main class="pt-16 md:pt-16">
+        
+        <div class="block md:hidden">
+        </div>
+        
+        <section id="home" class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            <canvas id="spacetimeCanvas" class="absolute inset-0 w-full h-full z-0" style="cursor: crosshair;"></canvas>
+            
+            <div class="max-w-7xl mx-auto text-center relative z-10 non-interactive">
+                
+                <h1 class="text-4xl sm:text-6xl lg:text-8xl font-bold mb-8 fade-in font-display">
+                    <span class="text-accent">Introducing Albert</span>
+                    <span class="text-muted block text-2xl sm:text-3xl lg:text-4xl mt-4"> A Validation Framework for Fundamental Physics</span>
+                </h1>
+                
+    
+                <div class="bg-paper rounded-2xl p-8 mb-12 max-w-3xl mx-auto shadow-lg border border-muted/20 gravitational-text interactive" style="padding: 2rem 3.236rem; animation-delay: 1.5s; animation-duration: 10s;">
+                    <div class="flex items-center justify-between mb-6">
+                   
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-muted font-medium">Albert is 100% open source and you can audit everything you're installing!</span>
+                        </div>
+                    </div>
+                    
+                    <div class="relative group">
+                        <div class="bg-code-bg rounded-lg border border-code-border hover:border-accent/50 transition-all overflow-hidden">
+                            <div class="flex items-stretch">
+                                <div class="flex-1 p-3 sm:p-4 space-y-1">
+                                    <div id="homepage-install-command" class="font-mono text-base sm:text-lg whitespace-nowrap">
+                                        <span class="select-all"><span class="text-accent">curl -fsSL</span> <span class="text-ink">https://albert.so/install</span> <span class="text-muted">| bash</span></span>
+                                    </div>
+                                </div>
+                                <button 
+                                    onclick="copyHomepageCommand()" 
+                                    class="px-4 text-muted hover:text-accent hover:bg-accent/5 transition-all group-hover:text-accent border-l border-code-border flex items-center justify-center"
+                                    title="Copy to clipboard"
+                                >
+                                    <svg id="homepage-copy-icon" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <svg id="homepage-check-icon" class="w-5 h-5 hidden text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="homepage-copy-tooltip" class="absolute -top-10 right-0 bg-ink text-paper text-xs px-3 py-1 rounded opacity-0 pointer-events-none transition-opacity shadow-lg">
+                            Copied to clipboard!
+                        </div>
+                    </div>
+                        </div>
+            </div>
+        </section>
+
+        <!-- Solvers & Validators Section -->
+        <section class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-b from-paper to-white">
+                <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-8">
+                    How Solvers & Validators Work Together
+                </h2>
+                    
+                    <p class="text-2xl text-center font-serif text-ink mb-16 max-w-4xl mx-auto">
+                    The Albert framework operates on a fundamental principle: <strong>solvers generate physics, validators verify it</strong>. 
+                    This separation of concerns ensures both computational efficiency and scientific rigor.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-6xl mx-auto">
+                    <!-- Solvers -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 border border-accent/20">
+                        <h3 class="text-2xl font-bold text-accent mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center text-xl">🚀</span>
+                            Solvers: The Physics Engines
+                        </h3>
+                        <p class="text-base mb-4">
+                            Solvers are numerical integrators that evolve particle trajectories through spacetime by solving 
+                            the geodesic equations. They handle:
+                        </p>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2">
+                                <span class="text-accent mt-1">▸</span>
+                                    <div>
+                                    <strong>6D Phase Space Evolution:</strong> Position (r, θ, φ) and momentum (pr, pθ, pφ) 
+                                    components evolved simultaneously to preserve symplectic structure
+                                    </div>
+                                    </li>
+                                <li class="flex items-start gap-2">
+                                <span class="text-accent mt-1">▸</span>
+                                    <div>
+                                    <strong>Adaptive Timesteps:</strong> Dynamic dt adjustment based on local curvature 
+                                    and velocity to maintain accuracy
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                <span class="text-accent mt-1">▸</span>
+                                    <div>
+                                    <strong>Theory-Specific Integration:</strong> Specialized solvers for UGM (tetrad formalism), 
+                                    quantum (path integrals), and extreme gravity regimes
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                <span class="text-accent mt-1">▸</span>
+                                    <div>
+                                    <strong>Runge-Kutta 4th Order:</strong> Default integration scheme with O(dt⁴) 
+                                    error scaling for stability
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                    <!-- Validators -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 border border-quantum/20">
+                        <h3 class="text-2xl font-bold text-quantum mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-quantum/20 rounded-lg flex items-center justify-center text-xl">✓</span>
+                            Validators: The Reality Checks
+                        </h3>
+                        <p class="text-base mb-4">
+                            Validators ensure theoretical predictions match experimental observations by testing 
+                            against real-world data:
+                        </p>
+                        <ul class="space-y-2 text-sm">
+                                <li class="flex items-start gap-2">
+                                <span class="text-quantum mt-1">▸</span>
+                                    <div>
+                                    <strong>Conservation Laws:</strong> Verify energy and angular momentum remain 
+                                    constant (within numerical tolerance) during evolution
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                <span class="text-quantum mt-1">▸</span>
+                                    <div>
+                                    <strong>Experimental Matching:</strong> Compare predictions to datasets from 
+                                    Mercury's orbit, gravitational lensing, black hole shadows, etc.
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                <span class="text-quantum mt-1">▸</span>
+                                    <div>
+                                    <strong>Precision Tolerance:</strong> Adaptive thresholds based on theory type 
+                                    and expected physical violations
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                <span class="text-quantum mt-1">▸</span>
+                                    <div>
+                                    <strong>Multi-Scale Testing:</strong> From quantum interferometry (10⁻¹⁰ m) 
+                                    to cosmological distances (10²⁶ m)
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                <div class="bg-code-bg rounded-2xl p-6 border border-code-border mb-16 max-w-4xl mx-auto">
+                    <p class="text-lg font-semibold mb-3 text-accent">The Feedback Loop:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-base">
+                        <li><strong>Theory Definition:</strong> User implements metric tensor g_μν(x)</li>
+                        <li><strong>Solver Execution:</strong> Integrates geodesic equations to generate trajectories</li>
+                        <li><strong>Validator Analysis:</strong> Checks conservation laws and experimental agreement</li>
+                        <li><strong>Result Feedback:</strong> Pass/fail with detailed error metrics and suggestions</li>
+                        <li><strong>Theory Refinement:</strong> Iterate based on validation results</li>
+                    </ol>
+                                    </div>
+                                    
+                <!-- Energy Calculation Example -->
+                <div class="bg-white rounded-3xl shadow-xl p-8 border border-accent/10 max-w-6xl mx-auto">
+                    <h3 class="text-2xl font-bold text-accent mb-6">Example: How Energy Conservation Validation Works</h3>
+                    <p class="text-lg font-serif text-ink mb-6">
+                        Here's a concrete example of how validators analyze solver output to verify physical conservation laws:
+                    </p>
+                    <div class="bg-paper rounded-2xl p-6 border border-code-border overflow-x-auto">
+                        <div class="mermaid">
+graph LR
+    subgraph Input["Input Data"]
+        Traj["Trajectory<br/>(t, r, φ)"]
+        Theory["Theory<br/>(Metric g_μν)"]
+    end
+    
+    subgraph EnergyCalc["Energy Calculation at Each Point"]
+        Vel["Velocity Components<br/>u_t = dt/dτ<br/>u_φ = dφ/dτ"]
+        Metric["Metric Components<br/>g_tt, g_tp, g_pp"]
+        Energy["Energy<br/>E = -(g_tt·u_t + g_tp·u_φ)"]
+        Vel --> Energy
+        Metric --> Energy
+    end
+    
+    subgraph Analysis["Statistical Analysis"]
+        Mean["Mean Energy<br/>μ(E)"]
+        StdDev["Std Deviation<br/>σ(E)"]
+        Error["Relative Error<br/>ε = σ(E)/|μ(E)|"]
+        Mean --> Error
+        StdDev --> Error
+    end
+    
+    subgraph Comparison["Theory Comparison"]
+        T1["Theory A<br/>ε = 1e-7<br/>✓ PASS"]
+        T2["Theory B<br/>ε = 1e-4<br/>✓ PASS"]
+        T3["Theory C<br/>ε = 0.1<br/>✗ FAIL"]
+        Rank["Ranking:<br/>A > B > C"]
+        T1 --> Rank
+        T2 --> Rank
+        T3 --> Rank
+    end
+    
+    Traj --> Vel
+    Theory --> Metric
+    Energy --> Mean
+    Energy --> StdDev
+    Error --> T1
+    Error --> T2
+    Error --> T3
+    
+    classDef inputBox fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef calcBox fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef analysisBox fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef passBox fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    classDef failBox fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
+    
+    class Traj,Theory inputBox
+    class Vel,Metric,Energy calcBox
+    class Mean,StdDev,Error analysisBox
+    class T1,T2 passBox
+    class T3 failBox
+                                </div>
+                            </div>
+                    <p class="text-base text-muted mt-4 italic text-center">
+                        The validator continuously monitors conserved quantities throughout the trajectory, 
+                        ensuring numerical integration preserves the physics
+                    </p>
+                    </div>
+                    
+                <p class="font-serif text-lg italic text-center text-muted mt-12">
+                    This architecture ensures that every theory must not only be mathematically consistent 
+                    but also physically accurate—no theory graduates without passing all validators.
+                </p>
+                
+                <!-- Links to Documentation -->
+                <div class="text-center mt-16">
+                        <div class="inline-flex flex-col sm:flex-row gap-4">
+                        <a href="documentation.html" target="_blank" class="group inline-flex items-center space-x-3 bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            <span>Explore Full Documentation</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                        
+                        <a href="conservation_validation.html" target="_blank" class="group inline-flex items-center space-x-3 bg-white hover:bg-paper border-2 border-accent text-accent px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            <span>Conservation Validator Details</span>
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+        </section>
+        
+        <!-- Albert Philosophy Section -->
+        <section class="min-h-screen px-4 sm:px-6 lg:px-8 py-20 bg-gradient-to-b from-white to-paper">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-8">
+                    A Validation Framework for Fundamental Physics
+                </h2>
+                
+                <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-accent/10">
+                    <p class="text-xl font-serif text-ink leading-relaxed mb-6">
+                        AlphaFold succeeded by creating specialized environments for training on protein structures. 
+                        Albert provides analogous infrastructure for physics—leveraging PyTorch as the computational foundation. 
+                        Express your theory as code—metric tensors and field equations—and Albert's solvers transform these 
+                        mathematical laws into differentiable computations. This extends PyTorch into a platform for physics 
+                        simulation, where Lagrangians can be implemented as differentiable operations yielding executable dynamics.
+                    </p>
+                    
+                    <p class="text-xl font-serif text-ink leading-relaxed mb-6">
+                        The differentiable nature enables theories to learn from their own simulations through gradient-based 
+                        optimization. By providing this integrated infrastructure, Albert reduces the barrier to developing 
+                        physics learning systems, allowing researchers to focus on innovation rather than building validation 
+                        pipelines from scratch.
+                    </p>
+                    
+                    <div class="bg-paper rounded-2xl p-6 border border-code-border mt-8">
+                        <h3 class="text-2xl font-bold text-accent mb-4">Key Capabilities</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                <h4 class="font-bold text-ink mb-2">🔬 Differentiable Physics</h4>
+                                <p class="text-sm text-muted">
+                                    Full PyTorch integration enables automatic differentiation through physical simulations
+                                </p>
+                                        </div>
+                                        <div>
+                                <h4 class="font-bold text-ink mb-2">🎯 Validation First</h4>
+                                <p class="text-sm text-muted">
+                                    Automated testing against experimental data ensures physical accuracy
+                                </p>
+                                        </div>
+                                        <div>
+                                <h4 class="font-bold text-ink mb-2">🚀 Research Acceleration</h4>
+                                <p class="text-sm text-muted">
+                                    Pre-built infrastructure lets you focus on theory development, not tooling
+                                </p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-ink mb-2">🧬 ML-Ready</h4>
+                                                        <p class="text-sm text-muted">
+                                    Native support for gradient-based optimization and learning from simulations
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+        </section>
+    </main>
+
+    <script>
+        function copyHomepageCommand() {
+            const command = document.getElementById('homepage-install-command').textContent;
+            navigator.clipboard.writeText(command.trim());
+            
+            // Toggle icons
+                document.getElementById('homepage-copy-icon').classList.add('hidden');
+                document.getElementById('homepage-check-icon').classList.remove('hidden');
+                
+                // Show tooltip
+                const tooltip = document.getElementById('homepage-copy-tooltip');
+                tooltip.classList.remove('opacity-0');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('homepage-copy-icon').classList.remove('hidden');
+                    document.getElementById('homepage-check-icon').classList.add('hidden');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+        }
+
+        function copyModalCommand() {
+            const command = document.getElementById('modal-install-command').textContent;
+            navigator.clipboard.writeText(command.trim());
+            
+            // Toggle icons
+                document.getElementById('modal-copy-icon').classList.add('hidden');
+                document.getElementById('modal-check-icon').classList.remove('hidden');
+                
+                // Show tooltip
+                const tooltip = document.getElementById('modal-copy-tooltip');
+                tooltip.classList.remove('opacity-0');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('modal-copy-icon').classList.remove('hidden');
+                    document.getElementById('modal-check-icon').classList.add('hidden');
+                    tooltip.classList.add('opacity-0');
+                }, 2000);
+        }
+        
+        function openSetupModal() {
+            document.getElementById('setupModal').classList.remove('hidden');
+        }
+        
+        function closeSetupModal() {
+            document.getElementById('setupModal').classList.add('hidden');
+        }
+        
+        // Spacetime canvas animation
+        const canvas = document.getElementById('spacetimeCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Grid and particle animation code here
+            // ... (simplified for brevity)
+        }
+    </script>
+</body>
+</html> 

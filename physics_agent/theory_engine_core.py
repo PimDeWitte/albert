@@ -2795,6 +2795,7 @@ def process_and_evaluate_theory(
         test_mode=False,
         verbose=args.verbose,
         no_cache=args.no_cache,
+        show_pbar=True,  # Ensure progress bars are shown for each particle
         max_parallel_workers=getattr(args, 'max_parallel_workers', None)  # Add memory optimization
     )
     
@@ -2818,6 +2819,7 @@ def process_and_evaluate_theory(
             baseline_results=baseline_results if getattr(args, 'early_stop', False) else None,
             early_stopping=getattr(args, 'early_stop', False),
             test_mode=False,
+            show_pbar=True,  # Ensure progress bars are shown for quantum particles
             verbose=args.verbose,
             no_cache=True,  # Always disable cache for quantum to ensure we get different results
             max_parallel_workers=max_quantum_workers,  # Limit parallelism for memory
@@ -4591,6 +4593,7 @@ def main():
                     quantum_beta=0.0,
                     no_cache=no_cache,
                     verbose=False,
+                    show_pbar=True,  # Show progress bars for baseline computation
                     max_parallel_workers=getattr(args, 'max_parallel_workers', None)  # Add memory optimization
                 )
             finally:

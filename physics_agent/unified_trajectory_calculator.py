@@ -111,7 +111,8 @@ class UnifiedTrajectoryCalculator:
         
     def compute_classical_trajectory(self, initial_conditions: Dict, 
                                    time_steps: int = 1000,
-                                   step_size: float = 0.01) -> Dict:
+                                   step_size: float = 0.01,
+                                   particle_name: str = None) -> Dict:
         """
         <reason>chain: Compute classical geodesic trajectory</reason>
         
@@ -210,7 +211,18 @@ class UnifiedTrajectoryCalculator:
             # Other solvers expect SI units
             h = torch.tensor(step_size * self.time_scale, dtype=torch.float64)
         
-        for i in range(time_steps):
+        # <reason>chain: Add progress bar for trajectory integration</reason>
+        from tqdm import tqdm
+        pbar_desc = f"      {particle_name}" if particle_name else "      Computing trajectory"
+        pbar = tqdm(range(time_steps), 
+                   desc=pbar_desc,
+                   unit=' steps',
+                   disable=False,  # Always show progress
+                   leave=False,    # Don't leave the bar after completion
+                   ncols=100,      # Fixed width for consistency
+                   bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]')
+        
+        for i in pbar:
             # <reason>chain: Convert h to float for rk4_step</reason>
             h_float = h.item() if torch.is_tensor(h) else h
             y_new = self.classical_solver.rk4_step(y, h_float)
@@ -327,7 +339,7 @@ class UnifiedTrajectoryCalculator:
             print(f"    Time steps: {kwargs.get('time_steps', 'N/A')}, Step size: {kwargs.get('step_size', 'N/A')}")
             
             # Extract classical-specific kwargs - only pass what compute_classical_trajectory expects
-            allowed_classical_kwargs = {'time_steps', 'step_size'}
+            allowed_classical_kwargs = {'time_steps', 'step_size', 'particle_name'}
             classical_kwargs = {k: v for k, v in kwargs.items() 
                                if k in allowed_classical_kwargs}
             classical_results = self.compute_classical_trajectory(

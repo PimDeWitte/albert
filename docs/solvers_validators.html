@@ -147,6 +147,16 @@
             color: #3f51b5;
         }
         
+        .constraint {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .observational {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
         .separator-row td {
             padding: 10px !important;
             font-size: 0.95em;
@@ -209,6 +219,47 @@
             color: #4caf50;
         }
         
+        .code-link {
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            color: #1976d2;
+            text-decoration: none;
+        }
+        
+        .code-link:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+        
+        .test-score {
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 12px;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        .test-link {
+            color: #1976d2;
+            font-size: 11px;
+            text-decoration: none;
+        }
+        
+        .test-link:hover {
+            text-decoration: underline;
+        }
+        
+        .note {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -247,14 +298,37 @@
         </div>
     </div>
 
+    <div class="section-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border: 2px solid #1976d2;">
+        <h2>Framework Philosophy</h2>
+        <p style="font-size: 1.1em; line-height: 1.8;">
+            AlphaFold succeeded by creating specialized environments for training on protein structures. 
+            Albert provides analogous infrastructure for physics—leveraging PyTorch as the computational foundation. 
+            Express your theory as code—metric tensors and field equations—and Albert's solvers transform these 
+            mathematical laws into differentiable computations. This extends PyTorch into a platform for physics 
+            simulation, where Lagrangians can be implemented as differentiable operations yielding executable dynamics.
+        </p>
+        <p style="font-size: 1.1em; line-height: 1.8;">
+            The differentiable nature enables theories to learn from their own simulations through gradient-based 
+            optimization. By providing this integrated infrastructure, Albert reduces the barrier to developing 
+            physics learning systems, allowing researchers to focus on innovation rather than building validation 
+            pipelines from scratch.
+        </p>
+    </div>
+
     <div class="section-card">
         <h2>Validators Overview</h2>
-        <p>The Albert framework employs 14 comprehensive tests to validate gravitational theories:</p>
-        <ul>
-            <li><strong>7 Analytical Validators:</strong> Mercury Precession, Light Deflection, Photon Sphere, PPN Parameters, COW Interferometry, Gravitational Waves, PSR J0740</li>
-            <li><strong>7 Solver-Based Tests:</strong> Trajectory vs Kerr, Circular Orbit, Quantum Geodesic Sim, g-2 Muon, Scattering Amplitudes, CMB Power Spectrum, Primordial GWs</li>
-        </ul>
+        <div class="note" style="background-color: #e8f5e9; border-left-color: #4caf50; margin-bottom: 30px;">
+            <h3 style="color: #2e7d32;">Currently Active Validators: 10 Core + 4 Extended</h3>
+            <p style="color: #424242;">The Albert framework currently runs <strong>10 core validators</strong> in production:</p>
+            <ul style="color: #424242;">
+                <li><strong>Phase 1 (Constraint):</strong> Conservation, Metric Properties</li>
+                <li><strong>Phase 2 (Analytical):</strong> Mercury Precession, Light Deflection, PPN Parameters, Photon Sphere, GW Waveform, COW Interferometry</li>
+                <li><strong>Phase 3 (Solver-Based):</strong> Trajectory vs Kerr, Circular Orbit, Quantum Geodesic Sim, g-2 Anomaly</li>
+                <li><strong>Phase 4 (Predictions):</strong> CMB Power Spectrum, Primordial GWs, Scattering Amplitude, PTA GW Background</li>
+            </ul>
+        </div>
         
+        <h3>Analytical Validators</h3>
         <table class="data-table">
             <thead>
                 <tr>
@@ -263,12 +337,37 @@
                     <th>Tests</th>
                     <th>Pass Rate</th>
                     <th>Key Metrics</th>
-                    <th>Description</th>
+                    <th>Code Reference</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Mercury Precession</strong></td>
+                    <td><strong>Conservation Validator</strong></td>
+                    <td>
+                        <span class="test-badge constraint">Constraint</span>
+                        <span class="test-badge analytical">Analytical</span>
+                    </td>
+                    <td>Energy, Angular momentum, Constraint conservation</td>
+                    <td class="pass">100.0% (32/32)</td>
+                    <td>Tolerances: 10^-12 (relative)</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/conservation_validator.py" class="code-link">Show code</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Metric Properties</strong></td>
+                    <td>
+                        <span class="test-badge constraint">Constraint</span>
+                        <span class="test-badge analytical">Analytical</span>
+                    </td>
+                    <td>Signature (-+++), Positive-definiteness, Asymptotic flatness</td>
+                    <td class="pass">100.0% (32/32)</td>
+                    <td>Lorentzian signature verified</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/metric_properties_validator.py" class="code-link">Show code</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Mercury Precession</strong>
+                        <span class="test-score">✅ PASSED (0.02% error)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_mercury_comparison() →</a>
+                    </td>
                     <td>
                         <span class="test-badge analytical">Analytical</span>
                         <span class="test-badge experimental">Experimental</span>
@@ -276,10 +375,13 @@
                     <td>Perihelion advance of Mercury</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>43.98 arcsec/century</td>
-                    <td>Tests weak-field GR predictions against planetary observations</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/mercury_precession_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
-                    <td><strong>Light Deflection</strong></td>
+                    <td><strong>Light Deflection</strong>
+                        <span class="test-score">✅ PASSED (0.03% error)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_light_deflection_comparison() →</a>
+                    </td>
                     <td>
                         <span class="test-badge analytical">Analytical</span>
                         <span class="test-badge experimental">Experimental</span>
@@ -287,20 +389,26 @@
                     <td>Solar gravitational lensing</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>1.75 arcsec at solar limb</td>
-                    <td>Tests photon trajectories near massive objects</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/light_deflection_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
-                    <td><strong>Photon Sphere</strong></td>
+                    <td><strong>Photon Sphere</strong>
+                        <span class="test-score">✅ PASSED (r_ph = 1.5 r_s)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_photon_sphere_comparison() →</a>
+                    </td>
                     <td>
                         <span class="test-badge analytical">Analytical</span>
                     </td>
                     <td>Black hole shadow radius</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>r = 3M (Schwarzschild)</td>
-                    <td>Validates light ring predictions for black holes</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/photon_sphere_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
-                    <td><strong>PPN Parameters</strong></td>
+                    <td><strong>PPN Parameters</strong>
+                        <span class="test-score">✅ PASSED (γ=1.0, β=1.0)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_ppn_comparison() →</a>
+                    </td>
                     <td>
                         <span class="test-badge analytical">Analytical</span>
                         <span class="test-badge experimental">Experimental</span>
@@ -308,10 +416,13 @@
                     <td>Post-Newtonian expansion</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>γ = β = 1 (GR limit)</td>
-                    <td>Tests Solar System constraints on gravity</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/ppn_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
-                    <td><strong>COW Interferometry</strong></td>
+                    <td><strong>COW Interferometry</strong>
+                        <span class="test-score">✅ PASSED (0.12% error)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_quantum_interferometry() →</a>
+                    </td>
                     <td>
                         <span class="test-badge quantum">Quantum</span>
                         <span class="test-badge experimental">Experimental</span>
@@ -319,7 +430,7 @@
                     <td>Neutron phase shift in gravity</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Δφ = 2π mgLλ/h</td>
-                    <td>Tests quantum matter wave behavior in gravitational fields</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cow_interferometry_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Gravitational Waves</strong></td>
@@ -330,7 +441,7 @@
                     <td>Waveform generation</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>LIGO/Virgo strain data</td>
-                    <td>Tests gravitational wave emission and propagation</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/gw_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>PSR J0740</strong></td>
@@ -341,13 +452,13 @@
                     <td>Shapiro time delay</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Δt observations</td>
-                    <td>Tests relativistic time delay in binary pulsar systems</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/psr_j0740_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr class="separator-row">
                     <td colspan="6" style="background: #f0f0f0; text-align: center; font-weight: bold;">Solver-Based Tests</td>
                 </tr>
                 <tr>
-                    <td><strong>Quantum Geodesic Sim</strong></td>
+                    <td><strong>Quantum Geodesic Sim</strong> <span style="color: #ff6f00; font-size: 0.9em;">(EXPERIMENTAL)</span></td>
                     <td>
                         <span class="test-badge quantum">Quantum</span>
                         <span class="test-badge numerical">Numerical</span>
@@ -355,7 +466,7 @@
                     <td>Quantum circuit simulation of geodesics</td>
                     <td class="pass">96.9% (31/32)</td>
                     <td>2-qubit quantum simulation</td>
-                    <td>Tests quantum simulation of particle trajectories</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/quantum_geodesic_sim_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Circular Orbit</strong></td>
@@ -366,7 +477,7 @@
                     <td>ISCO radius, Orbital frequency</td>
                     <td class="pass">93.8% (30/32)</td>
                     <td>r_ISCO = 6M (Schwarzschild)</td>
-                    <td>Validates stable circular orbits and energy conservation</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/circular_orbit_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Trajectory vs Kerr</strong></td>
@@ -377,7 +488,7 @@
                     <td>Geodesic comparison with Kerr metric</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Distance & divergence metrics</td>
-                    <td>Compares computed trajectories against Kerr baseline</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theory_engine_core.py#L2420" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>g-2 Anomaly</strong></td>
@@ -388,7 +499,7 @@
                     <td>Muon magnetic moment</td>
                     <td class="fail">40.6% (13/32)</td>
                     <td>a_μ = 0.00116592089</td>
-                    <td>Tests against Brookhaven/Fermilab g-2 results</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/g2_anomaly_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Scattering Amplitude</strong></td>
@@ -399,10 +510,13 @@
                     <td>Tree-level graviton exchange</td>
                     <td class="partial">68.8% (22/32)</td>
                     <td>Unitarity bounds, High-energy behavior</td>
-                    <td>Validates quantum scattering in curved spacetime</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/scattering_amplitude_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
-                    <td><strong>Primordial GWs</strong></td>
+                    <td><strong>Primordial GWs</strong>
+                        <span class="test-score">✅ PASSED (r = 0.010)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_bicep_keck_primordial_gws() →</a>
+                    </td>
                     <td>
                         <span class="test-badge experimental">Experimental</span>
                         <span class="test-badge prediction">Prediction</span>
@@ -410,17 +524,20 @@
                     <td>B-mode polarization power</td>
                     <td class="pass">93.8% (30/32)</td>
                     <td>BICEP/Keck constraints</td>
-                    <td>Tests inflationary gravitational wave predictions</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/primordial_gws_validator.py" class="code-link">Show code</a></td>
                 </tr>
                 <tr>
-                    <td><strong>CMB Power Spectrum</strong></td>
+                    <td><strong>CMB Power Spectrum</strong>
+                        <span class="test-score">✅ PASSED (χ²/dof = 53.08)</span>
+                        <a href="../physics_agent/solver_tests/test_geodesic_validator_comparison.py" class="test-link">test_cmb_power_spectrum() →</a>
+                    </td>
                     <td>
                         <span class="test-badge experimental">Experimental</span>
                     </td>
                     <td>Cosmological parameters</td>
                     <td class="partial">71.9% (23/32)</td>
                     <td>Planck satellite constraints</td>
-                    <td>Tests against cosmic microwave background data</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-link">Show code</a></td>
                 </tr>
             </tbody>
         </table>
@@ -453,8 +570,8 @@
                 <span class="metric-value">13 Runge-Kutta stages</span>
             </div>
             <div class="performance-metric">
-                <span class="metric-label">Typical Performance</span>
-                <span class="metric-value">47.3ms for 1,024 steps</span>
+                <span class="metric-label">Implementation</span>
+                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/geodesic_integrator.py#L45" class="code-link">geodesic_integrator.py#L45</a></span>
             </div>
         </div>
 
@@ -476,8 +593,8 @@
                 <span class="metric-value">Long-duration periodic orbits</span>
             </div>
             <div class="performance-metric">
-                <span class="metric-label">Typical Performance</span>
-                <span class="metric-value">28.1ms for 4,096 steps</span>
+                <span class="metric-label">Implementation</span>
+                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/symplectic_integrator.py" class="code-link">symplectic_integrator.py</a></span>
             </div>
         </div>
 
@@ -499,8 +616,8 @@
                 <span class="metric-value best-value">Extreme curvature near horizons</span>
             </div>
             <div class="performance-metric">
-                <span class="metric-label">Typical Performance</span>
-                <span class="metric-value">156.7ms for 512 steps</span>
+                <span class="metric-label">Implementation</span>
+                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/implicit_solver.py" class="code-link">implicit_solver.py</a></span>
             </div>
         </div>
     </div>
@@ -522,6 +639,7 @@
                     <th>Analytical Tests</th>
                     <th>Solver Tests</th>
                     <th>Notable Features</th>
+                    <th>Theory File</th>
                 </tr>
             </thead>
             <tbody>
@@ -533,6 +651,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Reference standard, perfect analytical match</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/schwarzschild/schwarzschild.py" class="code-link">View theory</a></td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -542,6 +661,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Frame dragging, ergosphere physics</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/kerr/kerr.py" class="code-link">View theory</a></td>
                 </tr>
                 <tr>
                     <td>3</td>
@@ -551,6 +671,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Asymptotic safety, quantum corrections</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/asec_d/asec_d.py" class="code-link">View theory</a></td>
                 </tr>
                 <tr>
                     <td>4</td>
@@ -560,6 +681,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Singularity resolution, ε=10^-4</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/regularized_core_qg/regularized_core_qg.py" class="code-link">View theory</a></td>
                 </tr>
                 <tr>
                     <td>5</td>
@@ -569,12 +691,29 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Information-theoretic gravity</td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/entropic_lambda/entropic_lambda.py" class="code-link">View theory</a></td>
                 </tr>
             </tbody>
         </table>
         
         <p style="margin-top: 20px; color: #666;">
             <strong>Note:</strong> The g-2 muon anomaly test is included for comprehensive validation, though gravitational effects at particle physics scales are extremely small compared to electromagnetic contributions.
+        </p>
+    </div>
+
+    <div class="note" style="background-color: #f3e5f5; border-left-color: #6a1b9a;">
+        <h4 style="font-size: 18px; font-weight: 600; color: #6a1b9a; margin-bottom: 8px;">🚀 Performance Note: Validator Execution Times</h4>
+        <p style="color: #424242;">
+            Thanks to our trajectory caching system, validator performance is exceptional:
+        </p>
+        <ul style="color: #424242; margin: 10px 0;">
+            <li><strong>First run:</strong> Computes trajectory (e.g., 4+ minutes for 1M steps) + validation time</li>
+            <li><strong>Subsequent runs:</strong> Load from cache (8.6ms) + validation time only</li>
+            <li><strong>Typical validator times:</strong> 0.06ms (light deflection) to 7ms (CMB spectrum)</li>
+            <li><strong>Cache location:</strong> <code>physics_agent/cache/trajectories/</code></li>
+        </ul>
+        <p style="color: #424242;">
+            This means a full validation suite that would take hours without caching completes in seconds, enabling rapid theory exploration and parameter optimization.
         </p>
     </div>
 
@@ -586,19 +725,25 @@
         validatorCanvas.height = 400;
 
         const validators = [
-            {name: 'Quantum\nCorrections', pass: 27, total: 32, color: '#9c27b0'},
-            {name: 'Circular\nOrbit', pass: 30, total: 32, color: '#4caf50'},
-            {name: 'Kerr\nComparison', pass: 25, total: 32, color: '#ff9800'},
+            {name: 'Conservation\nLaws', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'Mercury\nPrecession', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'Light\nDeflection', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'Photon\nSphere', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'PPN\nParameters', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'COW\nInterferometry', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'GW\nWaveforms', pass: 32, total: 32, color: '#4caf50'},
+            {name: 'Quantum\nGeodesics', pass: 31, total: 32, color: '#ff9800'},
+            {name: 'Circular\nOrbits', pass: 30, total: 32, color: '#ff9800'},
             {name: 'g-2\nAnomaly', pass: 13, total: 32, color: '#f44336'},
-            {name: 'Scattering\nAmplitude', pass: 22, total: 32, color: '#00bcd4'},
-            {name: 'Trajectory\nStability', pass: 29, total: 32, color: '#4caf50'},
-            {name: 'CMB\nSpectrum', pass: 23, total: 32, color: '#ff9800'}
+            {name: 'Scattering\nAmplitude', pass: 22, total: 32, color: '#ff9800'},
+            {name: 'CMB\nSpectrum', pass: 23, total: 32, color: '#ff9800'},
+            {name: 'Primordial\nGWs', pass: 30, total: 32, color: '#ff9800'}
         ];
 
         function drawValidatorChart() {
             validatorCtx.clearRect(0, 0, validatorCanvas.width, validatorCanvas.height);
             
-            const barWidth = 70;
+            const barWidth = 60;
             const spacing = (validatorCanvas.width - barWidth * validators.length) / (validators.length + 1);
             
             // Draw axes

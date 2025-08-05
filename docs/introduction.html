@@ -30,15 +30,6 @@
             margin-bottom: 30px;
         }
         
-        .hero-section {
-            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 12px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
         .section-card {
             background: white;
             padding: 30px;
@@ -57,6 +48,7 @@
             font-size: 14px;
             line-height: 1.5;
             margin: 15px 0;
+            white-space: pre-wrap;
         }
         
         .keyword { color: #569cd6; }
@@ -155,90 +147,75 @@
             border-radius: 4px;
             margin: 20px 0;
         }
-        
-        .capabilities-box {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .capabilities-box ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .capabilities-box li {
-            padding: 8px 0;
-            padding-left: 25px;
-            position: relative;
-        }
-        
-        .capabilities-box li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #4caf50;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <h1>Albert Framework</h1>
-    <p class="subtitle">A Differential PyTorch Physics Engine for Testing Gravitational Theories</p>
+    <p class="subtitle">A Validation Framework for Fundamental Physics</p>
     
-    <div class="hero-section">
-        <h2 style="color: white; margin-top: 0;">What is Albert?</h2>
-        <p>Albert is a differential physics research engine built on PyTorch that enables researchers to test and validate physical theories against experimental data. It simulates particle trajectories in curved spacetime with high precision and provides comprehensive validation against experimental tests including gravitational waves, solar system dynamics, and precision measurements.</p>
-        
-        <div class="capabilities-box" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
-            <h3 style="color: white;">Core Capabilities</h3>
-            <ul style="color: white;">
-                <li>Geodesic integration in arbitrary curved spacetimes</li>
-                <li>Multiple gravitational theories including GR variants and alternative formulations</li>
-                <li>Multi-particle simulations (electron, muon, photon, neutrino)</li>
-                <li>Automatic caching with up to 29,000× speedup</li>
-                <li>Comprehensive validation suite with analytical and numerical tests</li>
-                <li>WebGPU-accelerated 3D visualization</li>
-            </ul>
-        </div>
-    </div>
-
     <div class="section-card">
         <h2>Quick Start</h2>
         
         <div class="quickstart-steps">
             <div class="step">
-                <h3>Clone the Repository</h3>
+                <h3>One-line Installation</h3>
                 <div class="code-block">
-<span class="comment"># Clone Albert</span>
-git clone https://github.com/your-org/albert.git
+<span class="comment"># Download and install Albert CLI</span>
+curl -fsSL https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/download_cli.sh | bash</div>
+        </div>
+        
+        <div class="step">
+            <h3>Clone and Setup</h3>
+            <div class="code-block">
+<span class="comment"># Clone the repository</span>
+git clone https://github.com/pimdewitte/albert.git
 cd albert
 
-<span class="comment"># Install dependencies</span>
-pip install -r requirements.txt</div>
-            </div>
-            
-            <div class="step">
-                <h3>Run a Simple Test</h3>
-                <div class="code-block">
-<span class="comment"># Test Schwarzschild metric with default parameters</span>
-python -m physics_agent.theory_engine_core --theories schwarzschild
-
-<span class="comment"># Test multiple theories</span>
-python -m physics_agent.theory_engine_core --theories schwarzschild kerr modified_gravity</div>
-            </div>
-            
-            <div class="step">
-                <h3>Run Comprehensive Validation</h3>
-                <div class="code-block">
-<span class="comment"># Full validation suite with all theories</span>
-python -m physics_agent.evaluation
-
-<span class="comment"># Test specific category</span>
-python -m physics_agent.evaluation --category quantum</div>
-            </div>
+<span class="comment"># Run setup script</span>
+./setup_unified.sh</div>
         </div>
+        
+        <div class="step">
+            <h3>Run Simulations</h3>
+            <div class="code-block">
+<span class="comment"># Run all theories with default settings</span>
+albert run
+
+<span class="comment"># Run specific theories</span>
+albert run --theories schwarzschild kerr
+
+<span class="comment"># Run with options</span>
+albert run --max-steps 100000
+albert run --black-hole-preset stellar_mass
+albert run --particles electron photon</div>
+        </div>
+        
+        <div class="step">
+            <h3>Additional Commands</h3>
+            <div class="code-block">
+<span class="comment"># Configure Albert (API keys, etc.)</span>
+albert setup
+
+<span class="comment"># Discover new theories (EXPERIMENTAL - see warning above)</span>
+albert discover --initial "unified field theory"
+
+<span class="comment"># Make albert available globally</span>
+sudo ln -s $(pwd)/albert /usr/local/bin/albert</div>
+        </div>
+    </div>
+
+    <div class="warning-box" style="background: #fff3cd; border: 2px solid #ff9800; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+        <h2 style="color: #ff6f00; margin-top: 0;">⚠️ Experimental Features Warning</h2>
+        <p style="color: #856404; font-weight: 500; margin-bottom: 15px;">
+            The following features are <strong>COMPLETELY EXPERIMENTAL</strong> and should be used with caution:
+        </p>
+        <ul style="color: #856404; margin-bottom: 10px;">
+            <li><strong>Quantum Features (PennyLane Integration):</strong> All quantum computing features, including quantum geodesic simulations, quantum circuit implementations, and quantum corrections are highly experimental. Results may be unstable and should not be relied upon for production use.</li>
+            <li><strong>Self-Discovery System:</strong> The automated theory discovery system using genetic algorithms and machine learning is in early experimental stages. Generated theories may be physically invalid or numerically unstable.</li>
+        </ul>
+        <p style="color: #856404; margin-top: 15px; font-style: italic;">
+            These features are provided for research purposes only. They may change significantly or be removed in future versions without notice.
+        </p>
     </div>
 
     <div class="section-card">
@@ -339,7 +316,7 @@ python -m physics_agent.evaluation --category quantum</div>
                     <td><code>--category</code></td>
                     <td>str</td>
                     <td>all</td>
-                    <td>Theory category: baseline, classical, quantum, emergent</td>
+                    <td>Theory category: baseline, classical, quantum <span style="color: #ff6f00;">(experimental)</span>, emergent</td>
                 </tr>
                 <tr>
                     <td><code>--validators</code></td>
@@ -382,7 +359,7 @@ python -m physics_agent.evaluation --category quantum</div>
                     <td><code>primordial_mini</code> <span style="color: #4caf50; font-weight: bold;">(default)</span></td>
                     <td>10^15 kg<br/><small>(~5×10^-16 M☉)</small></td>
                     <td>1.5 pm<br/><small>(subatomic scale)</small></td>
-                    <td>Quantum gravity research, numerically stable</td>
+                    <td>Quantum gravity research <span style="color: #ff6f00;">(experimental)</span>, numerically stable</td>
                     <td><code>--black-hole-preset primordial_mini</code></td>
                 </tr>
                 <tr>
@@ -396,7 +373,7 @@ python -m physics_agent.evaluation --category quantum</div>
                     <td><code>laboratory_micro</code></td>
                     <td>10^8 kg<br/><small>(~5×10^-23 M☉)</small></td>
                     <td>1.5×10^-19 m</td>
-                    <td>Extreme quantum gravity regime</td>
+                    <td>Extreme quantum gravity regime <span style="color: #ff6f00;">(experimental)</span></td>
                     <td><code>--black-hole-preset laboratory_micro</code></td>
                 </tr>
                 <tr>
@@ -547,7 +524,7 @@ results = engine.run_multi_particle_trajectories(
         <div class="feature-grid">
             <div class="feature-card">
                 <h3>Theory Engine Core</h3>
-                <p>Central orchestrator that manages theory evaluation, trajectory computation, and validation workflows. Handles multi-particle simulations and quantum corrections.</p>
+                <p>Central orchestrator that manages theory evaluation, trajectory computation, and validation workflows. Handles multi-particle simulations and quantum corrections <span style="color: #ff6f00;">(quantum features are experimental)</span>.</p>
             </div>
             
             <div class="feature-card">
@@ -570,9 +547,9 @@ results = engine.run_multi_particle_trajectories(
                 <p>WebGPU-accelerated 3D trajectory viewers, performance dashboards, and interactive analysis tools for exploring results.</p>
             </div>
             
-            <div class="feature-card">
-                <h3>Theory Discovery</h3>
-                <p>Automated system for generating and testing novel gravitational theories using genetic algorithms and machine learning.</p>
+            <div class="feature-card" style="border-left-color: #ff9800;">
+                <h3>Theory Discovery <span style="color: #ff6f00; font-size: 0.8em;">(EXPERIMENTAL)</span></h3>
+                <p>Automated system for generating and testing novel gravitational theories using genetic algorithms and machine learning. <strong style="color: #ff6f00;">This feature is completely experimental and results should be carefully validated.</strong></p>
             </div>
         </div>
     </div>
