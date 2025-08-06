@@ -44,10 +44,120 @@
         .legend { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; }
         .legend h4 { margin-top: 0; color: #34495e; }
         .legend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        /* Enhanced mobile responsive styles */
         @media (max-width: 768px) {
-            .container { padding: 15px; }
-            table { font-size: 0.9em; }
+            body { padding: 10px; }
+            .container { padding: 15px; max-width: 100%; }
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.4em; }
+            
+            /* Summary grid adjustments */
+            .summary-grid { 
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+                gap: 15px; 
+                margin-bottom: 30px; 
+            }
+            .summary-card { padding: 15px; }
+            .summary-card .value { font-size: 2em; }
+            .summary-card h3 { font-size: 0.8em; }
+            
+            /* Table adjustments */
+            table { 
+                font-size: 0.85em; 
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
             th, td { padding: 8px; }
+            th { font-size: 0.85em; }
+            
+            /* Test grid adjustments */
+            .test-grid { 
+                grid-template-columns: 1fr; 
+                gap: 10px; 
+            }
+            .test-result { padding: 12px; }
+            
+            /* Theory detail adjustments */
+            .theory-detail { padding: 15px; margin-bottom: 15px; }
+            
+            /* Button adjustments */
+            .view-trajectory-btn { 
+                padding: 6px 10px; 
+                font-size: 11px; 
+            }
+            
+            /* Legend grid adjustments */
+            .legend-grid { 
+                grid-template-columns: 1fr; 
+                gap: 10px; 
+            }
+            
+            /* Tooltip adjustments */
+            .tooltiptext { 
+                width: 200px; 
+                margin-left: -100px; 
+                font-size: 11px; 
+            }
+            
+            /* Log viewer adjustments */
+            .log-viewer { 
+                padding: 15px; 
+                font-size: 11px; 
+                max-height: 300px; 
+            }
+            
+            /* Popup adjustments */
+            .trajectory-popup { 
+                padding: 15px; 
+                max-width: 95vw; 
+                max-height: 95vh; 
+            }
+            
+            /* Distance & divergence info */
+            .distance-divergence { font-size: 0.75em; }
+            
+            /* Note box adjustments */
+            .note-box { padding: 12px; margin: 15px 0; }
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 5px; }
+            .container { padding: 10px; }
+            h1 { font-size: 1.5em; }
+            h2 { font-size: 1.2em; }
+            
+            /* Summary grid for small screens */
+            .summary-grid { 
+                grid-template-columns: 1fr; 
+                gap: 10px; 
+            }
+            .summary-card { padding: 12px; }
+            .summary-card .value { font-size: 1.8em; }
+            
+            /* Table for small screens */
+            table { font-size: 0.75em; }
+            th, td { padding: 6px; }
+            
+            /* Buttons for small screens */
+            .view-trajectory-btn { 
+                padding: 4px 8px; 
+                font-size: 10px; 
+            }
+            
+            /* Test results for small screens */
+            .test-result { padding: 10px; }
+            .test-details { font-size: 0.85em; }
+            
+            /* Log viewer for small screens */
+            .log-viewer { 
+                padding: 10px; 
+                font-size: 10px; 
+                max-height: 250px; 
+            }
+            
+            /* Hide tooltips on very small screens */
+            .tooltip:hover .tooltiptext { visibility: hidden; }
         }
         .view-trajectory-btn { background: #4a9eff; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .view-trajectory-btn:hover { background: #357abd; }

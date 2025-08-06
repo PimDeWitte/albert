@@ -95,15 +95,50 @@
             font-style: italic;
         }
         
-        /* Responsive adjustments */
+        /* Mobile improvements */
         @media (max-width: 768px) {
+            .header {
+                padding: 15px 15px 0 15px;
+            }
+            
             .header h1 {
                 font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+                padding-bottom: 2px;
+            }
+            
+            /* Hide scrollbar but keep functionality */
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .tabs {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
             }
             
             .tab {
                 padding: 10px 16px;
                 font-size: 14px;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 13px;
             }
         }
     </style>
@@ -135,7 +170,7 @@
         </div>
         
         <div id="datasets-container" class="iframe-container">
-            <iframe data-src="dataset_table.html"></iframe>
+            <iframe data-src="subdocs/dataset_table.html"></iframe>
         </div>
         
         <div id="validators-container" class="iframe-container">
@@ -149,7 +184,7 @@
     
     <script>
         // Tab switching functionality
-        function switchTab(tabName) {
+        function switchTab(tabName, updateUrl = true) {
             // Update active tab
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.classList.remove('active'));
@@ -163,18 +198,47 @@
             // Update active content
             const containers = document.querySelectorAll('.iframe-container');
             containers.forEach(container => container.classList.remove('active'));
-            document.getElementById(`${tabName}-container`).classList.add('active');
             
-            // Lazy load iframe if not already loaded
-            const iframe = document.querySelector(`#${tabName}-container iframe`);
-            if (iframe.hasAttribute('data-src') && !iframe.src) {
-                iframe.src = iframe.getAttribute('data-src');
-                iframe.removeAttribute('data-src');
+            const targetContainer = document.getElementById(`${tabName}-container`);
+            if (targetContainer) {
+                targetContainer.classList.add('active');
+                
+                // Lazy load iframe if not already loaded
+                const iframe = targetContainer.querySelector('iframe');
+                if (iframe && iframe.hasAttribute('data-src') && !iframe.src) {
+                    iframe.src = iframe.getAttribute('data-src');
+                    iframe.removeAttribute('data-src');
+                }
+                
+                // Update URL with the current tab
+                if (updateUrl && window.history.pushState) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', tabName);
+                    window.history.pushState({tab: tabName}, '', url);
+                }
             }
         }
         
+        // Get tab from URL parameter
+        function getTabFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('tab');
+        }
+        
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            const tabName = event.state?.tab || getTabFromUrl() || 'latest-report';
+            switchTab(tabName, false);
+        });
+        
         // Handle tab button clicks
         document.addEventListener('DOMContentLoaded', function() {
+            // Check URL for initial tab
+            const initialTab = getTabFromUrl();
+            if (initialTab) {
+                switchTab(initialTab, false);
+            }
+            
             const tabButtons = document.querySelectorAll('.tab');
             tabButtons.forEach((button) => {
                 button.addEventListener('click', function() {

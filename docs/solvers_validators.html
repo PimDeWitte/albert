@@ -269,6 +269,154 @@
         .updating {
             animation: pulse 2s infinite;
         }
+        
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            h3 {
+                font-size: 1.2em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .stats-overview {
+                padding: 25px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 20px;
+            }
+            
+            .stat-number {
+                font-size: 2em;
+            }
+            
+            .stat-label {
+                font-size: 0.9em;
+            }
+            
+            .section-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .data-table {
+                font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 8px;
+                min-width: 100px;
+            }
+            
+            .data-table tbody {
+                display: table;
+                width: 100%;
+            }
+            
+            .test-badge {
+                font-size: 0.75em;
+                padding: 3px 8px;
+                margin-right: 3px;
+                margin-bottom: 3px;
+                display: inline-block;
+            }
+            
+            .equation {
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .visualization-container {
+                padding: 20px;
+            }
+            
+            #validator-performance, #solver-comparison {
+                height: 300px;
+            }
+            
+            .method-card {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .performance-metric {
+                font-size: 13px;
+                padding: 6px 0;
+            }
+            
+            .code-link {
+                font-size: 11px;
+                padding: 3px 6px;
+            }
+            
+            .note {
+                padding: 12px;
+                margin: 15px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            h2 {
+                font-size: 1.2em;
+            }
+            
+            .stats-overview {
+                padding: 20px;
+            }
+            
+            .stat-number {
+                font-size: 1.5em;
+            }
+            
+            .section-card, .visualization-container {
+                padding: 15px;
+            }
+            
+            .data-table {
+                font-size: 11px;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 6px;
+                min-width: 80px;
+            }
+            
+            #validator-performance, #solver-comparison {
+                height: 250px;
+            }
+            
+            .method-card h4 {
+                font-size: 1em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -350,7 +498,7 @@
                     <td>Energy, Angular momentum, Constraint conservation</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Tolerances: 10^-12 (relative)</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/conservation_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/conservation_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Metric Properties</strong></td>
@@ -361,7 +509,7 @@
                     <td>Signature (-+++), Positive-definiteness, Asymptotic flatness</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Lorentzian signature verified</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/metric_properties_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/metric_properties_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Mercury Precession</strong>
@@ -375,7 +523,7 @@
                     <td>Perihelion advance of Mercury</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>43.98 arcsec/century</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/mercury_precession_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/mercury_precession_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Light Deflection</strong>
@@ -389,7 +537,7 @@
                     <td>Solar gravitational lensing</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>1.75 arcsec at solar limb</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/light_deflection_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/light_deflection_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Photon Sphere</strong>
@@ -402,7 +550,7 @@
                     <td>Black hole shadow radius</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>r = 3M (Schwarzschild)</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/photon_sphere_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/photon_sphere_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>PPN Parameters</strong>
@@ -416,7 +564,7 @@
                     <td>Post-Newtonian expansion</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>γ = β = 1 (GR limit)</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/ppn_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/ppn_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>COW Interferometry</strong>
@@ -430,7 +578,7 @@
                     <td>Neutron phase shift in gravity</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Δφ = 2π mgLλ/h</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cow_interferometry_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cow_interferometry_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Gravitational Waves</strong></td>
@@ -441,7 +589,7 @@
                     <td>Waveform generation</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>LIGO/Virgo strain data</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/gw_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/gw_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>PSR J0740</strong></td>
@@ -452,7 +600,7 @@
                     <td>Shapiro time delay</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Δt observations</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/psr_j0740_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/psr_j0740_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr class="separator-row">
                     <td colspan="6" style="background: #f0f0f0; text-align: center; font-weight: bold;">Solver-Based Tests</td>
@@ -466,7 +614,7 @@
                     <td>Quantum circuit simulation of geodesics</td>
                     <td class="pass">96.9% (31/32)</td>
                     <td>2-qubit quantum simulation</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/quantum_geodesic_sim_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/quantum_geodesic_sim_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Circular Orbit</strong></td>
@@ -477,7 +625,7 @@
                     <td>ISCO radius, Orbital frequency</td>
                     <td class="pass">93.8% (30/32)</td>
                     <td>r_ISCO = 6M (Schwarzschild)</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/circular_orbit_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/circular_orbit_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Trajectory vs Kerr</strong></td>
@@ -488,7 +636,7 @@
                     <td>Geodesic comparison with Kerr metric</td>
                     <td class="pass">100.0% (32/32)</td>
                     <td>Distance & divergence metrics</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theory_engine_core.py#L2420" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theory_engine_core.py#L2420" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>g-2 Anomaly</strong></td>
@@ -499,7 +647,7 @@
                     <td>Muon magnetic moment</td>
                     <td class="fail">40.6% (13/32)</td>
                     <td>a_μ = 0.00116592089</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/g2_anomaly_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/g2_anomaly_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Scattering Amplitude</strong></td>
@@ -510,7 +658,7 @@
                     <td>Tree-level graviton exchange</td>
                     <td class="partial">68.8% (22/32)</td>
                     <td>Unitarity bounds, High-energy behavior</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/scattering_amplitude_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/scattering_amplitude_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>Primordial GWs</strong>
@@ -524,7 +672,7 @@
                     <td>B-mode polarization power</td>
                     <td class="pass">93.8% (30/32)</td>
                     <td>BICEP/Keck constraints</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/primordial_gws_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/primordial_gws_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
                 <tr>
                     <td><strong>CMB Power Spectrum</strong>
@@ -537,7 +685,7 @@
                     <td>Cosmological parameters</td>
                     <td class="partial">71.9% (23/32)</td>
                     <td>Planck satellite constraints</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-link">Show code</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/validations/cmb_power_spectrum_validator.py" class="code-link" target="_blank">Show code</a></td>
                 </tr>
             </tbody>
         </table>
@@ -571,7 +719,7 @@
             </div>
             <div class="performance-metric">
                 <span class="metric-label">Implementation</span>
-                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/geodesic_integrator.py#L45" class="code-link">geodesic_integrator.py#L45</a></span>
+                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/geodesic_integrator.py#L45" class="code-link" target="_blank">geodesic_integrator.py#L45</a></span>
             </div>
         </div>
 
@@ -594,7 +742,7 @@
             </div>
             <div class="performance-metric">
                 <span class="metric-label">Implementation</span>
-                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/symplectic_integrator.py" class="code-link">symplectic_integrator.py</a></span>
+                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/symplectic_integrator.py" class="code-link" target="_blank">symplectic_integrator.py</a></span>
             </div>
         </div>
 
@@ -617,7 +765,7 @@
             </div>
             <div class="performance-metric">
                 <span class="metric-label">Implementation</span>
-                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/implicit_solver.py" class="code-link">implicit_solver.py</a></span>
+                <span class="metric-value"><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/implicit_solver.py" class="code-link" target="_blank">implicit_solver.py</a></span>
             </div>
         </div>
     </div>
@@ -648,7 +796,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Reference standard, perfect analytical match</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/schwarzschild/schwarzschild.py" class="code-link">View theory</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/schwarzschild/schwarzschild.py" class="code-link" target="_blank">View theory</a></td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -658,7 +806,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Frame dragging, ergosphere physics</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/kerr/kerr.py" class="code-link">View theory</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/kerr/kerr.py" class="code-link" target="_blank">View theory</a></td>
                 </tr>
                 <tr>
                     <td>3</td>
@@ -668,7 +816,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Asymptotic safety, quantum corrections</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/asec_d/asec_d.py" class="code-link">View theory</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/asec_d/asec_d.py" class="code-link" target="_blank">View theory</a></td>
                 </tr>
                 <tr>
                     <td>4</td>
@@ -678,7 +826,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Singularity resolution, ε=10^-4</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/regularized_core_qg/regularized_core_qg.py" class="code-link">View theory</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/regularized_core_qg/regularized_core_qg.py" class="code-link" target="_blank">View theory</a></td>
                 </tr>
                 <tr>
                     <td>5</td>
@@ -688,7 +836,7 @@
                     <td>7/7 ✓</td>
                     <td>6/7 (failed: g-2)</td>
                     <td>Information-theoretic gravity</td>
-                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/entropic_lambda/entropic_lambda.py" class="code-link">View theory</a></td>
+                    <td><a href="https://github.com/PimDeWitte/albert/blob/main/physics_agent/theories/entropic_lambda/entropic_lambda.py" class="code-link" target="_blank">View theory</a></td>
                 </tr>
             </tbody>
         </table>

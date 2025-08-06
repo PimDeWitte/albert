@@ -147,6 +147,145 @@
             border-radius: 4px;
             margin: 20px 0;
         }
+        
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            h3 {
+                font-size: 1.2em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .section-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .code-block {
+                padding: 15px;
+                font-size: 12px;
+                overflow-x: auto;
+                white-space: pre;
+            }
+            
+            .args-table {
+                font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .args-table th, .args-table td {
+                padding: 8px;
+                min-width: 80px;
+            }
+            
+            .args-table tbody {
+                display: table;
+                width: 100%;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .quickstart-steps {
+                margin-top: 15px;
+            }
+            
+            .step {
+                padding: 15px;
+                padding-left: 50px;
+                margin-bottom: 10px;
+            }
+            
+            .step::before {
+                left: 15px;
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
+            
+            .highlight {
+                padding: 12px;
+                margin: 15px 0;
+            }
+            
+            #system-diagram {
+                height: 400px;
+                margin-top: 15px;
+            }
+            
+            .warning-box {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .warning-box h2 {
+                font-size: 1.3em;
+            }
+            
+            .warning-box p, .warning-box li {
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            h2 {
+                font-size: 1.2em;
+            }
+            
+            .section-card {
+                padding: 15px;
+            }
+            
+            .code-block {
+                padding: 10px;
+                font-size: 11px;
+            }
+            
+            .args-table {
+                font-size: 11px;
+            }
+            
+            .args-table th, .args-table td {
+                padding: 6px;
+            }
+            
+            #system-diagram {
+                height: 300px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -602,28 +741,59 @@ results = engine.run_multi_particle_trajectories(
         // System architecture diagram
         const canvas = document.getElementById('system-diagram');
         const ctx = canvas.getContext('2d');
-        canvas.width = canvas.offsetWidth;
-        canvas.height = 600;
+        
+        // Responsive canvas sizing
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = window.innerWidth > 768 ? 600 : (window.innerWidth > 480 ? 400 : 300);
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Reset particles to prevent animation issues on resize
+            particles.length = 0;
+            connections.forEach((conn, index) => {
+                setTimeout(() => {
+                    particles.push(new DataParticle(conn));
+                }, index * 200);
+            });
+        });
 
-        // Define system components
-        const components = [
-            // Input layer
-            {name: 'Theory Definitions', x: 100, y: 100, width: 180, height: 60, color: '#4caf50', layer: 'input'},
-            {name: 'Experimental Data', x: 100, y: 200, width: 180, height: 60, color: '#4caf50', layer: 'input'},
-            {name: 'Initial Conditions', x: 100, y: 300, width: 180, height: 60, color: '#4caf50', layer: 'input'},
+        // Define system components with responsive scaling
+        function getScaledComponents() {
+            const scale = canvas.width / 1260;
+            const vScale = canvas.height / 600;
             
-            // Core engine
-            {name: 'Theory Engine', x: 400, y: 200, width: 200, height: 80, color: '#1976d2', layer: 'core'},
+            const baseComponents = [
+                // Input layer
+                {name: 'Theory Definitions', x: 100, y: 100, width: 180, height: 60, color: '#4caf50', layer: 'input'},
+                {name: 'Experimental Data', x: 100, y: 200, width: 180, height: 60, color: '#4caf50', layer: 'input'},
+                {name: 'Initial Conditions', x: 100, y: 300, width: 180, height: 60, color: '#4caf50', layer: 'input'},
+                
+                // Core engine
+                {name: 'Theory Engine', x: 400, y: 200, width: 200, height: 80, color: '#1976d2', layer: 'core'},
+                
+                // Processing
+                {name: 'Geodesic Integrator', x: 700, y: 100, width: 180, height: 60, color: '#ff9800', layer: 'process'},
+                {name: 'Validator Suite', x: 700, y: 200, width: 180, height: 60, color: '#ff9800', layer: 'process'},
+                {name: 'Cache System', x: 700, y: 300, width: 180, height: 60, color: '#ff9800', layer: 'process'},
+                
+                // Output
+                {name: 'Results & Scores', x: 1000, y: 150, width: 160, height: 60, color: '#9c27b0', layer: 'output'},
+                {name: 'Visualizations', x: 1000, y: 250, width: 160, height: 60, color: '#9c27b0', layer: 'output'}
+            ];
             
-            // Processing
-            {name: 'Geodesic Integrator', x: 700, y: 100, width: 180, height: 60, color: '#ff9800', layer: 'process'},
-            {name: 'Validator Suite', x: 700, y: 200, width: 180, height: 60, color: '#ff9800', layer: 'process'},
-            {name: 'Cache System', x: 700, y: 300, width: 180, height: 60, color: '#ff9800', layer: 'process'},
-            
-            // Output
-            {name: 'Results & Scores', x: 1000, y: 150, width: 160, height: 60, color: '#9c27b0', layer: 'output'},
-            {name: 'Visualizations', x: 1000, y: 250, width: 160, height: 60, color: '#9c27b0', layer: 'output'}
-        ];
+            return baseComponents.map(comp => ({
+                ...comp,
+                x: comp.x * scale,
+                y: comp.y * vScale,
+                width: comp.width * scale,
+                height: comp.height * vScale
+            }));
+        }
+        
+        let components = getScaledComponents();
 
         // Connection definitions
         const connections = [
@@ -677,22 +847,36 @@ results = engine.run_multi_particle_trajectories(
         function drawSystemDiagram() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw layer backgrounds
-            const layers = [
+            // Update components on resize
+            components = getScaledComponents();
+            
+            // Scale factors
+            const scale = canvas.width / 1260;
+            const vScale = canvas.height / 600;
+            
+            // Draw layer backgrounds with scaling
+            const baseLayers = [
                 {x: 50, width: 280, color: '#e8f5e9', label: 'Input'},
                 {x: 350, width: 300, color: '#e3f2fd', label: 'Core Engine'},
                 {x: 650, width: 280, color: '#fff3e0', label: 'Processing'},
                 {x: 950, width: 260, color: '#f3e5f5', label: 'Output'}
             ];
             
+            const layers = baseLayers.map(layer => ({
+                ...layer,
+                x: layer.x * scale,
+                width: layer.width * scale
+            }));
+            
             layers.forEach(layer => {
                 ctx.fillStyle = layer.color;
-                ctx.fillRect(layer.x, 50, layer.width, 320);
+                ctx.fillRect(layer.x, 50 * vScale, layer.width, 320 * vScale);
                 
                 ctx.fillStyle = '#666';
-                ctx.font = 'bold 14px Arial';
+                const fontSize = Math.max(10, 14 * Math.min(scale, 1));
+                ctx.font = `bold ${fontSize}px Arial`;
                 ctx.textAlign = 'center';
-                ctx.fillText(layer.label, layer.x + layer.width/2, 40);
+                ctx.fillText(layer.label, layer.x + layer.width/2, 40 * vScale);
             });
             
             // Draw connections
@@ -717,12 +901,24 @@ results = engine.run_multi_particle_trajectories(
                 ctx.fillStyle = comp.color;
                 ctx.fillRect(comp.x, comp.y, comp.width, comp.height);
                 
-                // Text
+                // Text with responsive font size
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 13px Arial';
+                const compFontSize = Math.max(9, 13 * Math.min(scale, 1));
+                ctx.font = `bold ${compFontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(comp.name, comp.x + comp.width/2, comp.y + comp.height/2);
+                
+                // Word wrap for small screens
+                if (scale < 0.6 && comp.name.length > 15) {
+                    const words = comp.name.split(' ');
+                    const midPoint = Math.ceil(words.length / 2);
+                    const line1 = words.slice(0, midPoint).join(' ');
+                    const line2 = words.slice(midPoint).join(' ');
+                    ctx.fillText(line1, comp.x + comp.width/2, comp.y + comp.height/2 - compFontSize/2);
+                    ctx.fillText(line2, comp.x + comp.width/2, comp.y + comp.height/2 + compFontSize/2);
+                } else {
+                    ctx.fillText(comp.name, comp.x + comp.width/2, comp.y + comp.height/2);
+                }
             });
             
             // Update and draw particles
@@ -731,11 +927,13 @@ results = engine.run_multi_particle_trajectories(
                 particle.draw();
             });
             
-            // Draw title
+            // Draw title with responsive font
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 16px Arial';
+            const titleFontSize = Math.max(12, 16 * Math.min(scale, 1));
+            ctx.font = `bold ${titleFontSize}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText('Albert System Architecture - Data Flow', canvas.width/2, 20);
+            const titleText = scale < 0.6 ? 'System Architecture' : 'Albert System Architecture - Data Flow';
+            ctx.fillText(titleText, canvas.width/2, 20 * vScale);
             
             animationTime++;
             requestAnimationFrame(drawSystemDiagram);
