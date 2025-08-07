@@ -583,11 +583,22 @@ class ComprehensiveTestReportGenerator:
                 
                 # For CMB tests that fail, explain why
                 if 'CMB' in test.get('name', '') and not test.get('passed', True):
+                    # <reason>chain: Add comprehensive explanations for all CMB failure cases</reason>
+                    notes = test.get('notes', '')
+                    
                     # Check if it's a spatial curvature issue
-                    if test.get('notes', '').find('lacks spatial curvature') >= 0:
+                    if 'lacks spatial curvature' in notes:
                         lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                    elif pred_val < sota_val * 0.7:  # Theory has suspiciously low chi-squared
+                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Chi² suspiciously low - may have numerical issues or missing physics</div>')
                     elif pred_val > sota_val * 1.1:  # Theory is significantly worse than SOTA
                         lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Chi² too high - theory doesn\'t fit CMB data well</div>')
+                    elif abs(pred_val - sota_val) < 0.1:  # Theory matches SOTA but still fails
+                        # <reason>chain: This should be rare now with the updated validator logic</reason>
+                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Theory validation logic issue - this should have passed</div>')
+                    else:
+                        # <reason>chain: Generic failure message for other cases</reason>
+                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: See theory notes for failure reason</div>')
                 
                 lines.append('                    </div>')
             
@@ -679,11 +690,20 @@ class ComprehensiveTestReportGenerator:
                     
                     # For CMB solver tests that fail, explain why
                     if 'CMB' in test.get('name', '') and not test.get('passed', True):
+                        # <reason>chain: Match the logic from the analytical tests section</reason>
+                        notes = test.get('notes', '')
+                        
                         # Check if it's a spatial curvature issue
-                        if test.get('notes', '').find('lacks spatial curvature') >= 0:
+                        if 'lacks spatial curvature' in notes:
                             lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                        elif pred_val < sota_val * 0.7:  # Theory has suspiciously low chi-squared
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Chi² suspiciously low - may have numerical issues or missing physics</div>')
                         elif pred_val > sota_val * 1.1:  # Theory is significantly worse than SOTA
                             lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Chi² too high - theory doesn\'t fit CMB data well</div>')
+                        elif abs(pred_val - sota_val) < 0.1:  # Theory matches SOTA but still fails
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Theory validation logic issue - this should have passed</div>')
+                        else:
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: See theory notes for failure reason</div>')
                     
                     if test.get('exec_time') is not None and test['status'] not in ['SKIP', 'N/A']:
                         exec_time = test['exec_time']
