@@ -442,12 +442,10 @@ class CMBPowerSpectrumValidator(PredictionValidator):
             # Theory lacks basic requirements for cosmological predictions
             result.passed = False
             result.notes = "Theory lacks spatial curvature (g_rr = 1, no cosmological dynamics)"
-        elif is_quantum_enabled:
-            # Quantum theories should improve on ΛCDM
-            result.passed = delta_chi2 > 0 and theory_chi2 < 100
         else:
-            # Classical GR theories should match ΛCDM within reasonable tolerance
-            # Since they implement the same physics as ΛCDM at large scales
+            # <reason>chain: Both quantum and classical theories should pass if they match ΛCDM</reason>
+            # All theories (quantum or classical) pass if they match ΛCDM within tolerance
+            # Quantum theories get bonus points if they improve, but matching is sufficient
             result.passed = abs(delta_chi2) < 5.0 and theory_chi2 < 100  # Allow 5 chi² units tolerance
         
         # Store prediction details

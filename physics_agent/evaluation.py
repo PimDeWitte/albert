@@ -209,12 +209,28 @@ def run_validator_test(theory, validator_class, validator_name, engine):
         # Extract error percentage
         error_pct = result_dict.get('error_percent', None)
         
+        # Extract prediction-specific values
+        predicted_value = result_dict.get('predicted_value', None)
+        observed_value = result_dict.get('observed_value', None)
+        sota_value = result_dict.get('sota_value', None)
+        beats_sota = result_dict.get('beats_sota', False)
+        units = result_dict.get('units', '')
+        performance = result_dict.get('performance', '')
+        sota_source = result_dict.get('sota_source', '')
+        
         return {
             'name': validator_name,
             'status': status,
             'passed': passed,
             'loss': float(loss) if loss is not None else None,
-            'error_percent': float(error_pct) if error_pct is not None else None
+            'error_percent': float(error_pct) if error_pct is not None else None,
+            'predicted_value': float(predicted_value) if predicted_value is not None else None,
+            'observed_value': float(observed_value) if observed_value is not None else None,
+            'sota_value': float(sota_value) if sota_value is not None else None,
+            'beats_sota': beats_sota,
+            'units': units,
+            'performance': performance,
+            'sota_source': sota_source
         }
         
     except Exception as e:
@@ -710,12 +726,26 @@ def test_g_minus_2(theory):
     try:
         validator = GMinus2Validator()
         result = validator.validate(theory)
+        
+        # Handle different result types
+        if hasattr(result, '__dict__'):
+            result_dict = result.__dict__
+        elif isinstance(result, dict):
+            result_dict = result
+        else:
+            result_dict = {}
+            
         return {
             'name': 'g-2 Muon',
             'status': 'PASS' if result.passed else 'FAIL',
             'passed': result.passed,
             'loss': getattr(result, 'loss', None),
-            'notes': getattr(result, 'notes', '')
+            'notes': getattr(result, 'notes', ''),
+            'predicted_value': float(result_dict.get('predicted_value')) if result_dict.get('predicted_value') is not None else None,
+            'observed_value': float(result_dict.get('observed_value')) if result_dict.get('observed_value') is not None else None,
+            'sota_value': float(result_dict.get('sota_value')) if result_dict.get('sota_value') is not None else None,
+            'beats_sota': result_dict.get('beats_sota', False),
+            'units': result_dict.get('units', '')
         }
     except Exception as e:
         return {
@@ -729,12 +759,26 @@ def test_scattering_amplitude(theory):
     try:
         validator = ScatteringAmplitudeValidator()
         result = validator.validate(theory)
+        
+        # Handle different result types
+        if hasattr(result, '__dict__'):
+            result_dict = result.__dict__
+        elif isinstance(result, dict):
+            result_dict = result
+        else:
+            result_dict = {}
+            
         return {
             'name': 'Scattering Amplitudes',
             'status': 'PASS' if result.passed else 'FAIL',
             'passed': result.passed,
             'loss': getattr(result, 'loss', None),
-            'notes': getattr(result, 'notes', '')
+            'notes': getattr(result, 'notes', ''),
+            'predicted_value': float(result_dict.get('predicted_value')) if result_dict.get('predicted_value') is not None else None,
+            'observed_value': float(result_dict.get('observed_value')) if result_dict.get('observed_value') is not None else None,
+            'sota_value': float(result_dict.get('sota_value')) if result_dict.get('sota_value') is not None else None,
+            'beats_sota': result_dict.get('beats_sota', False),
+            'units': result_dict.get('units', '')
         }
     except Exception as e:
         return {
@@ -829,6 +873,13 @@ def run_solver_test(theory, test_func, test_name, engine=None, args=None):
             status = 'PASS' if result else 'FAIL'
             notes = result_dict.get('notes', '')
             
+            # Extract prediction values
+            predicted_value = result_dict.get('predicted_value', None)
+            observed_value = result_dict.get('observed_value', None)
+            sota_value = result_dict.get('sota_value', None)
+            beats_sota = result_dict.get('beats_sota', False)
+            units = result_dict.get('units', '')
+            
             return {
                 'name': test_name,
                 'status': status,
@@ -837,7 +888,12 @@ def run_solver_test(theory, test_func, test_name, engine=None, args=None):
                 'exec_time': exec_time,
                 'solver_time': 0.0,  # CMB doesn't run trajectory solver
                 'num_steps': 0,  # No trajectory integration
-                'notes': notes
+                'notes': notes,
+                'predicted_value': float(predicted_value) if predicted_value is not None else None,
+                'observed_value': float(observed_value) if observed_value is not None else None,
+                'sota_value': float(sota_value) if sota_value is not None else None,
+                'beats_sota': beats_sota,
+                'units': units
             }
         elif test_name == "Primordial GWs" and engine:
             # Run Primordial GW test using the validator
@@ -881,13 +937,20 @@ def run_solver_test(theory, test_func, test_name, engine=None, args=None):
             if hasattr(theory, 'enable_quantum') and theory.enable_quantum:
                 solver_type = "Quantum-PI"
             
+            # Extract prediction values
+            predicted_value = result_dict.get('predicted_value', None)
+            observed_value = result_dict.get('observed_value', None)
+            sota_value = result_dict.get('sota_value', None)
+            beats_sota = result_dict.get('beats_sota', False)
+            units = result_dict.get('units', '')
+            
             # Special handling for GR-consistent theories
             # They should pass if they match (not beat) standard inflation
             is_gr_baseline = theory.name in ['Schwarzschild', 'Kerr', 'Kerr-Newman', 'Newtonian Limit']
             if is_gr_baseline and not result:
                 # Check if predicted r is within observational limits
-                predicted_r = result_dict.get('predicted_value', 0.01)
-                r_upper = result_dict.get('observed_value', 0.036)
+                predicted_r = predicted_value if predicted_value is not None else 0.01
+                r_upper = observed_value if observed_value is not None else 0.036
                 if predicted_r <= r_upper:
                     result = True  # Pass because within limits is good for GR
                     status = 'PASS'
@@ -907,7 +970,12 @@ def run_solver_test(theory, test_func, test_name, engine=None, args=None):
                 'exec_time': exec_time,
                 'solver_time': 0.0,  # PGW doesn't run trajectory solver
                 'num_steps': 0,  # No trajectory integration
-                'notes': notes
+                'notes': notes,
+                'predicted_value': float(predicted_value) if predicted_value is not None else None,
+                'observed_value': float(observed_value) if observed_value is not None else None,
+                'sota_value': float(sota_value) if sota_value is not None else None,
+                'beats_sota': beats_sota,
+                'units': units
             }
         elif test_name == "Trajectory Cache":
             # Trajectory cache test is performance-based, skip for now
@@ -1003,10 +1071,29 @@ def test_theory_comprehensive(theory_name, theory_class, category, args=None):
     for validator_class, validator_name in analytical_validators:
         result = run_validator_test(theory, validator_class, validator_name, engine)
         results['analytical_tests'].append(result)
-        if result['passed']:
-            print(f"  ✓ {validator_name}: {result['status']}")
-        else:
-            print(f"  ✗ {validator_name}: {result['status']}")
+        
+        # Format the output line
+        status_symbol = "✓" if result['passed'] else "✗"
+        output_line = f"  {status_symbol} {validator_name}: {result['status']}"
+        
+        # Add prediction details if available
+        if result.get('predicted_value') is not None:
+            pred_val = result['predicted_value']
+            units = result.get('units', '')
+            output_line += f" (Predicted: {pred_val:.3g} {units}"
+            
+            if result.get('sota_value') is not None:
+                sota_val = result['sota_value']
+                output_line += f", SOTA: {sota_val:.3g} {units}"
+                
+                if result.get('beats_sota'):
+                    output_line += " ⭐ BEATS SOTA!"
+            
+            output_line += ")"
+        elif result.get('error_percent') is not None:
+            output_line += f" (Error: {result['error_percent']:.1f}%)"
+            
+        print(output_line)
     
     # Run solver-based tests
     print("\nSolver-Based Tests:")
@@ -1019,12 +1106,31 @@ def test_theory_comprehensive(theory_name, theory_class, category, args=None):
         if 'solver_type' in test_result and test_result['solver_type'] not in ['N/A', 'Unknown']:
             solver_info = f" [{test_result['solver_type']}]"
         
+        # Format the output line
         if test_result['status'] in ['SKIP', 'N/A']:
             print(f"  - {test_name}: {test_result['status']} ({test_result.get('notes', '')})")
-        elif test_result['passed']:
-            print(f"  ✓ {test_name}: {test_result['status']}{solver_info}")
         else:
-            print(f"  ✗ {test_name}: {test_result['status']}{solver_info}")
+            status_symbol = "✓" if test_result['passed'] else "✗"
+            output_line = f"  {status_symbol} {test_name}: {test_result['status']}{solver_info}"
+            
+            # Add prediction details if available
+            if test_result.get('predicted_value') is not None:
+                pred_val = test_result['predicted_value']
+                units = test_result.get('units', '')
+                output_line += f" (Predicted: {pred_val:.3g} {units}"
+                
+                if test_result.get('sota_value') is not None:
+                    sota_val = test_result['sota_value']
+                    output_line += f", SOTA: {sota_val:.3g} {units}"
+                    
+                    if test_result.get('beats_sota'):
+                        output_line += " ⭐ BEATS SOTA!"
+                
+                output_line += ")"
+            elif test_result.get('loss') is not None:
+                output_line += f" (Loss: {test_result['loss']:.2e})"
+                
+            print(output_line)
     
     # Calculate summaries
     analytical_total = len(results['analytical_tests'])
@@ -1502,6 +1608,68 @@ def run_comprehensive_tests(args=None):
         print("Rankings remained the same after adding solver tests.")
     else:
         print(f"Rankings changed for {changes} theories after adding solver tests.")
+    
+    # Find theories that beat SOTA
+    print("\n\nTHEORIES THAT BEAT STATE-OF-THE-ART:")
+    print("-"*60)
+    
+    sota_beaters = {}
+    for result in all_results:
+        theory_name = result['theory']
+        
+        # Check analytical tests
+        for test in result.get('analytical_tests', []):
+            if test.get('beats_sota', False):
+                if theory_name not in sota_beaters:
+                    sota_beaters[theory_name] = []
+                sota_beaters[theory_name].append({
+                    'test': test['name'],
+                    'predicted': test.get('predicted_value'),
+                    'sota': test.get('sota_value'),
+                    'units': test.get('units', ''),
+                    'type': 'analytical'
+                })
+        
+        # Check solver tests
+        for test in result.get('solver_tests', []):
+            if test.get('beats_sota', False):
+                if theory_name not in sota_beaters:
+                    sota_beaters[theory_name] = []
+                sota_beaters[theory_name].append({
+                    'test': test['name'],
+                    'predicted': test.get('predicted_value'),
+                    'sota': test.get('sota_value'),
+                    'units': test.get('units', ''),
+                    'type': 'solver'
+                })
+    
+    if sota_beaters:
+        for theory_name, tests in sorted(sota_beaters.items()):
+            print(f"\n{theory_name}:")
+            for test_info in tests:
+                test_name = test_info['test']
+                predicted = test_info['predicted']
+                sota = test_info['sota']
+                units = test_info['units']
+                test_type = test_info['type']
+                
+                if predicted is not None and sota is not None:
+                    # Calculate improvement percentage
+                    if units == 'chi²/dof':
+                        # Lower is better for chi-squared
+                        improvement = ((sota - predicted) / sota) * 100
+                        print(f"  ⭐ {test_name} [{test_type}]: {predicted:.3g} {units} (SOTA: {sota:.3g}, {improvement:.1f}% better)")
+                    elif units == 'nb':
+                        # For cross-sections, closer to experimental value is better
+                        print(f"  ⭐ {test_name} [{test_type}]: {predicted:.3g} {units} (SOTA/SM: {sota:.3g})")
+                    else:
+                        # Default: higher is better
+                        improvement = ((predicted - sota) / abs(sota)) * 100 if sota != 0 else 0
+                        print(f"  ⭐ {test_name} [{test_type}]: {predicted:.3g} {units} (SOTA: {sota:.3g}, {improvement:.1f}% better)")
+                else:
+                    print(f"  ⭐ {test_name} [{test_type}]: Beats SOTA")
+    else:
+        print("No theories beat any state-of-the-art benchmarks.")
     
     # Save comprehensive report
     report = {

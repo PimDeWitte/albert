@@ -1663,6 +1663,233 @@ results = orchestrator.run_comparative_simulation(
                     </div>
 
 
+                    <!-- Comprehensive Test Suite -->
+                    <div class="mb-20 max-w-7xl mx-auto">
+                        <h2 class="text-4xl lg:text-5xl font-display font-bold text-center text-accent mb-12">
+                            Comprehensive Test Suite & SOTA Benchmarks
+                        </h2>
+                        
+                        <p class="text-xl font-serif text-ink text-center mb-12 max-w-4xl mx-auto">
+                            Albert validates theories against 14 rigorous tests spanning classical to quantum regimes. 
+                            Each test compares theoretical predictions with state-of-the-art experimental measurements 
+                            or theoretical benchmarks.
+                        </p>
+                        
+                        <!-- Test Categories Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                            
+                            <!-- Observational Tests -->
+                            <div class="bg-white rounded-3xl shadow-xl p-8 border border-accent/20">
+                                <h3 class="text-2xl font-bold text-accent mb-6 flex items-center gap-3">
+                                    <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    Analytical Validators (7 tests)
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <!-- Mercury Precession -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Mercury Perihelion Advance</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Tests gravitational field in weak-field regime</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">42.98 ± 0.04</span> arcsec/century</div>
+                                            <div>Source: Radar ranging (Park et al. 2017)</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Light Deflection -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Solar Light Deflection</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Validates metric spatial curvature effects</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">1.7512 ± 0.0016</span> arcsec</div>
+                                            <div>Source: VLBI (Shapiro et al. 2004, PRL)</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- PPN Parameters -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">PPN Parameters (γ, β)</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Parameterized post-Newtonian formalism tests</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>γ: <span class="text-accent">1.000021 ± 0.000023</span> (Cassini)</div>
+                                            <div>β: <span class="text-accent">1.0000 ± 0.00003</span> (Lunar Laser Ranging)</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Photon Sphere -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Photon Sphere</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Light ring radius around black holes</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">1.5 r_s</span> (Schwarzschild)</div>
+                                            <div>Shadow: <span class="text-accent">5.196 r_s</span> diameter</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- COW Interferometry -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">COW Neutron Interferometry</h4>
+                                            <span class="text-xs bg-quantum/10 text-quantum px-2 py-1 rounded-full">Quantum</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Gravitational phase shift of neutron waves</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">2.70 ± 0.21</span> radians</div>
+                                            <div>Source: Colella et al. (1975), PRL</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- PSR J0740 -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">PSR J0740+6620</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Shapiro delay in massive pulsar system</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>Mass: <span class="text-accent">2.08 ± 0.07</span> M☉</div>
+                                            <div>Source: Fonseca et al. (2021), ApJL</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Gravitational Waves -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-accent/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Gravitational Waves</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Post-Newtonian waveform analysis</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">LIGO-Virgo</span> waveforms</div>
+                                            <div>Source: Abbott et al. (2016-2024)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Prediction Tests -->
+                            <div class="bg-white rounded-3xl shadow-xl p-8 border border-quantum/20">
+                                <h3 class="text-2xl font-bold text-quantum mb-6 flex items-center gap-3">
+                                    <svg class="w-8 h-8 text-quantum" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    Solver-Based Tests (7 tests)
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <!-- Trajectory vs Kerr -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Trajectory vs Kerr</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">1000-step geodesic integration comparison</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">Kerr metric</span> baseline</div>
+                                            <div>Metric: Loss function over trajectory</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Circular Orbit -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Circular Orbit Period</h4>
+                                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">Classical</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Tests Kepler's third law in strong field</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: <span class="text-accent">GR prediction</span></div>
+                                            <div>Uses: RK4 geodesic solver</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Quantum Geodesic Sim -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Quantum Geodesic Simulation</h4>
+                                            <span class="text-xs bg-quantum/10 text-quantum px-2 py-1 rounded-full">Quantum</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">2-qubit quantum path simulation</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>Tests: <span class="text-accent">Quantum corrections</span></div>
+                                            <div>Method: Quantum circuit simulation</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- CMB Power Spectrum -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">CMB Power Spectrum</h4>
+                                            <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">Cosmological</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Low-ℓ anomaly and Sachs-Wolfe plateau</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: ΛCDM <span class="text-accent">χ²/dof ~ 1.02</span></div>
+                                            <div>Source: Planck 2018 + low-ℓ anomaly</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Primordial GWs -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Primordial Gravitational Waves</h4>
+                                            <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">Cosmological</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Tensor-to-scalar ratio constraints</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>SOTA: r < <span class="text-accent">0.032</span> (95% CL)</div>
+                                            <div>Source: BICEP/Keck + Planck 2023</div>
+                                            <div>Future: CMB-S4 target r ~ 0.001</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- g-2 Muon -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">Muon g-2 Anomaly</h4>
+                                            <span class="text-xs bg-quantum/10 text-quantum px-2 py-1 rounded-full">Quantum</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">Anomalous magnetic moment precision test</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>Experiment: <span class="text-accent">0.00116592059(22)</span></div>
+                                            <div>Theory: <span class="text-accent">0.00116591783(48)</span></div>
+                                            <div>Source: Theory Initiative 2020</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Scattering Amplitude -->
+                                    <div class="border border-code-border rounded-xl p-4 hover:border-quantum/50 transition-colors">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h4 class="font-bold text-ink">e⁺e⁻ Scattering</h4>
+                                            <span class="text-xs bg-quantum/10 text-quantum px-2 py-1 rounded-full">Quantum</span>
+                                        </div>
+                                        <p class="text-sm text-muted mb-2">High-energy scattering at Z pole</p>
+                                        <div class="bg-code-bg rounded-lg p-3 font-mono text-xs">
+                                            <div>σ(e⁺e⁻→μ⁺μ⁻): <span class="text-accent">1.477 ± 0.005</span> nb</div>
+                                            <div>Source: LEP @ 91.2 GeV (Z pole)</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                     
                     <!-- Call to Action - More Prominent -->
                     <div class="text-center">
@@ -1673,6 +1900,13 @@ results = orchestrator.run_comparative_simulation(
                                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
+                            </a>
+                            
+                            <a href="latest_run/comprehensive_theory_validation_20250805_003231.html" target="_blank" class="group inline-flex items-center space-x-3 bg-quantum hover:bg-quantum/90 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-3.45V9.86c0-.97-.78-1.76-1.75-1.76H15l-1-3.24a1 1 0 00-.95-.68h-2.1a1 1 0 00-.95.68L9 8.1H7.75C6.78 8.1 6 8.89 6 9.86v3.69m12-3.45h.01M6 13.1h.01"></path>
+                                </svg>
+                                <span>View Leaderboard</span>
                             </a>
                         </div>
                     </div>

@@ -251,7 +251,7 @@ def generate_unified_multi_particle_viewer(
 
 def update_comprehensive_report_generator():
     """Update the comprehensive report generator to use unified viewer."""
-    report_gen_path = "physics_agent/comprehensive_test_report_generator_v2.py"
+    report_gen_path = "physics_agent/comprehensive_test_report_generator.py"
     
     # Read the current file
     with open(report_gen_path, 'r') as f:

@@ -83,6 +83,9 @@ class ComprehensiveTestReportGenerator:
             '        .summary-card h3 { margin: 0 0 10px 0; color: #34495e; font-size: 0.9em; text-transform: uppercase; }',
             '        .summary-card .value { font-size: 2.5em; font-weight: bold; color: #3498db; }',
             '        .summary-card .label { color: #7f8c8d; font-size: 0.9em; margin-top: 5px; }',
+            '        .sota-card { background: #fff3cd; border: 2px solid #ffc107; }',
+            '        .sota-card h3 { color: #856404; }',
+            '        .sota-card .value { color: #856404; }',
             '        table { width: auto; max-width: 100%; border-collapse: collapse; margin-bottom: 30px; margin-left: auto; margin-right: auto; }',
             '        th { background-color: #34495e; color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 10; white-space: nowrap; }',
             '        td { padding: 10px; border-bottom: 1px solid #ecf0f1; vertical-align: middle; }',
@@ -106,6 +109,7 @@ class ComprehensiveTestReportGenerator:
             '        .test-result.warning { border-left: 4px solid #f39c12; }',
             '        .test-name { font-weight: 500; margin-bottom: 5px; }',
             '        .test-details { font-size: 0.9em; color: #7f8c8d; }',
+            '        .sota-beater { color: #f39c12; font-weight: bold; font-size: 1em; margin-top: 5px; }',
             '        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }',
     
             '        .timing-info { color: #7f8c8d; font-size: 0.85em; margin-top: 5px; }',
@@ -142,6 +146,13 @@ class ComprehensiveTestReportGenerator:
             '        .trajectory-image { max-width: 100%; height: auto; }',
             '        .trajectory-links { margin-top: 15px; }',
             '        .trajectory-links a { margin-right: 15px; }',
+            '        /* Collapsible styles */',
+            '        .collapsible { background-color: #f39c12; color: white; cursor: pointer; padding: 10px 18px; width: auto; border: none; text-align: center; outline: none; font-size: 14px; border-radius: 4px; margin-bottom: 10px; transition: background-color 0.3s; }',
+            '        .collapsible:hover { background-color: #e67e22; }',
+            '        .collapsible:after { content: "\\002B"; color: white; font-weight: bold; float: right; margin-left: 10px; }',
+            '        .collapsible.active:after { content: "\\2212"; }',
+            '        .collapsible-content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }',
+            '        .collapsible-content.active { max-height: 800px; transition: max-height 0.3s ease-in; }',
             '    </style>',
             '    <script>',
             '        function viewTrajectory(theoryName) {',
@@ -178,7 +189,6 @@ class ComprehensiveTestReportGenerator:
             '            imageContainer.innerHTML = `',
             '                ${particleLinks}',
             '                <div class="trajectory-links" style="margin-top: 20px; text-align: center;">',
-            f'                    <a href="{viz_path}/index.html" target="_blank" style="font-size: 1.1em; margin-right: 15px;">🗂️ View All Theory Trajectories</a>',
             '                    <a href="trajectory_viewers/unified_multi_particle_viewer_advanced.html" target="_blank" style="font-size: 1.1em;">🌐 Interactive 3D Viewer (All Theories)</a>',
             '                </div>',
             '            `;',
@@ -190,6 +200,12 @@ class ComprehensiveTestReportGenerator:
             '        function closeTrajectoryPopup() {',
             '            document.getElementById("trajectory-popup").classList.remove("show");',
             '            document.getElementById("popup-overlay").classList.remove("show");',
+            '        }',
+            '        ',
+            '        function toggleCollapsible(button) {',
+            '            button.classList.toggle("active");',
+            '            const content = button.nextElementSibling;',
+            '            content.classList.toggle("active");',
             '        }',
             '    </script>',
             '</head>',
@@ -213,6 +229,31 @@ class ComprehensiveTestReportGenerator:
         perfect_analytical = sum(1 for r in results if r['analytical_summary']['success_rate'] == 1.0)
         perfect_combined = sum(1 for r in results if r['combined_summary']['success_rate'] == 1.0)
         
+        # Count theories that beat SOTA
+        theories_beating_sota = set()
+        total_sota_beats = 0
+        
+        for result in results:
+            theory_name = result['theory']
+            theory_beats_sota = False
+            
+            # Check analytical tests
+            for test in result.get('analytical_tests', []):
+                if test.get('beats_sota', False):
+                    theory_beats_sota = True
+                    total_sota_beats += 1
+            
+            # Check solver tests
+            for test in result.get('solver_tests', []):
+                if test.get('beats_sota', False):
+                    theory_beats_sota = True
+                    total_sota_beats += 1
+            
+            if theory_beats_sota:
+                theories_beating_sota.add(theory_name)
+        
+        num_theories_beating_sota = len(theories_beating_sota)
+        
         lines = [
             '        <div class="summary-grid">',
             '            <div class="summary-card">',
@@ -235,8 +276,55 @@ class ComprehensiveTestReportGenerator:
             f'                <div class="value">{perfect_analytical}/{perfect_combined}</div>',
             '                <div class="label">Analytical/Combined</div>',
             '            </div>',
+            '            <div class="summary-card sota-card">',
+            '                <h3>⭐ Beat SOTA</h3>',
+            f'                <div class="value">{num_theories_beating_sota}</div>',
+            f'                <div class="label">Theories ({total_sota_beats} tests)</div>',
+            '            </div>',
             '        </div>'
         ]
+        
+        # Add details about SOTA beats if any
+        if num_theories_beating_sota > 0:
+            lines.extend([
+                '        <div style="margin-top: 20px;">',
+                '            <button class="collapsible" onclick="toggleCollapsible(this)">⭐ View Theories Beating State-of-the-Art ({} theories, {} tests)</button>'.format(num_theories_beating_sota, total_sota_beats),
+                '            <div class="collapsible-content">',
+                '                <div class="note-box">',
+                '                    <ul style="margin-bottom: 0;">',
+            ])
+            
+            # Collect SOTA beats by theory
+            sota_details = {}
+            for result in results:
+                theory_name = result['theory']
+                sota_tests = []
+                
+                # Check analytical tests
+                for test in result.get('analytical_tests', []):
+                    if test.get('beats_sota', False):
+                        sota_tests.append(test['name'])
+                
+                # Check solver tests
+                for test in result.get('solver_tests', []):
+                    if test.get('beats_sota', False):
+                        sota_tests.append(test['name'])
+                
+                if sota_tests:
+                    sota_details[theory_name] = sota_tests
+            
+            # Display SOTA beats
+            for theory_name in sorted(sota_details.keys()):
+                tests = sota_details[theory_name]
+                tests_str = ', '.join(tests)
+                lines.append(f'                <li><strong>{theory_name}:</strong> {tests_str}</li>')
+            
+            lines.extend([
+                '                    </ul>',
+                '                </div>',
+                '            </div>',
+                '        </div>'
+            ])
         
         return lines
     
@@ -266,6 +354,13 @@ class ComprehensiveTestReportGenerator:
         ])
         
         for i, result in enumerate(sorted_results, 1):
+            # Check if this theory beats any SOTA
+            beats_any_sota = False
+            for test in result.get('analytical_tests', []) + result.get('solver_tests', []):
+                if test.get('beats_sota', False):
+                    beats_any_sota = True
+                    break
+            
             # Extract solver test details
             trajectory_loss = None
             progressive_losses = None
@@ -366,10 +461,15 @@ class ComprehensiveTestReportGenerator:
             else:
                 combined_str = '<span class="not-available">N/A</span>'
             
+            # Add SOTA indicator to theory name if it beats any
+            theory_display = result["theory"]
+            if beats_any_sota:
+                theory_display += ' ⭐'
+            
             lines.extend([
                 '                <tr>',
                 f'                    <td class="rank">{i}</td>',
-                f'                    <td class="theory-name">{result["theory"]}</td>',
+                f'                    <td class="theory-name">{theory_display}</td>',
                 f'                    <td class="category-{result["category"]}">{result["category"]}</td>',
                 f'                    <td class="score">{result["combined_summary"]["success_rate"]*100:.1f}%</td>',
                 f'                    <td>{result["analytical_summary"]["passed"]}/{result["analytical_summary"]["total"]}</td>',
@@ -424,6 +524,70 @@ class ComprehensiveTestReportGenerator:
                 if test.get('error_percent') is not None:
                     lines.append(f'                        <div class="test-details">Error: {test["error_percent"]:.2f}%</div>')
                 
+                # Add prediction values and SOTA information
+                if test.get('predicted_value') is not None:
+                    pred_val = test['predicted_value']
+                    units = test.get('units', '')
+                    
+                    # <reason>chain: Use higher precision for g-2 values to show actual differences</reason>
+                    # Check if this is a g-2 test
+                    is_g2_test = 'g-2' in test.get('name', '') or units == '(g-2)/2'
+                    
+                    if is_g2_test:
+                        # Show 8 significant figures for g-2 to see the actual anomaly
+                        pred_str = f'{pred_val:.8g}'
+                    else:
+                        # Use standard precision for other tests
+                        pred_str = f'{pred_val:.3g}'
+                    
+                    lines.append(f'                        <div class="test-details">Predicted: {pred_str} {units}</div>')
+                    
+                    # <reason>chain: Show experimental value for g-2 to explain why test fails</reason>
+                    # Add experimental/observed value if different from SOTA
+                    if test.get('observed_value') is not None and test.get('observed_value') != test.get('sota_value'):
+                        obs_val = test['observed_value']
+                        if is_g2_test:
+                            obs_str = f'{obs_val:.8g}'
+                        else:
+                            obs_str = f'{obs_val:.3g}'
+                        lines.append(f'                        <div class="test-details">Experimental: {obs_str} {units}</div>')
+                    
+                    if test.get('sota_value') is not None:
+                        sota_val = test['sota_value']
+                        
+                        if is_g2_test:
+                            sota_str = f'{sota_val:.8g}'
+                        else:
+                            sota_str = f'{sota_val:.3g}'
+                        
+                        lines.append(f'                        <div class="test-details">SOTA: {sota_str} {units}</div>')
+                        
+                        # <reason>chain: Only show BEATS SOTA if values are actually different when displayed</reason>
+                        # Check if beats_sota is true AND the displayed values are different
+                        if test.get('beats_sota'):
+                            if pred_str != sota_str:  # Only show if visually different
+                                lines.append(f'                        <div class="test-details sota-beater">⭐ BEATS SOTA!</div>')
+                            else:
+                                # If they appear equal but beats_sota is true, show the actual difference
+                                diff = abs(pred_val - sota_val)
+                                if diff > 0:
+                                    lines.append(f'                        <div class="test-details sota-beater">⭐ BEATS SOTA! (Δ = {diff:.2e})</div>')
+                                # If diff is exactly 0, don't show BEATS SOTA at all
+                
+                # <reason>chain: Add explanatory notes for tests that fail despite matching SOTA</reason>
+                # For g-2 tests that fail, explain why
+                if is_g2_test and not test.get('passed', True) and test.get('observed_value'):
+                    obs_val = test.get('observed_value')
+                    if abs(pred_val - sota_val) < 1e-10:  # Prediction matches SOTA
+                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because SM (SOTA) doesn\'t explain the experimental anomaly</div>')
+                
+                # For CMB tests that fail despite matching SOTA
+                if 'CMB' in test.get('name', '') and not test.get('passed', True):
+                    if abs(pred_val - sota_val) < 0.1:  # Prediction matches SOTA
+                        # Check if it's a spatial curvature issue
+                        if test.get('notes', '').find('lacks spatial curvature') >= 0:
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                
                 lines.append('                    </div>')
             
             lines.append('                </div>')
@@ -454,6 +618,70 @@ class ComprehensiveTestReportGenerator:
                     
                     if test.get('loss') is not None:
                         lines.append(f'                        <div class="test-details">Loss: {test["loss"]:.4e}</div>')
+                    
+                    # Add prediction values and SOTA information for solver tests
+                    if test.get('predicted_value') is not None:
+                        pred_val = test['predicted_value']
+                        units = test.get('units', '')
+                        
+                        # <reason>chain: Use higher precision for g-2 values in solver tests too</reason>
+                        # Check if this is a g-2 test
+                        is_g2_test = 'g-2' in test.get('name', '') or units == '(g-2)/2'
+                        
+                        if is_g2_test:
+                            # Show 8 significant figures for g-2 to see the actual anomaly
+                            pred_str = f'{pred_val:.8g}'
+                        else:
+                            # Use standard precision for other tests
+                            pred_str = f'{pred_val:.3g}'
+                        
+                        lines.append(f'                        <div class="test-details">Predicted: {pred_str} {units}</div>')
+                        
+                        # <reason>chain: Show experimental value for g-2 in solver tests too</reason>
+                        # Add experimental/observed value if different from SOTA
+                        if test.get('observed_value') is not None and test.get('observed_value') != test.get('sota_value'):
+                            obs_val = test['observed_value']
+                            if is_g2_test:
+                                obs_str = f'{obs_val:.8g}'
+                            else:
+                                obs_str = f'{obs_val:.3g}'
+                            lines.append(f'                        <div class="test-details">Experimental: {obs_str} {units}</div>')
+                        
+                        if test.get('sota_value') is not None:
+                            sota_val = test['sota_value']
+                            
+                            if is_g2_test:
+                                sota_str = f'{sota_val:.8g}'
+                            else:
+                                sota_str = f'{sota_val:.3g}'
+                            
+                            lines.append(f'                        <div class="test-details">SOTA: {sota_str} {units}</div>')
+                            
+                            # <reason>chain: Only show BEATS SOTA if values are actually different when displayed</reason>
+                            # Check if beats_sota is true AND the displayed values are different
+                            if test.get('beats_sota'):
+                                if pred_str != sota_str:  # Only show if visually different
+                                    lines.append(f'                        <div class="test-details sota-beater">⭐ BEATS SOTA!</div>')
+                                else:
+                                    # If they appear equal but beats_sota is true, show the actual difference
+                                    diff = abs(pred_val - sota_val)
+                                    if diff > 0:
+                                        lines.append(f'                        <div class="test-details sota-beater">⭐ BEATS SOTA! (Δ = {diff:.2e})</div>')
+                                    # If diff is exactly 0, don't show BEATS SOTA at all
+                    
+                    # <reason>chain: Add explanatory notes for solver tests that fail despite matching SOTA</reason>
+                    # For g-2 tests that fail, explain why
+                    if is_g2_test and not test.get('passed', True) and test.get('observed_value'):
+                        obs_val = test.get('observed_value')
+                        if abs(pred_val - sota_val) < 1e-10:  # Prediction matches SOTA
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because SM (SOTA) doesn\'t explain the experimental anomaly</div>')
+                    
+                    # For CMB solver tests that fail despite matching SOTA
+                    if 'CMB' in test.get('name', '') and not test.get('passed', True):
+                        if abs(pred_val - sota_val) < 0.1:  # Prediction matches SOTA
+                            # Check if it's a spatial curvature issue
+                            if test.get('notes', '').find('lacks spatial curvature') >= 0:
+                                lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
                     
                     if test.get('exec_time') is not None and test['status'] not in ['SKIP', 'N/A']:
                         exec_time = test['exec_time']

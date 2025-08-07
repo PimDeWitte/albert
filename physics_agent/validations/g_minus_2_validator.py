@@ -185,7 +185,9 @@ class GMinus2Validator(PredictionValidator):
         # SOTA comparison
         result.sota_value = sm_data['value']
         result.sota_source = sm_data['source']
-        result.beats_sota = chi_squared < sm_chi_squared
+        # <reason>chain: Only mark as beating SOTA if chi_squared is strictly less than SM chi_squared</reason>
+        # To avoid floating point precision issues, require a meaningful improvement
+        result.beats_sota = chi_squared < sm_chi_squared * 0.99  # At least 1% better
         
         if result.beats_sota:
             result.performance = 'beats'
