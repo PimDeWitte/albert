@@ -1582,6 +1582,33 @@ validation = system.validate_against_observations(
                                                         </div>
                                                     </div>
                                                 </div>
+                                                
+                                                <div class="bg-quantum/10 rounded-xl p-6 border border-quantum/20 mt-6">
+                                                    <h6 class="font-bold text-quantum mb-3">Dataset Generation for AI Training</h6>
+                                                    <p class="text-sm text-ink mb-4">
+                                                        Generate massive, physically-accurate datasets for training next-generation AI models.
+                                                        Unlike traditional approaches that learn from observations, Albert can create unlimited
+                                                        training data with perfect ground truth labels directly from the laws of physics.
+                                                    </p>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                                        <div>
+                                                            <div class="font-semibold text-accent mb-2">Physics-Informed ML</div>
+                                                            <ul class="space-y-1 text-muted">
+                                                                <li>• Particle trajectories with forces</li>
+                                                                <li>• Field configurations & dynamics</li>
+                                                                <li>• Conservation law compliance</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div>
+                                                            <div class="font-semibold text-accent mb-2">Applications</div>
+                                                            <ul class="space-y-1 text-muted">
+                                                                <li>• Foundation models for physics</li>
+                                                                <li>• Scientific discovery acceleration</li>
+                                                                <li>• Simulation surrogate models</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             
                                             <!-- Part 2: Physics Engine Orchestrator -->
@@ -1921,6 +1948,187 @@ results = orchestrator.run_comparative_simulation(
 
                     </div>
 
+                    <!-- Additional Features Section -->
+                    <div class="mb-20 max-w-7xl mx-auto">
+                        <h2 class="text-4xl lg:text-5xl font-display font-bold text-center text-accent mb-12">
+                            Trajectory Cache
+                        </h2>
+                        
+                    
+
+                        <!-- Cache Performance Diagram -->
+                        <div class="bg-white rounded-3xl shadow-xl p-8 border border-accent/10 mb-12">
+                            <h3 class="text-2xl font-bold text-accent mb-6 text-center">Save expensive compute by automatically caching generated trajectories</h3>
+                            
+                            <!-- Cache Flow Canvas -->
+                            <canvas id="cacheFlowDiagram" width="1000" height="300" class="w-full max-w-5xl mx-auto"></canvas>
+                            
+                            <!-- Performance Stats -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-4xl mx-auto">
+                                <div class="text-center p-4 bg-accent/5 rounded-lg">
+                                    <div class="text-3xl font-bold text-accent">1k-30k×</div>
+                                    <div class="text-sm text-muted">Faster</div>
+                                </div>
+                                <div class="text-center p-4 bg-success/5 rounded-lg">
+                                    <div class="text-3xl font-bold text-success">ms</div>
+                                    <div class="text-sm text-muted">vs minutes</div>
+                                </div>
+                                <div class="text-center p-4 bg-quantum/5 rounded-lg">
+                                    <div class="text-3xl font-bold text-quantum">SHA256</div>
+                                    <div class="text-sm text-muted">Hashing</div>
+                                </div>
+                                <div class="text-center p-4 bg-warning/5 rounded-lg">
+                                    <div class="text-3xl font-bold text-warning">95%</div>
+                                    <div class="text-sm text-muted">Hit rate</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Feature Cards - Horizontal Scrollable -->
+                        <div class="overflow-x-auto pb-4">
+                            <div class="flex gap-6 min-w-max">
+                                
+                                <!-- Parameter Sweeps Card -->
+                                <a href="documentation.html?tab=introduction" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">📊</div>
+                                            <h3 class="text-xl font-bold text-accent">Parameter Sweeps</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Explore parameter spaces with automated, parallel sweeps.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• Multi-dimensional search</li>
+                                            <li>• Automatic parallelization</li>
+                                            <li>• Result aggregation</li>
+                                        </ul>
+                                        <div class="text-accent font-semibold group-hover:underline">Use --enable-sweeps</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- Discovery Mode Card -->
+                                <a href="documentation.html?tab=introduction" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">🔍</div>
+                                            <h3 class="text-xl font-bold text-accent">Discovery Mode</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            AI-generated theories via Grok or your own candidates.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• Grok theory generation</li>
+                                            <li>• Custom candidates folder</li>
+                                            <li>• Automated validation</li>
+                                        </ul>
+                                        <div class="text-warning font-semibold">Use --candidates</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- 3D Visualization Card -->
+                                <a href="../physics_agent/latest_run/trajectory_viewers/viewer.html" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">🌌</div>
+                                            <h3 class="text-xl font-bold text-accent">Interactive 3D Viewer</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Interactive 3D visualization of particle trajectories.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• Real-time WebGL rendering</li>
+                                            <li>• Multi-theory comparison</li>
+                                            <li>• Trajectory analysis</li>
+                                        </ul>
+                                        <div class="text-accent font-semibold group-hover:underline">Launch viewer →</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- Standardized Dataloading Card -->
+                                <a href="documentation.html?tab=datasets" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">💾</div>
+                                            <h3 class="text-xl font-bold text-accent">Standardized Dataloading</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Access curated physics datasets for ML research.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• PyTorch DataLoaders</li>
+                                            <li>• Verified trajectories</li>
+                                            <li>• Multiple particles</li>
+                                        </ul>
+                                        <div class="text-accent font-semibold group-hover:underline">Browse dataloaders →</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- Validation Framework Card -->
+                                <a href="documentation.html?tab=validators" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">✓</div>
+                                            <h3 class="text-xl font-bold text-accent">14 Physics Tests</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Rigorous validation from classical to quantum regimes.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• Observational tests</li>
+                                            <li>• Conservation laws</li>
+                                            <li>• Quantum corrections</li>
+                                        </ul>
+                                        <div class="text-accent font-semibold group-hover:underline">See all validators →</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- Black Hole Presets Card -->
+                                <a href="documentation.html?tab=introduction" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">⚫</div>
+                                            <h3 class="text-xl font-bold text-accent">Black Hole Presets</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Test theories across different black hole scales.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• Stellar (10 M☉)</li>
+                                            <li>• Supermassive (10⁹ M☉)</li>
+                                            <li>• Primordial (10⁻⁵ M☉)</li>
+                                        </ul>
+                                        <div class="text-muted font-semibold">Use --black-hole-preset</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- GPU/CPU Support Card -->
+                                <a href="documentation.html?tab=introduction" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">🚀</div>
+                                            <h3 class="text-xl font-bold text-accent">GPU & CPU Support</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Optimized for both GPU acceleration and CPU computation.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• CUDA acceleration</li>
+                                            <li>• Apple Metal support</li>
+                                            <li>• CPU fallback</li>
+                                        </ul>
+                                        <div class="text-muted font-semibold">Auto-detects best device</div>
+                                    </div>
+                                </a>
+                                
+                            </div>
+                        </div>
+                        
+                        <!-- Scroll hint for mobile -->
+                        <div class="text-center text-muted text-sm mt-4 md:hidden">
+                            <span>← Swipe to see more features →</span>
+                        </div>
+                    </div>
                     
                     <!-- Call to Action - More Prominent -->
                     <div class="text-center">
@@ -2771,9 +2979,10 @@ results = orchestrator.run_comparative_simulation(
                 {name: 'Proton', color: '#556B2F', symbol: 'p⁺'},
                 {name: 'Neutron', color: '#8B7355', symbol: 'n'},
                 {name: 'Neutrino', color: '#7C3AED', symbol: 'ν'},
-                {name: 'Muon', color: '#1A3A8A', symbol: 'μ'},
-                {name: 'Tau', color: '#B91C1C', symbol: 'τ'},
-                {name: 'Higgs', color: '#10b981', symbol: 'H'}
+                {name: 'Muon (Not yet implemented)', color: '#1A3A8A', symbol: 'μ'},
+                {name: 'Tau (Not yet implemented)', color: '#B91C1C', symbol: 'τ'},
+                {name: 'Higgs (Not yet implemented)', color: '#10b981', symbol: 'H'}
+    
             ];
             
             // Assign to theories - spawning from further left since stage moved to x:100
@@ -2802,7 +3011,7 @@ results = orchestrator.run_comparative_simulation(
                 ctx.font = 'bold 24px Playfair Display, serif';
                 ctx.fillStyle = colors.accent;
                 ctx.textAlign = 'center';
-                ctx.fillText('A newly introduced theory implementation undergoes tests against known laws of physics for validation', validationGauntletCanvas.width/2, 30);
+                ctx.fillText('Every proposal goes through a set of validators', validationGauntletCanvas.width/2, 30);
                 
                 // Draw the gauntlet stages
                 const stages = [
@@ -3808,6 +4017,257 @@ results = orchestrator.run_comparative_simulation(
                 }, 100);
             });
         });
+
+        // Cache Flow Diagram
+        const cacheCanvas = document.getElementById('cacheFlowDiagram');
+        if (cacheCanvas) {
+            const cacheCtx = cacheCanvas.getContext('2d');
+            
+            // Set canvas size for high DPI displays
+            const dpr = window.devicePixelRatio || 1;
+            cacheCanvas.width = 1000 * dpr;
+            cacheCanvas.height = 300 * dpr;
+            cacheCanvas.style.width = '1000px';
+            cacheCanvas.style.height = '300px';
+            cacheCtx.scale(dpr, dpr);
+            
+            // Animation variables
+            let cacheAnimFrame = 0;
+            const particles = [];
+            
+            // Define flow stages with colors matching the site theme
+            const colors = {
+                accent: '#0066cc',
+                success: '#22c55e',
+                warning: '#ff6600',
+                muted: '#6b7280',
+                quantum: '#8b5cf6',
+                bg: '#f9fafb'
+            };
+            
+            const stages = [
+                { id: 'request', x: 100, y: 150, width: 140, height: 60, label: 'Trajectory\nRequest', color: colors.accent },
+                { id: 'hash', x: 300, y: 150, width: 140, height: 60, label: 'Parameter\nHashing', color: colors.quantum },
+                { id: 'lookup', x: 500, y: 150, width: 140, height: 60, label: 'Cache\nLookup', color: colors.muted },
+                { id: 'hit', x: 700, y: 80, width: 120, height: 50, label: 'Cache Hit\n(~10ms)', color: colors.success },
+                { id: 'miss', x: 700, y: 220, width: 120, height: 50, label: 'Cache Miss\n(minutes)', color: colors.warning },
+                { id: 'result', x: 880, y: 150, width: 100, height: 60, label: 'Return\nResult', color: colors.accent }
+            ];
+            
+            // Draw flow diagram
+            function drawCacheFlow() {
+                // Clear canvas with subtle background
+                cacheCtx.fillStyle = colors.bg;
+                cacheCtx.fillRect(0, 0, 1000, 300);
+                
+                // Draw connections with softer lines
+                cacheCtx.strokeStyle = '#e5e7eb';
+                cacheCtx.lineWidth = 1.5;
+                
+                // Request -> Hash
+                drawArrow(240, 180, 300, 180);
+                
+                // Hash -> Lookup
+                drawArrow(440, 180, 500, 180);
+                
+                // Lookup -> Hit (curved up)
+                cacheCtx.beginPath();
+                cacheCtx.moveTo(640, 180);
+                cacheCtx.quadraticCurveTo(670, 150, 700, 105);
+                cacheCtx.stroke();
+                drawArrowHead(700, 105, -Math.PI/4);
+                
+                // Lookup -> Miss (curved down)
+                cacheCtx.beginPath();
+                cacheCtx.moveTo(640, 180);
+                cacheCtx.quadraticCurveTo(670, 210, 700, 245);
+                cacheCtx.stroke();
+                drawArrowHead(700, 245, Math.PI/4);
+                
+                // Hit -> Result
+                cacheCtx.beginPath();
+                cacheCtx.moveTo(820, 105);
+                cacheCtx.quadraticCurveTo(850, 120, 880, 180);
+                cacheCtx.stroke();
+                drawArrowHead(880, 180, Math.PI/6);
+                
+                // Miss -> Result (with compute step)
+                cacheCtx.beginPath();
+                cacheCtx.moveTo(820, 245);
+                cacheCtx.quadraticCurveTo(850, 230, 880, 180);
+                cacheCtx.stroke();
+                drawArrowHead(880, 180, -Math.PI/6);
+                
+                // Draw stages
+                stages.forEach(stage => {
+                    // Subtle shadow (rounded)
+                    const shadowOffset = 2;
+                    const shadowRadius = 8;
+                    cacheCtx.fillStyle = 'rgba(0,0,0,0.05)';
+                    cacheCtx.beginPath();
+                    cacheCtx.moveTo(stage.x + shadowRadius + shadowOffset, stage.y + shadowOffset);
+                    cacheCtx.lineTo(stage.x + stage.width - shadowRadius + shadowOffset, stage.y + shadowOffset);
+                    cacheCtx.quadraticCurveTo(stage.x + stage.width + shadowOffset, stage.y + shadowOffset, stage.x + stage.width + shadowOffset, stage.y + shadowRadius + shadowOffset);
+                    cacheCtx.lineTo(stage.x + stage.width + shadowOffset, stage.y + stage.height - shadowRadius + shadowOffset);
+                    cacheCtx.quadraticCurveTo(stage.x + stage.width + shadowOffset, stage.y + stage.height + shadowOffset, stage.x + stage.width - shadowRadius + shadowOffset, stage.y + stage.height + shadowOffset);
+                    cacheCtx.lineTo(stage.x + shadowRadius + shadowOffset, stage.y + stage.height + shadowOffset);
+                    cacheCtx.quadraticCurveTo(stage.x + shadowOffset, stage.y + stage.height + shadowOffset, stage.x + shadowOffset, stage.y + stage.height - shadowRadius + shadowOffset);
+                    cacheCtx.lineTo(stage.x + shadowOffset, stage.y + shadowRadius + shadowOffset);
+                    cacheCtx.quadraticCurveTo(stage.x + shadowOffset, stage.y + shadowOffset, stage.x + shadowRadius + shadowOffset, stage.y + shadowOffset);
+                    cacheCtx.closePath();
+                    cacheCtx.fill();
+                    
+                    // Box with border style for some elements
+                    const radius = 8;
+                    
+                    // Draw rounded rectangle
+                    cacheCtx.beginPath();
+                    cacheCtx.moveTo(stage.x + radius, stage.y);
+                    cacheCtx.lineTo(stage.x + stage.width - radius, stage.y);
+                    cacheCtx.quadraticCurveTo(stage.x + stage.width, stage.y, stage.x + stage.width, stage.y + radius);
+                    cacheCtx.lineTo(stage.x + stage.width, stage.y + stage.height - radius);
+                    cacheCtx.quadraticCurveTo(stage.x + stage.width, stage.y + stage.height, stage.x + stage.width - radius, stage.y + stage.height);
+                    cacheCtx.lineTo(stage.x + radius, stage.y + stage.height);
+                    cacheCtx.quadraticCurveTo(stage.x, stage.y + stage.height, stage.x, stage.y + stage.height - radius);
+                    cacheCtx.lineTo(stage.x, stage.y + radius);
+                    cacheCtx.quadraticCurveTo(stage.x, stage.y, stage.x + radius, stage.y);
+                    cacheCtx.closePath();
+                    
+                    if (stage.id === 'lookup' || stage.id === 'hash') {
+                        // Border style
+                        cacheCtx.fillStyle = '#ffffff';
+                        cacheCtx.fill();
+                        cacheCtx.strokeStyle = stage.color;
+                        cacheCtx.lineWidth = 2;
+                        cacheCtx.stroke();
+                    } else {
+                        // Filled style with lower opacity
+                        cacheCtx.fillStyle = stage.color + '15'; // Add transparency
+                        cacheCtx.fill();
+                        cacheCtx.strokeStyle = stage.color;
+                        cacheCtx.lineWidth = 1.5;
+                        cacheCtx.stroke();
+                    }
+                    
+                    // Text with appropriate color
+                    cacheCtx.fillStyle = (stage.id === 'lookup' || stage.id === 'hash') ? stage.color : '#374151';
+                    cacheCtx.font = '600 13px -apple-system, BlinkMacSystemFont, sans-serif';
+                    cacheCtx.textAlign = 'center';
+                    cacheCtx.textBaseline = 'middle';
+                    
+                    const lines = stage.label.split('\\n');
+                    const lineHeight = 18;
+                    const startY = stage.y + stage.height/2 - (lines.length - 1) * lineHeight/2;
+                    
+                    lines.forEach((line, i) => {
+                        cacheCtx.fillText(line, stage.x + stage.width/2, startY + i * lineHeight);
+                    });
+                });
+                
+                // Draw animated particles
+                updateParticles();
+                particles.forEach(particle => {
+                    cacheCtx.fillStyle = particle.color + '80'; // Add transparency
+                    cacheCtx.beginPath();
+                    cacheCtx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
+                    cacheCtx.fill();
+                });
+                
+                // Add subtle labels
+                cacheCtx.fillStyle = '#9ca3af';
+                cacheCtx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+                cacheCtx.textAlign = 'center';
+                
+                // Hit rate label
+                cacheCtx.fillText('~95% hit rate', 760, 55);
+                
+                // Miss compute label
+                cacheCtx.fillText('Full computation', 760, 285);
+                
+                cacheAnimFrame++;
+            }
+            
+            function drawArrow(x1, y1, x2, y2) {
+                cacheCtx.beginPath();
+                cacheCtx.moveTo(x1, y1);
+                cacheCtx.lineTo(x2, y2);
+                cacheCtx.stroke();
+                
+                const angle = Math.atan2(y2 - y1, x2 - x1);
+                drawArrowHead(x2, y2, angle);
+            }
+            
+            function drawArrowHead(x, y, angle) {
+                const headLength = 8;
+                cacheCtx.beginPath();
+                cacheCtx.moveTo(x, y);
+                cacheCtx.lineTo(x - headLength * Math.cos(angle - Math.PI/6), y - headLength * Math.sin(angle - Math.PI/6));
+                cacheCtx.moveTo(x, y);
+                cacheCtx.lineTo(x - headLength * Math.cos(angle + Math.PI/6), y - headLength * Math.sin(angle + Math.PI/6));
+                cacheCtx.stroke();
+            }
+            
+            function updateParticles() {
+                // Add new particles periodically
+                if (cacheAnimFrame % 60 === 0) {
+                    const isHit = Math.random() > 0.05; // 95% hit rate
+                    particles.push({
+                        x: 100,
+                        y: 180,
+                        targetPath: isHit ? 'hit' : 'miss',
+                        progress: 0,
+                        color: isHit ? colors.success : colors.warning
+                    });
+                }
+                
+                // Update existing particles
+                particles.forEach((particle, index) => {
+                    particle.progress += 0.015;
+                    
+                    if (particle.progress < 0.25) {
+                        // Request -> Hash
+                        particle.x = 100 + (300 - 100) * (particle.progress * 4);
+                        particle.y = 180;
+                    } else if (particle.progress < 0.5) {
+                        // Hash -> Lookup
+                        const t = (particle.progress - 0.25) * 4;
+                        particle.x = 300 + (500 - 300) * t;
+                        particle.y = 180;
+                    } else if (particle.progress < 0.75) {
+                        // Lookup -> Hit/Miss
+                        const t = (particle.progress - 0.5) * 4;
+                        if (particle.targetPath === 'hit') {
+                            particle.x = 500 + 200 * t;
+                            particle.y = 180 - 75 * t;
+                        } else {
+                            particle.x = 500 + 200 * t;
+                            particle.y = 180 + 65 * t;
+                        }
+                    } else if (particle.progress < 1) {
+                        // Hit/Miss -> Result
+                        const t = (particle.progress - 0.75) * 4;
+                        if (particle.targetPath === 'hit') {
+                            particle.x = 700 + 180 * t;
+                            particle.y = 105 + 75 * t;
+                        } else {
+                            particle.x = 700 + 180 * t;
+                            particle.y = 245 - 65 * t;
+                        }
+                    } else {
+                        // Remove completed particles
+                        particles.splice(index, 1);
+                    }
+                });
+            }
+            
+            // Animation loop
+            function animateCacheFlow() {
+                drawCacheFlow();
+                requestAnimationFrame(animateCacheFlow);
+            }
+            
+            animateCacheFlow();
+        }
     </script>
 
 </body>

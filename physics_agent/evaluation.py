@@ -1724,7 +1724,9 @@ def run_comprehensive_tests(args=None):
     
     # <reason>chain: Create latest_run directory for easy access</reason>
     # Copy to physics_agent/latest_run with simple name
-    latest_run_dir = 'physics_agent/latest_run'
+    # Use absolute path to avoid creating nested physics_agent/physics_agent
+    physics_agent_dir = os.path.dirname(os.path.abspath(__file__))
+    latest_run_dir = os.path.join(physics_agent_dir, 'latest_run')
     os.makedirs(latest_run_dir, exist_ok=True)
     simple_html = os.path.join(latest_run_dir, 'latest.html')
     html_generator.generate_report(all_results, simple_html)
@@ -1924,7 +1926,8 @@ def main():
         # <reason>chain: Also copy viewer to physics_agent/latest_run</reason>
         # Copy to physics_agent/latest_run/trajectory_viewers/
         if os.path.exists(unified_viewer):
-            physics_latest_dir = os.path.join('physics_agent', 'latest_run')
+            physics_agent_dir = os.path.dirname(os.path.abspath(__file__))
+            physics_latest_dir = os.path.join(physics_agent_dir, 'latest_run')
             physics_viewers_dir = os.path.join(physics_latest_dir, 'trajectory_viewers')
             os.makedirs(physics_viewers_dir, exist_ok=True)
             simple_viewer_path = os.path.join(physics_viewers_dir, 'viewer.html')

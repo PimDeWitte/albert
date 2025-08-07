@@ -5047,7 +5047,9 @@ def main():
     # Copy to docs/latest_run for easy access
     try:
         # Ensure docs/latest_run directory exists
-        docs_latest_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', 'latest_run')
+        # Get the albert root directory (parent of physics_agent)
+        albert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        docs_latest_dir = os.path.join(albert_root, 'docs', 'latest_run')
         os.makedirs(docs_latest_dir, exist_ok=True)
         
         # Find the most recent comprehensive report in the run directory
@@ -5064,7 +5066,9 @@ def main():
         
         # <reason>chain: Also copy to physics_agent/latest_run for consistency</reason>
         # Copy to physics_agent/latest_run with simple name
-        physics_latest_dir = os.path.join('physics_agent', 'latest_run')
+        # Use absolute path to avoid creating nested physics_agent/physics_agent
+        physics_agent_dir = os.path.dirname(os.path.abspath(__file__))
+        physics_latest_dir = os.path.join(physics_agent_dir, 'latest_run')
         os.makedirs(physics_latest_dir, exist_ok=True)
         
         if comprehensive_reports:
