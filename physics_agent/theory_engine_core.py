@@ -5062,6 +5062,26 @@ def main():
             shutil.copy2(latest_report, timestamped_report_path)
             print(f"\n  Copied comprehensive report to docs/latest_run/")
         
+        # <reason>chain: Also copy to physics_agent/latest_run for consistency</reason>
+        # Copy to physics_agent/latest_run with simple name
+        physics_latest_dir = os.path.join('physics_agent', 'latest_run')
+        os.makedirs(physics_latest_dir, exist_ok=True)
+        
+        if comprehensive_reports:
+            latest_report = max(comprehensive_reports, key=os.path.getmtime)
+            simple_report_path = os.path.join(physics_latest_dir, 'latest.html')
+            shutil.copy2(latest_report, simple_report_path)
+            print(f"  Copied report to physics_agent/latest_run/latest.html")
+        
+        # Copy trajectory viewers
+        viewers_src = os.path.join(reports_dir, "trajectory_viewers")
+        if os.path.exists(viewers_src):
+            viewers_dst = os.path.join(physics_latest_dir, "trajectory_viewers")
+            if os.path.exists(viewers_dst):
+                shutil.rmtree(viewers_dst)
+            shutil.copytree(viewers_src, viewers_dst)
+            print(f"  Copied trajectory viewers to physics_agent/latest_run/trajectory_viewers/")
+        
         # Copy leaderboard if it exists
         if os.path.exists(os.path.join(reports_dir, "leaderboard.html")):
             shutil.copy2(os.path.join(reports_dir, "leaderboard.html"), 

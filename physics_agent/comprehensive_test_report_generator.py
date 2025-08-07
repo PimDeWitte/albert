@@ -581,12 +581,13 @@ class ComprehensiveTestReportGenerator:
                     if abs(pred_val - sota_val) < 1e-10:  # Prediction matches SOTA
                         lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because SM (SOTA) doesn\'t explain the experimental anomaly</div>')
                 
-                # For CMB tests that fail despite matching SOTA
+                # For CMB tests that fail, explain why
                 if 'CMB' in test.get('name', '') and not test.get('passed', True):
-                    if abs(pred_val - sota_val) < 0.1:  # Prediction matches SOTA
-                        # Check if it's a spatial curvature issue
-                        if test.get('notes', '').find('lacks spatial curvature') >= 0:
-                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                    # Check if it's a spatial curvature issue
+                    if test.get('notes', '').find('lacks spatial curvature') >= 0:
+                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                    elif pred_val > sota_val * 1.1:  # Theory is significantly worse than SOTA
+                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Chi² too high - theory doesn\'t fit CMB data well</div>')
                 
                 lines.append('                    </div>')
             
@@ -676,12 +677,13 @@ class ComprehensiveTestReportGenerator:
                         if abs(pred_val - sota_val) < 1e-10:  # Prediction matches SOTA
                             lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because SM (SOTA) doesn\'t explain the experimental anomaly</div>')
                     
-                    # For CMB solver tests that fail despite matching SOTA
+                    # For CMB solver tests that fail, explain why
                     if 'CMB' in test.get('name', '') and not test.get('passed', True):
-                        if abs(pred_val - sota_val) < 0.1:  # Prediction matches SOTA
-                            # Check if it's a spatial curvature issue
-                            if test.get('notes', '').find('lacks spatial curvature') >= 0:
-                                lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                        # Check if it's a spatial curvature issue
+                        if test.get('notes', '').find('lacks spatial curvature') >= 0:
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because theory lacks spatial curvature needed for cosmology</div>')
+                        elif pred_val > sota_val * 1.1:  # Theory is significantly worse than SOTA
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Chi² too high - theory doesn\'t fit CMB data well</div>')
                     
                     if test.get('exec_time') is not None and test['status'] not in ['SKIP', 'N/A']:
                         exec_time = test['exec_time']

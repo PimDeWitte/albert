@@ -1722,6 +1722,14 @@ def run_comprehensive_tests(args=None):
     html_generator.generate_report(all_results, latest_html)
     print(f"Latest report available at: {latest_html}")
     
+    # <reason>chain: Create latest_run directory for easy access</reason>
+    # Copy to physics_agent/latest_run with simple name
+    latest_run_dir = 'physics_agent/latest_run'
+    os.makedirs(latest_run_dir, exist_ok=True)
+    simple_html = os.path.join(latest_run_dir, 'latest.html')
+    html_generator.generate_report(all_results, simple_html)
+    print(f"Latest report (simple path): {simple_html}")
+    
     return all_results, report_file, html_path
 
 
@@ -1848,12 +1856,12 @@ def main():
     # Generate unified multi-particle viewer with advanced features
     print("\nGenerating unified multi-particle viewer...")
     try:
-        from physics_agent.ui.renderer import generate_unified_multi_particle_viewer
+        from physics_agent.ui.renderer import generate_viewer
         viewers_dir = os.path.join(run_dir, 'trajectory_viewers')
         os.makedirs(viewers_dir, exist_ok=True)
         
         viewer_path = os.path.join(viewers_dir, 'unified_multi_particle_viewer_advanced.html')
-        generate_unified_multi_particle_viewer(
+        generate_viewer(
             run_dir=run_dir,
             output_path=viewer_path,
             black_hole_mass=9.945e13  # Primordial mini BH in kg
@@ -1912,6 +1920,16 @@ def main():
             latest_viewer_path = os.path.join(docs_viewers_dir, 'unified_multi_particle_viewer_advanced.html')
             shutil.copy(unified_viewer, latest_viewer_path)
             print(f"Copied unified viewer to docs/latest_run/trajectory_viewers/")
+        
+        # <reason>chain: Also copy viewer to physics_agent/latest_run</reason>
+        # Copy to physics_agent/latest_run/trajectory_viewers/
+        if os.path.exists(unified_viewer):
+            physics_latest_dir = os.path.join('physics_agent', 'latest_run')
+            physics_viewers_dir = os.path.join(physics_latest_dir, 'trajectory_viewers')
+            os.makedirs(physics_viewers_dir, exist_ok=True)
+            simple_viewer_path = os.path.join(physics_viewers_dir, 'viewer.html')
+            shutil.copy(unified_viewer, simple_viewer_path)
+            print(f"Copied viewer to physics_agent/latest_run/trajectory_viewers/viewer.html")
             
         print(f"\n✓ Latest results available at: docs/latest_run/")
         

@@ -208,7 +208,7 @@ def restore_theory_name(safe_name: str) -> str:
     # General underscore replacement
     return safe_name.replace('_', ' ')
 
-def generate_unified_multi_particle_viewer(
+def generate_viewer(
     run_dir: str,
     output_path: str,
     black_hole_mass: float = 9.945e13  # Primordial mini BH in kg
@@ -265,7 +265,7 @@ def update_comprehensive_report_generator():
         
         try:
             from physics_agent.ui.renderer import (
-                generate_unified_multi_particle_viewer
+                generate_viewer
             )
         except ImportError:
             print("Warning: Could not import unified multi-particle viewer generator")
@@ -274,7 +274,7 @@ def update_comprehensive_report_generator():
         # Generate unified viewer for all theories
         try:
             unified_viewer_path = os.path.join(viewers_dir, 'unified_multi_particle_viewer.html')
-            generate_unified_multi_particle_viewer(
+            generate_viewer(
                 run_dir=output_dir,
                 output_path=unified_viewer_path,
                 black_hole_mass=9.945e13  # Primordial mini BH in kg
@@ -319,7 +319,7 @@ if __name__ == "__main__":
     run_dir = sys.argv[1]
     output_path = sys.argv[2] if len(sys.argv) > 2 else "unified_trajectory_viewer.html"
     
-    result = generate_unified_multi_particle_viewer(
+    result = generate_viewer(
         run_dir=run_dir,
         output_path=output_path
     )
