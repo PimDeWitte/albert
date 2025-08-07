@@ -1963,25 +1963,7 @@ results = orchestrator.run_comparative_simulation(
                             <!-- Cache Flow Canvas -->
                             <canvas id="cacheFlowDiagram" width="1000" height="300" class="w-full max-w-5xl mx-auto"></canvas>
                             
-                            <!-- Performance Stats -->
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-4xl mx-auto">
-                                <div class="text-center p-4 bg-accent/5 rounded-lg">
-                                    <div class="text-3xl font-bold text-accent">1k-30k×</div>
-                                    <div class="text-sm text-muted">Faster</div>
-                                </div>
-                                <div class="text-center p-4 bg-success/5 rounded-lg">
-                                    <div class="text-3xl font-bold text-success">ms</div>
-                                    <div class="text-sm text-muted">vs minutes</div>
-                                </div>
-                                <div class="text-center p-4 bg-quantum/5 rounded-lg">
-                                    <div class="text-3xl font-bold text-quantum">SHA256</div>
-                                    <div class="text-sm text-muted">Hashing</div>
-                                </div>
-                                <div class="text-center p-4 bg-warning/5 rounded-lg">
-                                    <div class="text-3xl font-bold text-warning">95%</div>
-                                    <div class="text-sm text-muted">Hit rate</div>
-                                </div>
-                            </div>
+                           
                         </div>
                         
                         <!-- Feature Cards - Horizontal Scrollable -->
@@ -2011,18 +1993,37 @@ results = orchestrator.run_comparative_simulation(
                                 <a href="documentation.html?tab=introduction" target="_blank" class="group flex-shrink-0 w-80">
                                     <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
                                         <div class="flex items-center gap-3 mb-4">
-                                            <div class="text-4xl">🔍</div>
+                                            <div class="text-4xl">🤖</div>
                                             <h3 class="text-xl font-bold text-accent">Discovery Mode</h3>
                                         </div>
                                         <p class="text-ink mb-4">
-                                            AI-generated theories via Grok or your own candidates.
+                                            AI-powered theory generation using Grok.
                                         </p>
                                         <ul class="text-sm text-muted space-y-1 mb-4">
-                                            <li>• Grok theory generation</li>
-                                            <li>• Custom candidates folder</li>
-                                            <li>• Automated validation</li>
+                                            <li>• Grok generates theories</li>
+                                            <li>• Automated testing</li>
+                                            <li>• Physics-informed search</li>
                                         </ul>
-                                        <div class="text-warning font-semibold">Use --candidates</div>
+                                        <div class="text-warning font-semibold">Experimental feature</div>
+                                    </div>
+                                </a>
+                                
+                                <!-- Custom Candidates Card -->
+                                <a href="documentation.html?tab=introduction" target="_blank" class="group flex-shrink-0 w-80">
+                                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <div class="text-4xl">🔬</div>
+                                            <h3 class="text-xl font-bold text-accent">Custom Candidates</h3>
+                                        </div>
+                                        <p class="text-ink mb-4">
+                                            Test your own experimental theories.
+                                        </p>
+                                        <ul class="text-sm text-muted space-y-1 mb-4">
+                                            <li>• Add to candidates/ folder</li>
+                                            <li>• Run alongside baselines</li>
+                                            <li>• Full validation suite</li>
+                                        </ul>
+                                        <div class="text-accent font-semibold group-hover:underline">Use --candidates</div>
                                     </div>
                                 </a>
                                 
@@ -4049,8 +4050,8 @@ results = orchestrator.run_comparative_simulation(
                 { id: 'request', x: 100, y: 150, width: 140, height: 60, label: 'Trajectory\nRequest', color: colors.accent },
                 { id: 'hash', x: 300, y: 150, width: 140, height: 60, label: 'Parameter\nHashing', color: colors.quantum },
                 { id: 'lookup', x: 500, y: 150, width: 140, height: 60, label: 'Cache\nLookup', color: colors.muted },
-                { id: 'hit', x: 700, y: 80, width: 120, height: 50, label: 'Cache Hit\n(~10ms)', color: colors.success },
-                { id: 'miss', x: 700, y: 220, width: 120, height: 50, label: 'Cache Miss\n(minutes)', color: colors.warning },
+                { id: 'hit', x: 700, y: 80, width: 120, height: 50, label: ' Hit\n', color: colors.success },
+                { id: 'miss', x: 700, y: 220, width: 120, height: 50, label: 'Calculate', color: colors.warning },
                 { id: 'result', x: 880, y: 150, width: 100, height: 60, label: 'Return\nResult', color: colors.accent }
             ];
             
@@ -4179,7 +4180,7 @@ results = orchestrator.run_comparative_simulation(
                 cacheCtx.textAlign = 'center';
                 
                 // Hit rate label
-                cacheCtx.fillText('~95% hit rate', 760, 55);
+                cacheCtx.fillText('Param hash lookup', 760, 55);
                 
                 // Miss compute label
                 cacheCtx.fillText('Full computation', 760, 285);
