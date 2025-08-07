@@ -558,8 +558,8 @@
                         <th>Type</th>
                         <th>Description</th>
                         <th>Purpose/What it Tests</th>
-                        <th>Reference Links</th>
                         <th>Dataset Links</th>
+                        <th>Code Reference</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -571,9 +571,6 @@
                         <td><span class="type-prediction">Prediction</span></td>
                         <td>Computes χ²/dof for TT spectrum (l=2-30) vs. Planck 2018 data. Compares to ΛCDM SOTA (χ²/dof ~53.08).</td>
                         <td>Tests theory's prediction for primordial fluctuations and cosmology.</td>
-                        <td>
-                            <a href="https://www.aanda.org/articles/aa/abs/2020/09/aa35332-19/aa35332-19.html">Planck 2018 results</a> (works)
-                        </td>
                         <td>
                             Remote: <code class="uri-code">dataloader://planck_cmb_2018</code>
                         </td>
@@ -588,9 +585,6 @@
                         <td>Predicts GW amplitude and spectral index vs. NANOGrav 15yr data (amp 1.70e-15 ±7.82e-16, index -0.680 ±0.250). Computes lnL vs. SMBHB SOTA.</td>
                         <td>Tests low-frequency GW background from supermassive black holes or primordial sources.</td>
                         <td>
-                            <a href="https://nanograv.org/science/data">NANOGrav 15yr data</a> (works)
-                        </td>
-                        <td>
                             Remote: <code class="uri-code">dataloader://nanograv_15yr</code>
                         </td>
                         <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/pta_stochastic_gw_validator.py" class="code-link" target="_blank">Show code</a></td>
@@ -603,13 +597,9 @@
                         <td><span class="type-prediction">Prediction</span></td>
                         <td>Predicts tensor-to-scalar ratio r and tilt n_t vs. standard inflation (r&lt;0.036 upper limit from BICEP/Keck).</td>
                         <td>Tests inflationary predictions and tensor modes.</td>
-                        <td>
-                            <a href="https://arxiv.org/abs/2310.05224">BICEP/Keck 2023</a> (works)
-                        </td>
                         <td>Remote: <code class="uri-code">dataloader://bicep_keck_2021</code></td>
                         <td><a href="https://raw.githubusercontent.com/PimDeWitte/albert/refs/heads/main/physics_agent/validations/primordial_gws_validator.py" class="code-link" target="_blank">Show code</a></td>
                     </tr>
-
                 </tbody>
             </table>
         </div>
