@@ -1,15 +1,15 @@
-# 🌌 Albert: Physics at The Speed of AI
+# 🌌 Albert: A Multi-Physics Differential PyTorch Research Engine
 
 <div align="center">
   <img src="docs/sketch.png" alt="Albert Einstein Sketch" width="200"/>
   
-  **A timely agent for gravitational theory research**
+  **Unified Physics at The Speed of AI**
   
   [![GitHub](https://img.shields.io/badge/GitHub-View%20Code-blue?logo=github)](https://github.com/pimdewitte/albert)
   [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord)](https://discord.gg/xdybbSk5)
   [![Status](https://img.shields.io/badge/Status-Research%20Preview-yellow)]()
   
-  *One engine to model everything. In code. Rooted in the laws of physics.*
+  *A PyTorch-based multi-physics engine for testing and validating theories across all fields of physics through differentiable simulations.*
 </div>
 
 ---
@@ -28,11 +28,19 @@ cd albert
 # Run all theories (standard run)
 albert run
 
+# Run theories by physics field
+albert run --physics-fields gravitational         # Only gravitational theories
+albert run --physics-fields thermodynamic fluid_dynamics  # Multiple fields
+albert run --physics-fields particle_physics      # Particle physics only
+
 # Run with specific options
 albert run --max-steps 100000
 albert run --theories schwarzschild kerr
 albert run --theories schwarzschild --black-hole-preset stellar_mass
 albert run --category quantum
+
+# Test a single theory from file
+albert run --single-theory path/to/my_theory.py
 
 # Configure Albert (API keys, etc.)
 albert setup
@@ -50,6 +58,29 @@ sudo ln -s $(pwd)/albert /usr/local/bin/albert
 
 ---
 
+## 🧬 Bridging Fundamental Physics and Machine Learning
+
+Albert enables a new paradigm: learning from verifiable physics simulations to create high-quality training data. By implementing theories as computational models—metric tensors and field equations—our solvers generate trajectories that are guaranteed to follow the laws of physics. This creates a unique opportunity to train AI systems on data that is both physically correct and computationally verified, bridging the gap between theoretical physics and machine learning through differentiable simulations in PyTorch.
+
+The framework's differentiable nature means every simulation becomes a potential training example, where gradient-based optimization can learn from the physics itself. This approach transforms how we create datasets for physics AI—instead of relying on limited experimental data, we can generate unlimited training examples from theories that have been validated against observations.
+
+## 🌟 Multi-Physics Framework
+
+Albert now supports theories across multiple fields of physics, not just gravity:
+
+### Supported Physics Fields
+
+- **Gravitational Physics** - General relativity, modified gravity, quantum gravity
+- **Thermodynamics** - Black hole thermodynamics, emergent spacetime from entanglement
+- **Fluid Dynamics** - Relativistic fluids, analog gravity in superfluids
+- **Electromagnetism** - Charged black holes, plasma physics in curved spacetime
+- **Particle Physics** - Quantum field theory, anomalies, high-energy phenomena
+- **Cosmology** - Dark energy, inflation, CMB physics
+
+Each field has specialized validators and theories that test field-specific phenomena while maintaining connections to other fields through unified physics principles.
+
+---
+
 ## 🎯 Command Line Interface
 
 Albert provides a unified CLI with multiple subcommands:
@@ -59,10 +90,16 @@ Albert provides a unified CLI with multiple subcommands:
 # Run all theories with default settings
 albert run
 
+# Run theories by physics field
+albert run --physics-fields gravitational       # Gravitational theories only
+albert run --physics-fields thermodynamic       # Thermodynamic theories only
+albert run --physics-fields particle_physics cosmology  # Multiple fields
+
 # Run specific theories
 albert run --theories schwarzschild kerr        # Multiple theories
 albert run --category quantum                    # Run category
 albert run --candidates                          # Include candidates
+albert run --single-theory path/to/theory.py    # Test a single theory file
 
 # Black hole configurations
 albert run --black-hole-preset stellar_mass      # 10 solar masses
@@ -108,6 +145,33 @@ albert discover --from-theory theories/quantum_corrected
 
 # Continuous monitoring mode
 albert discover --self-monitor
+
+# Token-space restrictions (reduce search with LLM proposals)
+albert discover --operands t,r,theta,phi,M,rs,q_gen --unary SIN,COS,DT --binary ADD,MUL,POW
+
+# Adaptive stopping instead of fixed candidate count
+albert discover --time-budget-seconds 120              # stop after 2 minutes
+albert discover --target-unique 100                    # stop after 100 unique expressions
+albert discover --patience 5 --batch-size 10           # stop if 5 batches add no new unique
+
+# Fixed-size run (legacy)
+albert discover --num-candidates 50 --max-symbols 8 --mcts-sims 64
+```
+
+### `albert match-search` - Policy+MCTS Match-Only Exploration
+```bash
+# Explore math-space without LLM prompts (policy+MCTS only)
+albert match-search
+
+# Restrict token space and use adaptive stopping
+albert match-search \
+  --operands t,r,phi,M,rs,q_gen \
+  --unary SIN,COS,DT \
+  --binary ADD,MUL,POW \
+  --time-budget-seconds 180 --patience 5 --batch-size 8
+
+# Fixed-size variant
+albert match-search --num-candidates 100 --max-symbols 10 --mcts-sims 64
 ```
 
 ### `albert setup` - Configuration
@@ -146,6 +210,20 @@ Albert uses 14 comprehensive validators to test gravitational theories against e
 - **Scattering Amplitude**: Tree-level graviton exchange (68.8% pass rate)
 - **CMB Power Spectrum**: Planck satellite constraints (71.9% pass rate)
 - **Primordial GWs**: B-mode polarization (93.8% pass rate)
+
+---
+
+## 🔬 Understanding the Validation Framework
+
+When a newly introduced theory is implemented computationally, it must pass through sophisticated tests that verify its adherence to known physics. Think of validators as automated experts, each specialized in checking specific aspects of physical law compliance.
+
+The validation process follows a systematic progression:
+1. **Constraint validators** ensure basic mathematical consistency—conservation of energy, angular momentum, and proper metric signatures
+2. **Classical validators** verify agreement with well-established phenomena like Mercury's perihelion precession and light deflection by the Sun
+3. **Quantum validators** test predictions against modern experiments involving quantum corrections and high-energy physics
+4. **Predictions** examine open research questions like the Muon G-2 anomaly to see if the theory can make progress on unsolved problems
+
+Each validator not only checks for correctness but also measures precision. A theory might correctly predict Mercury's orbit but with insufficient accuracy, or it might conserve energy only approximately. The framework tracks these nuances, building a comprehensive profile of each theory's strengths and limitations.
 
 ---
 

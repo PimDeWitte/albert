@@ -415,6 +415,91 @@
             }
         }
         
+        /* Timeline effect styles */
+        .timeline-container {
+            position: relative;
+            padding: 60px 0;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(26, 58, 138, 0.1) 10%,
+                rgba(26, 58, 138, 0.3) 30%,
+                rgba(26, 58, 138, 0.5) 50%,
+                rgba(26, 58, 138, 0.3) 70%,
+                rgba(26, 58, 138, 0.1) 90%,
+                transparent 100%);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgba(26, 58, 138, 0.8);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(26, 58, 138, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(26, 58, 138, 0.6);
+                transform: translateX(-50%) scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(26, 58, 138, 0.8);
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+        
+        .timeline-section {
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .timeline-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            background: #1a3a8a;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 0 0 3px rgba(26, 58, 138, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 30px;
+            }
+            .timeline-dot {
+                left: 30px;
+            }
+        }
+        
         /* Additional mobile improvements */
         @media (max-width: 640px) {
             /* Even smaller adjustments for very small screens */
@@ -811,9 +896,11 @@
         </section>
 
         <!-- The Emotional Journey Begins -->
-        <section id="journey" class="relative">
+        <section id="journey" class="relative timeline-container">
+            <div class="timeline-line"></div>
                     <!-- Chapter 2: Real-Time Theory Testing -->
-        <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper pt-8 md:pt-0">
+        <div class="timeline-section min-h-screen px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-paper pt-8 md:pt-0">
+            <div class="timeline-dot"></div>
                 <div class="max-w-7xl mx-auto">
                     
                     <!-- Section Header -->
@@ -855,13 +942,36 @@
                         </div>
                     </div>
                     
-                    <!-- Theory Engine Visualization - Full Width -->
-                    <div class="mb-20">
-                        <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-8 border border-code-border/30">
-                            <canvas id="theoryEngineCanvas" width="1200" height="800" class="w-full"></canvas>
+                    <!-- New Connection Section: Trajectory to Conservation -->
+                    <div class="mb-12 max-w-6xl mx-auto">
+                        <div class="bg-gradient-to-r from-accent/5 to-quantum/5 rounded-3xl p-8 border border-accent/20">
+                            <h3 class="text-2xl font-bold text-accent mb-4">How Trajectories Connect to Energy Conservation</h3>
+                            <p class="text-lg font-serif text-ink mb-6">
+                                The trajectories you see above aren't just visualizations—they're the raw output from solving Einstein's equations. 
+                                At every point along these paths, physics demands that certain quantities remain constant. Energy conservation 
+                                is the most fundamental of these constraints, serving as both a validation check and a window into the theory's accuracy.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-xl p-6 shadow-lg border border-code-border/50">
+                                    <div class="text-quantum text-3xl mb-2">📍</div>
+                                    <h4 class="font-bold text-lg mb-2">Position Data</h4>
+                                    <p class="text-sm text-muted">Solver outputs (t, r, φ) coordinates at each timestep along the trajectory</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-6 shadow-lg border border-code-border/50">
+                                    <div class="text-accent text-3xl mb-2">⚡</div>
+                                    <h4 class="font-bold text-lg mb-2">Energy Calculation</h4>
+                                    <p class="text-sm text-muted">Validators compute E = -(g_tt·u_t + g_tφ·u_φ) using the metric and velocities</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-6 shadow-lg border border-code-border/50">
+                                    <div class="text-success text-3xl mb-2">✓</div>
+                                    <h4 class="font-bold text-lg mb-2">Conservation Check</h4>
+                                    <p class="text-sm text-muted">Energy should remain constant to machine precision (~10⁻¹⁵)</p>
+                                </div>
+                            </div>
                         </div>
-                     
                     </div>
+                    
+
 
                 </div>
             </section>
@@ -870,7 +980,8 @@
 
 
             <!-- Chapter 6: A Validation Framework for Fundamental Physics -->
-            <div class="px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
+            <div class="timeline-section px-4 sm:px-6 lg:px-8 py-20 relative overflow-hidden bg-paper">
+                <div class="timeline-dot"></div>
                 <div class="container mx-auto">
                     <h2 class="text-4xl lg:text-6xl font-display font-bold text-center text-accent mb-12">
                          Bridging Fundamental Physics and Machine Learning
@@ -1006,11 +1117,224 @@ graph LR
                             ensuring numerical integration preserves the physics
                         </p>
                         </div>
+                        
+                        <!-- Validator Plots Gallery Section -->
+                        <div class="mt-8 mb-20 max-w-7xl mx-auto">
+                            <h4 class="text-2xl font-bold text-accent mb-6">Validator Plot Gallery</h4>
+                            <p class="text-muted mb-6 max-w-3xl">
+                                Explore our comprehensive validation framework with interactive visualizations across multiple physics domains
+                            </p>
+                            
+                            <!-- Horizontal Scrollable Plot Gallery -->
+                            <div class="overflow-x-auto pb-4">
+                                <div class="flex gap-6 min-w-max">
+                                    
+                                    <!-- Mercury Precession Plot -->
+                                    <a href="latest_run/validator_plots/mercury_orbit.png" target="_blank" class="group flex-shrink-0 w-96">
+                                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                            <div class="aspect-w-16 aspect-h-12 bg-gray-100">
+                                                <img src="latest_run/validator_plots/mercury_orbit.png" 
+                                                     alt="Mercury Precession Visualization" 
+                                                     class="w-full h-64 object-cover object-center">
+                                            </div>
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-bold text-accent mb-2">Mercury Orbit Precession</h3>
+                                                <p class="text-ink mb-3">
+                                                    Validates general relativistic correction to Mercury's perihelion advance
+                                                </p>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm text-muted">43 arcsec/century</span>
+                                                    <span class="text-accent font-semibold group-hover:underline">View full size →</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                    <!-- Light Deflection Plot -->
+                                    <a href="latest_run/validator_plots/light_deflection.png" target="_blank" class="group flex-shrink-0 w-96">
+                                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                            <div class="aspect-w-16 aspect-h-12 bg-gray-100">
+                                                <img src="latest_run/validator_plots/light_deflection.png" 
+                                                     alt="Light Deflection Visualization" 
+                                                     class="w-full h-64 object-cover object-center">
+                                            </div>
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-bold text-accent mb-2">Light Deflection by Sun</h3>
+                                                <p class="text-ink mb-3">
+                                                    Tests gravitational lensing effect on starlight passing near the Sun
+                                                </p>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm text-muted">1.75 arcseconds</span>
+                                                    <span class="text-accent font-semibold group-hover:underline">View full size →</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                    <!-- Photon Sphere Plot -->
+                                    <a href="latest_run/validator_plots/photon_sphere.png" target="_blank" class="group flex-shrink-0 w-96">
+                                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                            <div class="aspect-w-16 aspect-h-12 bg-gray-100">
+                                                <img src="latest_run/validator_plots/photon_sphere.png" 
+                                                     alt="Black Hole Shadow Visualization" 
+                                                     class="w-full h-64 object-cover object-center">
+                                            </div>
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-bold text-accent mb-2">Black Hole Shadow</h3>
+                                                <p class="text-ink mb-3">
+                                                    Simulates photon orbits and shadow formation around Schwarzschild black holes
+                                                </p>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm text-muted">r = 3GM/c²</span>
+                                                    <span class="text-accent font-semibold group-hover:underline">View full size →</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                    <!-- GW Waveform Plot -->
+                                    <a href="latest_run/validator_plots/gw_waveform.png" target="_blank" class="group flex-shrink-0 w-96">
+                                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                            <div class="aspect-w-16 aspect-h-12 bg-gray-100">
+                                                <img src="latest_run/validator_plots/gw_waveform.png" 
+                                                     alt="Gravitational Wave Visualization" 
+                                                     class="w-full h-64 object-cover object-center">
+                                            </div>
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-bold text-accent mb-2">Gravitational Waves</h3>
+                                                <p class="text-ink mb-3">
+                                                    Binary black hole merger waveforms matching LIGO/Virgo observations
+                                                </p>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm text-muted">GW150914-like</span>
+                                                    <span class="text-accent font-semibold group-hover:underline">View full size →</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                    <!-- Energy Conservation Plot -->
+                                    <a href="latest_run/validator_plots/conservation.png" target="_blank" class="group flex-shrink-0 w-96">
+                                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-code-border hover:border-accent/50 transition-all transform hover:scale-105">
+                                            <div class="aspect-w-16 aspect-h-12 bg-gray-100">
+                                                <img src="latest_run/validator_plots/conservation.png" 
+                                                     alt="Energy Conservation Visualization" 
+                                                     class="w-full h-64 object-cover object-center">
+                                            </div>
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-bold text-accent mb-2">Energy Conservation</h3>
+                                                <p class="text-ink mb-3">
+                                                    Validates conservation laws in curved spacetime for various trajectories
+                                                </p>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm text-muted">ΔE/E < 10⁻⁸</span>
+                                                    <span class="text-accent font-semibold group-hover:underline">View full size →</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- Scroll hint for mobile -->
+                            <div class="text-center text-muted text-sm mt-4 md:hidden">
+                                <span>← Swipe to see more plots →</span>
+                            </div>
+                        </div>
+                    
+
+                    
+                    <!-- Multi-Physics Validation Results -->
+                    <div class="max-w-7xl mx-auto mt-8">
+                        <h3 class="text-2xl font-bold text-accent mb-6 text-center">Extended Physics Validation Suite</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            
+                            <!-- Particle Physics -->
+                            <div class="bg-white rounded-2xl p-6 border border-code-border">
+                                <h4 class="font-bold text-lg mb-4 text-ink flex items-center">
+                                    <span class="text-2xl mr-2">⚛️</span> Particle Physics
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">g-2 Muon Anomaly</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">2-qubit sim</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Scattering Amplitudes</span>
+                                        <span class="text-xs bg-success-soft text-success px-2 py-1 rounded">1.48 nb ⭐</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Running Couplings</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">QFT test</span>
+                                    </div>
+                                </div>
+                                <a href="latest_run/latest_report.html#particle" class="text-accent hover:underline text-sm mt-3 block">View All Tests →</a>
+                            </div>
+                            
+                            <!-- Cosmology -->
+                            <div class="bg-white rounded-2xl p-6 border border-code-border">
+                                <h4 class="font-bold text-lg mb-4 text-ink flex items-center">
+                                    <span class="text-2xl mr-2">🌌</span> Cosmology
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">CMB Power Spectrum</span>
+                                        <span class="text-xs bg-success-soft text-success px-2 py-1 rounded">χ²/dof: 53.1</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Primordial GWs</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">Tensor modes</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Hubble Parameter</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">H₀ test</span>
+                                    </div>
+                                </div>
+                                <a href="latest_run/latest_report.html#cosmology" class="text-accent hover:underline text-sm mt-3 block">View All Tests →</a>
+                            </div>
+                            
+                            <!-- Thermodynamics -->
+                            <div class="bg-white rounded-2xl p-6 border border-code-border">
+                                <h4 class="font-bold text-lg mb-4 text-ink flex items-center">
+                                    <span class="text-2xl mr-2">🔥</span> Thermodynamics
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Black Hole Thermodynamics</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">S = A/4</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Hawking Temperature</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">T_H test</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">Unruh Effect</span>
+                                        <span class="text-xs bg-accent-soft text-accent px-2 py-1 rounded">Quantum</span>
+                                    </div>
+                                </div>
+                                <a href="latest_run/latest_report.html#thermo" class="text-accent hover:underline text-sm mt-3 block">View All Tests →</a>
+                            </div>
+                        </div>
+                        
+                        <p class="text-center text-muted mt-6 text-sm">
+                            Albert validates theories across <strong>8 physics fields</strong> with <strong>35+ specialized validators</strong>
+                        </p>
+                    </div>
                     
                     <!-- Live Validation Visualization -->
                     <div class="max-w-7xl mx-auto mt-12">
                         <div class="bg-white rounded-3xl shadow-2xl p-8 mb-12">
                             <canvas id="validationGauntletCanvas" width="1200" height="400" class="w-full"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Theory Engine Visualization - Full Width -->
+                    <div class="timeline-section mt-20 mb-20">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-3xl font-bold text-accent mb-8 text-center">Theory Implementation Engine</h3>
+                        <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-8 border border-code-border/30">
+                            <canvas id="theoryEngineCanvas" width="1200" height="800" class="w-full"></canvas>
                         </div>
                     </div>
                   
@@ -2130,6 +2454,8 @@ results = orchestrator.run_comparative_simulation(
                             <span>← Swipe to see more features →</span>
                         </div>
                     </div>
+
+
                     
                     <!-- Call to Action - More Prominent -->
                     <div class="text-center">
@@ -3826,6 +4152,36 @@ results = orchestrator.run_comparative_simulation(
             } else {
                 details.style.maxHeight = '0';
             }
+        }
+        
+        // Timeline scroll effect
+        function initTimelineScrollEffect() {
+            const timelineSections = document.querySelectorAll('.timeline-section');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            timelineSections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+        
+        // Initialize timeline effect when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTimelineScrollEffect);
+        } else {
+            initTimelineScrollEffect();
         }
         
         // Quantum Validator Visualization

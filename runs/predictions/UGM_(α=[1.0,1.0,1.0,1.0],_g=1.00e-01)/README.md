@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: ugm  
-**Last Updated**: 2025-08-05T01:06:05.087151
+**Last Updated**: 2025-08-08T22:59:25.936139
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from theory_ugm_theory import UnifiedGaugeModel
+from physics_agent.theories.gravitational.ugm.theory import UnifiedGaugeModel
 
 # Create theory instance with exact parameters
 theory = UnifiedGaugeModel()
@@ -45,7 +45,7 @@ theory.gamma = γ
 ### 2. Run Validation
 
 ```python
-from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
+from physics_agent.validations.cosmology.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
 
 # Create validator
 validator = CMBPowerSpectrumValidator()
@@ -152,6 +152,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `theory_ugm_theory`
+1. Original theory implementation: `physics_agent.theories.gravitational.ugm.theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above

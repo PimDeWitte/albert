@@ -37,7 +37,7 @@ class ComprehensiveTestReportGenerator:
         html_lines.extend(self._generate_rankings(results))
         
         # Add individual theory details
-        html_lines.extend(self._generate_theory_details(results))
+        html_lines.extend(self._generate_theory_details(results, run_dir))
         
         # Add test descriptions
         html_lines.extend(self._generate_test_descriptions())
@@ -45,6 +45,9 @@ class ComprehensiveTestReportGenerator:
         # Add log section if available
         if run_dir:
             html_lines.extend(self._generate_log_section(results, run_dir))
+        
+        # Add validator plots section
+        html_lines.extend(self._generate_validator_plots_section(run_dir))
         
         # Add footer
         html_lines.extend(self._generate_footer())
@@ -102,13 +105,23 @@ class ComprehensiveTestReportGenerator:
             '        .details-section { margin-top: 40px; }',
             '        .theory-detail { background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-radius: 8px; }',
             '        .theory-detail h3 { margin-top: 0; color: #2c3e50; }',
+            '        /* Validator plots section */',
+            '        .validator-plots-section { margin: 60px 0; }',
+            '        .validator-plots-section h2 { color: #2c3e50; margin-bottom: 30px; }',
+            '        .plot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; }',
+            '        .plot-item { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; }',
+            '        .plot-item h3 { color: #34495e; margin-bottom: 15px; }',
+            '        .plot-item img { border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }',
             '        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 15px; }',
-            '        .test-result { background: white; padding: 15px; border-radius: 6px; border: 1px solid #ecf0f1; }',
+            '        .test-result { background: white; padding: 15px; border-radius: 6px; border: 1px solid #ecf0f1; position: relative; }',
             '        .test-result.pass { border-left: 4px solid #27ae60; }',
             '        .test-result.fail { border-left: 4px solid #e74c3c; }',
             '        .test-result.warning { border-left: 4px solid #f39c12; }',
             '        .test-name { font-weight: 500; margin-bottom: 5px; }',
             '        .test-details { font-size: 0.9em; color: #7f8c8d; }',
+            '        .validator-plot-preview { margin-top: 10px; }',
+            '        .validator-thumbnail { width: 100%; max-width: 280px; height: auto; max-height: 180px; object-fit: contain; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }',
+            '        .validator-thumbnail:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }',
             '        .sota-beater { color: #f39c12; font-weight: bold; font-size: 1em; margin-top: 5px; }',
             '        .solver-info { background: #e8f4f8; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-size: 0.85em; }',
     
@@ -487,7 +500,7 @@ class ComprehensiveTestReportGenerator:
         
         return lines
     
-    def _generate_theory_details(self, results: List[Dict[str, Any]]) -> List[str]:
+    def _generate_theory_details(self, results: List[Dict[str, Any]], run_dir: str = None) -> List[str]:
         """Generate detailed results for each theory."""
         lines = ['        <div class="details-section">',
                 '            <h2>Detailed Theory Results</h2>']
@@ -518,6 +531,65 @@ class ComprehensiveTestReportGenerator:
                     f'                        <div class="test-name">{test["name"]}</div>',
                     f'                        <div class="test-details">Status: {test["status"]}</div>'
                 ])
+                
+                # Add validator plot image if available
+                validator_name = test["name"].lower().replace(' ', '_')
+                
+                # Map validator names to plot prefixes
+                plot_prefixes = {
+                    'mercury_precession': 'mercury_orbit',
+                    'light_deflection': 'light_deflection',
+                    'photon_sphere': 'photon_sphere',
+                    'gravitational_waves': 'gw_waveform',
+                    'conservation': 'conservation',
+                    'energy_conservation': 'conservation',
+                    'angular_momentum_conservation': 'conservation'
+                }
+                
+                # Try to find a matching plot file
+                plot_prefix = plot_prefixes.get(validator_name)
+                if plot_prefix and run_dir:
+                    validator_plots_dir = os.path.join(run_dir, 'validator_plots')
+                    if os.path.exists(validator_plots_dir):
+                        # Find matching plot files for this theory
+                        theory_name_clean = result["theory"].replace(' ', '_').replace('(', '_').replace(')', '_')
+                        matching_files = []
+                        
+                        for plot_file in os.listdir(validator_plots_dir):
+                            if plot_file.startswith(plot_prefix) and plot_file.endswith('.png'):
+                                # Check if it matches the current theory
+                                if theory_name_clean in plot_file.replace('(', '_').replace(')', '_'):
+                                    matching_files.append(plot_file)
+                        
+                        # If we found matching files, use the most recent one
+                        if matching_files:
+                            # Sort by modification time to get the most recent
+                            matching_files.sort(key=lambda f: os.path.getmtime(os.path.join(validator_plots_dir, f)), reverse=True)
+                            plot_file = matching_files[0]
+                            
+                            lines.extend([
+                                f'                        <div class="validator-plot-preview">',
+                                f'                            <img src="validator_plots/{plot_file}" ',
+                                f'                                 alt="{test["name"]} Plot" ',
+                                f'                                 class="validator-thumbnail" ',
+                                f'                                 onclick="window.open(\'validator_plots/{plot_file}\', \'_blank\')" ',
+                                f'                                 onerror="this.style.display=\'none\'" />',
+                                f'                        </div>'
+                            ])
+                        # If no theory-specific match, try to find any matching plot
+                        else:
+                            for plot_file in sorted(os.listdir(validator_plots_dir), reverse=True):
+                                if plot_file.startswith(plot_prefix) and plot_file.endswith('.png'):
+                                    lines.extend([
+                                        f'                        <div class="validator-plot-preview">',
+                                        f'                            <img src="validator_plots/{plot_file}" ',
+                                        f'                                 alt="{test["name"]} Plot" ',
+                                        f'                                 class="validator-thumbnail" ',
+                                        f'                                 onclick="window.open(\'validator_plots/{plot_file}\', \'_blank\')" ',
+                                        f'                                 onerror="this.style.display=\'none\'" />',
+                                        f'                        </div>'
+                                    ])
+                                    break
                 
                 if test.get('loss') is not None:
                     lines.append(f'                        <div class="test-details">Loss: {test["loss"]:.4f}</div>')
@@ -576,10 +648,15 @@ class ComprehensiveTestReportGenerator:
                 
                 # <reason>chain: Add explanatory notes for tests that fail despite matching SOTA</reason>
                 # For g-2 tests that fail, explain why
+                units = test.get('units', '')
+                is_g2_test = 'g-2' in test.get('name', '') or units == '(g-2)/2'
                 if is_g2_test and not test.get('passed', True) and test.get('observed_value'):
                     obs_val = test.get('observed_value')
-                    if abs(pred_val - sota_val) < 1e-10:  # Prediction matches SOTA
-                        lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because SM (SOTA) doesn\'t explain the experimental anomaly</div>')
+                    if test.get('predicted_value') and test.get('sota_value'):
+                        pred_val = test['predicted_value']
+                        sota_val = test['sota_value']
+                        if abs(pred_val - sota_val) < 1e-10:  # Prediction matches SOTA
+                            lines.append(f'                        <div class="test-details" style="color: #666; font-style: italic; font-size: 0.9em;">Note: Fails because SM (SOTA) doesn\'t explain the experimental anomaly</div>')
                 
                 # For CMB tests that fail, explain why
                 if 'CMB' in test.get('name', '') and not test.get('passed', True):
@@ -825,6 +902,120 @@ class ComprehensiveTestReportGenerator:
             '        </div>'
         ])
         
+        return lines
+    
+    def _generate_validator_plots_section(self, run_dir: str) -> List[str]:
+        """Generate section with validator plot images."""
+        lines = ['        <div class="validator-plots-section">',
+                '            <h2>Validator Plots</h2>']
+        
+        # Check for validator plots in the run directory
+        if run_dir and os.path.exists(run_dir):
+            validator_plots_dir = os.path.join(run_dir, 'validator_plots')
+            
+            # Create validator_plots directory if it doesn't exist
+            os.makedirs(validator_plots_dir, exist_ok=True)
+            
+            # Get the run timestamp from the run_dir name
+            run_timestamp = None
+            if 'comprehensive_test_' in run_dir:
+                # Extract timestamp like 20250808_223030
+                parts = run_dir.split('comprehensive_test_')
+                if len(parts) > 1:
+                    run_timestamp = parts[1].split('/')[0]
+            
+            # Copy plots from physics_agent/latest_run if available
+            # Only copy plots that match the current run timestamp or are very recent
+            source_latest_run = os.path.join('physics_agent', 'latest_run')
+            if os.path.exists(source_latest_run):
+                import shutil
+                from datetime import datetime
+                current_time = datetime.now()
+                
+                for fname in os.listdir(source_latest_run):
+                    if fname.endswith('.png'):
+                        # Check if this plot is recent (within last 5 minutes)
+                        file_path = os.path.join(source_latest_run, fname)
+                        file_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+                        time_diff = (current_time - file_time).total_seconds()
+                        
+                        if time_diff < 300:  # 5 minutes
+                            try:
+                                shutil.copy2(file_path, os.path.join(validator_plots_dir, fname))
+                            except:
+                                pass
+            
+            # Now list all PNG files in validator_plots
+            plot_files = []
+            if os.path.exists(validator_plots_dir):
+                plot_files = [f for f in os.listdir(validator_plots_dir) if f.endswith('.png')]
+                
+                # If we have a run timestamp, prefer plots that contain it
+                if run_timestamp:
+                    matching_plots = [f for f in plot_files if run_timestamp in f]
+                    if matching_plots:
+                        plot_files = matching_plots
+                
+                # Sort by modification time to get most recent
+                plot_files.sort(key=lambda f: os.path.getmtime(os.path.join(validator_plots_dir, f)), reverse=True)
+            
+            if plot_files:
+                lines.append('            <div class="plot-grid">')
+                
+                # Group plots by type
+                plot_groups = {
+                    'Conservation': [],
+                    'Light Deflection': [],
+                    'Mercury Orbit': [],
+                    'Photon Sphere': [],
+                    'GW Waveform': [],
+                    'Other': []
+                }
+                
+                # Take only the most recent plot of each type
+                seen_types = set()
+                
+                for plot_file in plot_files:
+                    plot_type = None
+                    
+                    if 'conservation' in plot_file.lower():
+                        plot_type = 'Conservation'
+                    elif 'light' in plot_file.lower() or 'deflection' in plot_file.lower():
+                        plot_type = 'Light Deflection'
+                    elif 'mercury' in plot_file.lower():
+                        plot_type = 'Mercury Orbit'
+                    elif 'photon' in plot_file.lower():
+                        plot_type = 'Photon Sphere'
+                    elif 'gw' in plot_file.lower() or 'waveform' in plot_file.lower():
+                        plot_type = 'GW Waveform'
+                    else:
+                        plot_type = 'Other'
+                    
+                    # Only add the first (most recent) plot of each type
+                    if plot_type not in seen_types:
+                        plot_groups[plot_type] = [plot_file]
+                        seen_types.add(plot_type)
+                
+                # Display plots by group
+                display_order = ['Conservation', 'Mercury Orbit', 'Light Deflection', 'Photon Sphere', 'GW Waveform', 'Other']
+                
+                for group_name in display_order:
+                    if group_name in plot_groups and plot_groups[group_name]:
+                        plot_file = plot_groups[group_name][0]
+                        lines.extend([
+                            '                <div class="plot-item">',
+                            f'                    <h3>{group_name}</h3>',
+                            f'                    <img src="validator_plots/{plot_file}" alt="{group_name} plot" style="width: 100%; max-width: 600px;">',
+                            '                </div>'
+                        ])
+                
+                lines.append('            </div>')
+            else:
+                lines.append('            <p>No validator plots available.</p>')
+        else:
+            lines.append('            <p>No validator plots available (run directory not specified).</p>')
+            
+        lines.append('        </div>')
         return lines
     
     def _generate_footer(self) -> List[str]:

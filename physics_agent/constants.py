@@ -403,6 +403,13 @@ PHYSICS_SYMBOLS = {
         'units': 'm',
         'aliases': []
     },
+    'rho': {
+        'description': 'Cylindrical radius coordinate',
+        'category': 'coordinate',
+        'test_value': 1.0,
+        'units': 'm',
+        'aliases': ['ρ']
+    },
     'F': {
         'description': 'Electromagnetic field strength (scalar)',
         'category': 'field',
@@ -805,6 +812,38 @@ LAGRANGIAN_TEST_VALUES.update({
     'T^a': 1.0,  # Group generator
     'I': 1.0,  # Identity/imaginary unit
 })
+
+# ====================================================================================
+# DISCOVERY (MATH-SPACE) TOKEN SETS
+# ============================================================================
+
+# <reason>chain: Canonical token sets for symbolic discovery DSL</reason>
+# The DSL consumes these lists to define its vocabulary. Keeping them here
+# ensures consistency with the unified symbol registry.
+DISCOVERY_TOKENS = {
+    'operands': [
+        # Coordinates
+        't', 'r', 'theta', 'phi', 'x', 'y', 'z',
+        # Core constants/symbols (symbolic, not numeric values)
+        'm', 'c', 'G', 'hbar', 'k_B', 'e', 'Lambda', 'M', 'rs',
+        # Generalized coordinate and its time derivative token
+        'q_gen', 'dq_gen',
+        # Field placeholders
+        'psi', 'A', 'g', 'R', 'T',
+        # Force-free specific
+        'rho',  # Cylindrical radius
+        '1', '0',  # Constants
+    ],
+    'unary': [
+        'SIN', 'COS', 'SQRT', 'EXP',  # standard math
+        'DT',  # total derivative d/dt
+        'LOG',  # Natural logarithm
+    ],
+    'binary': [
+        'ADD', 'SUB', 'MUL', 'DIV', 'POW',
+        'GEOM_SUM',  # Geometric sum: sqrt((x-1)^2 + y^2) + sqrt((x+1)^2 + y^2)
+    ],
+}
 
 # <reason>chain: Function to register new symbols dynamically</reason>
 def register_physics_symbol(symbol: str, description: str, category: str, 

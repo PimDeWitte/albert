@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Force-Free Foliation Discovery Results</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .summary {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .solution {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .vacuum {
+            border-left: 5px solid #4CAF50;
+        }
+        .nonvacuum {
+            border-left: 5px solid #FF9800;
+        }
+        .expression {
+            font-family: monospace;
+            background: #e0e0e0;
+            padding: 5px;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+        .expected {
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Force-Free Foliation Discovery Results</h1>
+    
+    <div class="summary">
+        <h2>Summary</h2>
+        <p><strong>Reference:</strong> Force-Free Foliations, Compère et al., arXiv:1606.06727v2</p>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total candidates generated</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Valid foliations found</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Vacuum solutions</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Non-vacuum solutions</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Total time</td>
+                <td>0.6s</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="expected">
+        <h2>Expected Solutions (from paper)</h2>
+        <h3>Vacuum Solutions (6 expected):</h3>
+        <ul>
+            <li>vertical: u = ρ²</li><li>X-point: u = ρ²z</li><li>radial: u = 1 - z/√(z² + ρ²)</li><li>dipolar: u = ρ²/(z² + ρ²)^(3/2)</li><li>parabolic: u = √(z² + ρ²) - z</li><li>hyperbolic: u = [√(z² + (ρ-b)²) - √(z² + (ρ+b)²)]/(2b)</li>
+        </ul>
+        <h3>Non-vacuum Solutions (1 expected):</h3>
+        <ul>
+            <li>bent: u = ρ²exp(-2kz)</li>
+        </ul>
+    </div>
+    
+    <h2>Discovered Solutions</h2>
+    
+    
+    <script>
+        // Render LaTeX
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\(', '\)']],
+                displayMath: [['$$', '$$'], ['\[', '\]']]
+            }
+        };
+    </script>
+</body>
+</html>

@@ -23,33 +23,53 @@ from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
 from physics_agent.comprehensive_test_report_generator import ComprehensiveTestReportGenerator
 from physics_agent.theory_loader import TheoryLoader
-from physics_agent.cli import get_cli_parser
+from physics_agent.cli import get_cli_parser, determine_device_and_dtype
 
 # Import Kerr baseline for comparison (always needed)
-from physics_agent.theories.defaults.baselines.kerr import Kerr
+from physics_agent.theories.gravitational.defaults.baselines.kerr import Kerr
 
-# Import validators
-from physics_agent.validations.mercury_precession_validator import MercuryPrecessionValidator
-from physics_agent.validations.light_deflection_validator import LightDeflectionValidator
-from physics_agent.validations.photon_sphere_validator import PhotonSphereValidator
-from physics_agent.validations.ppn_validator import PpnValidator
-from physics_agent.validations.cow_interferometry_validator import COWInterferometryValidator
-from physics_agent.validations.gw_validator import GwValidator
-from physics_agent.validations.psr_j0740_validator import PsrJ0740Validator
-from physics_agent.validations.g_minus_2_validator import GMinus2Validator
-from physics_agent.validations.scattering_amplitude_validator import ScatteringAmplitudeValidator
+# Import new validation framework with field support
+from physics_agent.validations import (
+    get_validators_by_field,
+    get_available_fields,
+    # Gravitational validators
+    MercuryPrecessionValidator,
+    LightDeflectionValidator,
+    PhotonSphereValidator,
+    PpnValidator,
+    COWInterferometryValidator,
+    GwValidator,
+    PsrJ0740Validator,
+    # Particle physics validators
+    GMinus2Validator,
+    ScatteringAmplitudeValidator,
+    # Cosmology validators  
+    CMBPowerSpectrumValidator,
+    PrimordialGWsValidator,
+    # Field-specific validators
+    BlackHoleThermodynamicsValidator,
+    HawkingTemperatureValidator,
+    RelativisticFluidValidator,
+    EnergyConditionsValidator,
+    ElectromagneticFieldValidator,
+    ChargedBlackHoleValidator,
+    RunningCouplingsValidator,
+    HubbleParameterValidator,
+    # Multi-physics validators
+    UnifiedFieldValidator,
+    CosmologicalThermodynamicsValidator,
+    QuantumGravityEffectsValidator
+)
 
 # Import necessary components for solver tests
 import torch
 from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver, GeneralRelativisticGeodesicSolver, QuantumCorrectedGeodesicSolver
-from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
-from physics_agent.validations.primordial_gws_validator import PrimordialGWsValidator
 
 # Dynamic theory loading - no hardcoded imports needed
 # Theories will be discovered at runtime
 
 # All theories to test
-def discover_theories(include_candidates=False, candidates_status='proposed', candidates_only=False):
+def discover_theories(include_candidates=False, candidates_status='proposed', candidates_only=False, physics_fields=None):
     """
     Dynamically discover all available theories.
     
@@ -57,9 +77,11 @@ def discover_theories(include_candidates=False, candidates_status='proposed', ca
         include_candidates: Whether to include theories from the candidates folder
         candidates_status: Which candidate status to include ('proposed', 'new', 'rejected', or 'all')
         candidates_only: If True, return ONLY candidate theories (no regular theories)
+        physics_fields: List of physics fields to include (e.g., ['gravitational', 'thermodynamic'])
+                       If None, includes all fields
     
     Returns:
-        List of (name, theory_class, category) tuples
+        List of (name, theory_class, category, field) tuples
     """
     # Ensure all directories have __init__.py files
     ensure_init_files()
@@ -76,18 +98,24 @@ def discover_theories(include_candidates=False, candidates_status='proposed', ca
         print("ERROR: Cannot find theories directory!")
         return []
     
-    loader = TheoryLoader(theories_base_dir=theories_dir)
+    # Use new multi-field discovery
+    from physics_agent.theories import get_all_theories, load_theory_class
+    
     all_theories = []
     
-    # Discover all theories
-    discovered = loader.discover_theories()
+    # Get theories from specified fields
+    theories_by_field = get_all_theories(fields=physics_fields)
     
-    # Process discovered theories
-    for theory_key, info in discovered.items():
-        theory_path = info['path']
-        
+    for theory_id, theory_info in theories_by_field.items():
+        # Extract field and name from theory_id (format: "field/theory_name")
+        if '/' in theory_id:
+            field, theory_name = theory_id.split('/', 1)
+        else:
+            field = 'gravitational'  # Default for backward compatibility
+            theory_name = theory_id
+            
         # Check if this is a candidate theory
-        is_candidate = 'candidates' in theory_path
+        is_candidate = 'candidates' in theory_info.get('directory', '')
         
         # Skip candidates if not requested
         if is_candidate and not include_candidates and not candidates_only:
@@ -99,45 +127,37 @@ def discover_theories(include_candidates=False, candidates_status='proposed', ca
             
         # If including candidates, check status filter
         if is_candidate and candidates_status != 'all':
-            if f'candidates/{candidates_status}' not in theory_path:
+            if f'candidates/{candidates_status}' not in theory_info.get('directory', ''):
                 continue
         
         # Skip template and example theories
-        if 'template' in theory_path.lower() or 'example' in theory_path.lower():
+        if 'template' in theory_name.lower() or 'example' in theory_name.lower():
             continue
             
-        # Try to instantiate the theory
-        theory_instance = loader.instantiate_theory(theory_key)
-        if theory_instance is None:
-            continue
-            
-        # Get theory class
-        theory_class = loader.loaded_theories.get(theory_key)
+        # Load the theory class
+        theory_class = load_theory_class(theory_info['module_path'])
         if theory_class is None:
             continue
             
-        # Use the theory's own name if available
-        theory_name = getattr(theory_instance, 'name', info['class_name'])
-        
-        # Get category
-        category = info.get('category', 'unknown')
-        
-        # Override category for specific theories
-        if 'schwarzschild' in theory_name.lower():
-            category = 'baseline'
-        elif category == 'unknown':
-            # Try to determine from path
-            if 'quantum' in theory_path:
-                category = 'quantum'
-            elif 'classical' in theory_path:
-                category = 'classical'
-            else:
-                category = 'classical'  # Default
-        
-        all_theories.append((theory_name, theory_class, category))
+        # Try to instantiate to get the name
+        try:
+            theory_instance = theory_class()
+            display_name = getattr(theory_instance, 'name', theory_name.replace('_', ' ').title())
+            
+            # Get category from theory instance or infer from field
+            category = getattr(theory_instance, 'category', field)
+            
+            # Special handling for baseline theories
+            if 'schwarzschild' in display_name.lower() or 'kerr' in display_name.lower():
+                category = 'baseline'
+            
+            all_theories.append((display_name, theory_class, category, field))
+        except Exception as e:
+            print(f"Warning: Could not instantiate {theory_name}: {e}")
+            continue
     
-    # Sort theories by category and name
-    all_theories.sort(key=lambda x: (x[2], x[0]))
+    # Sort theories by field, category, and name
+    all_theories.sort(key=lambda x: (x[3], x[2], x[0]))
     
     return all_theories
 
@@ -170,6 +190,61 @@ def ensure_init_files(base_dir=None):
 
 # Global variable to hold dynamically discovered theories
 ALL_THEORIES = []
+
+def load_single_theory(filepath):
+    """
+    Load a single theory from a Python file.
+    
+    Args:
+        filepath: Path to the theory Python file
+        
+    Returns:
+        List with single theory tuple (name, class, category, field)
+    """
+    import importlib.util
+    import inspect
+    
+    # Load the module from file
+    spec = importlib.util.spec_from_file_location("single_theory", filepath)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    
+    # Find theory class in module
+    theory_class = None
+    for name, obj in inspect.getmembers(module):
+        if (inspect.isclass(obj) and 
+            hasattr(obj, 'get_metric') and 
+            obj.__name__ not in ['GravitationalTheory', 'BaseTheory']):
+            theory_class = obj
+            break
+    
+    if theory_class is None:
+        raise ValueError(f"No valid theory class found in {filepath}")
+    
+    # Instantiate to get metadata
+    theory = theory_class()
+    theory_name = getattr(theory, 'name', theory_class.__name__)
+    category = getattr(theory, 'category', 'unknown')
+    
+    # Try to determine field from filepath or category
+    field = 'gravitational'  # Default
+    if 'thermodynamic' in filepath:
+        field = 'thermodynamic'
+    elif 'fluid' in filepath:
+        field = 'fluid_dynamics'
+    elif 'electro' in filepath:
+        field = 'electromagnetism'
+    elif 'particle' in filepath:
+        field = 'particle_physics'
+    elif 'cosmology' in filepath:
+        field = 'cosmology'
+    elif 'quantum' in filepath:
+        field = 'gravitational'  # Quantum theories are quantum gravity, so gravitational
+    elif category in ['thermodynamic', 'fluid_dynamics', 'electromagnetism', 
+                       'particle_physics', 'cosmology']:
+        field = category
+    
+    return [(theory_name, theory_class, category, field)]
 
 def run_validator_test(theory, validator_class, validator_name, engine):
     """Run a single validator on a theory."""
@@ -1011,10 +1086,10 @@ def run_solver_test(theory, test_func, test_name, engine=None, args=None):
             'exec_time': 0.0
         }
 
-def test_theory_comprehensive(theory_name, theory_class, category, args=None):
+def test_theory_comprehensive(theory_name, theory_class, category, field='gravitational', args=None):
     """Test a single theory with both analytical validators and solver tests."""
     print(f"\n{'='*60}")
-    print(f"Testing: {theory_name} [{category}]")
+    print(f"Testing: {theory_name} [{field}/{category}]")
     print(f"{'='*60}")
     
     try:
@@ -1036,28 +1111,90 @@ def test_theory_comprehensive(theory_name, theory_class, category, args=None):
     
     engine = TheoryEngine()  # Uses default: primordial_mini
     
-    # Define analytical validators
-    analytical_validators = [
-        (MercuryPrecessionValidator, "Mercury Precession"),
-        (LightDeflectionValidator, "Light Deflection"),
-        (PhotonSphereValidator, "Photon Sphere"),
-        (PpnValidator, "PPN Parameters"),
-        (COWInterferometryValidator, "COW Interferometry"),
-        (GwValidator, "Gravitational Waves"),
-        (PsrJ0740Validator, "PSR J0740"),
-    ]
+    # Get field-specific validators
+    analytical_validators = []
     
-    # Define solver-based tests
+    if field == 'gravitational':
+        analytical_validators = [
+            (MercuryPrecessionValidator, "Mercury Precession"),
+            (LightDeflectionValidator, "Light Deflection"),
+            (PhotonSphereValidator, "Photon Sphere"),
+            (PpnValidator, "PPN Parameters"),
+            (COWInterferometryValidator, "COW Interferometry"),
+            (GwValidator, "Gravitational Waves"),
+            (PsrJ0740Validator, "PSR J0740"),
+        ]
+    elif field == 'thermodynamic':
+        analytical_validators = [
+            (BlackHoleThermodynamicsValidator, "Black Hole Thermodynamics"),
+            (HawkingTemperatureValidator, "Hawking Temperature"),
+        ]
+    elif field == 'fluid_dynamics':
+        analytical_validators = [
+            (RelativisticFluidValidator, "Relativistic Fluid Dynamics"),
+            (EnergyConditionsValidator, "Energy Conditions"),
+        ]
+    elif field == 'electromagnetism':
+        analytical_validators = [
+            (ElectromagneticFieldValidator, "Electromagnetic Fields"),
+            (ChargedBlackHoleValidator, "Charged Black Hole"),
+        ]
+    elif field == 'particle_physics':
+        analytical_validators = [
+            (GMinus2Validator, "g-2 Muon"),
+            (ScatteringAmplitudeValidator, "Scattering Amplitudes"),
+            (RunningCouplingsValidator, "Running Couplings"),
+        ]
+    elif field == 'cosmology':
+        analytical_validators = [
+            (CMBPowerSpectrumValidator, "CMB Power Spectrum"),
+            (PrimordialGWsValidator, "Primordial GWs"),
+            (HubbleParameterValidator, "Hubble Parameter"),
+        ]
+    
+    # For non-gravitational theories, also include some cross-field validators
+    if field != 'gravitational':
+        # Add gravitational validators that make sense for the field
+        if field in ['thermodynamic', 'particle_physics', 'cosmology']:
+            analytical_validators.append((PpnValidator, "PPN Parameters"))
+        if field in ['thermodynamic', 'electromagnetism']:
+            analytical_validators.append((PhotonSphereValidator, "Photon Sphere"))
+    
+    # Add multi-physics validators for theories that span multiple fields
+    # Check if theory has features from multiple fields
+    has_em = hasattr(theory, 'get_electromagnetic_field_tensor')
+    has_thermo = hasattr(theory, 'compute_hawking_temperature') or hasattr(theory, 'compute_unruh_temperature')
+    has_cosmo = hasattr(theory, 'compute_hubble_parameter')
+    has_quantum = hasattr(theory, 'enable_quantum') and theory.enable_quantum
+    
+    # Add relevant multi-physics validators
+    if has_em and field in ['gravitational', 'electromagnetism']:
+        analytical_validators.append((UnifiedFieldValidator, "Unified Field Effects"))
+    if has_thermo and has_cosmo:
+        analytical_validators.append((CosmologicalThermodynamicsValidator, "Cosmological Thermodynamics"))
+    if has_quantum and field in ['gravitational', 'particle_physics']:
+        analytical_validators.append((QuantumGravityEffectsValidator, "Quantum Gravity Effects"))
+    
+    # Define all solver-based tests - let each test determine applicability
+    # This ensures all theories get tested with all applicable tests
     SOLVER_TESTS = [
         (test_trajectory_vs_kerr, 'Trajectory vs Kerr'),
         (test_circular_orbit_for_theory, 'Circular Orbit'),
+        (None, "CMB Power Spectrum"),
+        (None, "Primordial GWs"),
         (test_quantum_geodesic_for_theory, 'Quantum Geodesic Sim'),
         (test_g_minus_2, 'g-2 Muon'),
         (test_scattering_amplitude, 'Scattering Amplitudes'),
-        (None, "CMB Power Spectrum"),
-        (None, "Primordial GWs"),
-        (None, "Trajectory Cache"),
     ]
+    
+    # Note: Each test will internally check if it's applicable to the theory
+    # For example:
+    # - Trajectory tests check if theory has get_metric
+    # - CMB/PGW tests are run through validators that check for cosmological support
+    # - g-2/Scattering tests check for particle physics capabilities
+    # - Quantum geodesic test checks for quantum support
+    
+    # Trajectory Cache is excluded as it's a performance test, not theory-specific
     
     results = {
         'theory': theory_name,
@@ -1391,8 +1528,14 @@ def run_comprehensive_tests(args=None):
     
     if theories_in_parallel == 1:
         # Sequential theory execution (default)
-        for theory_name, theory_class, category in ALL_THEORIES:
-            result = test_theory_comprehensive(theory_name, theory_class, category, args)
+        for theory_tuple in ALL_THEORIES:
+            if len(theory_tuple) == 4:  # New format with field
+                theory_name, theory_class, category, field = theory_tuple
+            else:  # Old format without field
+                theory_name, theory_class, category = theory_tuple
+                field = 'gravitational'  # Default
+            
+            result = test_theory_comprehensive(theory_name, theory_class, category, field, args)
             if result:
                 all_results.append(result)
             time.sleep(0.1)  # Brief pause
@@ -1406,8 +1549,14 @@ def run_comprehensive_tests(args=None):
             
             with concurrent.futures.ThreadPoolExecutor(max_workers=theories_in_parallel) as executor:
                 futures = []
-                for theory_name, theory_class, category in batch:
-                    future = executor.submit(test_theory_comprehensive, theory_name, theory_class, category, args)
+                for theory_tuple in batch:
+                    if len(theory_tuple) == 4:  # New format with field
+                        theory_name, theory_class, category, field = theory_tuple
+                    else:  # Old format without field
+                        theory_name, theory_class, category = theory_tuple
+                        field = 'gravitational'  # Default
+                        
+                    future = executor.submit(test_theory_comprehensive, theory_name, theory_class, category, field, args)
                     futures.append(future)
                 
                 # Collect results
@@ -1748,6 +1897,12 @@ def parse_arguments():
                        help='Run ONLY candidate theories (excludes regular theories)')
     eval_group.add_argument('--test', action='store_true', 
                        help='Run in test mode (alias for validation tests)')
+    eval_group.add_argument('--physics-fields', nargs='+', 
+                       choices=['gravitational', 'thermodynamic', 'fluid_dynamics', 'electromagnetism', 
+                                'particle_physics', 'cosmology'],
+                       help='Physics fields to test (default: all fields)')
+    eval_group.add_argument('--single-theory', type=str,
+                       help='Path to a single theory Python file to test')
     
     return parser.parse_args()
 
@@ -1763,23 +1918,44 @@ def main():
     else:
         print(f"\nDiscovering theories (include_candidates={args.candidates})...")
     
-    ALL_THEORIES = discover_theories(
-        include_candidates=args.candidates or args.candidates_only,
-        candidates_status=args.candidates_status,
-        candidates_only=args.candidates_only
-    )
+    # Handle single theory testing
+    if args.single_theory:
+        # Load single theory from file
+        ALL_THEORIES = load_single_theory(args.single_theory)
+    else:
+        # Discover theories with field filtering
+        ALL_THEORIES = discover_theories(
+            include_candidates=args.candidates or args.candidates_only,
+            candidates_status=args.candidates_status,
+            candidates_only=args.candidates_only,
+            physics_fields=args.physics_fields
+        )
     
     # Apply theory filter if specified
     if args.theory_filter:
-        ALL_THEORIES = [
-            (name, cls, cat) for name, cls, cat in ALL_THEORIES 
-            if args.theory_filter.lower() in name.lower()
-        ]
+        filtered_theories = []
+        for theory_tuple in ALL_THEORIES:
+            if len(theory_tuple) == 4:
+                name, cls, cat, field = theory_tuple
+            else:
+                name, cls, cat = theory_tuple
+                field = 'gravitational'
+            
+            if args.theory_filter.lower() in name.lower():
+                filtered_theories.append(theory_tuple)
+        
+        ALL_THEORIES = filtered_theories
     
     print(f"Found {len(ALL_THEORIES)} theories to test:")
-    for name, _, category in ALL_THEORIES:
-        marker = "✓" if category == 'baseline' else "-"
-        print(f"  {marker} {name} [{category}]")
+    for theory_tuple in ALL_THEORIES:
+        if len(theory_tuple) == 4:
+            name, _, category, field = theory_tuple
+            marker = "✓" if category == 'baseline' else "-"
+            print(f"  {marker} {name} [{field}/{category}]")
+        else:
+            name, _, category = theory_tuple
+            marker = "✓" if category == 'baseline' else "-"
+            print(f"  {marker} {name} [{category}]")
     
     # Validate and adjust max concurrent trajectories
     num_particles = 4
@@ -1879,6 +2055,26 @@ def main():
     if os.path.exists(html_file):
         shutil.move(html_file, os.path.join(run_dir, os.path.basename(html_file)))
     
+    # Copy validator plots from physics_agent/latest_run to run directory
+    validator_plots_dir = os.path.join(run_dir, 'validator_plots')
+    os.makedirs(validator_plots_dir, exist_ok=True)
+    
+    # Copy all plot files from latest_run to the run-specific directory
+    latest_run_dir = "physics_agent/latest_run"
+    if os.path.exists(latest_run_dir):
+        plot_count = 0
+        for fname in os.listdir(latest_run_dir):
+            if fname.endswith('.png'):
+                src_path = os.path.join(latest_run_dir, fname)
+                dst_path = os.path.join(validator_plots_dir, fname)
+                try:
+                    shutil.copy2(src_path, dst_path)
+                    plot_count += 1
+                except Exception as e:
+                    print(f"Warning: Could not copy {fname}: {e}")
+        if plot_count > 0:
+            print(f"Copied {plot_count} validator plots to run directory")
+    
     # Generate the report again but this time in the run directory with proper paths
     html_generator = ComprehensiveTestReportGenerator()
     run_html_file = os.path.join(run_dir, os.path.basename(html_file))
@@ -1888,6 +2084,15 @@ def main():
     os.makedirs('physics_agent/reports', exist_ok=True)
     latest_html = 'physics_agent/reports/latest_comprehensive_validation.html'
     shutil.copy(run_html_file, latest_html)
+    
+    # Copy validator plots to docs for landing page
+    try:
+        from physics_agent.copy_plots_to_docs import copy_plots_to_docs
+        copied_plots = copy_plots_to_docs()
+        if copied_plots:
+            print(f"\nCopied {len(copied_plots)} validator plots to docs/latest_run/")
+    except Exception as e:
+        print(f"Warning: Could not copy plots to docs: {e}")
     
     print(f"\nRun complete! Results saved to: {run_dir}")
     print(f"View report: {run_html_file}")
@@ -1951,6 +2156,53 @@ def main():
                 print(f"  - {item}")
     
     return results, run_dir
+
+# -----------------------------------------------------------------------------
+# Discovery report integration
+# -----------------------------------------------------------------------------
+
+def generate_discovery_report(candidates, output_file, run_dir: str | None = None):
+    """Generate a simple HTML report for math-space discovery candidates.
+
+    Args:
+        candidates: List of dicts with keys 'expression' and 'classification'.
+        output_file: Path to write HTML.
+        run_dir: Optional run directory for context (unused but kept for parity).
+    """
+    from datetime import datetime
+    import html
+    import os
+
+    lines = []
+    lines.append("<!DOCTYPE html>")
+    lines.append("<html lang='en'>")
+    lines.append("<head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>")
+    lines.append("<title>Math-Space Discovery Report</title>")
+    lines.append(
+        "<style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:24px;}"
+        "h1{margin-bottom:4px;} .sub{color:#666;margin-top:0;} table{border-collapse:collapse;width:100%;}"
+        "th,td{border:1px solid #e5e7eb;padding:8px 10px;text-align:left;} th{background:#f8fafc;}"
+        ".mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}</style>"
+    )
+    lines.append("</head><body>")
+    lines.append("<h1>Math-Space Discovery</h1>")
+    lines.append(f"<p class='sub'>Generated: {datetime.now().isoformat()}</p>")
+
+    lines.append("<table>")
+    lines.append("<thead><tr><th>#</th><th>Expression</th><th>Classification</th></tr></thead><tbody>")
+    for i, c in enumerate(candidates, 1):
+        expr = html.escape(str(c.get('expression', '')))
+        cls = html.escape(str(c.get('classification', '')))
+        lines.append(f"<tr><td>{i}</td><td class='mono'>{expr}</td><td>{cls}</td></tr>")
+    lines.append("</tbody></table>")
+
+    lines.append("</body></html>")
+
+    os.makedirs(os.path.dirname(output_file) or ".", exist_ok=True)
+    with open(output_file, "w") as f:
+        f.write("\n".join(lines))
+
+    return output_file
 
 if __name__ == "__main__":
     results, run_dir = main()

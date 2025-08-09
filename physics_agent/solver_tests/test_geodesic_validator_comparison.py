@@ -15,12 +15,12 @@ import math
 import time
 
 # Import validators
-from physics_agent.validations.mercury_precession_validator import MercuryPrecessionValidator
-from physics_agent.validations.light_deflection_validator import LightDeflectionValidator
+from physics_agent.validations.gravitational.mercury_precession_validator import MercuryPrecessionValidator
+from physics_agent.validations.gravitational.light_deflection_validator import LightDeflectionValidator
 
 # Import geodesic solvers
 from physics_agent.geodesic_integrator import ConservedQuantityGeodesicSolver, PhotonGeodesicSolver, QuantumCorrectedGeodesicSolver
-from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
+from physics_agent.theories.gravitational.defaults.baselines.schwarzschild import Schwarzschild
 from physics_agent.theory_engine_core import TheoryEngine
 from physics_agent.constants import SOLAR_MASS, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT
 
@@ -132,7 +132,7 @@ def validator_psr_j0740(kappa: float = 0.0, tolerance: float = 1e-10):
     )
     
     # Numeric time of flight
-    from physics_agent.theories.defaults.baselines.schwarzschild import Schwarzschild
+    from physics_agent.theories.gravitational.defaults.baselines.schwarzschild import Schwarzschild
     theory = Schwarzschild()
     tof_numeric = compute_time_of_flight_numeric(theory, M_c, a, SPEED_OF_LIGHT, GRAVITATIONAL_CONSTANT)
     
@@ -202,7 +202,7 @@ def test_circular_orbit_period():
     
     theory = Schwarzschild()
     M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
-    solver = GeodesicRK4Solver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
+    solver = ConservedQuantityGeodesicSolver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
     
     # Use a more reasonable radius - 100 Schwarzschild radii instead of 1 AU
     # This gives r_geom = 200 which is much more numerically stable
@@ -341,7 +341,7 @@ def test_mercury_comparison():
     # Now try simplified geodesic calculation
     # We'll calculate the perihelion shift for one orbit
     M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
-    solver = GeodesicRK4Solver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
+    solver = ConservedQuantityGeodesicSolver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
     
     # Mercury parameters
     a = 5.7909e10  # m
@@ -455,7 +455,7 @@ def test_photon_sphere_comparison():
     print("="*60)
     
     # Import required validator
-    from physics_agent.validations.photon_sphere_validator import PhotonSphereValidator
+    from physics_agent.validations.gravitational.photon_sphere_validator import PhotonSphereValidator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -492,7 +492,7 @@ def test_photon_sphere_comparison():
     
     # Test with geodesic solver (find unstable circular photon orbit)
     M_sun = torch.tensor(SOLAR_MASS, dtype=torch.float64)
-    solver = NullGeodesicRK4Solver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
+    solver = PhotonGeodesicSolver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
     
     # Convert to geometric units
     r_ph_geom = solver.to_geometric_length(torch.tensor(r_photon_theory))
@@ -518,7 +518,7 @@ def test_ppn_comparison():
     print("="*60)
     
     # Import required validator
-    from physics_agent.validations.ppn_validator import PpnValidator
+    from physics_agent.validations.gravitational.ppn_validator import PpnValidator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -580,7 +580,7 @@ def test_quantum_interferometry():
     print("="*60)
     
     # Import required validator
-    from physics_agent.validations.cow_interferometry_validator import COWInterferometryValidator
+    from physics_agent.validations.gravitational.cow_interferometry_validator import COWInterferometryValidator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -638,7 +638,7 @@ def test_gravitational_wave_inspiral():
     print("="*60)
     
     # Import required validator
-    from physics_agent.validations.gw_validator import GwValidator
+    from physics_agent.validations.gravitational.gw_validator import GwValidator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -709,7 +709,7 @@ def test_cmb_power_spectrum():
     print("="*60)
     
     # Import required validator
-    from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
+    from physics_agent.validations.cosmology.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -803,7 +803,7 @@ def test_bicep_keck_primordial_gws():
     print("="*60)
     
     # Import required validator
-    from physics_agent.validations.primordial_gws_validator import PrimordialGWsValidator
+    from physics_agent.validations.cosmology.primordial_gws_validator import PrimordialGWsValidator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -930,7 +930,7 @@ def test_psr_j0740_validation():
     print("Used for precision tests of GR through Shapiro delay measurements")
     
     # Import required validator
-    from physics_agent.validations.psr_j0740_validator import PsrJ0740Validator
+    from physics_agent.validations.gravitational.psr_j0740_validator import PsrJ0740Validator
     
     theory = Schwarzschild()
     engine = TheoryEngine()
@@ -1077,11 +1077,11 @@ def test_quantum_geodesic_simulator():
     
     # Initialize classical solver for comparison (use GeneralGeodesicRK4Solver for 6D)
     from physics_agent.geodesic_integrator import GeneralRelativisticGeodesicSolver
-    classical_solver = GeneralGeodesicRK4Solver(theory, M_phys=M_sun)
+    classical_solver = ConservedQuantityGeodesicSolver(theory, M_phys=M_sun, c=SPEED_OF_LIGHT, G=GRAVITATIONAL_CONSTANT)
     
     # Initialize quantum simulator
     try:
-        quantum_solver = QuantumGeodesicSimulator(theory, num_qubits=2, M_phys=M_sun)
+        quantum_solver = QuantumCorrectedGeodesicSolver(theory, num_qubits=2, M_phys=M_sun)
     except Exception as e:
         print(f"Failed to initialize QuantumGeodesicSimulator: {e}")
         return False

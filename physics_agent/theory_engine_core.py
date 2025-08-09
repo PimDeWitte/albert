@@ -90,14 +90,16 @@ from physics_agent.unified_trajectory_calculator import UnifiedTrajectoryCalcula
 from physics_agent.base_theory import GravitationalTheory, Tensor
 from physics_agent.theory_loader import TheoryLoader
 from physics_agent.particle_loader import ParticleLoader
-from physics_agent.validations import (
+from physics_agent.validations.gravitational import (
     ConservationValidator, MetricPropertiesValidator,
     COWInterferometryValidator, 
     # AtomInterferometryValidator, # Not tested
     # GravitationalDecoherenceValidator, # Not tested
-    # QuantumClockValidator, # Not tested
-    # QuantumLagrangianGroundingValidator # Not tested
 )
+# from physics_agent.validations.quantum_mechanics import (
+#     QuantumClockValidator, # Not tested
+#     QuantumLagrangianGroundingValidator # Not tested
+# )
 # from physics_agent.validations.lagrangian_validator import LagrangianValidator # Not tested
 from physics_agent.theory_visualizer import TheoryVisualizer
 from physics_agent.update_checker import check_on_startup  # Add new import

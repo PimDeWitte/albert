@@ -347,6 +347,11 @@ class ComprehensiveReportGenerator:
             '    </div>'
         ])
         
+        # Add detailed validator results with plots
+        validator_details_section = self._generate_validator_details_section(theory_results, output_dir)
+        if validator_details_section:
+            html_parts.extend(validator_details_section)
+        
         # <reason>chain: Add dedicated error section for validation exceptions</reason>
         error_section = self._generate_error_section(theory_results)
         if error_section:
@@ -827,4 +832,185 @@ class ComprehensiveReportGenerator:
         
         if error_parts:
             return '\n'.join(error_parts)
-        return "" 
+        return ""
+    
+    def _generate_validator_details_section(self, theory_results: Dict[str, Any], output_dir: str) -> List[str]:
+        """Generate detailed validator results section with plots"""
+        parts = []
+        
+        # Check if we have the latest_run directory with validator plots
+        latest_run_dir = os.path.join(os.path.dirname(output_dir), '..', 'latest_run')
+        if not os.path.exists(latest_run_dir):
+            latest_run_dir = 'physics_agent/latest_run'  # Fallback to default location
+        
+        # Start the detailed results section
+        parts.extend([
+            '    <h2 id="conservation">Detailed Validation Results</h2>',
+            '    <div class="viz-container">'
+        ])
+        
+        # Conservation Validator Results
+        conservation_plots = []
+        if os.path.exists(latest_run_dir):
+            for fname in os.listdir(latest_run_dir):
+                if fname.startswith('conservation_') and fname.endswith('.png'):
+                    conservation_plots.append(fname)
+        
+        if conservation_plots:
+            parts.extend([
+                '        <h3>Conservation Validation</h3>',
+                '        <div class="viz-grid">'
+            ])
+            
+            for plot in conservation_plots[:1]:  # Show only the most recent
+                plot_path = os.path.join(latest_run_dir, plot)
+                # Copy to output directory
+                try:
+                    import shutil
+                    viz_output_dir = os.path.join(output_dir, 'validator_plots')
+                    os.makedirs(viz_output_dir, exist_ok=True)
+                    shutil.copy2(plot_path, os.path.join(viz_output_dir, 'conservation.png'))
+                    
+                    parts.extend([
+                        '            <div class="viz-item">',
+                        '                <h4>Energy and Angular Momentum Conservation</h4>',
+                        '                <img src="validator_plots/conservation.png" alt="Conservation plots">',
+                        '            </div>'
+                    ])
+                except:
+                    pass
+            
+            parts.append('        </div>')
+        
+        # Mercury Precession Results
+        mercury_plots = []
+        if os.path.exists(latest_run_dir):
+            for fname in os.listdir(latest_run_dir):
+                if fname.startswith('mercury_orbit_') and fname.endswith('.png'):
+                    mercury_plots.append(fname)
+        
+        if mercury_plots:
+            parts.extend([
+                '        <h3>Mercury Perihelion Precession</h3>',
+                '        <div class="viz-grid">'
+            ])
+            
+            for plot in mercury_plots[:1]:  # Show only the most recent
+                plot_path = os.path.join(latest_run_dir, plot)
+                try:
+                    import shutil
+                    viz_output_dir = os.path.join(output_dir, 'validator_plots')
+                    os.makedirs(viz_output_dir, exist_ok=True)
+                    shutil.copy2(plot_path, os.path.join(viz_output_dir, 'mercury_orbit.png'))
+                    
+                    parts.extend([
+                        '            <div class="viz-item">',
+                        '                <h4>Mercury Orbit with Precession</h4>',
+                        '                <img src="validator_plots/mercury_orbit.png" alt="Mercury orbit">',
+                        '            </div>'
+                    ])
+                except:
+                    pass
+            
+            parts.append('        </div>')
+        
+        # Light Deflection Results
+        light_plots = []
+        if os.path.exists(latest_run_dir):
+            for fname in os.listdir(latest_run_dir):
+                if fname.startswith('light_deflection_') and fname.endswith('.png'):
+                    light_plots.append(fname)
+        
+        if light_plots:
+            parts.extend([
+                '        <h3>Gravitational Light Deflection</h3>',
+                '        <div class="viz-grid">'
+            ])
+            
+            for plot in light_plots[:1]:  # Show only the most recent
+                plot_path = os.path.join(latest_run_dir, plot)
+                try:
+                    import shutil
+                    viz_output_dir = os.path.join(output_dir, 'validator_plots')
+                    os.makedirs(viz_output_dir, exist_ok=True)
+                    shutil.copy2(plot_path, os.path.join(viz_output_dir, 'light_deflection.png'))
+                    
+                    parts.extend([
+                        '            <div class="viz-item">',
+                        '                <h4>Light Bending by the Sun</h4>',
+                        '                <img src="validator_plots/light_deflection.png" alt="Light deflection">',
+                        '            </div>'
+                    ])
+                except:
+                    pass
+            
+            parts.append('        </div>')
+        
+        # Gravitational Wave Results
+        gw_plots = []
+        if os.path.exists(latest_run_dir):
+            for fname in os.listdir(latest_run_dir):
+                if fname.startswith('gw_waveform_') and fname.endswith('.png'):
+                    gw_plots.append(fname)
+        
+        if gw_plots:
+            parts.extend([
+                '        <h3>Gravitational Wave Validation</h3>',
+                '        <div class="viz-grid">'
+            ])
+            
+            for plot in gw_plots[:1]:  # Show only the most recent
+                plot_path = os.path.join(latest_run_dir, plot)
+                try:
+                    import shutil
+                    viz_output_dir = os.path.join(output_dir, 'validator_plots')
+                    os.makedirs(viz_output_dir, exist_ok=True)
+                    shutil.copy2(plot_path, os.path.join(viz_output_dir, 'gw_waveform.png'))
+                    
+                    parts.extend([
+                        '            <div class="viz-item">',
+                        '                <h4>Gravitational Waveform Comparison</h4>',
+                        '                <img src="validator_plots/gw_waveform.png" alt="GW waveform">',
+                        '            </div>'
+                    ])
+                except:
+                    pass
+            
+            parts.append('        </div>')
+        
+        # Photon Sphere Results
+        photon_plots = []
+        if os.path.exists(latest_run_dir):
+            for fname in os.listdir(latest_run_dir):
+                if fname.startswith('photon_sphere_') and fname.endswith('.png'):
+                    photon_plots.append(fname)
+        
+        if photon_plots:
+            parts.extend([
+                '        <h3>Black Hole Shadow and Photon Sphere</h3>',
+                '        <div class="viz-grid">'
+            ])
+            
+            for plot in photon_plots[:1]:  # Show only the most recent
+                plot_path = os.path.join(latest_run_dir, plot)
+                try:
+                    import shutil
+                    viz_output_dir = os.path.join(output_dir, 'validator_plots')
+                    os.makedirs(viz_output_dir, exist_ok=True)
+                    shutil.copy2(plot_path, os.path.join(viz_output_dir, 'photon_sphere.png'))
+                    
+                    parts.extend([
+                        '            <div class="viz-item">',
+                        '                <h4>Photon Sphere and Black Hole Shadow</h4>',
+                        '                <img src="validator_plots/photon_sphere.png" alt="Photon sphere">',
+                        '            </div>'
+                    ])
+                except:
+                    pass
+            
+            parts.append('        </div>')
+        
+        # Close the container
+        parts.append('    </div>')
+        
+        return parts if len(parts) > 3 else []  # Return empty if no plots found 

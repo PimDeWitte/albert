@@ -1,0 +1,6 @@
+Plots last updated: 2025-08-08 22:59:29
+Files copied:
+  - trajectory_viewers/schwarzschild_orbit.png
+  - validator_plots/mercury_orbit.png
+  - light_bending_visualization.png
+  - validator_plots/light_deflection.png

@@ -158,6 +158,31 @@ For more information on each command, use: albert <command> --help
     discover_parser.add_argument('--initial', type=str, help='Initial prompt for theory generation')
     discover_parser.add_argument('--from', dest='from_theory', type=str, help='Base theory file to improve upon')
     discover_parser.add_argument('--self-monitor', action='store_true', help='Enable self-monitoring mode')
+    discover_parser.add_argument('--num-candidates', type=int, default=50, help='Number of candidates to generate')
+    discover_parser.add_argument('--max-symbols', type=int, default=8, help='Maximum symbols per expression')
+    discover_parser.add_argument('--mcts-sims', type=int, default=64, help='MCTS simulations per decision')
+    discover_parser.add_argument('--time-budget-seconds', type=int, default=0, help='Time budget (0=disabled)')
+    discover_parser.add_argument('--target-unique', type=int, default=0, help='Target unique expressions (0=disabled)')
+    discover_parser.add_argument('--patience', type=int, default=0, help='Patience for no improvement (0=disabled)')
+    discover_parser.add_argument('--batch-size', type=int, default=5, help='Batch size for adaptive search')
+    discover_parser.add_argument('--operands', type=str, default=None, help='Comma-separated operand tokens')
+    discover_parser.add_argument('--unary', type=str, default=None, help='Comma-separated unary tokens')
+    discover_parser.add_argument('--binary', type=str, default=None, help='Comma-separated binary tokens')
+    
+    # Force-free foliation discovery
+    force_free_parser = subparsers.add_parser(
+        'force-free',
+        help='Run force-free foliation discovery',
+        description='Reproduce results from Force-Free Foliations paper (Section 2.4)'
+    )
+    force_free_parser.add_argument('--max-depth', type=int, default=4,
+                                  help='Maximum depth for function builder (default: 4)')
+    force_free_parser.add_argument('--timeout', type=int, default=300,
+                                  help='Timeout in seconds (default: 300)')
+    force_free_parser.add_argument('--target-solutions', type=int, default=10,
+                                  help='Target number of solutions (default: 10)')
+    force_free_parser.add_argument('--output-dir', type=str, default=None,
+                                  help='Output directory for results')
     
     # Benchmark command
     benchmark_parser = subparsers.add_parser(
@@ -166,6 +191,23 @@ For more information on each command, use: albert <command> --help
         description='Test AI models on physics discovery tasks'
     )
     benchmark_parser.add_argument('--model', type=str, required=True, help='Model name to benchmark')
+    # Match-only search command
+    match_parser = subparsers.add_parser(
+        'match-search',
+        help='Run match-only discovery (policy+MCTS, no LLM prompts)',
+        description='Explore math-space with policy+MCTS and optional token restrictions'
+    )
+    match_parser.add_argument('--num-candidates', type=int, default=50)
+    match_parser.add_argument('--max-symbols', type=int, default=8)
+    match_parser.add_argument('--mcts-sims', type=int, default=64)
+    match_parser.add_argument('--time-budget-seconds', type=int, default=0)
+    match_parser.add_argument('--target-unique', type=int, default=0)
+    match_parser.add_argument('--patience', type=int, default=0)
+    match_parser.add_argument('--batch-size', type=int, default=5)
+    match_parser.add_argument('--operands', type=str, default=None)
+    match_parser.add_argument('--unary', type=str, default=None)
+    match_parser.add_argument('--binary', type=str, default=None)
+    match_parser.add_argument('--out-dir', type=str, default=None)
     
     # Submit command
     submit_parser = subparsers.add_parser(
@@ -431,17 +473,49 @@ For more information on each command, use: albert <command> --help
         print(f"  albert run --theory-filter {theory_name}")
         
     elif args.command == 'discover':
-        # Run self-discovery
-        from physics_agent.self_discovery.self_discovery import main as run_discovery
-        # Build command line arguments
-        sys.argv = ['albert-discover', '--self-discover']
+        # Run agentic loop (renamed from self_discovery)
+        from physics_agent.agentic_loop.main import main as run_agentic_loop
+        argv = []
         if args.initial:
-            sys.argv.extend(['--initial-prompt', args.initial])
+            argv.extend(['--initial-prompt', args.initial])
         if args.from_theory:
-            sys.argv.extend(['--theory', args.from_theory])
+            argv.extend(['--theory', args.from_theory])
         if args.self_monitor:
-            sys.argv.append('--self-monitor')
-        run_discovery()
+            argv.append('--self-monitor')
+        # Pass discovery token override flags through CLI transparently
+        # Users can do: albert discover --operands t,r,phi --unary SIN --binary ADD,MUL
+        for flag in [
+            'operands', 'unary', 'binary',
+            'num_candidates', 'max_symbols', 'mcts_sims',
+            'time_budget_seconds', 'target_unique', 'patience', 'batch_size'
+        ]:
+            if hasattr(args, flag) and getattr(args, flag) is not None:
+                key = flag.replace('_', '-')
+                argv.extend([f'--{key}', str(getattr(args, flag))])
+        run_agentic_loop(argv)
+        
+    elif args.command == 'match-search':
+        from physics_agent.match_search.main import main as run_match
+        argv = []
+        for flag in [
+            'num_candidates','max_symbols','mcts_sims','time_budget_seconds','target_unique','patience','batch_size',
+            'operands','unary','binary','out_dir'
+        ]:
+            if hasattr(args, flag) and getattr(args, flag) is not None:
+                key = flag.replace('_', '-')
+                argv.extend([f'--{key}', str(getattr(args, flag))])
+        run_match(argv)
+    
+    elif args.command == 'force-free':
+        # Run force-free foliation discovery
+        from physics_agent.discovery.force_free_discovery import run_force_free_discovery
+        results, output_dir = run_force_free_discovery(
+            max_depth=args.max_depth,
+            timeout_seconds=args.timeout,
+            target_solutions=args.target_solutions,
+            output_dir=args.output_dir
+        )
+        print(f"\n✨ Force-free discovery complete! Output: {output_dir}")
         
     elif args.command == 'benchmark':
         # Run benchmark mode

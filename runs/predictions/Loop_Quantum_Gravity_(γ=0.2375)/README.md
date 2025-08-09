@@ -5,7 +5,7 @@
 This theory has demonstrated improvements over state-of-the-art models in predicting observational data.
 
 **Category**: quantum  
-**Last Updated**: 2025-08-05T00:40:46.358412
+**Last Updated**: 2025-08-08T22:59:07.819997
 
 ## Improved Predictions
 
@@ -34,7 +34,7 @@ This theory has demonstrated improvements over state-of-the-art models in predic
 ### 1. Theory Implementation
 
 ```python
-from theory_loop_quantum_gravity_theory import LoopQuantumGravity
+from physics_agent.theories.gravitational.loop_quantum_gravity.theory import LoopQuantumGravity
 
 # Create theory instance with exact parameters
 theory = LoopQuantumGravity()
@@ -45,7 +45,7 @@ theory.gamma = γ
 ### 2. Run Validation
 
 ```python
-from physics_agent.validations.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
+from physics_agent.validations.cosmology.cmb_power_spectrum_validator import CMBPowerSpectrumValidator
 
 # Create validator
 validator = CMBPowerSpectrumValidator()
@@ -155,6 +155,6 @@ All numerical values, formulas, and computational methods are documented above.
 
 ## References
 
-1. Original theory implementation: `theory_loop_quantum_gravity_theory`
+1. Original theory implementation: `physics_agent.theories.gravitational.loop_quantum_gravity.theory`
 2. Validation framework: `physics_agent/validations/`
 3. Observational data: See sources above
