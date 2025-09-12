@@ -37,7 +37,7 @@ albert run --category quantum
 # Configure Albert (API keys, etc.)
 albert setup
 
-# Discover new theories automatically
+# Discover new theories automatically -- this is highly experimental and mostly just exists for fun - we don't have the observational data today to prove any of them ;) 
 albert discover --initial "unified field theory"
 
 # Discover variations of an existing theory
@@ -335,15 +335,6 @@ Future extensions:
 - [Solvers & Validators](docs/solvers_validators.html) - Testing framework
 - [Cache System](docs/cache.html) - Performance optimization
 - [API Reference](https://albert.so/documentation.html) - Full documentation
-
----
-
-## 🙏 Acknowledgments
-
-This project continues Einstein's quest for unification. Special thanks to:
-- Partanen & Tulkki (2025) for the UGM framework
-- The open-source physics community
-- Everyone who believes in open science
 
 ---
 
