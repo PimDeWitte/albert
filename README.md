@@ -3,7 +3,7 @@
 <div align="center">
   <img src="docs/sketch.png" alt="Albert Einstein Sketch" width="200"/>
   
-  **A timely agent and test framework for physics research 
+ A timely agent and test framework for physics research 
   
   [![GitHub](https://img.shields.io/badge/GitHub-View%20Code-blue?logo=github)](https://github.com/pimdewitte/albert)
   [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord)](https://discord.gg/xdybbSk5)
