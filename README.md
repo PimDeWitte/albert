@@ -3,13 +3,12 @@
 <div align="center">
   <img src="docs/sketch.png" alt="Albert Einstein Sketch" width="200"/>
   
-  **A timely agent for gravitational theory research**
+  **A timely agent and test framework for physics research 
   
   [![GitHub](https://img.shields.io/badge/GitHub-View%20Code-blue?logo=github)](https://github.com/pimdewitte/albert)
   [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord)](https://discord.gg/xdybbSk5)
   [![Status](https://img.shields.io/badge/Status-Research%20Preview-yellow)]()
   
-  *One engine to model everything. In code. Rooted in the laws of physics.*
 </div>
 
 ---
