@@ -94,7 +94,7 @@ albert run --early-stop                          # Enable early stopping
 albert run --quantum-field-content all           # Configure quantum field content
 ```
 
-### `albert discover` - AI Theory Discovery
+### `albert discover` - an experimental loop to test LLM generated theorems against observational data 
 ```bash
 # Start discovery with default settings
 albert discover
@@ -108,6 +108,7 @@ albert discover --from-theory theories/quantum_corrected
 # Continuous monitoring mode
 albert discover --self-monitor
 ```
+The origination of this project was trying to identify the most likely candidates of Einstein's final bedside notes based on completions by various models. The test framework around it was built to validate generations. And the differential engine can provide feedback data. This loop is obviously highly speculative, experimental and so far hasn't produced anything of meaning :)
 
 ### `albert setup` - Configuration
 ```bash
