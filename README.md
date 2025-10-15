@@ -3,7 +3,7 @@
 <div align="center">
   <img src="docs/sketch.png" alt="Albert Einstein Sketch" width="200"/>
   
- A timely agent and test framework for physics research 
+ An experimental differential physics engine written in PyTorch, dedicated to testable physics research
   
   [![GitHub](https://img.shields.io/badge/GitHub-View%20Code-blue?logo=github)](https://github.com/pimdewitte/albert)
   [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord)](https://discord.gg/xdybbSk5)
@@ -13,7 +13,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Setup
 
 ```bash
 # One-line installation
@@ -49,9 +49,7 @@ sudo ln -s $(pwd)/albert /usr/local/bin/albert
 
 ---
 
-## 🎯 Command Line Interface
-
-Albert provides a unified CLI with multiple subcommands:
+## CLI
 
 ### `albert run` - Run Theory Simulations
 ```bash
@@ -125,14 +123,6 @@ albert --help                       # Show all commands
 
 ---
 
-## 📊 Complete Validator Reference
-
-Albert uses 14 validators baesd on observational data and implementations from publicly available papers to test theories.
-
-
-
----
-
 
 ### Candidate Theory System
 ```
@@ -141,6 +131,11 @@ physics_agent/theories/candidates/
 ├── new/          # Recently discovered theories
 └── rejected/     # Theories that didn't pass validation
 ```
+
+Every theory is referenced against publicly available observational data
+![Screenshot 2025-10-14 at 9 49 09 PM](https://github.com/user-attachments/assets/a5504eb3-61f3-42ff-a59d-d17635aea414)
+![Screenshot 2025-10-14 at 9 49 28 PM](https://github.com/user-attachments/assets/a1a01fae-4e8e-4634-baf1-6c99d8c8469e)
+![Screenshot 2025-10-14 at 9 49 32 PM](https://github.com/user-attachments/assets/f14e2a6a-2c2a-4c05-864d-7e7b400ed587)
 
 ---
 
