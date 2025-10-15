@@ -127,53 +127,12 @@ albert --help                       # Show all commands
 
 ## 📊 Complete Validator Reference
 
-Albert uses 14 comprehensive validators to test gravitational theories against experimental data:
+Albert uses 14 validators baesd on observational data and implementations from publicly available papers to test theories.
 
-### Analytical Validators (7)
-- **Mercury Precession**: 43.98 arcsec/century (100% pass rate)
-- **Light Deflection**: 1.75 arcsec at solar limb (100% pass rate)
-- **Photon Sphere**: r = 3M for Schwarzschild (100% pass rate)
-- **PPN Parameters**: γ = β = 1 for GR (100% pass rate)
-- **COW Interferometry**: Neutron phase shift in gravity (100% pass rate)
-- **Gravitational Waves**: LIGO/Virgo waveform matching (100% pass rate)
-- **PSR J0740**: Shapiro time delay in binary pulsars (100% pass rate)
 
-### Solver-Based Validators (7)
-- **Trajectory vs Kerr**: Geodesic comparison (100% pass rate)
-- **Circular Orbit**: ISCO radius & orbital frequency (93.8% pass rate)
-- **Quantum Geodesic Sim**: 2-qubit quantum simulation (96.9% pass rate)
-- **g-2 Anomaly**: Muon magnetic moment (40.6% pass rate)
-- **Scattering Amplitude**: Tree-level graviton exchange (68.8% pass rate)
-- **CMB Power Spectrum**: Planck satellite constraints (71.9% pass rate)
-- **Primordial GWs**: B-mode polarization (93.8% pass rate)
 
 ---
 
-## 🧬 Self-Discovery System
-
-Albert uses AI to generate and test new gravitational theories automatically:
-
-### How It Works
-1. **AI Generation**: LLM generates novel theory code based on prompts
-2. **Validation**: Theories tested against 14 comprehensive validators
-3. **Ranking**: Top performers promoted to candidate status
-4. **Storage**: Candidates saved with full results and metadata
-5. **Review**: Community can review and submit via pull requests
-
-### Discovery Modes
-```bash
-# Basic discovery
-albert discover
-
-# Guided discovery with physics hints
-albert discover --initial "incorporate holographic principle"
-
-# Theory improvement
-albert discover --from-theory theories/quantum_corrected
-
-# Continuous discovery with monitoring
-albert discover --self-monitor
-```
 
 ### Candidate Theory System
 ```
@@ -184,8 +143,6 @@ physics_agent/theories/candidates/
 ```
 
 ---
-
-## ⚡ Performance Features
 
 ### PyTorch Tensor Caching
 - **First run**: Full geodesic integration (minutes)
@@ -235,7 +192,7 @@ physics_agent/theories/candidates/
 
 ---
 
-## 🚀 Creating Your Own Theory
+## Implementing A New Theory
 
 1. **Create theory file**: `theories/my_theory/theory.py`
 2. **Define your metric**:
@@ -263,70 +220,6 @@ class MyTheory(GravitationalTheory):
 ```bash
 albert run --theories "My Theory"
 ```
-
----
-
-## 🏆 Solver Architecture
-
-### Primary Integration Methods
-- **Dormand-Prince 8(7)**: 8th order with adaptive step control
-  - Error tolerance: 10⁻¹² relative, 10⁻¹⁴ absolute
-  - 13 Runge-Kutta stages per step
-  - Performance: 47.3ms for 1,024 steps
-
-- **Symplectic Integrators**: Energy-preserving for periodic orbits
-  - Energy drift: < 10⁻¹⁵ over 10⁶ orbits
-  - 4th and 6th order implementations
-
-- **Implicit Methods**: For extreme curvature near horizons
-  - A-stable and L-stable
-  - Newton-Raphson convergence
-
----
-
-## 🌍 The Vision: Open World Model
-
-Albert is building toward a unified physics engine where:
-- Every physical law is implemented and validated
-- All experimental data is digitized and accessible
-- Theories can be tested against all known physics
-- Synthetic data generation for games and training
-
-Currently supports:
-- **32 gravitational theories** including GR, quantum corrections, UGM
-- **14 validation tests** from solar system to quantum scales
-- **Multi-particle simulations** with different quantum numbers
-- **WebGPU visualization** for interactive exploration
-
-Future extensions:
-- Fluid dynamics solvers
-- Quantum field theory
-- Condensed matter physics
-- Statistical mechanics
-- Plasma physics
-
----
-
-## 👥 Contributing
-
-### For Physicists
-- Add new validators for your field
-- Implement experimental datasets
-- Verify theoretical predictions
-- Contribute new baseline theories
-
-### For Engineers
-- Optimize solvers with torch.compile
-- Implement GPU kernels
-- Add visualization tools
-- Improve caching system
-
-### For Everyone
-- Test new theories
-- Report bugs
-- Improve documentation
-- Join discussions on Discord
-
 ---
 
 ## 📚 Documentation
