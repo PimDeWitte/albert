@@ -76,7 +76,7 @@ albert run --particles proton                    # Specific particle
 albert run --device cuda --dtype float32         # GPU acceleration
 albert run --device cpu --dtype float64          # Max precision
 albert run --max-steps 1000000                   # Million-step trajectories
-albert run --no-cache                            # Force recomputation
+albert run --no-cache                            # Force recomputation (bypasses the tensor cache)
 albert run --clear-cache                         # Clear cache and exit
 
 # Advanced options
@@ -136,54 +136,6 @@ Every theory is referenced against publicly available observational data
 ![Screenshot 2025-10-14 at 9 49 09 PM](https://github.com/user-attachments/assets/a5504eb3-61f3-42ff-a59d-d17635aea414)
 ![Screenshot 2025-10-14 at 9 49 28 PM](https://github.com/user-attachments/assets/a1a01fae-4e8e-4634-baf1-6c99d8c8469e)
 ![Screenshot 2025-10-14 at 9 49 32 PM](https://github.com/user-attachments/assets/f14e2a6a-2c2a-4c05-864d-7e7b400ed587)
-
----
-
-### PyTorch Tensor Caching
-- **First run**: Full geodesic integration (minutes)
-- **Cached runs**: Near-instant load (8.6ms)
-- **Speedup**: Up to 29,323x for million-step trajectories
-- **Storage**: ~30MB per trajectory
-
-### Performance Benchmarks
-| Trajectory Steps | Integration Time | Cached Load | Speedup    |
-|-----------------|------------------|-------------|------------|
-| 10,000          | 2.75 s          | 2.5 ms      | 1,110x     |
-| 100,000         | 25.80 s         | 2.4 ms      | 10,674x    |
-| 1,000,000       | 4m 12.7s        | 8.6 ms      | 29,323x    |
-
-### Parallel Computing
-- Parameter sweeps run in parallel
-- Auto-detects optimal worker count
-- GPU support (CUDA, MPS for Apple Silicon)
-- Adaptive precision (float32/float64)
-
----
-
-## 🌠 Black Hole Configurations
-
-| Preset | Mass | Schwarzschild Radius | Use Case | Command |
-|--------|------|---------------------|----------|---------|
-| `primordial_mini` ⭐ | 10¹⁵ kg | 1.5 pm | Quantum gravity research | `--black-hole-preset primordial_mini` |
-| `stellar_mass` | 10 M☉ | 29.5 km | Standard astrophysics | `--black-hole-preset stellar_mass` |
-| `laboratory_micro` | 10⁸ kg | 1.5×10⁻¹⁹ m | Extreme quantum regime | `--black-hole-preset laboratory_micro` |
-| `intermediate_mass` | 1000 M☉ | 2953 km | Globular clusters | `--black-hole-preset intermediate_mass` |
-| `sagittarius_a_star` | 4.15×10⁶ M☉ | 1.2×10¹⁰ m | Galactic center | `--black-hole-preset sagittarius_a_star` |
-
-⭐ Default: `primordial_mini` enables larger timesteps and quantum effects
-
----
-
-## 🔬 Particle Types
-
-| Particle | Type | Mass | Charge | Spin | Orbital Behavior |
-|----------|------|------|---------|------|-----------------|
-| `electron` ⭐ | Massive | 9.1×10⁻³¹ kg | -e | 1/2 | Elliptical precessing |
-| `photon` | Massless | 0 | 0 | 1 | Gravitational lensing |
-| `neutrino` | Nearly massless | < 0.12 eV/c² | 0 | 1/2 | Near-null geodesic |
-| `proton` | Massive | 1.67×10⁻²⁷ kg | +e | 1/2 | Stable circular |
-
-⭐ Default particle
 
 ---
 
